@@ -1,11 +1,10 @@
+import * as sql from "mssql";
+
 var restify = require('restify');
 var builder = require('botbuilder');
 
 // Setup Restify Server
 var server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || 3979, function () {
-   console.log('%s listening to %s', server.name, server.url); 
-});
 
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
@@ -13,10 +12,51 @@ var connector = new builder.ChatConnector({
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 
-// Listen for messages from users 
-server.post('/api/messages', connector.listen());
-
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, function (session) {
     session.send("You said: %s", session.message.text);
+});
+
+
+const config = {
+    database: process.env.SQL_DATABASE,
+    options: {
+        // use this if you're on Windows Azure
+        encrypt: true,
+    },
+    // needed to parse the procedure result, the typescript anotation, in this case, is wrong.
+    parseJSON: true,
+    password: process.env.SQL_PASSWORD,
+    server: process.env.SQL_HOST,
+    user: process.env.SQL_USER,
+};
+
+(async function () {
+    try {    
+        let pool = await sql.connect(config);    
+                
+        server.post('/api/messages', connector.listen());
+        server.get('/test', async (request, response, next) => {
+            try {
+                const result = await pool.request().query(
+                    `select p.id,
+                    isnull(pa.alias, p.[name]) name, 
+                    p.branch_id, p.program_id,
+                    p.domain_id
+                    from person p left join person_alias pa on p.id = pa.person_id and pa.principal = 1`
+                );
+
+                response.send((result));
+            } catch (error) {                
+                response.send(error.message);
+            }                                   
+        });                 
+        
+    } catch (error) {
+        console.dir(error);
+    } 
+})();
+
+server.listen(process.env.port || process.env.PORT || 3979, function () {
+    console.log('%s listening to %s', server.name, server.url); 
 });
