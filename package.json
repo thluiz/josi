@@ -1,0 +1,36 @@
+{
+  "name": "josi",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thluiz/josi.git"
+  },
+  "keywords": [
+    "bot",
+    "ving",
+    "tsun",
+    "kung",
+    "fu",
+    "node",
+    "bot",
+    "framework"
+  ],
+  "author": "Thiago Silva",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thluiz/josi/issues"
+  },
+  "homepage": "https://github.com/thluiz/josi#readme",
+  "dependencies": {
+    "botbuilder": "^3.12.0",
+    "mssql": "^4.1.0",
+    "passport": "^0.4.0",
+    "restify": "^6.3.4",
+    "typings": "^2.1.1"
+  }
+}
