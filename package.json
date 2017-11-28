@@ -28,9 +28,16 @@
   "homepage": "https://github.com/thluiz/josi#readme",
   "dependencies": {
     "botbuilder": "^3.12.0",
+    "eslint": "^4.12.0",
+    "express": "^4.16.2",
     "mssql": "^4.1.0",
     "passport": "^0.4.0",
-    "restify": "^6.3.4",
     "typings": "^2.1.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "ncp": "^2.0.0",
+    "yargs": "^10.0.3"
   }
 }

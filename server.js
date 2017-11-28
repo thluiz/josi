@@ -9,10 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
-var restify = require('restify');
-var builder = require('botbuilder');
-// Setup Restify Server
-var server = restify.createServer();
+const builder = require("botbuilder");
+const express = require('express');
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
     appId: process.env.MICROSOFT_APP_ID,
@@ -38,8 +36,9 @@ const config = {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let pool = yield sql.connect(config);
-            server.post('/api/messages', connector.listen());
-            server.get('/test', (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            const app = express();
+            app.post('/api/messages', connector.listen());
+            app.get('/test', (request, response, next) => __awaiter(this, void 0, void 0, function* () {
                 try {
                     const result = yield pool.request().query(`select p.id,
                     isnull(pa.alias, p.[name]) name, 
@@ -52,13 +51,19 @@ const config = {
                     response.send(error.message);
                 }
             }));
+            app.get(/^((?!\.).)*$/, (req, res) => {
+                var path = 'index.html';
+                res.sendfile(path, { root: './public' });
+            });
+            app.use(express.static('public'));
+            const port = process.env.port || process.env.PORT || 3979;
+            app.listen(port, function () {
+                console.log(`server listening to ${port}`);
+            });
         }
         catch (error) {
-            console.dir(error);
+            console.log(error);
         }
     });
 })();
-server.listen(process.env.port || process.env.PORT || 3979, function () {
-    console.log('%s listening to %s', server.name, server.url);
-});
 //# sourceMappingURL=server.js.map

@@ -1,10 +1,7 @@
 import * as sql from "mssql";
+import * as builder from "botbuilder";
 
-var restify = require('restify');
-var builder = require('botbuilder');
-
-// Setup Restify Server
-var server = restify.createServer();
+const express = require('express');
 
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
@@ -16,7 +13,6 @@ var connector = new builder.ChatConnector({
 var bot = new builder.UniversalBot(connector, function (session) {
     session.send("You said: %s", session.message.text);
 });
-
 
 const config = {
     database: process.env.SQL_DATABASE,
@@ -34,9 +30,10 @@ const config = {
 (async function () {
     try {    
         let pool = await sql.connect(config);    
+        const app = express();
                 
-        server.post('/api/messages', connector.listen());
-        server.get('/test', async (request, response, next) => {
+        app.post('/api/messages', connector.listen());
+        app.get('/test', async (request, response, next) => {
             try {
                 const result = await pool.request().query(
                     `select p.id,
@@ -49,14 +46,23 @@ const config = {
                 response.send((result));
             } catch (error) {                
                 response.send(error.message);
-            }                                   
-        });                 
+            }                                    
+        });            
+        
+        app.get(/^((?!\.).)*$/, (req, res) => {
+            var path = 'index.html';
+            res.sendfile(path, {root: './public'});
+        });
+
+        app.use(express.static('public'));
+
+        const port = process.env.port || process.env.PORT || 3979;
+        app.listen(port, function () {
+            console.log(`server listening to ${port}`); 
+        });
         
     } catch (error) {
-        console.dir(error);
+        console.log(error);
     } 
 })();
 
-server.listen(process.env.port || process.env.PORT || 3979, function () {
-    console.log('%s listening to %s', server.name, server.url); 
-});
