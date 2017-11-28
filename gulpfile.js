@@ -28,13 +28,15 @@ function move(oldPath, newPath, callback) {
     }
 }
 gulp.task('build', function (cb) {
-    exec('cd apex && ng build', function (err, stdout, stderr) {
+    exec('cd apex && ng build -prod', function (err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
         cb(err);
     });
 });
-gulp.task('moveAngular2Public', ['build'], function (cb) {
+gulp.task('cleanPublicDir', function (cb) {
+});
+gulp.task('moveAngular2Public', ['build', 'cleanPublicDir'], function (cb) {
     var ncp = require('ncp').ncp;
     ncp('apex/dist', "public", function (err) {
         if (err) {

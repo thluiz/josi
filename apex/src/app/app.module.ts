@@ -14,9 +14,6 @@ import { AuthGuard } from './shared/auth/auth-guard.service';
 
 import * as $ from 'jquery';
 
-
-
-
 @NgModule({
     declarations: [
         AppComponent,
