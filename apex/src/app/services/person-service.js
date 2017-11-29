@@ -10,7 +10,7 @@ const core_1 = require("@angular/core");
 let PersonService = class PersonService {
     constructor(http) {
         this.http = http;
-        this.dataUrl = 'http://myvtmiim.azurewebsites.net/api';
+        this.dataUrl = 'https://myvtmiim.azurewebsites.net/api';
     }
     getDailyMonitor() {
         return this.http.get(this.dataUrl + '/daily');

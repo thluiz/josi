@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Rx';
 @Injectable()
 export class PersonService {
 constructor(private http:Http) { }
-  private dataUrl = 'http://myvtmiim.azurewebsites.net/api';
+  private dataUrl = 'https://myvtmiim.azurewebsites.net/api';
 
   getDailyMonitor() {
     return this.http.get(this.dataUrl + '/daily');    
