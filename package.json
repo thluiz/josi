@@ -28,6 +28,7 @@
   "homepage": "https://github.com/thluiz/josi#readme",
   "dependencies": {
     "botbuilder": "^3.12.0",
+    "cors": "^2.8.4",
     "eslint": "^4.12.0",
     "express": "^4.16.2",
     "mssql": "^4.1.0",

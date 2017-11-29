@@ -9,5 +9,9 @@ export const Full_ROUTES: Routes = [
   {
     path: 'full-layout',
     loadChildren: './pages/full-layout-page/full-pages.module#FullPagesModule'
+  },
+  {
+    path: 'daily',
+    loadChildren: './pages/daily-page/daily-pages.module#DailyPagesModule'
   }
 ];

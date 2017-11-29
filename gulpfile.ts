@@ -3,59 +3,24 @@ var gulp = require('gulp');
 var exec = require('child_process').exec;
 const rename = require('gulp-rename');
 
-var fs = require('fs');
-
-function move(oldPath, newPath, callback) {
-
-    fs.rename(oldPath, newPath, function (err) {
-        if (err) {
-            if (err.code === 'EXDEV') {
-                copy();
-            } else {
-                callback(err);
-            }
-            return;
-        }
-        callback();
-    });
-
-    function copy() {
-        var readStream = fs.createReadStream(oldPath);
-        var writeStream = fs.createWriteStream(newPath);
-
-        readStream.on('error', callback);
-        writeStream.on('error', callback);
-
-        readStream.on('close', function () {
-            fs.unlink(oldPath, callback);
-        });
-
-        readStream.pipe(writeStream);
-    }
-}
-
 gulp.task('build', function (cb) {
     exec('cd apex && ng build -prod', function (err, stdout, stderr) {
       console.log(stdout);
       console.log(stderr);
+
+      var ncp = require('ncp').ncp;    
+      
+      ncp('apex/dist', "public", function (err) {
+          if (err) {
+              return console.error(err);
+          }
+          console.log('done!');
+      }); 
+
       cb(err);
     });
 });
 
-gulp.task('cleanPublicDir', function (cb) {
-    
-});
-
-gulp.task('moveAngular2Public', ['build', 'cleanPublicDir'], function (cb) {
-    var ncp = require('ncp').ncp;    
-    
-    ncp('apex/dist', "public", function (err) {
-        if (err) {
-            return console.error(err);
-        }
-        console.log('done!');
-    });   
-});
 
 gulp.task('commit', (cb) => {
     var argv = require('yargs').argv;

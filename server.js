@@ -32,38 +32,47 @@ const config = {
     server: process.env.SQL_HOST,
     user: process.env.SQL_USER,
 };
-(function () {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            let pool = yield sql.connect(config);
-            const app = express();
-            app.post('/api/messages', connector.listen());
-            app.get('/test', (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-                try {
-                    const result = yield pool.request().query(`select p.id,
+(() => __awaiter(this, void 0, void 0, function* () {
+    try {
+        const pool = yield sql.connect(config);
+        const app = express();
+        const cors = require("cors");
+        app.use(cors());
+        app.post("/api/messages", connector.listen());
+        app.get("/api/daily", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield pool.request().execute(`GetDailyMonitor`);
+                response.send((result.recordset[0][0]));
+            }
+            catch (error) {
+                response.send(error.message);
+            }
+        }));
+        app.get("/test", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield pool.request().query(`select p.id,
                     isnull(pa.alias, p.[name]) name, 
                     p.branch_id, p.program_id,
                     p.domain_id
                     from person p left join person_alias pa on p.id = pa.person_id and pa.principal = 1`);
-                    response.send((result));
-                }
-                catch (error) {
-                    response.send(error.message);
-                }
-            }));
-            app.get(/^((?!\.).)*$/, (req, res) => {
-                var path = 'index.html';
-                res.sendfile(path, { root: './public' });
-            });
-            app.use(express.static('public'));
-            const port = process.env.port || process.env.PORT || 3979;
-            app.listen(port, function () {
-                console.log(`server listening to ${port}`);
-            });
-        }
-        catch (error) {
-            console.log(error);
-        }
-    });
-})();
+                response.send((result));
+            }
+            catch (error) {
+                response.send(error.message);
+            }
+        }));
+        app.get(/^((?!\.).)*$/, (req, res) => {
+            var path = "index.html";
+            res.sendfile(path, { root: "./apex/public" });
+        });
+        app.use(express.static("./apex/public"));
+        const port = process.env.port || process.env.PORT || 3979;
+        app.listen(port, function () {
+            console.log(`server listening to ${port}`);
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+}))();
 //# sourceMappingURL=server.js.map

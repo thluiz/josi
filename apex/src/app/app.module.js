@@ -16,6 +16,7 @@ const content_layout_component_1 = require("./layouts/content/content-layout.com
 const full_layout_component_1 = require("./layouts/full/full-layout.component");
 const auth_service_1 = require("./shared/auth/auth.service");
 const auth_guard_service_1 = require("./shared/auth/auth-guard.service");
+const http_1 = require("@angular/http");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -29,7 +30,10 @@ AppModule = __decorate([
             animations_1.BrowserAnimationsModule,
             app_routing_module_1.AppRoutingModule,
             shared_module_1.SharedModule,
-            ng_bootstrap_1.NgbModule.forRoot()
+            ng_bootstrap_1.NgbModule.forRoot(),
+            //BrowserModule,
+            //FormsModule, 
+            http_1.HttpModule,
         ],
         providers: [
             auth_service_1.AuthService,

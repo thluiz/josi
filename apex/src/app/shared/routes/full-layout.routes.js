@@ -9,6 +9,10 @@ exports.Full_ROUTES = [
     {
         path: 'full-layout',
         loadChildren: './pages/full-layout-page/full-pages.module#FullPagesModule'
+    },
+    {
+        path: 'daily',
+        loadChildren: './pages/daily-page/daily-pages.module#DailyPagesModule'
     }
 ];
 //# sourceMappingURL=full-layout.routes.js.map

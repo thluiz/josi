@@ -27,13 +27,26 @@ const config = {
     user: process.env.SQL_USER,
 };
 
-(async function () {
+(async () => {
     try {    
-        let pool = await sql.connect(config);    
+        const pool = await sql.connect(config);    
         const app = express();
-                
-        app.post('/api/messages', connector.listen());
-        app.get('/test', async (request, response, next) => {
+        const cors = require("cors");
+
+        app.use(cors());
+        app.post("/api/messages", connector.listen());
+
+        app.get("/api/daily", async (request, response, next) => {
+            try {
+                const result = await pool.request().execute(`GetDailyMonitor`);                
+
+                response.send((result.recordset[0][0]));
+            } catch (error) {                
+                response.send(error.message);
+            } 
+        });
+
+        app.get("/test", async (request, response, next) => {
             try {
                 const result = await pool.request().query(
                     `select p.id,
@@ -50,11 +63,11 @@ const config = {
         });            
         
         app.get(/^((?!\.).)*$/, (req, res) => {
-            var path = 'index.html';
-            res.sendfile(path, {root: './public'});
+            var path = "index.html";
+            res.sendfile(path, {root: "./apex/public"});
         });
 
-        app.use(express.static('public'));
+        app.use(express.static("./apex/public"));
 
         const port = process.env.port || process.env.PORT || 3979;
         app.listen(port, function () {

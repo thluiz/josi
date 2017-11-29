@@ -12,6 +12,8 @@ import { FullLayoutComponent } from "./layouts/full/full-layout.component";
 import { AuthService } from './shared/auth/auth.service';
 import { AuthGuard } from './shared/auth/auth-guard.service';
 
+import { HttpModule } from '@angular/http';
+
 import * as $ from 'jquery';
 
 @NgModule({
@@ -24,7 +26,11 @@ import * as $ from 'jquery';
         BrowserAnimationsModule,
         AppRoutingModule,
         SharedModule,
-        NgbModule.forRoot()
+        NgbModule.forRoot(),
+        //BrowserModule,
+        //FormsModule, 
+        HttpModule,
+        //JsonpModule
     ],
     providers: [
         AuthService,

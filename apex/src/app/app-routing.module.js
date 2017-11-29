@@ -16,7 +16,7 @@ const auth_guard_service_1 = require("./shared/auth/auth-guard.service");
 const appRoutes = [
     {
         path: '',
-        redirectTo: 'full-layout',
+        redirectTo: 'daily',
         pathMatch: 'full',
     },
     { path: '', component: full_layout_component_1.FullLayoutComponent, data: { title: 'full Views' }, children: full_layout_routes_1.Full_ROUTES, canActivate: [auth_guard_service_1.AuthGuard] },

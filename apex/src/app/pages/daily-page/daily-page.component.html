@@ -1,0 +1,47 @@
+
+<div class="row">
+	<div class="col-12">
+		<!-- Kick start -->
+		<div id="kick-start" class="card">
+			<div class="card-header">
+				<h4 class="card-title">Monitoramento Diário de Membros</h4>
+			</div>
+			<div class="card-body">				
+				<ng-template #hdrTpl let-value="start_hour">
+					a {{ start_hour }}
+					<span *ngIf="incidents != null && incidents.lengh > 0">
+						{{ incidents[0].start_hour }}
+					</span>
+
+					<span *ngIf="v != null">
+						{{ v.start_hour }}
+					</span>
+				</ng-template>	
+
+				<div class="card-block" *ngIf="daily != null">
+											
+					<ngx-datatable class="bootstrap fullscreen" 						
+						[rows]="daily" 
+						[groupRowsBy]="'domain'"
+						[columnMode]="'force'"
+						[scrollbarH]="true"
+						[headerHeight]="50"
+						[footerHeight]="50"
+						[rowHeight]="40"						
+						[groupExpansionDefault]="true"
+						[columns]="cols">			
+
+						<ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
+						<ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template>
+							<div>
+								<b>{{group.value[0].domain}}</b>							
+							</div>
+						</ng-template>
+						</ngx-datatable-group-header>
+					</ngx-datatable>
+				</div>
+			</div>
+		</div>
+		<!--/ Kick start -->
+	</div>
+</div>
