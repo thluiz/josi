@@ -33,6 +33,10 @@ const config = {
     server: process.env.SQL_HOST,
     user: process.env.SQL_USER,
 };
+function getParticipationList(people) {
+    return " **Participantes** :\n\n"
+        + people.map(p => "* " + p.name).join('\n\n');
+}
 (() => __awaiter(this, void 0, void 0, function* () {
     try {
         const pool = yield sql.connect(config);
@@ -101,110 +105,274 @@ const config = {
             (session, args, next) => __awaiter(this, void 0, void 0, function* () {
                 const title_entity = builder.EntityRecognizer.findEntity(args.entities, "title");
                 const names_entities = builder.EntityRecognizer.findAllEntities(args.entities, "person_name");
-                let moment = { title: "", people: [] };
+                let moment = { title: "", people: [], fund_value: 0 };
                 moment.title = title_entity ? title_entity.entity : "Provimento de Vida Kung Fu";
-                session.sendTyping();
-                try {
-                    const result = yield pool.request()
-                        .input('names', sql.VarChar(sql.MAX), names_entities.map(n => n.entity).join(","))
-                        .execute(`GetPeopleByName`);
-                    session.dialogData.query = result.recordset;
+                session.dialogData.moment = moment;
+                session.beginDialog("/findParticipants", { moment, names: names_entities.map(n => n.entity).join(",") });
+            }),
+            (session, results, next) => {
+                if (results.response.moment) {
+                    session.dialogData.moment = results.response.moment;
                 }
-                catch (error) {
-                    session.endDialog("Ocorreu um erro ao obter os participantes: " + error.message);
+                const moment = session.dialogData.moment;
+                if (results.response.cancel) {
+                    session.endDialog("Ok, cancelando essa operação então");
                     return;
                 }
-                const not_founds = session.dialogData.query.filter(f => !f.found);
-                const people = session.dialogData.query.filter(f => f.found && f.total == 1);
-                moment.people = people;
-                session.dialogData.moment = moment;
                 session.beginDialog("/confirmMoment", { moment });
-            }), (session, results, next) => {
-                console.log(results.response);
-                session.send("ok!");
-                session.send(results.response);
+            }, (session, results, next) => {
+                if (results.response.cancel) {
+                    session.endDialog("Ok, cancelando essa operação então");
+                    return;
+                }
+                if (results.response.moment.dirty) {
+                    session.replaceDialog("/confirmMoment", {
+                        moment: results.response.moment
+                    });
+                    return;
+                }
+                session.endDialog("ab");
             }
         ]);
-        bot.dialog("/confirmMoment", [(session, args) => {
-                const moment = args.moment;
-                session.dialogData.moment = moment;
-                console.log(args.moment);
-                let msg = "Os dados que consegui foram: \n\n"
-                    + ` **Título** : ${moment.title} \n\n`;
-                if (moment.people.length > 0) {
-                    msg += " **Participantes** :\n\n"
-                        + moment.people.map(p => "* " + p.name).join('\n\n');
-                }
-                session.send(msg);
-                builder.Prompts.choice(session, "Posso confirmar? ", "Sim|Alterar o Título|Adicionar Comentário|Cancelar", { listStyle: builder.ListStyle.button });
-            }, (session, results, next) => {
-                console.log(results);
-                let response = results.response;
-                session.endDialogWithResult({ response: response.entity });
-                if (response.index === 0) {
-                    //session.endDialogWithResult( { response: { moment: session.dialogData.moment } });
+        bot.dialog("/confirmMoment", [(session, args, temp) => {
+                if (args.cancel_all) {
+                    session.endDialogWithResult({
+                        response: { cancel: true }
+                    });
                     return;
                 }
+                const moment = args.moment;
+                session.dialogData.moment = moment;
+                let msg = "Estou com os seguintes dados: \n\n"
+                    + ` **Título** : ${moment.title} \n\n`;
+                if (moment.people.length > 0) {
+                    msg += getParticipationList(moment.people);
+                }
+                if (moment.fund_value > 0) {
+                    msg += `\n\n **Valor para o fundo** : ${moment.fund_value} `;
+                }
+                session.send(msg);
+                const fund_value_options = moment.fund_value > 0 ?
+                    "Alterar valor para o fundo"
+                    : "Adicionar valor para o fundo";
+                builder.Prompts.choice(session, "Posso confirmar? ", `Sim|Alterar|${fund_value_options}|Cancelar`, { listStyle: builder.ListStyle.button });
+            }, (session, results, next) => {
+                let response = results.response;
+                if (response.index === 0) {
+                    session.dialogData.moment.dirty = false;
+                    session.endDialogWithResult({
+                        response: session.dialogData.moment
+                    });
+                    return;
+                }
+                session.dialogData.moment.dirty = true;
                 if (response.index === 1) {
-                    //session.replaceDialog("/askTitle", { moment:  session.dialogData.moment } );
+                    session.replaceDialog("/askChanges", { moment: session.dialogData.moment });
                     return;
                 }
                 if (response.index === 2) {
-                    //session.replaceDialog("/askComentary", { moment: session.dialogData.moment});
+                    session.replaceDialog("/askFundValue", {
+                        moment: session.dialogData.moment
+                    });
+                    return;
+                }
+                session.endDialogWithResult({
+                    response: { cancel: true }
+                });
+            }]);
+        bot.dialog("/askChanges", [(session, args) => {
+                session.dialogData.moment = args.moment;
+                builder.Prompts.choice(session, "O que deseja alterar?", "Título|Adicionar participante|Remover participante|Cancelar alterações|Cancelar lançamento", { listStyle: builder.ListStyle.button });
+            }, (session, results, next) => {
+                let response = results.response;
+                if (response.index === 0) {
+                    session.replaceDialog("/changeTitle", {
+                        moment: session.dialogData.moment
+                    });
+                    return;
+                }
+                if (response.index === 1) {
+                    session.replaceDialog("/addParticipant", {
+                        moment: session.dialogData.moment,
+                    });
+                    return;
+                }
+                if (response.index === 2) {
+                    session.replaceDialog("/removeParticipant", {
+                        moment: session.dialogData.moment
+                    });
                     return;
                 }
                 if (response.index === 3) {
-                    //session.endDialog("Ok, depois continuamos...");
+                    session.replaceDialog("/confirmMoment", {
+                        moment: session.dialogData.moment
+                    });
                     return;
                 }
+                session.replaceDialog("/confirmMoment", {
+                    cancel_all: true
+                });
             }]);
-        bot.dialog("/askTitle", [(session, args) => {
-                console.log(args);
-                session.dialogData.moment = args.moment;
-                builder.Prompts.text(session, "Poderia então informar o título?");
+        bot.dialog("/addParticipant", [(session, args) => {
+                const moment = args.moment;
+                session.dialogData.moment = moment;
+                session.replaceDialog("/askNameAndSearchParticipant", {
+                    moment
+                });
+            }]);
+        bot.dialog("/removeParticipant", [(session, args) => {
+                const moment = args.moment;
+                session.dialogData.moment = moment;
+                builder.Prompts.choice(session, "Quem deseja remover? ", moment.people.map(p => p.name), { listStyle: builder.ListStyle.button });
             }, (session, results, next) => {
-                let moment = session.dialogData.moment;
-                moment.title = results.response;
-                session.replaceDialog("/confirmMoment", { response: { moment } });
+                const name = results.response.entity;
+                const moment = session.dialogData.moment;
+                moment.people = moment.people
+                    .filter(p => p.name != name);
+                session.replaceDialog("/changeParticipants", { moment });
             }]);
-        bot.dialog("/askComentary", [(session, args) => {
+        bot.dialog("/changeParticipants", [(session, args) => {
                 session.dialogData.moment = args.moment;
-                builder.Prompts.text(session, "Poderia então informar a descrição?");
+                const moment = session.dialogData.moment;
+                let msg = "Então a lista ficou: \n\n";
+                if (moment.people.length > 0) {
+                    msg += getParticipationList(moment.people);
+                }
+                builder.Prompts.choice(session, "O que deseja?", `Adicionar participantes|Remover participante|Continuar lançamento`, { listStyle: builder.ListStyle.button });
             }, (session, results, next) => {
-                let moment = session.dialogData.moment;
-                moment.public = results.response;
-                session.replaceDialog("/confirmMoment", { response: { moment } });
-            }]);
-        bot.dialog("/askValue", [(session, args) => {
-                console.log("askValue");
-                session.endDialogWithResult({ response: { cancel_all: true } });
-            }]);
-        bot.dialog("/findParticipants", [(session, args) => {
-                session.dialogData.not_founds = args.not_founds;
-                let not_founds = args.not_founds.filter(f => !f.found);
-                if (not_founds.length == 0) {
-                    session.endDialogWithResult({ response: not_founds });
-                    return;
-                }
-                const current_missing = not_founds[0];
-                session.dialogData.current_missing = current_missing;
-                if (current_missing.options.length > 0) {
-                    session.beginDialog("/choosePersonInList", { options: current_missing.options });
-                }
-                else {
-                    session.beginDialog("/lookForNameOrCreate", { person: current_missing });
-                }
-            },
-            (session, results, next) => __awaiter(this, void 0, void 0, function* () {
                 let response = results.response;
-                if (response.cancel_all) {
-                    session.endDialogWithResult({ response: { cancel_all: true } });
+                const moment = session.dialogData.moment;
+                if (response.index === 0) {
+                    session.replaceDialog("addParticipant", moment);
                     return;
                 }
-            })
-        ]);
+                if (response.index === 1) {
+                    session.replaceDialog("/removeParticipant", { moment });
+                    return;
+                }
+                session.replaceDialog("/confirmMoment", {
+                    moment: moment
+                });
+            }]);
+        bot.dialog("/changeTitle", [(session, args) => {
+                session.dialogData.moment = args.moment;
+                builder.Prompts.text(session, "Poderia informar o título então?");
+            }, (session, results, next) => {
+                const moment = session.dialogData.moment;
+                moment.title = results.response;
+                session.replaceDialog("/confirmMoment", {
+                    moment: moment
+                });
+            }]);
+        bot.dialog("/askFundValue", [(session, args) => {
+                session.dialogData.moment = args.moment;
+                builder.Prompts.number(session, "Poderia informar o valor que será destinado para o fundo?");
+            }, (session, results, next) => {
+                const moment = session.dialogData.moment;
+                moment.fund_value = results.response;
+                session.replaceDialog("/confirmMoment", {
+                    moment: moment
+                });
+            }]);
+        bot.dialog("/askNameAndSearchParticipant", [(session, args) => {
+                session.dialogData.moment = args.moment;
+                builder.Prompts.text(session, "Poderia informar o nome então?"
+                    + "\n\n _Lembrando que você pode informar vários nomes para busca_");
+            }, (session, results, next) => {
+                session.replaceDialog("/findParticipants", {
+                    names: results.response,
+                    moment: session.dialogData.moment
+                });
+            }]);
+        bot.dialog("/findParticipants", [(session, args) => __awaiter(this, void 0, void 0, function* () {
+                if (args) {
+                    if (args.moment) {
+                        session.dialogData.moment = args.moment;
+                    }
+                    if (args.names) {
+                        session.dialogData.names = args.names;
+                    }
+                }
+                let names = session.dialogData.names;
+                if (!names || names.length == 0) {
+                    //session.replaceDialog("/askNameAndSearchParticipant", { moment: session.dialogData.moment });
+                    //return;
+                }
+                session.dialogData.query = [];
+                if (names != null && names.length > 0) {
+                    try {
+                        session.sendTyping();
+                        const result = yield pool.request()
+                            .input('names', sql.VarChar(sql.MAX), names)
+                            .execute(`GetPeopleByName`);
+                        session.dialogData.query = result.recordset;
+                    }
+                    catch (error) {
+                        session.endDialogWithResult({
+                            response: {
+                                error: "Ocorreu um erro ao obter os participantes: " + error.message
+                            }
+                        });
+                        return;
+                    }
+                }
+                const not_founds = session.dialogData.query.filter(f => !f.found);
+                const people = session.dialogData.query.filter(f => f.found && f.total == 1);
+                const many_options = session.dialogData.query.filter(f => f.found && f.total > 1);
+                if (!session.dialogData.moment.people) {
+                    session.dialogData.moment.people = [];
+                }
+                session.dialogData.moment.people = session.dialogData.
+                    moment.people.concat(people.filter(p => {
+                    return !session.dialogData.moment.people.find(p2 => p2.person_id == p.person_id);
+                }));
+                if (not_founds.length > 0) {
+                    const msg = not_founds.length == 1 ?
+                        "não encontrei a seguinte pessoa: " + not_founds[0].name
+                        : "não encontrei as seguintes pessoas: " + not_founds.map(n => n.name).join(",");
+                    session.send(msg);
+                    //session.replaceDialog("/confirmMoment", {
+                    //    not_founds, moment: session.dialogData.moment
+                    //});                
+                }
+                if (many_options.length > 0) {
+                    session.replaceDialog("/choosePersonInList", {
+                        many_options, moment: session.dialogData.moment
+                    });
+                    return;
+                }
+                session.endDialogWithResult({
+                    response: { moment: session.dialogData.moment }
+                });
+            })]);
         bot.dialog("/choosePersonInList", [(session, args) => {
-                console.log("choosePersonInList");
+                session.dialogData.moment = args.moment;
+                session.dialogData.current_options = args.many_options.shift();
+                session.dialogData.many_options = args.many_options;
+                if (!session.dialogData.current_options) {
+                    session.endDialogWithResult({
+                        response: { moment: session.dialogData.moment }
+                    });
+                    return;
+                }
+                let options = JSON.parse(session.dialogData.current_options.options);
+                options.push({ id: -1, name: "Ignorar esse nome" });
+                session.dialogData.options = options;
+                builder.Prompts.choice(session, `O nome '${session.dialogData.current_options.name}' possui algumas opções, qual seria?`, options.map(p => p.name), { listStyle: builder.ListStyle.button });
+            }, (session, result, next) => {
+                const moment = session.dialogData.moment;
+                const many_options = session.dialogData.many_options;
+                const options = session.dialogData.options;
+                if (result.response.index === options.length) {
+                    session.replaceDialog("/choosePersonInList", {
+                        moment, many_options
+                    });
+                    return;
+                }
+                moment.people.push(session.dialogData.options[result.response.index]);
+                session.replaceDialog("/choosePersonInList", {
+                    moment, many_options
+                });
             }]);
         bot.dialog("/lookForNameOrCreate", [(session, args) => {
                 console.log("lookForNameOrCreate");
