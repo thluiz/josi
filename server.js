@@ -120,19 +120,33 @@ function getParticipationList(people) {
                     return;
                 }
                 session.beginDialog("/confirmMoment", { moment });
-            }, (session, results, next) => {
+            }, (session, results, next) => __awaiter(this, void 0, void 0, function* () {
                 if (results.response.cancel) {
                     session.endDialog("Ok, cancelando essa operação então");
                     return;
                 }
-                if (results.response.moment.dirty) {
+                if (results.response.moment
+                    && results.response.moment.dirty) {
                     session.replaceDialog("/confirmMoment", {
                         moment: results.response.moment
                     });
                     return;
                 }
-                session.endDialog("ab");
-            }
+                const moment = results.response.moment || session.dialogData.moment;
+                try {
+                    session.sendTyping();
+                    yield pool.request()
+                        .input('participants', sql.VarChar(sql.MAX), moment.people.map(p => p.person_id).join(','))
+                        .input('fund_value', sql.Decimal(10, 2), moment.fund_value)
+                        .input('title', sql.VarChar(300), moment.title)
+                        .execute(`RegisterMoment`);
+                    session.endDialog("Evento registrado!");
+                }
+                catch (error) {
+                    session.endDialog("Ocorreu um erro ao registrar o evento: " + error.message);
+                    return;
+                }
+            })
         ]);
         bot.dialog("/confirmMoment", [(session, args, temp) => {
                 if (args.cancel_all) {

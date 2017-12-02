@@ -140,20 +140,43 @@ function getParticipationList(people) {
                 }
 
                 session.beginDialog("/confirmMoment", { moment });
-            }, (session, results, next) => {
+            }, async (session, results, next) => {
                 if(results.response.cancel) {
                     session.endDialog("Ok, cancelando essa operação então");
                     return;    
                 }
 
-                if(results.response.moment.dirty) {
+                if(results.response.moment 
+                    && results.response.moment.dirty) {
                     session.replaceDialog("/confirmMoment", {
                         moment: results.response.moment
                     });
                     return;
                 }
 
-                session.endDialog("ab");
+                const moment = results.response.moment || session.dialogData.moment;
+
+                try {
+                    session.sendTyping();
+
+                    await pool.request()
+                                .input('participants', sql.VarChar(sql.MAX), 
+                                    moment.people.map(p => p.person_id).join(',')
+                                )
+                                .input('fund_value', sql.Decimal(10, 2), 
+                                    moment.fund_value
+                                )
+                                .input('title', sql.VarChar(300), 
+                                    moment.title
+                                )
+                                .execute(`RegisterMoment`);                
+                                   
+                    session.endDialog("Evento registrado!");
+                    
+                } catch(error) {
+                    session.endDialog("Ocorreu um erro ao registrar o evento: " + error.message);
+                    return;
+                }
             }
         ]);
 
@@ -353,7 +376,7 @@ function getParticipationList(people) {
         bot.dialog("/askNameAndSearchParticipant", [(session, args) => {
             session.dialogData.moment = args.moment;
             builder.Prompts.text(session, "Poderia informar o nome então?"
-            + "\n\n _Lembrando que você pode informar vários nomes para busca_");
+            //+ "\n\n _Lembrando que você pode informar vários nomes para busca_");
         }, (session, results, next) => {
             session.replaceDialog("/findParticipants", {
                 names: results.response,
