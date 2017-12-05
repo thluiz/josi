@@ -1,45 +1,60 @@
 
+
+<style>
+	.current {
+		background-color: #eeeeee
+	}
+	.current2 {
+		background-color: #dddddd
+	}
+</style>
+
 <div class="row">
 	<div class="col-12">
 		<!-- Kick start -->
 		<div id="kick-start" class="card">
 			<div class="card-header">
-				<h4 class="card-title">Monitoramento Diário de Membros</h4>
+				<h4 class="card-title">
+					Diário de Membros 					
+
+					<select id="branch" [(ngModel)]="current_branch" (ngModelChange)="branchSelected($event)">						
+						<option *ngFor="let b of branches" [value]="b.EmpKey">{{b.name}}</option>
+					</select>	
+				</h4>
 			</div>
-			<div class="card-body">				
-				<ng-template #hdrTpl let-value="start_hour">
-					a {{ start_hour }}
-					<span *ngIf="incidents != null && incidents.lengh > 0">
-						{{ incidents[0].start_hour }}
-					</span>
-
-					<span *ngIf="v != null">
-						{{ v.start_hour }}
-					</span>
-				</ng-template>	
-
-				<div class="card-block" *ngIf="daily != null">
-											
-					<ngx-datatable class="table-striped table-bordered" 						
-						[rows]="daily" 
-						[groupRowsBy]="'domain'"
-						[columnMode]="'force'"
-						[scrollbarH]="true"
-						[headerHeight]="50"
-						[footerHeight]="50"
-						[rowHeight]="40"						
-						[groupExpansionDefault]="true"
-						[columns]="cols">			
-
-						<ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
-						<ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template>
-							<div>
-								<b>{{group.value[0].domain}}</b>							
-							</div>
-						</ng-template>
-						</ngx-datatable-group-header>
-					</ngx-datatable>
-				</div>
+			<div class="card-body">		
+				<table>
+					<tr>
+						<td>
+							<table class="table-sm">
+								<tr>						
+									<td style="min-width:150px;max-width:150px;" *ngFor="let c of cols, let k3 = index" align="center" [ngClass]=" k3 == current_week_day + 1 ? 'current2' : '' ">
+										<div>
+											{{ c.name }} 
+										</div>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr *ngFor="let d of domains, let k5 = index">
+						<td>																				
+							<h6 style="margin-top:20px">{{ d.abrev }}</h6>
+							<table class="table-sm table-striped table-bordered table-responsive">								
+								<tr *ngFor="let person of d.daily, let k4 = index">
+									<td style="min-width:150px;max-width:150px;" valign="top">{{ person.name }}</td>
+									<td style="min-width:150px;max-width:150px;" *ngFor="let item of person.dates, let k2 = index" [ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
+										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
+											<span *ngIf="!m">,</span>						
+											<b>{{ i.abrev }} {{ i.title }}</b>								
+											<span *ngIf="i.type == 1">({{ i.start_hour }})</span>										
+										</ng-template>							
+									</td>																		
+								</tr>
+							</table>	
+					</td>
+				</tr>
+			</table>	
 			</div>
 		</div>
 		<!--/ Kick start -->

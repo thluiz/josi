@@ -6,11 +6,15 @@ import { DailyPagesRoutingModule } from "./daily-pages-routing.module";
 import { DailyPageComponent } from './daily-page.component'; 
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+
 @NgModule({
     imports: [
         CommonModule,
         DailyPagesRoutingModule,
-        NgxDatatableModule   
+        NgxDatatableModule,
+        FormsModule
     ],
     declarations: [       
         DailyPageComponent
