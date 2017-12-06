@@ -332,7 +332,7 @@ function getParticipationList(people) {
             const moment = session.dialogData.moment;
 
             if(response.index === 0) {
-                session.replaceDialog("addParticipant", moment);
+                session.replaceDialog("/addParticipant", moment);
                 return;
             }
 
