@@ -8,5 +8,19 @@ export const ROUTES: RouteInfo[] = [
          class: '', badge: '',
          badgeClass: '', isExternalLink: false,
          submenu: []
-    }
+    },
+    {
+        path: '/financial-dashboard', title: 'Financeiro',
+         icon: 'icon-wallet',
+         class: '', badge: '',
+         badgeClass: '', isExternalLink: false,
+         submenu: []
+    },
+    {
+        path: '/members-dashboard', title: 'Membros',
+         icon: 'icon-users',
+         class: '', badge: '',
+         badgeClass: '', isExternalLink: false,
+         submenu: []
+    }    
 ];

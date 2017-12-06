@@ -15,7 +15,7 @@
 		<div id="kick-start" class="card">
 			<div class="card-header">
 				<h4 class="card-title">
-					Diário de Membros 					
+					Diário de Atividades 					
 
 					<select id="branch" [(ngModel)]="current_branch" (ngModelChange)="branchSelected($event)">						
 						<option *ngFor="let b of branches" [value]="b.EmpKey">{{b.name}}</option>
@@ -64,8 +64,9 @@
 												[title]="person.scheduling_description + '; ' + person.financial_description"
 												></i>
 											</span>
-											<span *ngIf="(person.financial_status > 0 && person.financial_status != 3) 
-														|| (person.scheduling_status > 0 && person.scheduling_status != 3)">
+											<span *ngIf="(person.financial_status > 0 || person.scheduling_status > 0) 
+															&& person.scheduling_status != 3 
+															&& person.financial_status != 3">
 												<i class="ft-alert-triangle" style="color:red"													
 													[title]="person.scheduling_description + '; ' + person.financial_description"
 												>
@@ -78,8 +79,9 @@
 									<td style="min-width:150px;max-width:150px;" *ngFor="let item of person.dates, let k2 = index" [ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
 											<span *ngIf="!m">,</span>						
-											<b>{{ i.abrev }} {{ i.title }}</b>								
-											<span *ngIf="i.type == 1">({{ i.start_hour }})</span>										
+											<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
+											<b>{{ i.title }}</b>								
+											<span *ngIf="i.short_description.length > 0 && i.type != 2">({{ i.short_description }})</span>										
 										</ng-template>							
 									</td>																		
 								</tr>
