@@ -51,7 +51,7 @@ export class DailyPageComponent {
         this.domains = result.domains;
         this.domains.daily = [];
         this.cols = [
-          { prop: 'name', width: 250, canAutoResize: true, frozenLeft: true, name:'' },
+          { width: 160 }, { width: 60},
         ]
 
         for(var i = 0; i< result.columns.length; i++) {
@@ -59,18 +59,20 @@ export class DailyPageComponent {
           this.cols[this.cols.length] = {
             prop: 'incidents' + c.date,
             name: c.name,
-            current: c.current        
+            current: c.current,
+            width: 150
           };
         }
 
         for(var w = 0; w < result.domains.length; w++) {
           let domain = result.domains[w];
           this.domains[w].daily = [];
+          let people = result.people.filter(p => p.domain_id == domain.id);
+          this.domains[w].number_of_members = people.length;
 
           for(var i = 0; i< result.columns.length; i++) {    
             let c = result.columns[i];
-
-            let people = result.people.filter(p => p.domain_id == domain.id);
+            
             for(var z = 0; z< people.length; z++) {
               let person_incidents = people[z];  
               if(!person_incidents.dates) {

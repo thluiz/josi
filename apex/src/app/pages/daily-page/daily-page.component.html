@@ -28,10 +28,14 @@
 						<td>
 							<table class="table-sm">
 								<tr>						
-									<td style="min-width:150px;max-width:150px;" *ngFor="let c of cols, let k3 = index" align="center" [ngClass]=" k3 == current_week_day + 1 ? 'current2' : '' ">
+									<td *ngFor="let c of cols, let k3 = index" 
+										align="center" 
+										[ngClass]=" k3 == current_week_day + 2 ? 'current2' : '' "
+										[ngStyle]="{ 'min-width': c.width + 'px', 'max-width': c.width + 'px' }"
+										>										
 										<div>
 											{{ c.name }} 
-										</div>
+										</div>									
 									</td>
 								</tr>
 							</table>
@@ -39,10 +43,38 @@
 					</tr>
 					<tr *ngFor="let d of domains, let k5 = index">
 						<td>																				
-							<h6 style="margin-top:20px">{{ d.abrev }}</h6>
+							<h6 style="margin-top:20px">
+								{{ d.abrev }} 
+								<i>
+									(
+									{{ d.number_of_members }} 
+									Membro<span *ngIf="d.number_of_members > 1">s</span> 
+									Ativo<span *ngIf="d.number_of_members > 1">s</span>
+									)
+								</i>
+							</h6>
 							<table class="table-sm table-striped table-bordered table-responsive">								
 								<tr *ngFor="let person of d.daily, let k4 = index">
-									<td style="min-width:150px;max-width:150px;" valign="top">{{ person.name }}</td>
+									<td style="min-width:160px;max-width:160px;" valign="top">
+										{{ person.name }}										
+									</td>								
+									<td valign="middle" align="center" style="min-width:60px;max-width:60px;">
+											<span *ngIf="person.financial_status == 3 || person.scheduling_status == 3">												
+												<i class="ft-alert-triangle" style="color:orange"
+												[title]="person.scheduling_description + '; ' + person.financial_description"
+												></i>
+											</span>
+											<span *ngIf="(person.financial_status > 0 && person.financial_status != 3) 
+														|| (person.scheduling_status > 0 && person.scheduling_status != 3)">
+												<i class="ft-alert-triangle" style="color:red"													
+													[title]="person.scheduling_description + '; ' + person.financial_description"
+												>
+												</i>
+											</span>
+											<span *ngIf="person.financial_status == 0 && person.scheduling_status == 0">
+												<i class="ft-thumbs-up" style="color:green"></i>							
+											</span>				
+									</td>	
 									<td style="min-width:150px;max-width:150px;" *ngFor="let item of person.dates, let k2 = index" [ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
 											<span *ngIf="!m">,</span>						
