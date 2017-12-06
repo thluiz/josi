@@ -51,7 +51,7 @@ export class DailyPageComponent {
         this.domains = result.domains;
         this.domains.daily = [];
         this.cols = [
-          { width: 160 }, { width: 60},
+          { width: 160 }, { width: 30}, { width: 30}
         ]
 
         for(var i = 0; i< result.columns.length; i++) {

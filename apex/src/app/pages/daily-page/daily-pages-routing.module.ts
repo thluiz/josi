@@ -8,7 +8,7 @@ const routes: Routes = [
     path: '',
      component: DailyPageComponent,
     data: {
-      title: 'Daily Page'
+      title: 'Diário de Atividades'
     },    
   }
 ];
