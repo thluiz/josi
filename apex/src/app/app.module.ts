@@ -26,7 +26,7 @@ import * as $ from 'jquery';
         BrowserAnimationsModule,
         AppRoutingModule,
         SharedModule,
-        NgbModule.forRoot(),
+        NgbModule.forRoot(),        
         //BrowserModule,
         //FormsModule, 
         HttpModule,

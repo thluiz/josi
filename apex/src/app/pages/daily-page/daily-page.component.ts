@@ -1,7 +1,8 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild, ViewEncapsulation, Input } from '@angular/core';
 import {Observable} from "RxJS/Rx";
 import { IntervalObservable } from "rxjs/observable/IntervalObservable";
 import { PersonService } from 'app/services/person-service';
+import { NgbModal, ModalDismissReasons, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -17,10 +18,12 @@ export class DailyPageComponent {
   public current_branch;
   public branches;
   public domains;
+  closeResult: string;
+  public current_incident;
 
   private alive;
 
-  constructor(private personService: PersonService) {
+  constructor(private personService: PersonService, private modalService: NgbModal) {
     this.current_week_day = (new Date).getDay() - 1;        
   }
   
@@ -41,6 +44,19 @@ export class DailyPageComponent {
 
   public branchSelected(e) {
     console.log(e);
+  }
+
+  // Open default modal
+  open(content, incident) {
+      this.current_incident = incident;
+      console.log(incident);
+      console.log(content);
+      this.modalService.open(content).result.then((result) => {
+          this.current_incident = null;
+          this.closeResult = `Closed with: ${result}`;
+      }, (reason) => {
+          console.log(reason);
+      });
   }
 
   getMonitorData(current_branche?) {    
@@ -101,7 +117,7 @@ export class DailyPageComponent {
       err => console.error(err)      
     );
 
-    setTimeout(() => this.getMonitorData(current_branche), 3000);
+    setTimeout(() => this.getMonitorData(current_branche), 30000);
   }
   
 }

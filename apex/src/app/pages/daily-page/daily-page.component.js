@@ -9,47 +9,88 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@angular/core");
 const person_service_1 = require("app/services/person-service");
 let DailyPageComponent = class DailyPageComponent {
-    constructor(personService) {
+    constructor(personService, modalService) {
         this.personService = personService;
-        this.cols = [
-            { prop: 'name', width: 250, canAutoResize: true, frozenLeft: true, name: '' },
-        ];
+        this.modalService = modalService;
+        this.current_week_day = (new Date).getDay() - 1;
     }
     ngOnInit() {
         this.getMonitorData();
+        this.alive = true;
+        /* IntervalObservable.create(10000)
+        .takeWhile(() => this.alive) // only fires when component is alive
+        .subscribe(() => {
+          this.getMonitorData()
+        }); */
     }
-    getMonitorData() {
+    ngOnDestroy() {
+        this.alive = false;
+        console.log('destroy timer!');
+    }
+    branchSelected(e) {
+        console.log(e);
+    }
+    // Open default modal
+    open(content, incident) {
+        this.current_incident = incident;
+        console.log(incident);
+        console.log(content);
+        this.modalService.open(content).result.then((result) => {
+            this.current_incident = null;
+            this.closeResult = `Closed with: ${result}`;
+        }, (reason) => {
+            console.log(reason);
+        });
+    }
+    getMonitorData(current_branche) {
         this.personService.getDailyMonitor().subscribe(data => {
             const result = data.json();
-            let daily = [];
+            this.branches = result.branches;
+            this.domains = result.domains;
+            this.domains.daily = [];
+            this.cols = [
+                { width: 160 }, { width: 30 }, { width: 30 }
+            ];
             for (var i = 0; i < result.columns.length; i++) {
                 let c = result.columns[i];
                 this.cols[this.cols.length] = {
                     prop: 'incidents' + c.date,
-                    name: c.name
+                    name: c.name,
+                    current: c.current,
+                    width: 150
                 };
-                for (var z = 0; z < result.people.length; z++) {
-                    let current_people_date = result.people[z];
-                    let incidents = result.incidents.filter((i) => {
-                        return i.date == c.date && i.person_id == result.people[z].person_id;
-                    });
-                    if (incidents.length > 0) {
-                        current_people_date["incidents" + c.date] = incidents.map(i => {
-                            return `<b>${i.start_hour}</b> - ${i.abrev}`;
-                        }).join("<br />");
+            }
+            for (var w = 0; w < result.domains.length; w++) {
+                let domain = result.domains[w];
+                this.domains[w].daily = [];
+                let people = result.people.filter(p => p.domain_id == domain.id);
+                this.domains[w].number_of_members = people.length;
+                for (var i = 0; i < result.columns.length; i++) {
+                    let c = result.columns[i];
+                    for (var z = 0; z < people.length; z++) {
+                        let person_incidents = people[z];
+                        if (!person_incidents.dates) {
+                            person_incidents.dates = [];
+                        }
+                        person_incidents.dates[i] = person_incidents.dates[i] || [];
+                        let incidents = result.incidents.filter((i) => {
+                            return i.date == c.date && i.person_id == people[z].person_id;
+                        });
+                        if (incidents.length > 0) {
+                            person_incidents.dates[i] = person_incidents.dates[i].concat(incidents);
+                        }
+                        this.domains[w].daily[z] = person_incidents;
                     }
-                    daily[z] = current_people_date;
                 }
             }
-            this.daily = daily;
-            console.log(daily);
-            console.log(this.cols);
-        }, err => console.error(err), () => console.log('done loading monitor'));
+            this.current_branch = current_branche;
+            if (!this.current_branch) {
+                this.current_branch = this.branches[0];
+            }
+        }, err => console.error(err));
+        setTimeout(() => this.getMonitorData(current_branche), 30000);
     }
 };
-__decorate([
-    core_1.ViewChild('hdrTpl')
-], DailyPageComponent.prototype, "hdrTpl", void 0);
 DailyPageComponent = __decorate([
     core_1.Component({
         selector: 'app-full-layout-page',

@@ -257,7 +257,7 @@ function getParticipationList(people) {
                 let response = results.response;
                 const moment = session.dialogData.moment;
                 if (response.index === 0) {
-                    session.replaceDialog("addParticipant", moment);
+                    session.replaceDialog("/addParticipant", moment);
                     return;
                 }
                 if (response.index === 1) {
@@ -290,8 +290,8 @@ function getParticipationList(people) {
             }]);
         bot.dialog("/askNameAndSearchParticipant", [(session, args) => {
                 session.dialogData.moment = args.moment;
-                builder.Prompts.text(session, "Poderia informar o nome então?"
-                    + "\n\n _Lembrando que você pode informar vários nomes para busca_");
+                builder.Prompts.text(session, "Poderia informar o nome então?");
+                //+ "\n\n _Lembrando que você pode informar vários nomes para busca_");
             }, (session, results, next) => {
                 session.replaceDialog("/findParticipants", {
                     names: results.response,

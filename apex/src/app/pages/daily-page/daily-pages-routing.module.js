@@ -14,7 +14,7 @@ const routes = [
         path: '',
         component: daily_page_component_1.DailyPageComponent,
         data: {
-            title: 'Daily Page'
+            title: 'Diário de Atividades'
         },
     }
 ];

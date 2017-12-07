@@ -85,9 +85,11 @@
 									</td>	
 									<td style="min-width:150px;max-width:150px;" *ngFor="let item of person.dates, let k2 = index" [ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-											<span *ngIf="!m">,</span>						
-											<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
-											<b>{{ i.title }}</b>								
+											<span *ngIf="!m"><br /></span>	
+											<a (click)="open(content, i)">
+												<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
+												<b>{{ i.title }}</b>					
+											</a>																					
 											<span *ngIf="i.short_description.length > 0 && i.type != 2">({{ i.short_description }})</span>										
 										</ng-template>							
 									</td>																		
@@ -100,3 +102,18 @@
 		</div>		
 	</div>
 </div>
+
+<ng-template #content let-c="close" let-d="dismiss">
+	<div class="modal-header">
+		<h4 class="modal-title">{{ current_incident.long_description }}</h4>
+		<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+		<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary btn-raised" (click)="c('Close click')">Close</button>
+	</div>
+</ng-template>
