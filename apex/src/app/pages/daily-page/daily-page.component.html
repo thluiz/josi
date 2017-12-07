@@ -58,7 +58,7 @@
 									<td style="min-width:160px;max-width:160px;" valign="top">
 										{{ person.name }}										
 									</td>								
-									<td valign="middle" align="center" style="min-width:30px;max-width:30px;">
+									<td valign="top" align="center" style="min-width:30px;max-width:30px;">
 											<span *ngIf="person.scheduling_status == 3">												
 												<i class="ft-watch" style="color:orange"
 													[title]="person.scheduling_description">
@@ -70,7 +70,7 @@
 												</i>
 											</span>
 									</td>
-									<td valign="middle" align="center" style="min-width:30px;max-width:30px;">
+									<td valign="top" align="center" style="min-width:30px;max-width:30px;">
 											<span *ngIf="person.financial_status == 3">												
 												<i class="icon-wallet" style="color:orange"
 												[title]="person.financial_description"
@@ -83,7 +83,7 @@
 												</i>
 											</span>	
 									</td>	
-									<td style="min-width:150px;max-width:150px;" *ngFor="let item of person.dates, let k2 = index" [ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
+									<td valign="top" style="min-width:150px;max-width:150px;" *ngFor="let item of person.dates, let k2 = index" [ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
 											<span *ngIf="!m"><br /></span>	
 											<a (click)="open(content, i)">
@@ -105,15 +105,16 @@
 
 <ng-template #content let-c="close" let-d="dismiss">
 	<div class="modal-header">
-		<h4 class="modal-title">{{ current_incident.long_description }}</h4>
+		<h6 class="modal-title" style="font-weight: bold">{{ current_incident.long_description }}</h6>
 		<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
 		<span aria-hidden="true">&times;</span>
 		</button>
 	</div>
 	<div class="modal-body">
-		
+		<button type="button" class="btn btn-success btn-raised" (click)="c('Close click')">Confirmar</button>
+		<button type="button" class="btn btn-primary btn-raised" (click)="c('Close click')">Reagendar</button>		
 	</div>
-	<div class="modal-footer">
+	<!--div class="modal-footer">
 		<button type="button" class="btn btn-secondary btn-raised" (click)="c('Close click')">Close</button>
-	</div>
+	</div-->
 </ng-template>
