@@ -4,5 +4,9 @@
     "module": "commonjs",
     "watch": true,
     "sourceMap": true
-  }
+  },
+  "exclude": [
+    "node_modules",    
+    "apex"
+  ]
 }

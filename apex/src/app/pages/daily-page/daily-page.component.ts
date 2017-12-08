@@ -148,7 +148,7 @@ export class DailyPageComponent implements OnInit {
         this.domains = result.domains;
         this.domains.daily = [];
         this.cols = [
-          { width: 160 }, { width: 30}, { width: 30}
+          { width: 60}, { width: 160 }, { width: 30}, { width: 30}
         ]
 
         for(var i = 0; i< result.columns.length; i++) {
@@ -201,9 +201,9 @@ export class DailyPageComponent implements OnInit {
     var d = new Date();
     var hours = d.getHours();
     
-    const update_interval = hours > 22 || hours < 6 ? 600000 : 30000;
+    const update_interval = hours >= 22 || hours < 6 ? 600000 : 15000;
 
     setTimeout(() => this.getMonitorData(current_branche), update_interval);
   }
-  
+   
 }

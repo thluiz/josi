@@ -63,10 +63,16 @@
 							</h6>
 							<table class="table-sm table-striped table-bordered table-responsive">								
 								<tr *ngFor="let person of d.daily, let k4 = index">
-									<td style="min-width:160px;max-width:160px;" valign="top">
+									<td style="min-width:60px;max-width:60px;" valign="middle">
+											<img alt="Card image" 
+											class="rounded-circle img-border gradient-summer" 
+											src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
+											style="max-width:50px;max-height:50px" *ngIf="person.avatar_img && person.avatar_img.length > 0">											
+									</td>
+									<td style="min-width:160px;max-width:160px;" valign="middle">
 										{{ person.name }}										
 									</td>								
-									<td valign="top" align="center" style="min-width:30px;max-width:30px;">
+									<td valign="middle" align="center" style="min-width:30px;max-width:30px;">
 											<span *ngIf="person.scheduling_status == 3">												
 												<i class="ft-watch" style="color:orange"
 													[title]="person.scheduling_description">
@@ -78,7 +84,7 @@
 												</i>
 											</span>
 									</td>
-									<td valign="top" align="center" style="min-width:30px;max-width:30px;">
+									<td valign="middle" align="center" style="min-width:30px;max-width:30px;">
 											<span *ngIf="person.financial_status == 3">												
 												<i class="icon-wallet" style="color:orange"
 												[title]="person.financial_description"
@@ -91,7 +97,7 @@
 												</i>
 											</span>	
 									</td>	
-									<td valign="top" style="min-width:150px;max-width:150px;" *ngFor="let item of person.dates, let k2 = index" [ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
+									<td valign="middle" style="min-width:150px;max-width:150px;" *ngFor="let item of person.dates, let k2 = index" [ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
 											<span *ngIf="!m"><br /></span>	
 											<a (click)="open(content, i)" [style.color]="i.closed ? 'green' : ( i.treated ? 'blue' : (i.past ? 'red' : 'black'  )  )  ">

@@ -16,7 +16,7 @@ const dialog = new builder.IntentDialog({ recognizers: [recognizer] });
 bot.dialog("/", dialog);
 bot.endConversationAction("reset", "ok, cancelando tudo...", { matches: /^cancelar/i });
 
-
+ 
 const config = {
     database: process.env.SQL_DATABASE,
     options: {
