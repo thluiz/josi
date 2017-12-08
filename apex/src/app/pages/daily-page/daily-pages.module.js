@@ -8,9 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@angular/core");
 const common_1 = require("@angular/common");
+const forms_1 = require("@angular/forms");
+const ng_bootstrap_1 = require("@ng-bootstrap/ng-bootstrap");
 const daily_pages_routing_module_1 = require("./daily-pages-routing.module");
 const daily_page_component_1 = require("./daily-page.component");
-const forms_1 = require("@angular/forms");
 let DailyPagesModule = class DailyPagesModule {
 };
 DailyPagesModule = __decorate([
@@ -18,7 +19,9 @@ DailyPagesModule = __decorate([
         imports: [
             common_1.CommonModule,
             daily_pages_routing_module_1.DailyPagesRoutingModule,
-            forms_1.FormsModule
+            forms_1.FormsModule,
+            ng_bootstrap_1.NgbDatepickerModule.forRoot(),
+            ng_bootstrap_1.NgbTimepickerModule.forRoot(),
         ],
         declarations: [
             daily_page_component_1.DailyPageComponent

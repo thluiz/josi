@@ -1,5 +1,6 @@
 import * as sql from 'mssql';
 import * as builder from 'botbuilder';
+import { IncidentService } from './bot/domain/services/incident_services';
 
 const express = require('express');
 
@@ -38,11 +39,40 @@ function getParticipationList(people) {
     try {    
         const pool = await sql.connect(config);    
         const app = express();
+        const bodyParser = require("body-parser");
         const cors = require("cors");
+        const incident_service = new IncidentService(pool);
 
         app.use(cors());
+        app.use(bodyParser.urlencoded({ extended: false }));
+        app.use(bodyParser.json());
 
         app.post("/api/messages", connector.listen());
+
+        app.post("/api/incident/close", async (request, response, next) => {
+            let result = await incident_service.close_incident(request.body.incident);
+
+            response.send("Ok");
+        });
+
+        app.post("/api/incident/reschedule", async (request, response, next) => {            
+            let result = await incident_service.reschedule_incident(
+                request.body.incident, 
+                request.body.new_incident
+            );            
+
+            response.send("Ok");
+        });
+
+        app.post("/api/incident/register_contact", async (request, response, next) => {            
+            let result = await incident_service.register_contact_for_incident(
+                request.body.incident, 
+                request.body.incident.contact_text
+            );            
+
+            response.send("Ok");            
+            
+        });
 
         app.get("/api/daily", async (request, response, next) => {
             try {
@@ -375,8 +405,7 @@ function getParticipationList(people) {
 
         bot.dialog("/askNameAndSearchParticipant", [(session, args) => {
             session.dialogData.moment = args.moment;
-            builder.Prompts.text(session, "Poderia informar o nome então?"
-            //+ "\n\n _Lembrando que você pode informar vários nomes para busca_");
+            builder.Prompts.text(session, "Poderia informar o nome então?");            
         }, (session, results, next) => {
             session.replaceDialog("/findParticipants", {
                 names: results.response,

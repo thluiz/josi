@@ -2,39 +2,52 @@ import { Component, TemplateRef, ViewChild, ViewEncapsulation, Input } from '@an
 import {Observable} from "RxJS/Rx";
 import { IntervalObservable } from "rxjs/observable/IntervalObservable";
 import { PersonService } from 'app/services/person-service';
-import { NgbModal, ModalDismissReasons, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { IncidentService } from 'app/services/incident-service';
 
+import { NgbModal, 
+  NgbDateStruct, 
+  NgbDatepickerI18n, 
+  NgbDatepickerModule,
+  NgbCalendar, 
+  NgbTimeStruct,      
+  ModalDismissReasons, 
+  NgbActiveModal 
+} from '@ng-bootstrap/ng-bootstrap';
+import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './daily-page.component.html',
   styleUrls: ['./daily-page.component.scss'],
-  providers: [PersonService]
+  providers: [PersonService, IncidentService]
 })
-export class DailyPageComponent {
+export class DailyPageComponent implements OnInit {
   public daily: Observable<any[]>;
   public cols;
   public current_week_day;  
   public current_branch;
   public branches;
   public domains;
-  closeResult: string;
+  public dpReschedule;
   public current_incident;
+  public new_incident;
+
+  closeResult: string;
+  
 
   private alive;
 
-  constructor(private personService: PersonService, private modalService: NgbModal) {
+  constructor(private personService: PersonService, 
+              private incidentService: IncidentService, 
+              private modalService: NgbModal) {
+
     this.current_week_day = (new Date).getDay() - 1;        
+
   }
   
   ngOnInit() {
     this.getMonitorData();    
-    this.alive = true;
-    /* IntervalObservable.create(10000)
-    .takeWhile(() => this.alive) // only fires when component is alive
-    .subscribe(() => {
-      this.getMonitorData()
-    }); */         
+    this.alive = true;      
   }
 
   ngOnDestroy() {    
@@ -46,11 +59,79 @@ export class DailyPageComponent {
     console.log(e);
   }
 
-  // Open default modal
+  begin_treat_incident(incident) {
+    incident.in_treatment = true;    
+  }
+  
+  begin_reschedule_incident(incident) {
+    incident.reschedule = true;    
+
+    const date = incident.date.split("-");
+    incident.new_date = { "year": parseInt(date[0], 10), "month": parseInt(date[1], 10), "day": parseInt(date[2], 10) };
+    console.log(incident.new_date);
+
+    const hour = incident.start_hour.split(":");    
+    incident.new_time = { "hour": parseInt(hour[0]), "minute": parseInt(hour[1]) };
+  }
+
+  begin_register_contact(incident) {
+    incident.recontact = true;    
+  }
+
+  reset_treat_incident(incident) {
+    incident.recontact = false;    
+    incident.reschedule = false;    
+    incident.in_treatment = false;
+  }
+
+  close_incident(incident) {
+    incident.closed = true;        
+
+    this.incidentService.close_incident(incident)
+    .toPromise().then((response) => {
+      this.getMonitorData(this.current_branch);
+    }).catch((reason) => {
+      console.log(reason);
+    });      
+  }
+
+  reschedule_incident(incident) {
+    incident.treated = true;
+    let new_incident = {
+      "small_date": incident.new_date.day + "/"+ incident.new_date.month,
+      "date":  incident.new_date.year + "-"+ incident.new_date.month + "-" + incident.new_date.day,
+      "start_hour": incident.new_time.hour + ":" + incident.new_time.minute,
+      "closed": false,
+      "abrev": incident.abrev,
+      "person_id": incident.person_id,
+      "type": incident.type,
+      "value": incident.value,
+      "id": 0,
+      "short_description": incident.short_description,
+      "long_description": incident.long_description
+    }
+        
+    this.incidentService.reschedule_incident(incident, new_incident)
+    .toPromise().then((response) => {
+      this.getMonitorData(this.current_branch);
+    }).catch((reason) => {
+      console.log(reason);
+    }); 
+  }
+
+  register_contact_for_incident(incident) {
+    this.incidentService.register_contact_for_incident(incident, { 
+      text: incident.contact_text 
+    })
+    .toPromise().then((response) => {
+      this.getMonitorData(this.current_branch);
+    }).catch((reason) => {
+      console.log(reason);
+    }); 
+  }
+  
   open(content, incident) {
-      this.current_incident = incident;
-      console.log(incident);
-      console.log(content);
+      this.current_incident = incident;      
       this.modalService.open(content).result.then((result) => {
           this.current_incident = null;
           this.closeResult = `Closed with: ${result}`;
@@ -58,7 +139,7 @@ export class DailyPageComponent {
           console.log(reason);
       });
   }
-
+  
   getMonitorData(current_branche?) {    
     this.personService.getDailyMonitor().subscribe(
       data => {          
@@ -117,7 +198,12 @@ export class DailyPageComponent {
       err => console.error(err)      
     );
 
-    setTimeout(() => this.getMonitorData(current_branche), 30000);
+    var d = new Date();
+    var hours = d.getHours();
+    
+    const update_interval = hours > 22 || hours < 6 ? 600000 : 30000;
+
+    setTimeout(() => this.getMonitorData(current_branche), update_interval);
   }
   
 }

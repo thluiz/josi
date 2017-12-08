@@ -8,19 +8,27 @@
 		background-color: #dddddd
 	}
 </style>
+				
 
 <div class="row">
 	<div class="col-12">
 		<!-- Kick start -->
 		<div id="kick-start" class="card">
 			<div class="card-header">
-				<h4 class="card-title">
-					Diário de Atividades 					
-
-					<select id="branch" [(ngModel)]="current_branch" (ngModelChange)="branchSelected($event)">						
-						<option *ngFor="let b of branches" [value]="b.EmpKey">{{b.name}}</option>
-					</select>	
-				</h4>
+				<div class="row">
+					<div class="col-8">
+							<h4 class="card-title">
+								Diário de Atividades 					
+			
+								<select id="branch" [(ngModel)]="current_branch" (ngModelChange)="branchSelected($event)">						
+									<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
+								</select>	
+							</h4>
+					</div>
+					<div class="col-4" style="text-align: right">
+						<button type="button" class="btn btn-success btn-raised">Registrar Atividade</button>
+					</div>
+				</div>				
 			</div>
 			<div class="card-body">		
 				<table>
@@ -86,9 +94,9 @@
 									<td valign="top" style="min-width:150px;max-width:150px;" *ngFor="let item of person.dates, let k2 = index" [ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
 											<span *ngIf="!m"><br /></span>	
-											<a (click)="open(content, i)">
+											<a (click)="open(content, i)" [style.color]="i.closed ? 'green' : ( i.treated ? 'blue' : (i.past ? 'red' : 'black'  )  )  ">
 												<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
-												<b>{{ i.title }}</b>					
+												<b>{{ i.title }}</b>																	
 											</a>																					
 											<span *ngIf="i.short_description.length > 0 && i.type != 2">({{ i.short_description }})</span>										
 										</ng-template>							
@@ -105,16 +113,64 @@
 
 <ng-template #content let-c="close" let-d="dismiss">
 	<div class="modal-header">
-		<h6 class="modal-title" style="font-weight: bold">{{ current_incident.long_description }}</h6>
+		<h5 class="modal-title" style="font-weight: bold">{{ current_incident.long_description }}</h5>
 		<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
 		<span aria-hidden="true">&times;</span>
 		</button>
 	</div>
 	<div class="modal-body">
-		<button type="button" class="btn btn-success btn-raised" (click)="c('Close click')">Confirmar</button>
-		<button type="button" class="btn btn-primary btn-raised" (click)="c('Close click')">Reagendar</button>		
+		<div class="row">
+			<div class="col-12" *ngIf="!current_incident.in_treatment && !current_incident.closed && !current_incident.treated">
+				<h6 style="font-weight: bold">Confirmar</h6>				
+				<button type="button" class="btn btn-success btn-raised" (click)="close_incident(current_incident);d('close!');">Sim</button>
+				<button type="button" class="btn btn-primary btn-raised" (click)="begin_treat_incident(current_incident)">Não</button>		
+			</div>
+			<div class="col-12" *ngIf="current_incident.in_treatment && !current_incident.reschedule && !current_incident.recontact">
+				<h6 style="font-weight: bold">Tratar Evento</h6>
+
+				<button type="button" class="btn btn-success btn-raised" (click)="begin_reschedule_incident(current_incident)">Reagendar</button>								
+				<button type="button" class="btn btn-primary btn-raised" (click)="begin_register_contact(current_incident)">Registrar Contato</button>
+				<button type="button" class="btn btn-grey btn-raised" (click)="reset_treat_incident(current_incident)">Voltar</button>		
+			</div>
+			<div class="col-12" *ngIf="current_incident.reschedule">
+				<h6 style="font-weight: bold">Reagendar</h6>
+				<div class="row">
+					<div class="col-5">						
+						<div class="form-group">
+							<div class="input-group">
+								<input class="form-control" style="width:80%" placeholder="yyyy-mm-dd" 
+								[(ngModel)]="current_incident.new_date" 
+								ngbDatepicker #dpReschedule="ngbDatepicker" />
+								<div class="input-group-addon" (click)="dpReschedule.toggle()">
+									<i class="fa fa-calendar" style="cursor: pointer;"></i>
+								</div>							
+							</div>							
+							<ngb-timepicker [(ngModel)]="current_incident.new_time"></ngb-timepicker>							
+						</div>						
+					</div>
+					<div class="col-6">																		
+						<button type="button" class="btn btn-primary btn-raised" (click)="reschedule_incident(current_incident);d('reschedule!');">Reagendar</button>		
+						<button type="button" class="btn btn-grey btn-raised" (click)="reset_treat_incident(current_incident);">Voltar</button>		
+					</div>
+				</div>																
+			</div>
+			<div class="col-12" *ngIf="current_incident.recontact">
+				<h6 style="font-weight: bold">Registrar Contato</h6>	
+				<fieldset class="form-group">					
+					<textarea class="form-control" 
+						[(ngModel)]="current_incident.contact_text"				
+						rows="3" placeholder="O que vocês conversaram?"></textarea>
+				</fieldset> 
+
+				<button type="button" class="btn btn-primary btn-raised" (click)="register_contact_for_incident(current_incident);d('contact!');">Registrar</button>		
+				<button type="button" class="btn btn-grey btn-raised" (click)="reset_treat_incident(current_incident)">Voltar</button>		
+			</div>
+			<div class="col-12" *ngIf="current_incident.closed || current_incident.treated">
+				<button type="button" class="btn btn-success btn-raised" (click)="c('Close click')">Registrar Outra Atividade</button>
+			</div>
+		</div>
 	</div>
-	<!--div class="modal-footer">
-		<button type="button" class="btn btn-secondary btn-raised" (click)="c('Close click')">Close</button>
-	</div-->
+	<div class="modal-footer">
+		
+	</div>
 </ng-template>

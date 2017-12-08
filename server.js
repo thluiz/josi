@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
 const builder = require("botbuilder");
+const incident_services_1 = require("./bot/domain/services/incident_services");
 const express = require('express');
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
@@ -41,9 +42,25 @@ function getParticipationList(people) {
     try {
         const pool = yield sql.connect(config);
         const app = express();
+        const bodyParser = require("body-parser");
         const cors = require("cors");
+        const incident_service = new incident_services_1.IncidentService(pool);
         app.use(cors());
+        app.use(bodyParser.urlencoded({ extended: false }));
+        app.use(bodyParser.json());
         app.post("/api/messages", connector.listen());
+        app.post("/api/incident/close", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            let result = yield incident_service.close_incident(request.body.incident);
+            response.send("Ok");
+        }));
+        app.post("/api/incident/reschedule", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            let result = yield incident_service.reschedule_incident(request.body.incident, request.body.new_incident);
+            response.send("Ok");
+        }));
+        app.post("/api/incident/register_contact", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            let result = yield incident_service.register_contact_for_incident(request.body.incident, request.body.incident.contact_text);
+            response.send("Ok");
+        }));
         app.get("/api/daily", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield pool.request().execute(`GetDailyMonitor`);
@@ -291,7 +308,6 @@ function getParticipationList(people) {
         bot.dialog("/askNameAndSearchParticipant", [(session, args) => {
                 session.dialogData.moment = args.moment;
                 builder.Prompts.text(session, "Poderia informar o nome então?");
-                //+ "\n\n _Lembrando que você pode informar vários nomes para busca_");
             }, (session, results, next) => {
                 session.replaceDialog("/findParticipants", {
                     names: results.response,
