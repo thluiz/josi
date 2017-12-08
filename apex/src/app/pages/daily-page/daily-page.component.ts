@@ -31,6 +31,7 @@ export class DailyPageComponent implements OnInit {
   public dpReschedule;
   public current_incident;
   public new_incident;
+  public sumary;
 
   closeResult: string;
   
@@ -149,7 +150,17 @@ export class DailyPageComponent implements OnInit {
         this.domains.daily = [];
         this.cols = [
           { width: 60}, { width: 160 }, { width: 30}, { width: 30}
-        ]
+        ];
+
+        if(result && result.people) {
+          this.sumary = {
+            people: result.people.length,
+            financial_treatment: result.people.filter(p => p.financial_status == 3).length,
+            schedule_treatment: result.people.filter(p => p.scheduling_status == 3).length,
+            financial_issues: result.people.filter(p => p.financial_status > 0 && p.financial_status != 3).length,
+            schedule_issues: result.people.filter(p => p.scheduling_status > 0 && p.scheduling_status != 3).length
+          }
+        }
 
         for(var i = 0; i< result.columns.length; i++) {
           let c = result.columns[i];
@@ -201,7 +212,7 @@ export class DailyPageComponent implements OnInit {
     var d = new Date();
     var hours = d.getHours();
     
-    const update_interval = hours >= 22 || hours < 6 ? 600000 : 15000;
+    const update_interval = hours >= 22 || hours < 6 ? 600000 : 30000;
 
     setTimeout(() => this.getMonitorData(current_branche), update_interval);
   }

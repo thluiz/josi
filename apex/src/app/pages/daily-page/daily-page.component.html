@@ -18,7 +18,7 @@
 				<div class="row">
 					<div class="col-8">
 							<h4 class="card-title">
-								Diário de Atividades 					
+								Diário de Atividades - Membros 					
 			
 								<select id="branch" [(ngModel)]="current_branch" (ngModelChange)="branchSelected($event)">						
 									<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
@@ -28,7 +28,14 @@
 					<div class="col-4" style="text-align: right">
 						<button type="button" class="btn btn-success btn-raised">Registrar Atividade</button>
 					</div>
-				</div>				
+				</div>
+				<div class="row" *ngIf="sumary != null && sumary.people != null">
+					<div class="col-8">
+						{{ sumary.people }} membro{{ sumary.people == 1 ? "" : "s" }} ativo{{ sumary.people == 1 ? "" : "s" }}; 
+						{{ sumary.financial_issues }} pendência{{ sumary.financial_issues == 1 ? "" : "s" }} financeira{{ sumary.financial_issues == 1 ? "" : "s" }};
+						{{ sumary.schedule_issues }} pendência{{ sumary.schedule_issues == 1 ? "" : "s" }} de agendamento;
+					</div>
+				</div>
 			</div>
 			<div class="card-body">		
 				<table>
