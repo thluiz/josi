@@ -4,8 +4,7 @@ import {Observable} from 'rxjs/Rx';
 @Injectable()
 export class IncidentService {
 constructor(private http:Http) { }
-  //private dataUrl = 'https://myvtmiim.azurewebsites.net/api';
-  private dataUrl = 'http://localhost:3979/api';
+  private dataUrl = 'https://myvtmiim.azurewebsites.net/api';  
 
   close_incident(incident) {
     return this.http.post(this.dataUrl + '/incident/close', { 
