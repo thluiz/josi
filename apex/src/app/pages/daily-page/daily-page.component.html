@@ -7,6 +7,10 @@
 	.current2 {
 		background-color: #dddddd
 	}
+	
+	.m_title:first-letter {
+		text-transform: uppercase;
+	}
 </style>
 				
 
@@ -45,7 +49,7 @@
 								<tr>						
 									<td *ngFor="let c of cols, let k3 = index" 
 										align="center" 
-										[ngClass]=" k3 == current_week_day + 3 ? 'current2' : '' "
+										[ngClass]=" k3 == current_week_day + 4 ? 'current2' : '' "
 										[ngStyle]="{ 'min-width': c.width + 'px', 'max-width': c.width + 'px' }"
 										>										
 										<div>
@@ -59,7 +63,7 @@
 					<tr *ngFor="let d of domains, let k5 = index">
 						<td>																				
 							<h6 style="margin-top:20px">
-								{{ d.abrev }} 
+								{{ d.long_name }} 
 								<i>
 									(
 									{{ d.number_of_members }} 
@@ -76,7 +80,7 @@
 											src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
 											style="max-width:50px;max-height:50px" *ngIf="person.avatar_img && person.avatar_img.length > 0">											
 									</td>
-									<td style="min-width:160px;max-width:160px;" valign="middle">
+									<td style="min-width:140px;max-width:140px;" valign="middle">
 										{{ person.name }}										
 									</td>								
 									<td valign="middle" align="center" style="min-width:30px;max-width:30px;">
@@ -104,14 +108,14 @@
 												</i>
 											</span>	
 									</td>	
-									<td valign="middle" style="min-width:150px;max-width:150px;" *ngFor="let item of person.dates, let k2 = index" [ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
+									<td valign="middle" style="min-width:120px;max-width:120px;" *ngFor="let item of person.dates, let k2 = index" [ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
 											<span *ngIf="!m"><br /></span>	
-											<a (click)="open(content, i)" [style.color]="i.closed ? 'green' : ( i.treated ? 'blue' : (i.past ? 'red' : 'black'  )  )  ">
+											<a (click)="open(content, i)" [style.color]="i.closed ? 'silver' : ( i.treated ? 'blue' : (i.past ? 'red' : 'black'  )  )  ">
 												<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
-												<b>{{ i.title }}</b>																	
-											</a>																					
-											<span *ngIf="i.short_description.length > 0 && i.type != 2">({{ i.short_description }})</span>										
+												<b class="m_title">{{ i.title }}</b>																	
+												<span *ngIf="i.short_description.length > 0 && i.type != 2">({{ i.short_description }})</span>										
+											</a>																																
 										</ng-template>							
 									</td>																		
 								</tr>
