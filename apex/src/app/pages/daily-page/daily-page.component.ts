@@ -149,7 +149,7 @@ export class DailyPageComponent implements OnInit {
         this.domains = result.domains;
         this.domains.daily = [];
         this.cols = [
-          { width: 60}, { width: 140 }, { width: 30}, { width: 30}
+          { width: 260, colspan: 4 }
         ];
 
         if(result && result.people) {

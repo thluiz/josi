@@ -42,43 +42,39 @@
 				</div>
 			</div>
 			<div class="card-body">		
-				<table>
-					<tr>
-						<td>
-							<table class="table-sm">
+				<table>					
+					<tr *ngFor="let d of domains, let k5 = index">
+						<td>																				
+							<h6 style="font-weight:bold;width:100%;color:white;background-color:gray;margin:0;padding:5px">
+								{{ d.long_name }} do {{ d.program }}																									
+							</h6>
+							
+							<table class="table-sm table-striped table-bordered"
+								style="margin-bottom:50px;">								
 								<tr>						
 									<td *ngFor="let c of cols, let k3 = index" 
 										align="center" 
 										[ngClass]=" k3 == current_week_day + 4 ? 'current2' : '' "
-										[ngStyle]="{ 'min-width': c.width + 'px', 'max-width': c.width + 'px' }"
-										>										
+										[ngStyle]="{ 'min-width': c.width + 'px', 'max-width': c.width + 'px', 'background-color': 'gray', 'color': 'white' }"
+										[colSpan]="c.colspan || 1"
+										>																				
 										<div>
+											<span *ngIf="k3 == 0">
+												{{ d.number_of_members }} 
+												Membro<span *ngIf="d.number_of_members > 1">s</span> 
+												Ativo<span *ngIf="d.number_of_members > 1">s</span>
+											</span>
 											{{ c.name }} 
 										</div>									
 									</td>
 								</tr>
-							</table>
-						</td>
-					</tr>
-					<tr *ngFor="let d of domains, let k5 = index">
-						<td>																				
-							<h6 style="margin-top:20px">
-								{{ d.long_name }} 
-								<i>
-									(
-									{{ d.number_of_members }} 
-									Membro<span *ngIf="d.number_of_members > 1">s</span> 
-									Ativo<span *ngIf="d.number_of_members > 1">s</span>
-									)
-								</i>
-							</h6>
-							<table class="table-sm table-striped table-bordered table-responsive">								
 								<tr *ngFor="let person of d.daily, let k4 = index">
 									<td style="min-width:60px;max-width:60px;" valign="middle">
 											<img alt="Card image" 
 											class="rounded-circle img-border gradient-summer" 
 											src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
-											style="max-width:50px;max-height:50px" *ngIf="person.avatar_img && person.avatar_img.length > 0">											
+											style="max-width:50px;max-height:50px" 
+											*ngIf="person.avatar_img && person.avatar_img.length > 0">											
 									</td>
 									<td style="min-width:140px;max-width:140px;" valign="middle">
 										{{ person.name }}										
@@ -108,7 +104,10 @@
 												</i>
 											</span>	
 									</td>	
-									<td valign="middle" style="min-width:120px;max-width:120px;" *ngFor="let item of person.dates, let k2 = index" [ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
+									<td valign="middle" align="center" 
+										style="min-width:120px;max-width:120px;" 
+										*ngFor="let item of person.dates, let k2 = index" 
+										[ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
 											<span *ngIf="!m"><br /></span>	
 											<a (click)="open(content, i)" [style.color]="i.closed ? 'silver' : ( i.treated ? 'blue' : (i.past ? 'red' : 'black'  )  )  ">
