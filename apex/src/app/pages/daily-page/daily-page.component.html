@@ -20,24 +20,30 @@
 		<div id="kick-start" class="card">
 			<div class="card-header">
 				<div class="row">
-					<div class="col-8">
+					<div class="col-10">
 						<div class="row">
 							<h4 class="card-title">
 								Diário de Atividades - Membros Ativos 																
+								
+								<select id="branch" 
+									[(ngModel)]="current_branch" 
+									(ngModelChange)="branchSelected($event)"
+									style="font-size:12px"
+									>						
+									<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
+								</select>	
 							</h4>
-						</div>
-						<div class="row">
-						<select id="branch" [(ngModel)]="current_branch" (ngModelChange)="branchSelected($event)">						
-							<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
-						</select>	
-						</div>										
-						<div class="row" *ngIf="sumary != null && sumary.people != null">							
-							{{ sumary.people }} membro{{ sumary.people == 1 ? "" : "s" }} ativo{{ sumary.people == 1 ? "" : "s" }}; 
-							{{ sumary.financial_issues }} pendência{{ sumary.financial_issues == 1 ? "" : "s" }} financeira{{ sumary.financial_issues == 1 ? "" : "s" }};
+						</div>						
+						<div class="row" 
+							style="font-weight:normal;width:100%;color:white;background-color:gray;"
+							*ngIf="sumary != null && sumary.people != null"
+						>							
+							{{ sumary.people }} membro{{ sumary.people == 1 ? "" : "s" }} ativo{{ sumary.people == 1 ? "" : "s" }}; 							
+							{{ sumary.financial_issues }} pendência{{ sumary.financial_issues == 1 ? "" : "s" }} financeira{{ sumary.financial_issues == 1 ? "" : "s" }};							
 							{{ sumary.schedule_issues }} pendência{{ sumary.schedule_issues == 1 ? "" : "s" }} de agendamento							
 						</div>
 					</div>
-					<div class="col-4" style="text-align: right">
+					<div class="col-2" style="text-align: right">
 						<button type="button" 
 							(click)="open(new_activity, null)"
 							class="btn btn-success btn-raised">
