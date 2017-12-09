@@ -20,30 +20,41 @@
 		<div id="kick-start" class="card">
 			<div class="card-header">
 				<div class="row">
-					<div class="col-10">
+					<div class="col-12">
 						<div class="row">
 							<h4 class="card-title">
-								Diário de Atividades - Membros Ativos 																
-								
-								<select id="branch" 
-									[(ngModel)]="current_branch" 
-									(ngModelChange)="branchSelected($event)"
-									style="font-size:12px"
-									>						
-									<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
-								</select>	
+								Diário de Atividades - Membros Ativos 																																
 							</h4>
 						</div>						
-						<div class="row" 
-							style="font-weight:normal;width:100%;color:white;background-color:gray;"
+						<div class="row" 							
 							*ngIf="sumary != null && sumary.people != null"
-						>							
-							{{ sumary.people }} membro{{ sumary.people == 1 ? "" : "s" }} ativo{{ sumary.people == 1 ? "" : "s" }}; 							
-							{{ sumary.financial_issues }} pendência{{ sumary.financial_issues == 1 ? "" : "s" }} financeira{{ sumary.financial_issues == 1 ? "" : "s" }};							
-							{{ sumary.schedule_issues }} pendência{{ sumary.schedule_issues == 1 ? "" : "s" }} de agendamento							
+						>				
+							<div style="border: 1px solid gray;width:100%;padding:5px;">
+								<h6 style="margin:0;font-weight:bold;color:black" 
+								*ngIf="!show_change_branch"
+								(click)="show_change_branch = !show_change_branch">
+									Núcleo Rio de Janeiro I - O2 Barra da Tijuca
+								</h6>
+								<select id="branch" 
+									[(ngModel)]="current_branch" 
+									(ngModelChange)="branchSelected($event)"									
+									*ngIf="show_change_branch"
+									>						
+									<option *ngFor="let b of branches" [value]="b">{{b.name}}</option>
+								</select>	
+								<span *ngIf="show_change_branch" 
+									(click)="show_change_branch = !show_change_branch">
+									x
+								</span>
+								<ul>
+									<li>{{ sumary.people }} Membro{{ sumary.people == 1 ? "" : "s" }} Ativo{{ sumary.people == 1 ? "" : "s" }};</li>
+									<li><span style="color:red">{{ sumary.financial_issues }}</span> Pendência{{ sumary.financial_issues == 1 ? "" : "s" }} Financeira{{ sumary.financial_issues == 1 ? "" : "s" }};</li>
+									<li><span style="color:red">{{ sumary.schedule_issues }}</span> Pendência{{ sumary.schedule_issues == 1 ? "" : "s" }} de Agendamento</li>							
+								</ul>
+							</div>			
 						</div>
 					</div>
-					<div class="col-2" style="text-align: right">
+					<div class="col-2" style="text-align: right;display:none">
 						<button type="button" 
 							(click)="open(new_activity, null)"
 							class="btn btn-success btn-raised">
@@ -66,7 +77,7 @@
 									<td *ngFor="let c of cols, let k3 = index" 
 										align="center" 
 										[ngClass]=" k3 == current_week_day + 4 ? 'current2' : '' "
-										[ngStyle]="{ 'min-width': c.width + 'px', 'max-width': c.width + 'px', 'background-color': 'gray', 'color': 'white' }"
+										[ngStyle]="{ 'min-width': c.width + 'px', 'max-width': c.width + 'px', 'background-color': 'silver', 'color': 'black' }"
 										[colSpan]="c.colspan || 1"
 										>																				
 										<div>

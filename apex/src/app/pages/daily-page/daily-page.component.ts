@@ -32,6 +32,7 @@ export class DailyPageComponent implements OnInit {
   public current_incident;
   public new_incident;
   public sumary;
+  public show_change_branch = false;
   closeResult: string;
   
   private alive;
