@@ -30,7 +30,7 @@
 							*ngIf="sumary != null && sumary.people != null"
 						>				
 							<div style="border: 1px solid gray;width:100%;padding:5px;">
-								<h6 style="margin:0;font-weight:bold;color:black" 
+								<h6 style="margin:0;font-weight:bold;color:black;cursor:pointer" 
 								*ngIf="!show_change_branch"
 								(click)="show_change_branch = !show_change_branch">
 									Núcleo Rio de Janeiro I - O2 Barra da Tijuca
@@ -42,7 +42,8 @@
 									>						
 									<option *ngFor="let b of branches" [value]="b">{{b.name}}</option>
 								</select>	
-								<span *ngIf="show_change_branch" 
+								<span *ngIf="show_change_branch"
+									style="cursor:pointer" 
 									(click)="show_change_branch = !show_change_branch">
 									x
 								</span>
@@ -174,7 +175,7 @@
 	<div class="modal-body">
 		<div class="row">
 			<div class="col-12" *ngIf="!current_incident.in_treatment && !current_incident.closed && !current_incident.treated">
-				<h6 style="font-weight: bold">Confirmar</h6>				
+				<h6 style="font-weight: bold">Realizado</h6>				
 				<button type="button" class="btn btn-success btn-raised" (click)="close_incident(current_incident);d('close!');">Sim</button>
 				<button type="button" class="btn btn-primary btn-raised" (click)="begin_treat_incident(current_incident)">Não</button>		
 			</div>
