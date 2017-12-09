@@ -21,23 +21,28 @@
 			<div class="card-header">
 				<div class="row">
 					<div class="col-8">
+						<div class="row">
 							<h4 class="card-title">
-								Diário de Atividades - Membros 					
-			
-								<select id="branch" [(ngModel)]="current_branch" (ngModelChange)="branchSelected($event)">						
-									<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
-								</select>	
+								Diário de Atividades - Membros Ativos 																
 							</h4>
+						</div>
+						<div class="row">
+						<select id="branch" [(ngModel)]="current_branch" (ngModelChange)="branchSelected($event)">						
+							<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
+						</select>	
+						</div>										
+						<div class="row" *ngIf="sumary != null && sumary.people != null">							
+							{{ sumary.people }} membro{{ sumary.people == 1 ? "" : "s" }} ativo{{ sumary.people == 1 ? "" : "s" }}; 
+							{{ sumary.financial_issues }} pendência{{ sumary.financial_issues == 1 ? "" : "s" }} financeira{{ sumary.financial_issues == 1 ? "" : "s" }};
+							{{ sumary.schedule_issues }} pendência{{ sumary.schedule_issues == 1 ? "" : "s" }} de agendamento							
+						</div>
 					</div>
 					<div class="col-4" style="text-align: right">
-						<button type="button" class="btn btn-success btn-raised">Registrar Atividade</button>
-					</div>
-				</div>
-				<div class="row" *ngIf="sumary != null && sumary.people != null">
-					<div class="col-8">
-						{{ sumary.people }} membro{{ sumary.people == 1 ? "" : "s" }} ativo{{ sumary.people == 1 ? "" : "s" }}; 
-						{{ sumary.financial_issues }} pendência{{ sumary.financial_issues == 1 ? "" : "s" }} financeira{{ sumary.financial_issues == 1 ? "" : "s" }};
-						{{ sumary.schedule_issues }} pendência{{ sumary.schedule_issues == 1 ? "" : "s" }} de agendamento
+						<button type="button" 
+							(click)="open(new_activity, null)"
+							class="btn btn-success btn-raised">
+							Registrar Atividade
+						</button>
 					</div>
 				</div>
 			</div>
@@ -80,16 +85,16 @@
 										{{ person.name }}										
 									</td>								
 									<td valign="middle" align="center" style="min-width:30px;max-width:30px;">
-											<span *ngIf="person.scheduling_status == 3">												
-												<i class="ft-watch" style="color:orange"
-													[title]="person.scheduling_description">
-												</i>
-											</span>
-											<span *ngIf="person.scheduling_status > 0 && person.scheduling_status != 3">
-												<i class="ft-watch" style="color:red"													
-													[title]="person.scheduling_description">
-												</i>
-											</span>
+										<span *ngIf="person.scheduling_status == 3">												
+											<i class="ft-watch" style="color:orange"
+												[title]="person.scheduling_description">
+											</i>
+										</span>
+										<span *ngIf="person.scheduling_status > 0 && person.scheduling_status != 3">
+											<i class="ft-watch" style="color:red"													
+												[title]="person.scheduling_description">
+											</i>
+										</span>
 									</td>
 									<td valign="middle" align="center" style="min-width:30px;max-width:30px;">
 											<span *ngIf="person.financial_status == 3">												
@@ -110,7 +115,7 @@
 										[ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
 											<span *ngIf="!m"><br /></span>	
-											<a (click)="open(content, i)" [style.color]="i.closed ? 'silver' : ( i.treated ? 'blue' : (i.past ? 'red' : 'black'  )  )  ">
+											<a (click)="open(content, i)" [style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'blue' : (i.past ? 'red' : 'black'  )  )  ">
 												<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
 												<b class="m_title">{{ i.title }}</b>																	
 												<span *ngIf="i.short_description.length > 0 && i.type != 2">({{ i.short_description }})</span>										
@@ -126,6 +131,21 @@
 		</div>		
 	</div>
 </div>
+
+<ng-template #new_activity let-c="close" let-d="dismiss">
+	<div class="modal-header">
+		<h5 class="modal-title" style="font-weight: bold">Novo Registro de Atividade</h5>
+		<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+		<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		body
+	</div>
+	<div class="modal-footer">
+		footer		
+	</div>
+</ng-template>
 
 <ng-template #content let-c="close" let-d="dismiss">
 	<div class="modal-header">

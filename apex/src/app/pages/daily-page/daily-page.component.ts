@@ -32,10 +32,8 @@ export class DailyPageComponent implements OnInit {
   public current_incident;
   public new_incident;
   public sumary;
-
   closeResult: string;
   
-
   private alive;
 
   constructor(private personService: PersonService, 
@@ -69,8 +67,7 @@ export class DailyPageComponent implements OnInit {
 
     const date = incident.date.split("-");
     incident.new_date = { "year": parseInt(date[0], 10), "month": parseInt(date[1], 10), "day": parseInt(date[2], 10) };
-    console.log(incident.new_date);
-
+  
     const hour = incident.start_hour.split(":");    
     incident.new_time = { "hour": parseInt(hour[0]), "minute": parseInt(hour[1]) };
   }
