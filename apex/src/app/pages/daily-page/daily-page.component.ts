@@ -26,7 +26,7 @@ export class DailyPageComponent implements OnInit {
   public cols;
   public current_week_day;  
   public current_week = 0;
-  public current_branch;
+  public current_branch = 1;
   public branches;
   public domains;
   public dpReschedule;
@@ -58,7 +58,7 @@ export class DailyPageComponent implements OnInit {
   }
 
   public branchSelected(e) {
-    console.log(e);
+    this.current_branch = e.id;
   }
 
   begin_treat_incident(incident) {
@@ -90,7 +90,7 @@ export class DailyPageComponent implements OnInit {
 
     this.incidentService.close_incident(incident)
     .toPromise().then((response) => {
-      this.getMonitorData(this.current_branch);
+      this.getMonitorData();
     }).catch((reason) => {
       console.log(reason);
     });      
@@ -114,7 +114,7 @@ export class DailyPageComponent implements OnInit {
         
     this.incidentService.reschedule_incident(incident, new_incident)
     .toPromise().then((response) => {
-      this.getMonitorData(this.current_branch);
+      this.getMonitorData();
     }).catch((reason) => {
       console.log(reason);
     }); 
@@ -125,7 +125,7 @@ export class DailyPageComponent implements OnInit {
       text: incident.contact_text 
     })
     .toPromise().then((response) => {
-      this.getMonitorData(this.current_branch);
+      this.getMonitorData();
     }).catch((reason) => {
       console.log(reason);
     }); 
@@ -141,7 +141,7 @@ export class DailyPageComponent implements OnInit {
       });
   }
   
-  getMonitorData(current_branche?) {    
+  getMonitorData() {    
     this.personService.getDailyMonitor(this.current_branch, this.current_week).subscribe(
       data => {          
         const result = data.json();
@@ -204,7 +204,6 @@ export class DailyPageComponent implements OnInit {
           }       
         }   
 
-        this.current_branch = current_branche;
         if(!this.current_branch) {
           this.current_branch = this.branches[0];
         }        
@@ -217,7 +216,7 @@ export class DailyPageComponent implements OnInit {
     
     const update_interval = hours >= 22 || hours < 6 ? 600000 : 30000;
 
-    this.update_timer = setTimeout(() => this.getMonitorData(current_branche), update_interval);
+    this.update_timer = setTimeout(this.getMonitorData, update_interval);
   }
    
 }
