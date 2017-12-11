@@ -151,7 +151,8 @@ export class DailyPageComponent implements OnInit {
       });
   }
   
-  getMonitorData() {        
+  getMonitorData() {
+    
     if(!this.personService) {
       return;
     }
