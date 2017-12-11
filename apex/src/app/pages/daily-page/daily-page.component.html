@@ -12,6 +12,14 @@
 		text-transform: uppercase;
 	}
 
+	.table-striped-traditional .current2 {
+		background-color: rgb(255, 250, 255);
+	}
+
+	.table-striped-traditional .current {
+		background-color: rgb(255, 230, 255);
+	}
+
 	.table-striped-traditional tbody tr:nth-of-type(odd) {
 		background-color: rgb(255, 250, 255);
 	}
@@ -62,11 +70,11 @@
 								</span>
 								<ul>
 									<li *ngIf="sumary.people != null">
-										<b>{{ sumary.people }}</b> Membro{{ sumary.people == 1 ? "" : "s" }} Ativo{{ sumary.people == 1 ? "" : "s" }};
+										<b>{{ ('00' + sumary.people).slice(-2) }}</b> Membro{{ sumary.people == 1 ? "" : "s" }} Ativo{{ sumary.people == 1 ? "" : "s" }};
 										<ul>
-											<li *ngIf="sumary.people_traditional > 0"> <b>{{ ('00' + sumary.people_traditional).slice(-2) }}</b> no Programa Tradicional</li>
-											<li *ngIf="sumary.people_experience > 0"> <b>{{ ('00' + sumary.people_experience).slice(-2) }}</b> no Programa Experiencial</li>
-											<li *ngIf="sumary.people_fundamental > 0"> <b>{{ ('00' + sumary.people_fundamental).slice(-2) }}</b> no Programa Fundamental</li>
+											<li> <b>{{ ('00' + sumary.people_traditional).slice(-2) }}</b> no Programa Tradicional</li>
+											<li> <b>{{ ('00' + sumary.people_experience).slice(-2) }}</b> no Programa Experiencial</li>
+											<li> <b>{{ ('00' + sumary.people_fundamental).slice(-2) }}</b> no Programa Fundamental</li>
 										</ul>
 									</li>
 									<li *ngIf="sumary.financial_issues > 0"><span style="color:red;font-weight:bold">{{ ('00' + sumary.financial_issues).slice(-2) }}</span> Pendência{{ sumary.financial_issues == 1 ? "" : "s" }} Financeira{{ sumary.financial_issues == 1 ? "" : "s" }};</li>
@@ -125,12 +133,11 @@
 								style="margin-bottom:50px;width:100%">								
 								<tr>						
 									<td *ngFor="let c of cols, let k3 = index" 
-										align="center" 
-										style="background-color: rgb(54, 63, 167)"
-										[ngClass]=" k3 == current_week_day + 4 ? 'current2' : '' "
-										
+										align="center" 																														
 										[ngStyle]="{ 'min-width': c.width + 'px', 'max-width': c.width + 'px', 
-													'background-color': d.program_id == 1 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : '#067D03'), 
+													'background-color': k3 == current_week_day + 1 ? 
+													d.program_id == 1 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : '#067D03')
+													: d.program_id == 1 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : '#067D03'), 
 													'color': 'white' }"
 										[colSpan]="c.colspan || 1"
 										>																				

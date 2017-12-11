@@ -60,12 +60,14 @@ export class DailyPageComponent implements OnInit {
   }
 
   public branchSelected(id) {
-    this.update_timer = null;    
+    clearTimeout(this.update_timer);
+    this.update_timer = null;        
     this.current_branch = id;
     this.getMonitorData();
   }
 
   public change_week(modifier) {
+    clearTimeout(this.update_timer);
     this.update_timer = null;
     this.current_week += modifier;
     this.getMonitorData();
@@ -152,7 +154,7 @@ export class DailyPageComponent implements OnInit {
   }
   
   getMonitorData() {
-    
+
     if(!this.personService) {
       return;
     }
