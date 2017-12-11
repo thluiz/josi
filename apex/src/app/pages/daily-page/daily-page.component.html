@@ -1,23 +1,15 @@
 
 
 <style>
-	.current {
+	.current2 {
 		background-color: #eeeeee
 	}
-	.current2 {
+	.current {
 		background-color: #dddddd
 	}
 	
 	.m_title:first-letter {
 		text-transform: uppercase;
-	}
-
-	.table-striped-traditional .current2 {
-		background-color: rgb(255, 250, 255);
-	}
-
-	.table-striped-traditional .current {
-		background-color: rgb(255, 230, 255);
 	}
 
 	.table-striped-traditional tbody tr:nth-of-type(odd) {
@@ -35,9 +27,8 @@
 				
 
 <div class="row">
-	<div class="col-12">
-		<!-- Kick start -->
-		<div id="kick-start" class="card">
+	<div class="col-12">		
+		<div class="card">
 			<div class="card-header">
 				<div class="row">
 					<div class="col-12">
@@ -124,20 +115,20 @@
 					<tr *ngFor="let d of domains, let k5 = index">
 						<td>																				
 							<h6 style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center" 
-								[ngStyle]="{ 'background-color': d.program_id == 1 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : '#067D03') }">
+								[ngStyle]="{ 'background-color': d.program_id == 1 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)') }">
 								{{ d.long_name }} do {{ d.program }}																									
 							</h6>
 							
-							<table class="table-sm table-striped table-bordered"							
-								[ngClass]=" d.program_id == 1 ? 'table-striped-traditional' : ( d.program_id == 2 ? 'table-striped-experiencial' : 'table-striped-fundamental')  "
+							<table class="table-sm table-striped table-bordered table-striped"															
 								style="margin-bottom:50px;width:100%">								
 								<tr>						
 									<td *ngFor="let c of cols, let k3 = index" 
-										align="center" 																														
+										align="center" 			
+										style="background-color: rgb(8, 82, 1)"																											
 										[ngStyle]="{ 'min-width': c.width + 'px', 'max-width': c.width + 'px', 
 													'background-color': k3 == current_week_day + 1 ? 
-													d.program_id == 1 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : '#067D03')
-													: d.program_id == 1 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : '#067D03'), 
+													d.program_id == 1 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)')
+													: d.program_id == 1 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : 'rgb(8, 82, 1)'), 
 													'color': 'white' }"
 										[colSpan]="c.colspan || 1"
 										>																				
@@ -206,7 +197,10 @@
 											<a (click)="open(content, i)" [style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'blue' : (i.past ? 'red' : 'black'  )  )  ">
 												<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
 												<b class="m_title">{{ i.title }}</b>																	
-												<span *ngIf="i.short_description.length > 0 && i.type != 2 && i.type != 4">({{ i.short_description }})</span>										
+												<span 
+													*ngIf="i.short_description.length > 0 && i.type != 2 && i.type != 4"
+													style="font-size:12px"
+												>({{ i.short_description }})</span>										
 											</a>																																
 										</ng-template>							
 									</td>																		
