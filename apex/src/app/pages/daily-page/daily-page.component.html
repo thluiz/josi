@@ -123,9 +123,8 @@
 								style="margin-bottom:50px;width:100%">								
 								<tr>						
 									<td *ngFor="let c of cols, let k3 = index" 
-										align="center" 			
-										style="background-color: rgb(8, 82, 1)"																											
-										[ngStyle]="{ 'min-width': c.width + 'px', 'max-width': c.width + 'px', 
+										align="center" 
+										[ngStyle]="{ 'min-width': c.width, 'max-width': c.width, 
 													'background-color': k3 == current_week_day + 1 ? 
 													d.program_id == 1 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)')
 													: d.program_id == 1 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : 'rgb(8, 82, 1)'), 
@@ -143,14 +142,14 @@
 									</td>
 								</tr>
 								<tr *ngFor="let person of d.daily, let k4 = index">
-									<td style="min-width:60px;max-width:60px;" valign="middle">
+									<td style="width:60px;min-width:60px;max-width:60px;" valign="middle" align="right">
 											<img alt="Card image" 
 											class="rounded-circle img-border gradient-summer" 
 											src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
 											style="max-width:50px;max-height:50px" 
 											*ngIf="person.avatar_img && person.avatar_img.length > 0">											
 									</td>
-									<td style="min-width:140px;max-width:140px;" valign="middle">
+									<td style="width:180px;min-width:170px;max-width:250px" valign="middle">
 										{{ person.name }}										
 									</td>								
 									<td valign="middle" align="center" style="min-width:30px;max-width:30px;">
@@ -189,7 +188,7 @@
 											</span>
 									</td>	
 									<td valign="middle" align="center" 
-										style="min-width:120px;max-width:120px;" 
+										style="min-width:110px;max-width:100px;" 
 										*ngFor="let item of person.dates, let k2 = index" 
 										[ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																

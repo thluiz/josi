@@ -166,7 +166,7 @@ export class DailyPageComponent implements OnInit {
         this.domains = result.domains;        
         this.current_week_range = result.current_week_range;
         this.cols = [
-          { width: 260, colspan: 4 }
+          { width: "100%", colspan: 4 }
         ];
 
         
@@ -192,7 +192,7 @@ export class DailyPageComponent implements OnInit {
             prop: 'incidents' + c.date,
             name: c.name,
             current: c.current,
-            width: 120
+            width: '100px'
           };
         }
 
