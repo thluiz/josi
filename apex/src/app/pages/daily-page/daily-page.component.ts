@@ -25,6 +25,7 @@ export class DailyPageComponent implements OnInit {
   public daily: Observable<any[]>;
   public cols;
   public current_week_day;  
+  public current_week = 0;
   public current_branch;
   public branches;
   public domains;
@@ -33,6 +34,7 @@ export class DailyPageComponent implements OnInit {
   public new_incident;
   public sumary;
   public show_change_branch = false;
+  private update_timer;
   closeResult: string;
   
   private alive;
@@ -140,7 +142,7 @@ export class DailyPageComponent implements OnInit {
   }
   
   getMonitorData(current_branche?) {    
-    this.personService.getDailyMonitor().subscribe(
+    this.personService.getDailyMonitor(this.current_branch, this.current_week).subscribe(
       data => {          
         const result = data.json();
         this.branches = result.branches;
@@ -156,7 +158,10 @@ export class DailyPageComponent implements OnInit {
             financial_treatment: result.people.filter(p => p.financial_status == 3).length,
             schedule_treatment: result.people.filter(p => p.scheduling_status == 3).length,
             financial_issues: result.people.filter(p => p.financial_status > 0 && p.financial_status != 3).length,
-            schedule_issues: result.people.filter(p => p.scheduling_status > 0 && p.scheduling_status != 3).length
+            schedule_issues: result.people.filter(p => p.scheduling_status > 0 && p.scheduling_status != 3).length,
+            people_traditional: result.people.filter(p => p.program_id == 1).length,
+            people_experience: result.people.filter(p => p.program_id == 2).length,
+            people_fundamental: result.people.filter(p => p.program_id == 3).length 
           }
         }
 
@@ -212,7 +217,7 @@ export class DailyPageComponent implements OnInit {
     
     const update_interval = hours >= 22 || hours < 6 ? 600000 : 30000;
 
-    setTimeout(() => this.getMonitorData(current_branche), update_interval);
+    this.update_timer = setTimeout(() => this.getMonitorData(current_branche), update_interval);
   }
    
 }

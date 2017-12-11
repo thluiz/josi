@@ -6,8 +6,8 @@ export class PersonService {
 constructor(private http:Http) { }
   private dataUrl = 'https://myvtmiim.azurewebsites.net/api';
 
-  getDailyMonitor() {
-    return this.http.get(this.dataUrl + '/daily');    
+  getDailyMonitor(branche, week) {
+    return this.http.get(this.dataUrl + `/daily/${branche}/${week});    
   }  
 }
 

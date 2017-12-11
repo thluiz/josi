@@ -61,9 +61,12 @@ function getParticipationList(people) {
             let result = yield incident_service.register_contact_for_incident(request.body.incident, request.body.incident.contact_text);
             response.send("Ok");
         }));
-        app.get("/api/daily", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+        app.get("/api/daily/:branch/:week", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield pool.request().execute(`GetDailyMonitor`);
+                const result = yield pool.request()
+                    .input('branch', sql.Int, request.params.branch)
+                    .input('week_modifier', sql.Int, request.params.week || 0)
+                    .execute(`GetDailyMonitor`);
                 response.send((result.recordset[0][0]));
             }
             catch (error) {

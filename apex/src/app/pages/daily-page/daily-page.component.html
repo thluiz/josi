@@ -11,6 +11,14 @@
 	.m_title:first-letter {
 		text-transform: uppercase;
 	}
+
+	.table-striped-traditional tbody tr:nth-of-type(odd) {
+		background-color: rgb(255, 250, 255);
+	}
+
+	.table-striped-experiencial tbody tr:nth-of-type(odd) {
+		background-color: rgb(250, 250, 255);
+	}
 </style>
 				
 
@@ -48,9 +56,16 @@
 									x
 								</span>
 								<ul>
-									<li>{{ sumary.people }} Membro{{ sumary.people == 1 ? "" : "s" }} Ativo{{ sumary.people == 1 ? "" : "s" }};</li>
-									<li><span style="color:red">{{ sumary.financial_issues }}</span> Pendência{{ sumary.financial_issues == 1 ? "" : "s" }} Financeira{{ sumary.financial_issues == 1 ? "" : "s" }};</li>
-									<li><span style="color:red">{{ sumary.schedule_issues }}</span> Pendência{{ sumary.schedule_issues == 1 ? "" : "s" }} de Agendamento</li>							
+									<li>
+										<b>{{ sumary.people }}</b> Membro{{ sumary.people == 1 ? "" : "s" }} Ativo{{ sumary.people == 1 ? "" : "s" }};
+										<ul>
+											<li *ngIf="sumary.people_traditional > 0"> <b>{{ ('00' + sumary.people_traditional).slice(-2) }}</b> no Programa Tradicional</li>
+											<li *ngIf="sumary.people_experience > 0"> <b>{{ ('00' + sumary.people_experience).slice(-2) }}</b> no Programa Experiencial</li>
+											<li *ngIf="sumary.people_fundamental > 0"> <b>{{ ('00' + sumary.people_fundamental).slice(-2) }}</b> no Programa Fundamental</li>
+										</ul>
+									</li>
+									<li *ngIf="sumary.financial_issues > 0"><span style="color:red;font-weight:bold">{{ ('00' + sumary.financial_issues).slice(-2) }}</span> Pendência{{ sumary.financial_issues == 1 ? "" : "s" }} Financeira{{ sumary.financial_issues == 1 ? "" : "s" }};</li>
+									<li *ngIf="sumary.schedule_issues > 0"><span style="color:red;font-weight:bold">{{ ('00' + sumary.schedule_issues).slice(-2) }}</span> Pendência{{ sumary.schedule_issues == 1 ? "" : "s" }} de Agendamento</li>							
 								</ul>
 							</div>			
 						</div>
@@ -68,21 +83,27 @@
 				<table>					
 					<tr *ngFor="let d of domains, let k5 = index">
 						<td>																				
-							<h6 style="font-weight:bold;width:100%;color:white;background-color:gray;margin:0;padding:5px">
+							<h6 style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center" 
+								[ngStyle]="{ 'background-color': d.program_id == 1 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : '#067D03') }">
 								{{ d.long_name }} do {{ d.program }}																									
 							</h6>
 							
-							<table class="table-sm table-striped table-bordered"
+							<table class="table-sm table-striped table-bordered"							
+								[ngClass]=" d.program_id == 1 ? 'table-striped-traditional' : ( d.program_id == 2 ? 'table-striped-experiencial' : 'table-striped-fundamental')  "
 								style="margin-bottom:50px;">								
 								<tr>						
 									<td *ngFor="let c of cols, let k3 = index" 
 										align="center" 
+										style="background-color: rgb(38, 44, 122)"
 										[ngClass]=" k3 == current_week_day + 4 ? 'current2' : '' "
-										[ngStyle]="{ 'min-width': c.width + 'px', 'max-width': c.width + 'px', 'background-color': 'silver', 'color': 'black' }"
+										
+										[ngStyle]="{ 'min-width': c.width + 'px', 'max-width': c.width + 'px', 
+													'background-color': d.program_id == 1 ? '#810c02' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : '#067D03'), 
+													'color': 'white' }"
 										[colSpan]="c.colspan || 1"
 										>																				
 										<div>
-											<span *ngIf="k3 == 0">
+											<span *ngIf="k3 == 0" style="font-weight:bold">
 												{{ d.number_of_members }} 
 												Membro<span *ngIf="d.number_of_members > 1">s</span> 
 												Ativo<span *ngIf="d.number_of_members > 1">s</span>
@@ -113,6 +134,11 @@
 												[title]="person.scheduling_description">
 											</i>
 										</span>
+										<span *ngIf="person.scheduling_status == 0">
+											<i class="ft-thumbs-up" style="color:green"													
+												[title]="person.scheduling_description">
+											</i>
+										</span>
 									</td>
 									<td valign="middle" align="center" style="min-width:30px;max-width:30px;">
 											<span *ngIf="person.financial_status == 3">												
@@ -126,6 +152,11 @@
 												>
 												</i>
 											</span>	
+											<span *ngIf="person.financial_status == 0">
+												<i class="ft-thumbs-up" style="color:green"													
+													[title]="person.financial_description">
+												</i>
+											</span>
 									</td>	
 									<td valign="middle" align="center" 
 										style="min-width:120px;max-width:120px;" 
@@ -136,7 +167,7 @@
 											<a (click)="open(content, i)" [style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'blue' : (i.past ? 'red' : 'black'  )  )  ">
 												<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
 												<b class="m_title">{{ i.title }}</b>																	
-												<span *ngIf="i.short_description.length > 0 && i.type != 2">({{ i.short_description }})</span>										
+												<span *ngIf="i.short_description.length > 0 && i.type != 2 && i.type != 4">({{ i.short_description }})</span>										
 											</a>																																
 										</ng-template>							
 									</td>																		
