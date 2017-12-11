@@ -151,8 +151,10 @@ export class DailyPageComponent implements OnInit {
       });
   }
   
-  getMonitorData() {    
-    console.log(this.current_branch);
+  getMonitorData() {        
+    if(!this.personService) {
+      return;
+    }
     this.personService.getDailyMonitor(this.current_branch, this.current_week).subscribe(
       data => {          
         const result = data.json();
@@ -193,7 +195,7 @@ export class DailyPageComponent implements OnInit {
 
         if(this.domains) {
           this.domains.daily = [];
-                  
+
           for(var w = 0; w < result.domains.length; w++) {
             let domain = result.domains[w];
             this.domains[w].daily = [];
@@ -232,7 +234,7 @@ export class DailyPageComponent implements OnInit {
     
     const update_interval = hours >= 22 || hours < 6 ? 600000 : 30000;
 
-    this.update_timer = setTimeout(this.getMonitorData, update_interval);
+    this.update_timer = setTimeout(() => { this.getMonitorData() }, update_interval);
   }
    
 }

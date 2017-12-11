@@ -39,7 +39,7 @@
 							</h4>
 						</div>						
 						<div class="row" 							
-							*ngIf="sumary != null && sumary.people != null"
+							*ngIf="sumary != null"
 							style="border: 1px solid gray;"
 						>																		
 							<div class="col-6">
@@ -61,7 +61,7 @@
 									x
 								</span>
 								<ul>
-									<li>
+									<li *ngIf="sumary.people != null">
 										<b>{{ sumary.people }}</b> Membro{{ sumary.people == 1 ? "" : "s" }} Ativo{{ sumary.people == 1 ? "" : "s" }};
 										<ul>
 											<li *ngIf="sumary.people_traditional > 0"> <b>{{ ('00' + sumary.people_traditional).slice(-2) }}</b> no Programa Tradicional</li>
