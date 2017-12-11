@@ -22,19 +22,21 @@ import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
   providers: [PersonService, IncidentService]
 })
 export class DailyPageComponent implements OnInit {
-  public daily: Observable<any[]>;
-  public cols;
-  public current_week_day;  
-  public current_week = 0;
-  public current_branch = 1;
-  public branches;
-  public domains;
-  public dpReschedule;
-  public current_incident;
-  public new_incident;
-  public sumary;
-  public show_change_branch = false;
-  private update_timer;
+  daily: Observable<any[]>;
+  cols;
+  current_week_range;
+  current_week_day;  
+  current_week = 0;
+  current_branch = 1;
+  current_branch_name = "";
+  branches;
+  domains;
+  dpReschedule;
+  current_incident;
+  new_incident;
+  sumary;
+  show_change_branch = false;
+  update_timer;
   closeResult: string;
   
   private alive;
@@ -57,8 +59,16 @@ export class DailyPageComponent implements OnInit {
     console.log('destroy timer!');
   }
 
-  public branchSelected(e) {
-    this.current_branch = e.id;
+  public branchSelected(id) {
+    this.update_timer = null;    
+    this.current_branch = id;
+    this.getMonitorData();
+  }
+
+  public change_week(modifier) {
+    this.update_timer = null;
+    this.current_week += modifier;
+    this.getMonitorData();
   }
 
   begin_treat_incident(incident) {
@@ -142,15 +152,19 @@ export class DailyPageComponent implements OnInit {
   }
   
   getMonitorData() {    
+    console.log(this.current_branch);
     this.personService.getDailyMonitor(this.current_branch, this.current_week).subscribe(
       data => {          
         const result = data.json();
         this.branches = result.branches;
-        this.domains = result.domains;
-        this.domains.daily = [];
+        this.current_branch_name = this.branches.filter(b => b.id == this.current_branch)[0].name;
+        this.domains = result.domains;        
+        this.current_week_range = result.current_week_range;
         this.cols = [
           { width: 260, colspan: 4 }
         ];
+
+        
 
         if(result && result.people) {
           this.sumary = {
@@ -163,6 +177,8 @@ export class DailyPageComponent implements OnInit {
             people_experience: result.people.filter(p => p.program_id == 2).length,
             people_fundamental: result.people.filter(p => p.program_id == 3).length 
           }
+        } else {
+          this.sumary = {}
         }
 
         for(var i = 0; i< result.columns.length; i++) {
@@ -175,38 +191,38 @@ export class DailyPageComponent implements OnInit {
           };
         }
 
-        for(var w = 0; w < result.domains.length; w++) {
-          let domain = result.domains[w];
-          this.domains[w].daily = [];
-          let people = result.people.filter(p => p.domain_id == domain.id);
-          this.domains[w].number_of_members = people.length;
+        if(this.domains) {
+          this.domains.daily = [];
+                  
+          for(var w = 0; w < result.domains.length; w++) {
+            let domain = result.domains[w];
+            this.domains[w].daily = [];
+            let people = result.people != null ? result.people.filter(p => p.domain_id == domain.id) : [];
+            this.domains[w].number_of_members = people.length;
 
-          for(var i = 0; i< result.columns.length; i++) {    
-            let c = result.columns[i];
-            
-            for(var z = 0; z< people.length; z++) {
-              let person_incidents = people[z];  
-              if(!person_incidents.dates) {
-                person_incidents.dates = [];
+            for(var i = 0; i< result.columns.length; i++) {    
+              let c = result.columns[i];
+              
+              for(var z = 0; z< people.length; z++) {
+                let person_incidents = people[z];  
+                if(!person_incidents.dates) {
+                  person_incidents.dates = [];
+                }
+
+                person_incidents.dates[i] = person_incidents.dates[i] || [];
+                let incidents = result.incidents.filter((i : any) => { 
+                  return i.date == c.date && i.person_id == people[z].person_id;
+                });
+
+                if(incidents.length > 0) {
+                  person_incidents.dates[i] = person_incidents.dates[i].concat(incidents);              
+                }
+
+                this.domains[w].daily[z] = person_incidents;
               }
-
-              person_incidents.dates[i] = person_incidents.dates[i] || [];
-              let incidents = result.incidents.filter((i : any) => { 
-                return i.date == c.date && i.person_id == people[z].person_id;
-              });
-
-              if(incidents.length > 0) {
-                person_incidents.dates[i] = person_incidents.dates[i].concat(incidents);              
-              }
-
-              this.domains[w].daily[z] = person_incidents;
-            }
-          }       
-        }   
-
-        if(!this.current_branch) {
-          this.current_branch = this.branches[0];
-        }        
+            }       
+          }   
+        }                
       },
       err => console.error(err)      
     );
