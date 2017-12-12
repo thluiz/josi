@@ -166,7 +166,10 @@ export class DailyPageComponent implements OnInit {
         this.domains = result.domains;        
         this.current_week_range = result.current_week_range;
         this.cols = [
-          { width: "100%", colspan: 4 }
+          { width: "100%", colspan: 2 },
+          { width: "30px", icon: "ft-watch", description: "Agendamento" },
+          { width: "30px", icon: "icon-wallet", description: "Financeiro" },
+          { width: "30px", icon: "ft-radio", description: "Comunicados" }
         ];
 
         

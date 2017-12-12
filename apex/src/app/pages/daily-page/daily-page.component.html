@@ -134,7 +134,7 @@
 									<td *ngFor="let c of cols, let k3 = index" 
 										align="center" 
 										[ngStyle]="{ 'min-width': c.width, 'max-width': c.width, 
-													'background-color': k3 == current_week_day + 1 ? 
+													'background-color': k3 == current_week_day + 4 ? 
 													d.program_id == 1 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)')
 													: d.program_id == 1 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : 'rgb(8, 82, 1)'), 
 													'color': 'white' }"
@@ -146,6 +146,11 @@
 												Membro<span *ngIf="d.number_of_members > 1">s</span> 
 												Ativo<span *ngIf="d.number_of_members > 1">s</span>
 											</span>
+											<i  												
+												[ngClass]="c.icon"
+												*ngIf="c.icon != null"
+												[title]="c.description">
+											</i>
 											{{ c.name }} 
 										</div>									
 									</td>
@@ -193,6 +198,25 @@
 											<span *ngIf="person.financial_status == 0">
 												<i class="ft-thumbs-up" style="color:green"													
 													[title]="person.financial_description">
+												</i>
+											</span>
+									</td>
+									<td valign="middle" align="center" 
+										style="min-width:30px;max-width:30px;cursor:pointer">
+											<span *ngIf="person.comunication_status == 3">												
+												<i class="ft-radio" style="color:orange"
+												[title]="person.comunication_description"
+												></i>
+											</span>
+											<span *ngIf="person.comunication_status > 0 && person.comunication_status != 3">
+												<i class="ft-radio" style="color:red"													
+													[title]="person.comunication_description"
+												>
+												</i>
+											</span>	
+											<span *ngIf="person.comunication_status == 0">
+												<i class="ft-radio" style="color:green"													
+													[title]="person.comunication_description">
 												</i>
 											</span>
 									</td>	
