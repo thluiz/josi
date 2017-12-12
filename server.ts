@@ -74,12 +74,12 @@ function getParticipationList(people) {
             
         });
 
-        app.get("/api/daily/:branch/:week", async (request, response, next) => {
+        app.get("/api/daily/:branch?/:week?", async (request, response, next) => {
             try {
-                const result = await pool.request()
-                .input('branch', sql.Int, request.params.branch)
-                .input('week_modifier', sql.Int, request.params.week || 0)
-                .execute(`GetDailyMonitor`);                
+                let result = await pool.request()                
+                    .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
+                    .input('week_modifier', sql.Int, request.params.week || 0)
+                    .execute(`GetDailyMonitor`);                
 
                 response.send((result.recordset[0][0]));
             } catch (error) {                
