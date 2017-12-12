@@ -46,38 +46,49 @@
 								<table *ngIf="sumary.people != null" width="500px" 
 									class="table-sm table-striped table-bordered table-striped"
 									style="text-align:center;padding:0">
-									<tr style="background-color:gray;color:white;font-size:10px;height:14px;padding:0;margin:0">									
+									<tr style="background-color:gray;color:white;font-size:10px;height:10px;padding:0;margin:0">									
 										<td rowspan="2" style="padding:0"></td>
 										<td rowspan="2" valign="bottom" style="padding:0">Membros</td>
-										<td colspan="2"  style="padding:0">Pendências</td>
+										<td colspan="3"  style="padding:0">Pendências</td>
 									</tr>
-									<tr style="background-color:gray;color:white;font-size:10px;height:14px;padding:0;margin:0">									
-										<td style="padding:0">Financeiras</td>
+									<tr style="background-color:gray;color:white;font-size:10px;height:10px;padding:0;margin:0">									
 										<td style="padding:0">Agendamento</td>
+										<td style="padding:0">Financeiras</td>										
+										<td style="padding:0">Comunicados</td>
 									</tr>
 									<tr>
-										<td align="right">Tradicional</td>
+										<td align="right">Programa Tradicional</td>
 										<td> {{ ('00' + sumary.people_traditional).slice(-2) }} </td>
 										<td> 00 </td>
 										<td> 00 </td>
+										<td> 00 </td>
 									</tr>
 									<tr>
-										<td align="right">Experiencial</td>
+										<td align="right">Programa Experiencial</td>
 										<td align="center">{{ ('00' + sumary.people_experience).slice(-2) }}</td>
 										<td> 00 </td>
 										<td> 00 </td>
+										<td> 00 </td>
 									</tr>
 									<tr>
-										<td align="right">Fundamental</td>
+										<td align="right">Programa Fundamental</td>
 										<td>{{ ('00' + sumary.people_fundamental).slice(-2) }}</td>
+										<td> 00 </td>
 										<td> 00 </td>
 										<td> 00 </td>
 									</tr>
 									<tr>
 										<td align="right">Total</td>
-										<td>{{ ('00' + sumary.people).slice(-2) }}</td>
-										<td><span style="color:red;font-weight:bold">{{ ('00' + sumary.financial_issues).slice(-2) }}</span></td>
-										<td><span style="color:red;font-weight:bold">{{ ('00' + sumary.schedule_issues).slice(-2) }}</span></td>
+										<td>{{ ('00' + sumary.people).slice(-2) }}</td>										
+										<td>
+											<span style="color:red;font-weight:bold" *ngIf="sumary.schedule_issues > 0">{{ ('00' + sumary.schedule_issues).slice(-2) }}</span>
+											<span *ngIf="sumary.schedule_issues == 0">00</span>											
+										</td>
+										<td>
+											<span style="color:red;font-weight:bold" *ngIf="sumary.financial_issues > 0">{{ ('00' + sumary.financial_issues).slice(-2) }}</span>										
+											<span *ngIf="!sumary.financial_issues">00</span>
+										</td>
+										<td>00</td>
 									</tr>
 								</table>								
 							</div>
@@ -120,7 +131,7 @@
 				</div>
 			</div>
 			<div class="card-body">		
-				<table style="width:100%">					
+				<table style="width:100%;">					
 					<tr *ngFor="let d of domains, let k5 = index">
 						<td>																				
 							<h6 style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center" 
@@ -128,12 +139,12 @@
 								{{ d.long_name }} do {{ d.program }}																									
 							</h6>
 							
-							<table class="table-sm table-striped table-bordered table-striped"															
+							<table class="table-sm table-striped table-bordered table-responsive"															
 								style="margin-bottom:50px;width:100%">								
 								<tr>						
 									<td *ngFor="let c of cols, let k3 = index" 
 										align="center" 
-										[ngStyle]="{ 'min-width': c.width, 'max-width': c.width, 
+										[ngStyle]="{ 'width': c.width, 
 													'background-color': k3 == current_week_day + 4 ? 
 													d.program_id == 1 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)')
 													: d.program_id == 1 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : 'rgb(8, 82, 1)'), 
@@ -156,17 +167,30 @@
 									</td>
 								</tr>
 								<tr *ngFor="let person of d.daily, let k4 = index">
-									<td style="width:60px;min-width:60px;max-width:60px;" valign="middle" align="right">
-											<img alt="Card image" 
-											class="rounded-circle img-border gradient-summer" 
-											src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
-											style="max-width:50px;max-height:50px" 
-											*ngIf="person.avatar_img && person.avatar_img.length > 0">											
-									</td>
-									<td style="width:180px;min-width:170px;max-width:250px" valign="middle">
-										{{ person.name }}										
+									<td>
+										<div class="row">
+											<div class="col-2">
+												<img alt="Card image" 
+												class="rounded-circle img-border " 
+												src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
+												style="min-width:50px;width:100%;" 
+												*ngIf="person.avatar_img && person.avatar_img.length > 0">	
+											</div>								
+											<div class="col-10">
+												<div class="row">
+													<div class="col-12">
+														{{ person.name }}
+													</div>
+												</div>
+												<div class="row" style="font-size:10px;font-style: italic;">
+													<div class="col-12">
+														{{ person.kf_name }}
+													</div>
+												</div>
+											</div>	
+										</div>																					
 									</td>								
-									<td valign="middle" align="center" style="min-width:30px;max-width:30px;">
+									<td valign="middle" align="center">
 										<span *ngIf="person.scheduling_status == 3">												
 											<i class="ft-watch" style="color:orange"
 												[title]="person.scheduling_description">
@@ -183,7 +207,7 @@
 											</i>
 										</span>
 									</td>
-									<td valign="middle" align="center" style="min-width:30px;max-width:30px;">
+									<td valign="middle" align="center">
 											<span *ngIf="person.financial_status == 3">												
 												<i class="icon-wallet" style="color:orange"
 												[title]="person.financial_description"
@@ -201,8 +225,7 @@
 												</i>
 											</span>
 									</td>
-									<td valign="middle" align="center" 
-										style="min-width:30px;max-width:30px;cursor:pointer">
+									<td valign="middle" align="center" style="cursor:pointer">
 											<span *ngIf="person.comunication_status == 3">												
 												<i class="ft-radio" style="color:orange"
 												[title]="person.comunication_description"
@@ -215,13 +238,12 @@
 												</i>
 											</span>	
 											<span *ngIf="person.comunication_status == 0">
-												<i class="ft-radio" style="color:green"													
+												<i class="ft-thumbs-up" style="color:green"													
 													[title]="person.comunication_description">
 												</i>
 											</span>
 									</td>	
-									<td valign="middle" align="center" 
-										style="min-width:110px;max-width:100px;" 
+									<td valign="middle" align="center" 										
 										*ngFor="let item of person.dates, let k2 = index" 
 										[ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																

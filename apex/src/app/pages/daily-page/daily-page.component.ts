@@ -165,11 +165,11 @@ export class DailyPageComponent implements OnInit {
         this.current_branch_name = this.branches.filter(b => b.id == this.current_branch)[0].name;
         this.domains = result.domains;        
         this.current_week_range = result.current_week_range;
-        this.cols = [
-          { width: "100%", colspan: 2 },
-          { width: "30px", icon: "ft-watch", description: "Agendamento" },
-          { width: "30px", icon: "icon-wallet", description: "Financeiro" },
-          { width: "30px", icon: "ft-radio", description: "Comunicados" }
+        this.cols = [          
+          { width: "25.5%" },
+          { width: "1.5%", icon: "ft-watch", description: "Agendamento" },
+          { width: "1.5%", icon: "icon-wallet", description: "Financeiro" },
+          { width: "1.5%", icon: "ft-radio", description: "Comunicados" }
         ];
 
         
@@ -195,7 +195,7 @@ export class DailyPageComponent implements OnInit {
             prop: 'incidents' + c.date,
             name: c.name,
             current: c.current,
-            width: '100px'
+            width: '9.5%'
           };
         }
 
