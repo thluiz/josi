@@ -133,14 +133,16 @@
 			<div class="card-body">		
 				<table style="width:100%;">					
 					<tr *ngFor="let d of domains, let k5 = index">
-						<td>																				
-							<h6 style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center" 
-								[ngStyle]="{ 'background-color': d.program_id == 1 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)') }">
-								{{ d.long_name }} do {{ d.program }}																									
-							</h6>
-							
+						<td>																																		
 							<table class="table-sm table-striped table-bordered table-responsive"															
-								style="margin-bottom:50px;width:100%">								
+								style="margin-bottom:50px;width:100%">
+								<tr>
+									<td colspan="11"
+										style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center"
+										[ngStyle]="{ 'background-color': d.program_id == 1 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)') }">
+										{{ d.long_name }} do {{ d.program }}																									
+									</td>
+								</tr>								
 								<tr>						
 									<td *ngFor="let c of cols, let k3 = index" 
 										align="center" 
@@ -169,20 +171,20 @@
 								<tr *ngFor="let person of d.daily, let k4 = index">
 									<td>
 										<div class="row">
-											<div class="col-2">
+											<div class="col-2" style="padding:0">
 												<img alt="Card image" 
 												class="rounded-circle img-border " 
 												src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
 												style="min-width:50px;width:100%;" 
 												*ngIf="person.avatar_img && person.avatar_img.length > 0">	
 											</div>								
-											<div class="col-10">
+											<div class="col-10"  style="padding:0;padding-left:2px">
 												<div class="row">
 													<div class="col-12">
 														{{ person.name }}
 													</div>
 												</div>
-												<div class="row" style="font-size:10px;font-style: italic;">
+												<div class="row" style="font-size:10px;">
 													<div class="col-12">
 														{{ person.kf_name }}
 													</div>
@@ -291,6 +293,18 @@
 		</button>
 	</div>
 	<div class="modal-body">
+		<div class="row" *ngIf="current_incident.treatment_text">
+			<div class="col-12">
+				<h6>
+					{{ current_incident.treatment_text }}
+				</h6>
+			</div>
+		</div>
+		<div class="row" *ngIf="current_incident.new_schedule_date">
+			<div class="col-12">
+				<b>Reagendado para: </b>{{ current_incident.new_schedule_small_date }} {{ current_incident.new_schedule_hour }}
+			</div>
+		</div>
 		<div class="row">
 			<div class="col-12" *ngIf="!current_incident.in_treatment && !current_incident.closed && !current_incident.treated">
 				<h6 style="font-weight: bold">Realizado</h6>				
