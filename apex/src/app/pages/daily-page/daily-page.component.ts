@@ -74,7 +74,11 @@ export class DailyPageComponent implements OnInit {
   }
 
   begin_treat_incident(incident) {
-    incident.in_treatment = true;    
+    incident.in_treatment = true;  
+    
+    if(incident.obrigatory) {
+      this.begin_reschedule_incident(incident);
+    }
   }
   
   begin_reschedule_incident(incident) {

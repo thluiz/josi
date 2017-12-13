@@ -140,7 +140,7 @@
 									<td colspan="11"
 										style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center"
 										[ngStyle]="{ 'background-color': d.program_id == 1 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)') }">
-										{{ d.long_name }} do {{ d.program }}																									
+										{{ d.program }} - {{ d.long_name }}
 									</td>
 								</tr>								
 								<tr>						
@@ -362,12 +362,12 @@
 		</button>															
 		<button type="button" class="btn btn-grey btn-raised" 
 			(click)="reset_treat_incident(current_incident);"
-			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
+			*ngIf="current_incident.obrigatory || (current_incident.in_treatment && !current_incident.reschedule)">
 			Voltar
 		</button>
 		<button type="button" class="btn btn-grey btn-raised" 
 			(click)="reset_reschedule(current_incident);"
-			*ngIf="current_incident.in_treatment && current_incident.reschedule">
+			*ngIf="!current_incident.obrigatory && current_incident.in_treatment && current_incident.reschedule">
 			Voltar
 		</button>
 		<button type="button" 
