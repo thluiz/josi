@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
+import { environment } from '../../environments/environment';
+
 @Injectable()
 export class IncidentService {
 constructor(private http:Http) { }
-  private dataUrl = 'https://myvtmiim.azurewebsites.net/api';  
-  //private dataUrl = 'http://localhost:3979/api';  
+  private dataUrl = environment.api_url;    
 
   close_incident(incident) {
     return this.http.post(this.dataUrl + '/incident/close', { 

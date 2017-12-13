@@ -3,6 +3,7 @@ import * as builder from 'botbuilder';
 import { IncidentService } from './bot/domain/services/incident_services';
 
 const express = require('express');
+require('dotenv').config();
 
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({

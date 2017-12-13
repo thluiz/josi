@@ -12,6 +12,7 @@ const sql = require("mssql");
 const builder = require("botbuilder");
 const incident_services_1 = require("./bot/domain/services/incident_services");
 const express = require('express');
+require('dotenv').config();
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
     appId: process.env.MICROSOFT_APP_ID,

@@ -3,7 +3,8 @@
     "target": "ES6",
     "module": "commonjs",
     "watch": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["node"]
   },
   "exclude": [
     "node_modules",    
