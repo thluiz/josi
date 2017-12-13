@@ -311,52 +311,70 @@
 				<button type="button" class="btn btn-success btn-raised" (click)="close_incident(current_incident);d('close!');">Sim</button>
 				<button type="button" class="btn btn-primary btn-raised" (click)="begin_treat_incident(current_incident)">Não</button>		
 			</div>
-			<div class="col-12" *ngIf="current_incident.in_treatment && !current_incident.reschedule && !current_incident.recontact">
-				<h6 style="font-weight: bold">Tratar Evento</h6>
-
-				<button type="button" class="btn btn-success btn-raised" (click)="begin_reschedule_incident(current_incident)">Reagendar</button>								
-				<button type="button" class="btn btn-primary btn-raised" (click)="begin_register_contact(current_incident)">Registrar Contato</button>
-				<button type="button" class="btn btn-grey btn-raised" (click)="reset_treat_incident(current_incident)">Voltar</button>		
-			</div>
-			<div class="col-12" *ngIf="current_incident.reschedule">
-				<h6 style="font-weight: bold">Reagendar</h6>
-				<div class="row">
-					<div class="col-5">						
+			<div class="col-12" *ngIf="current_incident.in_treatment">				
+				<div class="row">					
+					<div class="col-12">							
+						<h6 style="font-weight: bold">Contato</h6>
+						<fieldset class="form-group">					
+							<textarea class="form-control" 
+								[(ngModel)]="current_incident.contact_text"				
+								rows="3" placeholder="O que vocês conversaram?"></textarea>
+						</fieldset>		
+					</div>
+				</div>
+				<div class="row" *ngIf="current_incident.reschedule">					
+					<div class="col-6">			
+						<h6 style="font-weight: bold">Reagendamento</h6>									
 						<div class="form-group">
 							<div class="input-group">
-								<input class="form-control" style="width:80%" placeholder="yyyy-mm-dd" 
+								<input class="form-control" style="width:100%" placeholder="yyyy-mm-dd" 
 								[(ngModel)]="current_incident.new_date" 
 								ngbDatepicker #dpReschedule="ngbDatepicker" />
 								<div class="input-group-addon" (click)="dpReschedule.toggle()">
 									<i class="fa fa-calendar" style="cursor: pointer;"></i>
 								</div>							
-							</div>							
-							<ngb-timepicker [(ngModel)]="current_incident.new_time"></ngb-timepicker>							
-						</div>						
+							</div>																
+						</div>
 					</div>
-					<div class="col-6">																		
-						<button type="button" class="btn btn-primary btn-raised" (click)="reschedule_incident(current_incident);d('reschedule!');">Reagendar</button>		
-						<button type="button" class="btn btn-grey btn-raised" (click)="reset_treat_incident(current_incident);">Voltar</button>		
-					</div>
-				</div>																
-			</div>
-			<div class="col-12" *ngIf="current_incident.recontact">
-				<h6 style="font-weight: bold">Registrar Contato</h6>	
-				<fieldset class="form-group">					
-					<textarea class="form-control" 
-						[(ngModel)]="current_incident.contact_text"				
-						rows="3" placeholder="O que vocês conversaram?"></textarea>
-				</fieldset> 
-
-				<button type="button" class="btn btn-primary btn-raised" (click)="register_contact_for_incident(current_incident);d('contact!');">Registrar</button>		
-				<button type="button" class="btn btn-grey btn-raised" (click)="reset_treat_incident(current_incident)">Voltar</button>		
-			</div>
-			<div class="col-12" *ngIf="current_incident.closed || current_incident.treated">
-				<button type="button" class="btn btn-success btn-raised" (click)="c('Close click')">Registrar Outra Atividade</button>
+					<div class="col-6">
+						<ngb-timepicker [(ngModel)]="current_incident.new_time"></ngb-timepicker>							
+					</div>																																								
+				</div>															
 			</div>
 		</div>
 	</div>
 	<div class="modal-footer">
-		
+		<button type="button" class="btn btn-primary btn-raised" 
+			(click)="register_contact_for_incident(current_incident);d('contact!');"
+			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
+			Registrar Contato
+		</button>
+		<button type="button" class="btn btn-success btn-raised" 
+			(click)="begin_reschedule_incident(current_incident)"
+			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
+			Reagendar
+		</button>		
+		<button type="button" 
+			class="btn btn-primary btn-raised" 
+			(click)="reschedule_incident(current_incident);d('reschedule!');"
+			*ngIf="current_incident.in_treatment && current_incident.reschedule">
+			Registrar Reagendamento
+		</button>															
+		<button type="button" class="btn btn-grey btn-raised" 
+			(click)="reset_treat_incident(current_incident);"
+			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
+			Voltar
+		</button>
+		<button type="button" class="btn btn-grey btn-raised" 
+			(click)="reset_reschedule(current_incident);"
+			*ngIf="current_incident.in_treatment && current_incident.reschedule">
+			Voltar
+		</button>
+		<button type="button" 
+			class="btn btn-success btn-raised" 
+			(click)="d('Other Activity')"
+			*ngIf="current_incident.closed || current_incident.treated">
+			Outra Atividade
+		</button>
 	</div>
 </ng-template>

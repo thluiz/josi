@@ -54,7 +54,7 @@ function getParticipationList(people) {
             response.send("Ok");
         }));
         app.post("/api/incident/reschedule", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield incident_service.reschedule_incident(request.body.incident, request.body.new_incident);
+            let result = yield incident_service.reschedule_incident(request.body.incident, request.body.new_incident, request.body.contact);
             response.send("Ok");
         }));
         app.post("/api/incident/register_contact", (request, response, next) => __awaiter(this, void 0, void 0, function* () {

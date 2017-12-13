@@ -14,11 +14,12 @@ export class IncidentService {
                         .execute(`CloseIncident`);
     }
     
-    public async reschedule_incident(incident, new_incident) {
+    public async reschedule_incident(incident, new_incident, contact) {
         const result = await this.sql_pool
         .request()
         .input('id', sql.Int, incident.id)
         .input('new_date', sql.VarChar(16), new_incident.date + ' ' + new_incident.start_hour)
+        .input('contact', sql.VarChar(sql.MAX), contact)
         .execute(`RescheduleIncident`);
     }
     

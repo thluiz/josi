@@ -12,9 +12,9 @@ constructor(private http:Http) { }
     });
   }
 
-  reschedule_incident(incident, new_incident) {
+  reschedule_incident(incident, new_incident, contact) {
     return this.http.post(this.dataUrl + '/incident/reschedule', { 
-      incident, new_incident     
+      incident, new_incident, contact     
     });
   }
 

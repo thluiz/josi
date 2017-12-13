@@ -21,12 +21,13 @@ class IncidentService {
                 .execute(`CloseIncident`);
         });
     }
-    reschedule_incident(incident, new_incident) {
+    reschedule_incident(incident, new_incident, contact) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.sql_pool
                 .request()
                 .input('id', sql.Int, incident.id)
                 .input('new_date', sql.VarChar(16), new_incident.date + ' ' + new_incident.start_hour)
+                .input('contact', sql.VarChar(sql.MAX), contact)
                 .execute(`RescheduleIncident`);
         });
     }

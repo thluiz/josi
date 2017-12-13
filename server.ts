@@ -58,7 +58,8 @@ function getParticipationList(people) {
         app.post("/api/incident/reschedule", async (request, response, next) => {            
             let result = await incident_service.reschedule_incident(
                 request.body.incident, 
-                request.body.new_incident
+                request.body.new_incident,
+                request.body.contact
             );            
 
             response.send("Ok");

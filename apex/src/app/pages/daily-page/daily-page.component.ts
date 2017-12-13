@@ -87,14 +87,14 @@ export class DailyPageComponent implements OnInit {
     incident.new_time = { "hour": parseInt(hour[0]), "minute": parseInt(hour[1]) };
   }
 
-  begin_register_contact(incident) {
-    incident.recontact = true;    
-  }
-
   reset_treat_incident(incident) {
     incident.recontact = false;    
     incident.reschedule = false;    
     incident.in_treatment = false;
+  }
+
+  reset_reschedule(incident) {    
+    incident.reschedule = false;        
   }
 
   close_incident(incident) {
@@ -123,8 +123,9 @@ export class DailyPageComponent implements OnInit {
       "short_description": incident.short_description,
       "long_description": incident.long_description
     }
+    const contact = incident.contact_text;
         
-    this.incidentService.reschedule_incident(incident, new_incident)
+    this.incidentService.reschedule_incident(incident, new_incident, contact)
     .toPromise().then((response) => {
       this.getMonitorData();
     }).catch((reason) => {
