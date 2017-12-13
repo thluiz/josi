@@ -59,7 +59,7 @@ function getParticipationList(people) {
             let result = await incident_service.reschedule_incident(
                 request.body.incident, 
                 request.body.new_incident,
-                request.body.contact
+                request.body.contact.contact_text
             );            
 
             response.send("Ok");
@@ -68,7 +68,7 @@ function getParticipationList(people) {
         app.post("/api/incident/register_contact", async (request, response, next) => {            
             let result = await incident_service.register_contact_for_incident(
                 request.body.incident, 
-                request.body.incident.contact_text
+                request.body.contact.contact_text
             );            
 
             response.send("Ok");            
@@ -86,23 +86,7 @@ function getParticipationList(people) {
             } catch (error) {                
                 response.send(error.message);
             } 
-        });
-
-        app.get("/test", async (request, response, next) => {
-            try {
-                const result = await pool.request().query(
-                    `select p.id,
-                    isnull(pa.alias, p.[name]) name, 
-                    p.branch_id, p.program_id,
-                    p.domain_id
-                    from person p left join person_alias pa on p.id = pa.person_id and pa.principal = 1`
-                );
-
-                response.send((result));
-            } catch (error) {                
-                response.send(error.message);
-            }                                    
-        });            
+        });   
         
         app.get(/^((?!\.).)*$/, (req, res) => {
             var path = "index.html";

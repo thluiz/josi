@@ -123,9 +123,10 @@ export class DailyPageComponent implements OnInit {
       "short_description": incident.short_description,
       "long_description": incident.long_description
     }
-    const contact = incident.contact_text;
-        
-    this.incidentService.reschedule_incident(incident, new_incident, contact)
+    
+    this.incidentService.reschedule_incident(incident, new_incident, { 
+      contact_text: incident.contact_text 
+    })
     .toPromise().then((response) => {
       this.getMonitorData();
     }).catch((reason) => {
@@ -135,7 +136,7 @@ export class DailyPageComponent implements OnInit {
 
   register_contact_for_incident(incident) {
     this.incidentService.register_contact_for_incident(incident, { 
-      text: incident.contact_text 
+      contact_text: incident.contact_text 
     })
     .toPromise().then((response) => {
       this.getMonitorData();

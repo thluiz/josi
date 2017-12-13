@@ -54,11 +54,11 @@ function getParticipationList(people) {
             response.send("Ok");
         }));
         app.post("/api/incident/reschedule", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield incident_service.reschedule_incident(request.body.incident, request.body.new_incident, request.body.contact);
+            let result = yield incident_service.reschedule_incident(request.body.incident, request.body.new_incident, request.body.contact.contact_text);
             response.send("Ok");
         }));
         app.post("/api/incident/register_contact", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield incident_service.register_contact_for_incident(request.body.incident, request.body.incident.contact_text);
+            let result = yield incident_service.register_contact_for_incident(request.body.incident, request.body.contact.contact_text);
             response.send("Ok");
         }));
         app.get("/api/daily/:branch?/:week?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
@@ -68,19 +68,6 @@ function getParticipationList(people) {
                     .input('week_modifier', sql.Int, request.params.week || 0)
                     .execute(`GetDailyMonitor`);
                 response.send((result.recordset[0][0]));
-            }
-            catch (error) {
-                response.send(error.message);
-            }
-        }));
-        app.get("/test", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const result = yield pool.request().query(`select p.id,
-                    isnull(pa.alias, p.[name]) name, 
-                    p.branch_id, p.program_id,
-                    p.domain_id
-                    from person p left join person_alias pa on p.id = pa.person_id and pa.principal = 1`);
-                response.send((result));
             }
             catch (error) {
                 response.send(error.message);
