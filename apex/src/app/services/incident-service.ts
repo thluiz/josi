@@ -25,5 +25,11 @@ constructor(private http:Http) { }
       incident, contact     
     });
   }
+
+  register_new_incident(incident) {
+    return this.http.post(this.dataUrl + '/incident/register_incident', { 
+      incident     
+    });
+  }
 }
 

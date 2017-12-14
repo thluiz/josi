@@ -68,6 +68,15 @@ function getParticipationList(people) {
             response.send("Ok");
         });
 
+        app.post("/api/incident/register_incident", async (request, response, next) => {      
+            console.log(request.body.incident);
+            let result = await incident_service.register_incident(
+                request.body.incident
+            );            
+
+            response.send("Ok");
+        });
+
         app.get("/api/people/search/:name?", async (request, response, next) => {                        
             const result = await pool.request()
             .input('names', sql.VarChar(sql.MAX), request.params.name)

@@ -116,7 +116,7 @@
 										</td>
 										<td valign="middle">
 											<button type="button" 
-												(click)="open(new_activity, null)"
+												(click)="reset_new_incident();open(new_activity, null)"
 												class="btn btn-success btn-raised btn-fab btn-sm ft-plus"
 												title="Registrar Atividade"
 												style="margin-left:20px"
@@ -254,7 +254,9 @@
 												<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
 												<b>{{ i.title }}</b>																	
 												<span 
-													*ngIf="i.short_description.length > 0 && i.type != 2 && i.type != 4"
+													*ngIf="i.short_description != null 
+															&& i.short_description.length > 0 
+															&& i.type != 1 && i.type != 2 && i.type != 4"
 													style="font-size:12px"
 												> - {{ i.short_description }} </span>										
 											</a>																																
@@ -301,7 +303,8 @@
 							(ngModelChange)="change_new_incident_type($event)"
 							*ngIf="new_incident.tmp_type == null"
 							style="width:100%"
-							>						
+							>		
+							<option></option>
 							<option *ngFor="let t of incident_types" [value]="t.id">{{t.name}}</option>
 						</select>
 						<select id="new_incident_children_type" 

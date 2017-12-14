@@ -13,7 +13,28 @@ export class IncidentService {
                         .input('id', sql.Int, incident.id)
                         .execute(`CloseIncident`);
     }
-    
+        
+    public async register_incident(incident) {
+        let date = `${incident.date.year}-${incident.date.month}-${incident.date.day}`;
+        if(incident.time) {
+            date += ` ${incident.time.hour}:${incident.time.minute}`;
+        }        
+
+        try {
+            const result = await this.sql_pool
+            .request()
+            .input('description', sql.VarChar(sql.MAX), incident.description)
+            .input('people', sql.VarChar(sql.MAX), incident.people.map(p => p.person_id).join(","))
+            .input('date', sql.VarChar(100), date)        
+            .input('type', sql.Int, incident.type.id)
+            .input('branch', sql.Int, incident.branch.id)
+            .input('value', sql.Decimal(12,2), incident.value)
+            .execute(`RegisterNewIncident`);
+        } catch(ex) {
+            console.log(ex);
+        }
+    }
+
     public async reschedule_incident(incident, new_incident, contact) {
         const result = await this.sql_pool
         .request()

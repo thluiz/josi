@@ -192,12 +192,34 @@ export class DailyPageComponent implements OnInit {
     this.new_incident.type = type;    
   }
 
-  register_new_incident(incident) {
+  register_new_incident() {
+    console.log(this.new_incident);
 
+    this.incidentService.register_new_incident(this.new_incident)
+    .toPromise().then((response) => {
+      this.getMonitorData();
+    }).catch((reason) => {
+      console.log(reason);
+    });
+
+    this.reset_new_incident();
   }
 
   reset_new_incident() {    
-    this.new_incident = {};
+    let date = new Date();
+
+    this.new_incident = {
+      branch: { id: this.current_branch },
+      date: {
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        day: date.getDate()
+      },
+      time: {
+        hour: date.getHours(),
+        minute: date.getMinutes()
+      }
+    };
   }
 
   reset_new_incident_type(){
