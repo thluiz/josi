@@ -60,6 +60,12 @@ function getParticipationList(people) {
             let result = yield incident_service.reschedule_incident(request.body.incident, request.body.new_incident, request.body.contact.contact_text);
             response.send("Ok");
         }));
+        app.get("/api/people/search/:name?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            const result = yield pool.request()
+                .input('names', sql.VarChar(sql.MAX), request.params.name)
+                .execute(`GetPeopleByNameForTypeahead`);
+            response.send(result.recordset[0]);
+        }));
         app.post("/api/incident/register_contact", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             let result = yield incident_service.register_contact_for_incident(request.body.incident, request.body.contact.contact_text);
             response.send("Ok");
@@ -327,7 +333,7 @@ function getParticipationList(people) {
                         session.sendTyping();
                         const result = yield pool.request()
                             .input('names', sql.VarChar(sql.MAX), names)
-                            .execute(`GetPeopleByName`);
+                            .execute(`GetPeopleByNameForBot`);
                         session.dialogData.query = result.recordset;
                     }
                     catch (error) {

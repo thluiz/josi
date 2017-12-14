@@ -1,10 +1,10 @@
 
 
 <style>
-	.current2 {
+	.current {
 		background-color: #eeeeee
 	}
-	.current {
+	.current2 {
 		background-color: #dddddd
 	}	
 </style>
@@ -172,7 +172,7 @@
 									<td>
 										<div class="row">
 											<div class="col-2" style="padding:0;padding-left:10px">
-												<img alt="Card image" 
+												<img alt="{{ person.name }}"
 												class="rounded-circle img-border " 
 												src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
 												style="min-width:50px;width:100%;" 
@@ -273,15 +273,154 @@
 <ng-template #new_activity let-c="close" let-d="dismiss">
 	<div class="modal-header">
 		<h5 class="modal-title" style="font-weight: bold">Novo Registro de Atividade</h5>
-		<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+		<button type="button" class="close" aria-label="Close" (click)="reset_new_incident();d('Cross click')">
 		<span aria-hidden="true">&times;</span>
 		</button>
 	</div>
-	<div class="modal-body">
-		body
+	<div class="modal-body">		
+		<div class="form-body">
+			<div class="row">
+				<div class="col-12">
+					<fieldset class="form-group">
+						<label for="new_incident_tmp_type" style="font-weight: bold">Tipo de Atividade</label>		
+						<br />										
+						<span *ngIf="new_incident.tmp_type != null">
+							{{ new_incident.tmp_type.name }}
+							<span *ngIf="new_incident.children_type != null">
+								- {{ new_incident.children_type.name }}
+							</span>							
+
+							<i class="ft-rotate-ccw" 
+								(click)="reset_new_incident_type();"
+								style="cursor: pointer;">
+							</i>							
+						</span>						
+						<select id="new_incident_tmp_type"
+							class="form-control" 
+							[(ngModel)]="new_incident.tmp_combo_type" 	
+							(ngModelChange)="change_new_incident_type($event)"
+							*ngIf="new_incident.tmp_type == null"
+							style="width:100%"
+							>						
+							<option *ngFor="let t of incident_types" [value]="t.id">{{t.name}}</option>
+						</select>
+						<select id="new_incident_children_type" 
+							[(ngModel)]="new_incident.children_type" 
+							class="form-control" 
+							(ngModelChange)="change_new_incident_children_type($event)"																								
+							*ngIf="new_incident.tmp_type != null && new_incident.children_type == null && new_incident.tmp_type.childrens != null"
+							style="width:100%"
+							>						
+							<option *ngFor="let t of new_incident.tmp_type.childrens" [value]="t.id">{{t.name}}</option>
+						</select>						
+					</fieldset>                                
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-6">
+					<label for="new_incident_date" style="font-weight: bold">Data</label>
+				</div>
+			</div>
+			<div class="row">				
+				<div class="col-6">
+					<div class="form-group">													
+						<div class="input-group">							
+							<input class="form-control" placeholder="yyyy-mm-dd" 
+							[(ngModel)]="new_incident.date" id="new_incident_date"
+							ngbDatepicker #niReschedule="ngbDatepicker" />
+							<div class="input-group-addon" (click)="niReschedule.toggle()">
+								<i class="fa fa-calendar" style="cursor: pointer;"></i>
+							</div>																																
+						</div>	
+						
+					</div>
+				</div>
+				<div class="col-6">					
+					<ngb-timepicker [spinners]="false" [(ngModel)]="new_incident.time"></ngb-timepicker>					
+				</div>
+			</div>
+			<div class="row" *ngIf="new_incident.type != null">
+				<div class="col-12">
+					<label for="new_incident_search_people" style="font-weight: bold">Pessoa{{ new_incident.people == null || new_incident.people.length <= 1 ? '' : 's' }}</label>	
+					<ul *ngIf="new_incident.people != null && new_incident.people.length > 0"
+						class="list-group">
+						<li *ngFor="let p of new_incident.people"
+							class="list-group-item">
+							<img alt="{{ p.name }}" 
+							class="rounded-circle img-border " 
+							src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}" 											
+							style="min-width:50px;max-width:50px;" 
+							*ngIf="p.avatar_url && p.avatar_url.length > 0" />							
+							{{ p.name }}
+							<div style="float:right">
+								<span class="badge badge-pill">
+									<i class="fa fa-times" 
+										style="cursor: pointer;"
+										(click)="remove_person_from_new_incident(p)"
+									></i>
+								</span>
+							</div>
+						</li>
+					</ul>												
+					<div class="form-group" [class.has-danger]="search_failed">
+					<input type="text" class="form-control" 
+						id="new_incident_search_people"
+						[ngbTypeahead]="search_people" 
+						placeholder="Pesquise {{ new_incident.people == null || new_incident.people.length <= 0 ? 'a' : 'mais' }} pessoa{{ new_incident.people == null || new_incident.people.length <= 0 ? '' : 's' }}"
+						[resultTemplate]="person_typeahead_template"
+						[inputFormatter]="people_typeahead_formatter"
+						[(ngModel)]="new_incident.tmp_person" 
+						(ngModelChange) ="add_person_to_new_incident($event)" 
+					/>
+					<span *ngIf="searching_people">buscando...</span>
+					<div class="form-control-feedback" *ngIf="search_failed">
+						ops... ocorreu algum erro na busca</div>
+					</div>
+					<ng-template #person_typeahead_template let-p="result">
+						<img alt="{{ p.name }}" 
+						class="rounded-circle img-border " 
+						src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}" 											
+						style="min-width:50px;max-width:50px;" 
+						*ngIf="p.avatar_url && p.avatar_url.length > 0" />						
+						{{ p.name }}
+					</ng-template>					
+				</div>
+			</div>
+			<div class="row" *ngIf="new_incident.type != null">
+				<div class="col-12">
+					<label for="new_incident_description" style="font-weight: bold">Descrição</label>								
+					<textarea class="form-control"
+					id="new_incident_description"
+					[(ngModel)]="new_incident.description"							
+					(ngModelChange) ="validate_new_event()" 		
+					rows="3"></textarea>
+				</div>
+			</div>			
+			<div class="row" *ngIf="new_incident.type != null && new_incident.type.need_value">
+				<div class="col-12">
+					<label for="new_incident_value" style="font-weight: bold">Valor</label>								
+					<input type="number" id="new_incident_value" 
+						[(ngModel)]="new_incident.value"							
+						class="form-control text-right"
+						(ngModelChange) ="validate_new_event_value()" 						
+						/>
+					<small class="form-text text-muted danger" *ngIf="new_incident.value != null && new_incident.value.errors?.gt">gt error</small>
+				</div>
+			</div>
+		</div>			
 	</div>
 	<div class="modal-footer">
-		footer		
+		<button type="button" 
+			class="btn btn-primary btn-raised" 
+			(click)="register_new_incident();d('new incident!');"
+			*ngIf="new_incident.correct">
+			Registrar
+		</button>															
+		<button type="button" class="btn btn-grey btn-raised" 
+			(click)="reset_new_incident();d('reset new incident!');"
+			>
+			Cancelar
+		</button>	
 	</div>
 </ng-template>
 
@@ -334,7 +473,7 @@
 									<i class="fa fa-calendar" style="cursor: pointer;"></i>
 								</div>							
 							</div>																
-						</div>
+						</div>						
 					</div>
 					<div class="col-6">
 						<ngb-timepicker [(ngModel)]="current_incident.new_time"></ngb-timepicker>							
@@ -362,12 +501,12 @@
 		</button>															
 		<button type="button" class="btn btn-grey btn-raised" 
 			(click)="reset_treat_incident(current_incident);"
-			*ngIf="current_incident.obrigatory || (current_incident.in_treatment && !current_incident.reschedule)">
+			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
 			Voltar
-		</button>
+		</button>		
 		<button type="button" class="btn btn-grey btn-raised" 
 			(click)="reset_reschedule(current_incident);"
-			*ngIf="!current_incident.obrigatory && current_incident.in_treatment && current_incident.reschedule">
+			*ngIf="current_incident.in_treatment && current_incident.reschedule">
 			Voltar
 		</button>
 		<button type="button" 

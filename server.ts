@@ -68,6 +68,14 @@ function getParticipationList(people) {
             response.send("Ok");
         });
 
+        app.get("/api/people/search/:name?", async (request, response, next) => {                        
+            const result = await pool.request()
+            .input('names', sql.VarChar(sql.MAX), request.params.name)
+            .execute(`GetPeopleByNameForTypeahead`);                
+
+            response.send(result.recordset[0]);
+        });
+
         app.post("/api/incident/register_contact", async (request, response, next) => {            
             let result = await incident_service.register_contact_for_incident(
                 request.body.incident, 
@@ -430,7 +438,7 @@ function getParticipationList(people) {
                     session.sendTyping();
                     const result = await pool.request()
                                     .input('names', sql.VarChar(sql.MAX), names)
-                                    .execute(`GetPeopleByName`);                
+                                    .execute(`GetPeopleByNameForBot`);                
                                         
                     session.dialogData.query = result.recordset;                    
                 } catch(error) {

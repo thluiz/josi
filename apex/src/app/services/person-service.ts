@@ -11,5 +11,10 @@ constructor(private http:Http) { }
   getDailyMonitor(branche, week) {
     return this.http.get(this.dataUrl + `/daily/${branche}/${week}`);    
   }  
+
+  search(term) {    
+    return this.http
+        .get(this.dataUrl + `/people/search/${term}`);
+  }
 }
 
