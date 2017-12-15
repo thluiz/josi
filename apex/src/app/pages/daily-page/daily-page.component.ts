@@ -415,7 +415,7 @@ export class DailyPageComponent implements OnInit {
     
     const update_interval = hours >= 22 || hours < 6 ? 600000 : 30000;
 
-    this.update_timer = setTimeout(() => { this.getMonitorData() }, update_interval);
+    //this.update_timer = setTimeout(() => { this.getMonitorData() }, update_interval);
   }
    
 }

@@ -247,23 +247,28 @@
 									</td>	
 									<td valign="middle" align="center" 										
 										*ngFor="let item of person.dates, let k2 = index" 
-										[ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
+										style="border-right:1px solid grey"
+										[ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">																	
+
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-											<div style="float:left;border-right:1px solid silver;padding:1px;">
+											<div class="text-center" 
+												style="line-height:15px;"												
+												[style.border-top]="k > 0 ? '1px solid #CCC' : ''">
 												<a (click)="open(content, i)" 
 													[style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'orange' : (i.past ? 'red' : 'black'  )  )  "
 													style="font-size:12px">
 													<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
 													<b *ngIf="i.type == 2">{{ i.title }}</b>																	
-													<div 
+													<span 
 														*ngIf="i.short_description != null 
 																&& i.short_description.length > 0 
 																&& i.type != 2 && i.type != 4"
 														style="font-size:11px"
-													>{{ i.short_description }} </div>										
+													> - {{ i.short_description }} </span>										
 												</a>	
 											</div>																															
-										</ng-template>							
+										</ng-template>																	
+
 									</td>																		
 								</tr>
 							</table>	
