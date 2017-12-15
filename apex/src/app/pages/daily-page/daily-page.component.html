@@ -249,17 +249,20 @@
 										*ngFor="let item of person.dates, let k2 = index" 
 										[ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">							
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-											<span *ngIf="!m"><br /></span>	
-											<a (click)="open(content, i)" [style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'orange' : (i.past ? 'red' : 'black'  )  )  ">
-												<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
-												<b>{{ i.title }}</b>																	
-												<span 
-													*ngIf="i.short_description != null 
-															&& i.short_description.length > 0 
-															&& i.type != 1 && i.type != 2 && i.type != 4"
-													style="font-size:12px"
-												> - {{ i.short_description }} </span>										
-											</a>																																
+											<div style="float:left;border-right:1px solid silver;padding:1px;">
+												<a (click)="open(content, i)" 
+													[style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'orange' : (i.past ? 'red' : 'black'  )  )  "
+													style="font-size:12px">
+													<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
+													<b *ngIf="i.type == 2">{{ i.title }}</b>																	
+													<div 
+														*ngIf="i.short_description != null 
+																&& i.short_description.length > 0 
+																&& i.type != 2 && i.type != 4"
+														style="font-size:11px"
+													>{{ i.short_description }} </div>										
+												</a>	
+											</div>																															
 										</ng-template>							
 									</td>																		
 								</tr>
@@ -344,7 +347,7 @@
 			</div>
 			<div class="row" *ngIf="new_incident.type != null">
 				<div class="col-12">
-					<label for="new_incident_search_people" style="font-weight: bold">Pessoa{{ new_incident.people == null || new_incident.people.length <= 1 ? '' : 's' }}</label>	
+					<label for="new_incident_search_people" style="font-weight: bold">Participante{{ new_incident.people == null || new_incident.people.length <= 1 ? '' : 's' }}</label>	
 					<ul *ngIf="new_incident.people != null && new_incident.people.length > 0"
 						class="list-group">
 						<li *ngFor="let p of new_incident.people"
@@ -369,7 +372,7 @@
 					<input type="text" class="form-control" 
 						id="new_incident_search_people"
 						[ngbTypeahead]="search_people" 
-						placeholder="Pesquise {{ new_incident.people == null || new_incident.people.length <= 0 ? 'a' : 'mais' }} pessoa{{ new_incident.people == null || new_incident.people.length <= 0 ? '' : 's' }}"
+						placeholder="Pesquise {{ new_incident.people == null || new_incident.people.length <= 0 ? 'a' : 'mais' }} participante{{ new_incident.people == null || new_incident.people.length <= 0 ? '' : 's' }}"
 						[resultTemplate]="person_typeahead_template"
 						[inputFormatter]="people_typeahead_formatter"
 						[(ngModel)]="new_incident.tmp_person" 
@@ -435,6 +438,13 @@
 		</button>
 	</div>
 	<div class="modal-body">
+		<div class="row" *ngIf="current_incident.title">
+			<div class="col-12">
+				<h6>
+					{{ current_incident.title }}
+				</h6>
+			</div>
+		</div>
 		<div class="row" *ngIf="current_incident.treatment_text">
 			<div class="col-12">
 				<h6>
@@ -514,7 +524,7 @@
 		</button>
 		<button type="button" 
 			class="btn btn-success btn-raised" 
-			(click)="d('Other Activity')"
+			(click)="open_new_activity_from_existent(new_activity, current_incident);d('Other Activity');"
 			*ngIf="current_incident.closed || current_incident.treated">
 			Outra Atividade
 		</button>

@@ -307,10 +307,20 @@ export class DailyPageComponent implements OnInit {
     }); 
   }
   
-  open(content, incident) {
+  open_new_activity_from_existent(content, incident) {
+    this.new_incident = incident;      
+    this.modalService.open(content).result.then((result) => {          
+        this.current_incident = null;                      
+        this.closeResult = `Closed new activty with: ${result}`;
+    }, (reason) => {
+        console.log(reason);
+    });
+  }
+
+  open(content, incident){
       this.current_incident = incident;      
-      this.modalService.open(content).result.then((result) => {
-          this.current_incident = null;
+      this.modalService.open(content).result.then((result) => {          
+          this.current_incident = null;                      
           this.closeResult = `Closed with: ${result}`;
       }, (reason) => {
           console.log(reason);
