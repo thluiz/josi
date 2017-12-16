@@ -361,41 +361,41 @@ export class DailyPageComponent implements OnInit {
           this.sumary[this.sumary.length] = {
             program: 'Tradicional',
             cols: [
-              result.people.filter(p => p.program_id == 1).length,
-              result.people.filter(p => p.program_id == 1 && p.financial_status > 0 && p.financial_status != 3).length,
-              result.people.filter(p => p.program_id == 1 && p.scheduling_status > 0 && p.scheduling_status != 3).length,
-              0, 
-              0, 0, 0, 0, 0, 0, 0
+              { people: result.people.filter(p => p.program_id == 1).length },
+              { people: result.people.filter(p => p.program_id == 1 && p.financial_status > 0 && p.financial_status != 3).length },
+              { people: result.people.filter(p => p.program_id == 1 && p.scheduling_status > 0 && p.scheduling_status != 3).length },
+              { people: 0 },
+              { }  , { }  , { }  , { }  , { }  , { }  , { }  
             ]            
           };
           this.sumary[this.sumary.length] = {
             program: 'Experiencial',
             cols: [
-              result.people.filter(p => p.program_id == 2).length,
-              result.people.filter(p => p.program_id == 2 && p.financial_status > 0 && p.financial_status != 3).length,
-              result.people.filter(p => p.program_id == 2 && p.scheduling_status > 0 && p.scheduling_status != 3).length,
-              0,
-              0, 0, 0, 0, 0, 0, 0
+              { people: result.people.filter(p => p.program_id == 2).length },
+              { people: result.people.filter(p => p.program_id == 2 && p.financial_status > 0 && p.financial_status != 3).length },
+              { people: result.people.filter(p => p.program_id == 2 && p.scheduling_status > 0 && p.scheduling_status != 3).length },
+              { people: 0 },
+              { }  , { }  , { }  , { }  , { }  , { }  , { }  
             ]
           };
           this.sumary[this.sumary.length] = {
             program: 'Fundamental',
             cols: [
-              result.people.filter(p => p.program_id == 3).length,
-              result.people.filter(p => p.program_id == 3 && p.financial_status > 0 && p.financial_status != 3).length,
-              result.people.filter(p => p.program_id == 3 && p.scheduling_status > 0 && p.scheduling_status != 3).length,
-              0, 
-              0, 0, 0, 0, 0, 0, 0
+              { people: result.people.filter(p => p.program_id == 3).length },
+              { people: result.people.filter(p => p.program_id == 3 && p.financial_status > 0 && p.financial_status != 3).length },
+              { people: result.people.filter(p => p.program_id == 3 && p.scheduling_status > 0 && p.scheduling_status != 3).length },
+              { people: 0 }, 
+              { }  , { }  , { }  , { }  , { }  , { }  , { }  
             ]
           };
           this.sumary[this.sumary.length] = {
             program: 'Geral',
             cols: [
-              result.people.length,
-              result.people.filter(p => p.financial_status > 0 && p.financial_status != 3).length,
-              result.people.filter(p => p.scheduling_status > 0 && p.scheduling_status != 3).length,
-              0,
-              0, 0, 0, 0, 0, 0, 0
+              { people: result.people.length },
+              { people: result.people.filter(p => p.financial_status > 0 && p.financial_status != 3).length },
+              { people: result.people.filter(p => p.scheduling_status > 0 && p.scheduling_status != 3).length },
+              { people: 0 },
+              { }  , { }  , { }  , { }  , { }  , { }  , { }  
             ]
           };
         } else {
@@ -461,16 +461,7 @@ export class DailyPageComponent implements OnInit {
     const update_interval = hours >= 22 || hours < 6 ? 600000 : 30000;
 
     console.log(this.branch_cols);
-
-    if(this.branch_cols) {
-      console.log("aqui1!!");
-      console.log(this.cols
-        .map((c :any) => parseFloat(c.width.replace("%", '')))
-        .reduce((valorAnterior, valorAtual, indice, array) => {
-        return valorAnterior + valorAtual;
-      }));
-    }
-
+    
     this.update_timer = setTimeout(() => { this.getMonitorData() }, update_interval);
   }
    

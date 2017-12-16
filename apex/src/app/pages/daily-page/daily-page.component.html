@@ -116,8 +116,13 @@
 									<td>
 										{{ s.program }}
 									</td>
-									<td *ngFor="let sc of s.cols, let sic = index">
-										{{ ('00' + sc).slice(-2)  }} 
+									<td *ngFor="let sc of s.cols, let scIndex = index">
+										<span 
+										*ngIf="sc.people || sc.people === 0"
+										[style.font-weight]="scIndex > 0 && sc.people > 0 ? 'bold' : 'normal'"
+										[style.color]="scIndex > 0 && sc.people > 0 ? 'red' : ''">
+											{{ ('00' + sc.people ).slice(-2)  }} 											
+										</span>
 									</td>
 								</tr>
 							</table>
@@ -162,7 +167,7 @@
 								<tr *ngFor="let person of d.daily, let k4 = index">
 									<td>
 										<div class="row">
-											<div class="col-2" style="padding:0 12px;min-width:50px;">
+											<div class="col-2" style="padding:0 15px;">
 												<img alt="{{ person.name }}"
 												class="rounded-circle img-border " 
 												src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
