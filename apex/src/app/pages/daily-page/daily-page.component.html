@@ -42,55 +42,7 @@
 									style="cursor:pointer" 
 									(click)="show_change_branch = !show_change_branch">
 									x
-								</span>
-								<table *ngIf="sumary.people != null" width="500px" 
-									class="table-sm table-striped table-bordered table-striped"
-									style="text-align:center;padding:0">
-									<tr style="background-color:gray;color:white;font-size:10px;height:10px;padding:0;margin:0">									
-										<td rowspan="2" style="padding:0"></td>
-										<td rowspan="2" valign="bottom" style="padding:0">Membros</td>
-										<td colspan="3"  style="padding:0">Pendências</td>
-									</tr>
-									<tr style="background-color:gray;color:white;font-size:10px;height:10px;padding:0;margin:0">									
-										<td style="padding:0">Agendamento</td>
-										<td style="padding:0">Financeiras</td>										
-										<td style="padding:0">Comunicados</td>
-									</tr>
-									<tr>
-										<td align="right">Programa Tradicional</td>
-										<td> {{ ('00' + sumary.people_traditional).slice(-2) }} </td>
-										<td> 00 </td>
-										<td> 00 </td>
-										<td> 00 </td>
-									</tr>
-									<tr>
-										<td align="right">Programa Experiencial</td>
-										<td align="center">{{ ('00' + sumary.people_experience).slice(-2) }}</td>
-										<td> 00 </td>
-										<td> 00 </td>
-										<td> 00 </td>
-									</tr>
-									<tr>
-										<td align="right">Programa Fundamental</td>
-										<td>{{ ('00' + sumary.people_fundamental).slice(-2) }}</td>
-										<td> 00 </td>
-										<td> 00 </td>
-										<td> 00 </td>
-									</tr>
-									<tr>
-										<td align="right">Total</td>
-										<td>{{ ('00' + sumary.people).slice(-2) }}</td>										
-										<td>
-											<span style="color:red;font-weight:bold" *ngIf="sumary.schedule_issues > 0">{{ ('00' + sumary.schedule_issues).slice(-2) }}</span>
-											<span *ngIf="sumary.schedule_issues == 0">00</span>											
-										</td>
-										<td>
-											<span style="color:red;font-weight:bold" *ngIf="sumary.financial_issues > 0">{{ ('00' + sumary.financial_issues).slice(-2) }}</span>										
-											<span *ngIf="!sumary.financial_issues">00</span>
-										</td>
-										<td>00</td>
-									</tr>
-								</table>								
+								</span>															
 							</div>
 							<div class="col-6" style="text-align: center;">		
 								<table cellpadding=0 cellspacing=0>
@@ -130,8 +82,47 @@
 					</div>					
 				</div>
 			</div>
-			<div class="card-body">		
+			<div class="card-body">						
 				<table style="width:100%;">					
+					<tr>
+						<td>
+							<table class="table-sm table-striped table-bordered table-responsive"															
+								style="margin-bottom:50px;width:100%">
+								<tr>
+									<td colspan="12"
+										style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center;background-color:grey">
+										{{ current_branch_name }}
+									</td>						
+								</tr>
+								<tr>						
+									<td *ngFor="let c of branch_cols, let k3 = index" 
+										align="center" 
+										
+										[ngStyle]="{ 'width': c.width, 'color': 'white',
+													'background-color': '#AAA' }"
+										[colSpan]="c.colspan || 1"
+									>
+									<div>										
+										<i  												
+											[ngClass]="c.icon"
+											*ngIf="c.icon != null"
+											[title]="c.description">
+										</i>
+										{{ c.name }} 
+									</div>
+									</td>
+								</tr>
+								<tr *ngFor="let s of sumary, let si = index" >
+									<td>
+										{{ s.program }}
+									</td>
+									<td *ngFor="let sc of s.cols, let sic = index">
+										{{ ('00' + sc).slice(-2)  }} 
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
 					<tr *ngFor="let d of domains, let k5 = index">
 						<td>																																		
 							<table class="table-sm table-striped table-bordered table-responsive"															
@@ -264,7 +255,7 @@
 																&& i.short_description.length > 0 
 																&& i.type != 2 && i.type != 4"
 														style="font-size:11px"
-													> - {{ i.short_description }} </span>										
+													> - {{ i.short_description }} </span>
 												</a>	
 											</div>																															
 										</ng-template>																	

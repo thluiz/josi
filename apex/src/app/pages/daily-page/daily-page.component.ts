@@ -44,6 +44,7 @@ import { switchMap } from 'rxjs/operators';
 export class DailyPageComponent implements OnInit {
   daily: Observable<any[]>;
   cols;
+  branch_cols;
   current_week_range;
   current_week_day;  
   current_week = 0;
@@ -340,26 +341,63 @@ export class DailyPageComponent implements OnInit {
         this.domains = result.domains;   
         this.incident_types = result.incident_types;
         this.current_week_range = result.current_week_range;
-        this.cols = [          
-          { width: "25.5%" },
-          { width: "1.5%", icon: "ft-watch", description: "Agendamento" },
-          { width: "1.5%", icon: "icon-wallet", description: "Financeiro" },
-          { width: "1.5%", icon: "ft-radio", description: "Comunicados" }
+        this.cols = [                    
+          { width: "28.1%" },
+          { width: "1.8%", icon: "ft-watch", description: "Agendamento" },
+          { width: "1.8%", icon: "icon-wallet", description: "Financeiro" },
+          { width: "1.8%", icon: "ft-radio", description: "Comunicados" }
         ];
 
-        
+        this.branch_cols = [          
+          { width: "24.3%" },
+          { width: "1.8%", icon: "fa fa-user", description: "Membros" },
+          { width: "1.8%", icon: "ft-watch", description: "Agendamento" },
+          { width: "1.8%", icon: "icon-wallet", description: "Financeiro" },
+          { width: "1.8%", icon: "ft-radio", description: "Comunicados" }
+        ];        
 
         if(result && result.people) {
-          this.sumary = {
-            people: result.people.length,
-            financial_treatment: result.people.filter(p => p.financial_status == 3).length,
-            schedule_treatment: result.people.filter(p => p.scheduling_status == 3).length,
-            financial_issues: result.people.filter(p => p.financial_status > 0 && p.financial_status != 3).length,
-            schedule_issues: result.people.filter(p => p.scheduling_status > 0 && p.scheduling_status != 3).length,
-            people_traditional: result.people.filter(p => p.program_id == 1).length,
-            people_experience: result.people.filter(p => p.program_id == 2).length,
-            people_fundamental: result.people.filter(p => p.program_id == 3).length 
-          }
+          this.sumary = [];
+          this.sumary[this.sumary.length] = {
+            program: 'Tradicional',
+            cols: [
+              result.people.filter(p => p.program_id == 1).length,
+              result.people.filter(p => p.program_id == 1 && p.financial_status > 0 && p.financial_status != 3).length,
+              result.people.filter(p => p.program_id == 1 && p.scheduling_status > 0 && p.scheduling_status != 3).length,
+              0, 
+              0, 0, 0, 0, 0, 0, 0
+            ]            
+          };
+          this.sumary[this.sumary.length] = {
+            program: 'Experiencial',
+            cols: [
+              result.people.filter(p => p.program_id == 2).length,
+              result.people.filter(p => p.program_id == 2 && p.financial_status > 0 && p.financial_status != 3).length,
+              result.people.filter(p => p.program_id == 2 && p.scheduling_status > 0 && p.scheduling_status != 3).length,
+              0,
+              0, 0, 0, 0, 0, 0, 0
+            ]
+          };
+          this.sumary[this.sumary.length] = {
+            program: 'Fundamental',
+            cols: [
+              result.people.filter(p => p.program_id == 3).length,
+              result.people.filter(p => p.program_id == 3 && p.financial_status > 0 && p.financial_status != 3).length,
+              result.people.filter(p => p.program_id == 3 && p.scheduling_status > 0 && p.scheduling_status != 3).length,
+              0, 
+              0, 0, 0, 0, 0, 0, 0
+            ]
+          };
+          this.sumary[this.sumary.length] = {
+            program: 'Total',
+            cols: [
+              result.people.length,
+              result.people.filter(p => p.financial_status > 0 && p.financial_status != 3).length,
+              result.people.filter(p => p.scheduling_status > 0 && p.scheduling_status != 3).length,
+              0,
+              0, 0, 0, 0, 0, 0, 0
+            ]
+          };
         } else {
           this.sumary = {}
         }
@@ -367,6 +405,13 @@ export class DailyPageComponent implements OnInit {
         for(var i = 0; i< result.columns.length; i++) {
           let c = result.columns[i];
           this.cols[this.cols.length] = {
+            prop: 'incidents' + c.date,
+            name: c.name,
+            current: c.current,
+            width: '9.5%'
+          };
+
+          this.branch_cols[this.branch_cols.length] = {
             prop: 'incidents' + c.date,
             name: c.name,
             current: c.current,
@@ -415,7 +460,7 @@ export class DailyPageComponent implements OnInit {
     
     const update_interval = hours >= 22 || hours < 6 ? 600000 : 30000;
 
-    //this.update_timer = setTimeout(() => { this.getMonitorData() }, update_interval);
+    this.update_timer = setTimeout(() => { this.getMonitorData() }, update_interval);
   }
    
 }
