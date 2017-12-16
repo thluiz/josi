@@ -342,18 +342,18 @@ export class DailyPageComponent implements OnInit {
         this.incident_types = result.incident_types;
         this.current_week_range = result.current_week_range;
         this.cols = [                    
-          { width: "28.1%" },
-          { width: "1.8%", icon: "ft-watch", description: "Agendamento" },
-          { width: "1.8%", icon: "icon-wallet", description: "Financeiro" },
-          { width: "1.8%", icon: "ft-radio", description: "Comunicados" }
+          { width: "24.5%" },
+          { width: "3%", icon: "ft-watch", description: "Agendamento" },
+          { width: "3%", icon: "icon-wallet", description: "Financeiro" },
+          { width: "3%", icon: "ft-radio", description: "Comunicados" }
         ];
 
         this.branch_cols = [          
-          { width: "24.3%" },
-          { width: "1.8%", icon: "fa fa-user", description: "Membros" },
-          { width: "1.8%", icon: "ft-watch", description: "Agendamento" },
-          { width: "1.8%", icon: "icon-wallet", description: "Financeiro" },
-          { width: "1.8%", icon: "ft-radio", description: "Comunicados" }
+          { width: "21.5%" },
+          { width: "3%", icon: "fa fa-user", description: "Membros" },
+          { width: "3", icon: "ft-watch", description: "Agendamento" },
+          { width: "3%", icon: "icon-wallet", description: "Financeiro" },
+          { width: "3%", icon: "ft-radio", description: "Comunicados" }
         ];        
 
         if(result && result.people) {
@@ -389,7 +389,7 @@ export class DailyPageComponent implements OnInit {
             ]
           };
           this.sumary[this.sumary.length] = {
-            program: 'Total',
+            program: 'Geral',
             cols: [
               result.people.length,
               result.people.filter(p => p.financial_status > 0 && p.financial_status != 3).length,

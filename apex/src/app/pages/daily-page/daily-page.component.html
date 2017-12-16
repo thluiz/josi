@@ -518,11 +518,5 @@
 			*ngIf="current_incident.in_treatment && current_incident.reschedule">
 			Voltar
 		</button>
-		<button type="button" 
-			class="btn btn-success btn-raised" 
-			(click)="open_new_activity_from_existent(new_activity, current_incident);d('Other Activity');"
-			*ngIf="current_incident.closed || current_incident.treated">
-			Outra Atividade
-		</button>
 	</div>
 </ng-template>
