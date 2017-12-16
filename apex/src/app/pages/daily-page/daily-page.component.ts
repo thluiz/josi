@@ -460,6 +460,17 @@ export class DailyPageComponent implements OnInit {
     
     const update_interval = hours >= 22 || hours < 6 ? 600000 : 30000;
 
+    console.log(this.branch_cols);
+
+    if(this.branch_cols) {
+      console.log("aqui1!!");
+      console.log(this.cols
+        .map((c :any) => parseFloat(c.width.replace("%", '')))
+        .reduce((valorAnterior, valorAtual, indice, array) => {
+        return valorAnterior + valorAtual;
+      }));
+    }
+
     this.update_timer = setTimeout(() => { this.getMonitorData() }, update_interval);
   }
    

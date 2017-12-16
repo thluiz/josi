@@ -86,7 +86,7 @@
 				<table style="width:100%;">					
 					<tr>
 						<td>
-							<table class="table-sm table-striped table-bordered table-responsive"															
+							<table class="table-sm table-striped table-bordered"															
 								style="margin-bottom:50px;width:100%">
 								<tr>
 									<td colspan="12"
@@ -125,7 +125,7 @@
 					</tr>
 					<tr *ngFor="let d of domains, let k5 = index">
 						<td>																																		
-							<table class="table-sm table-striped table-bordered table-responsive"															
+							<table class="table-sm table-striped table-bordered"															
 								style="margin-bottom:50px;width:100%">
 								<tr>
 									<td colspan="11"
@@ -162,7 +162,7 @@
 								<tr *ngFor="let person of d.daily, let k4 = index">
 									<td>
 										<div class="row">
-											<div class="col-2" style="padding:0;padding-left:10px">
+											<div class="col-2" style="padding:0 12px;min-width:50px;">
 												<img alt="{{ person.name }}"
 												class="rounded-circle img-border " 
 												src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
