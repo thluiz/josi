@@ -13,19 +13,14 @@
 <div class="row">
 	<div class="col-12">		
 		<div class="card">
-			<div class="card-header">
+			<div class="card-header" style="padding-bottom:0">
 				<div class="row">
 					<div class="col-12">
 						<div class="row">
-							<h4 class="card-title">
-								Diário de Atividades - Membros Ativos 																																
-							</h4>
-						</div>						
-						<div class="row" 							
-							*ngIf="sumary != null"
-							style="border: 1px solid gray;"
-						>																		
-							<div class="col-6">
+							<div class="col-7">
+								<h4 class="card-title">
+									Diário de Atividades - Membros Ativos 																																
+								</h4>
 								<h6 style="margin:0;margin-top:5px;margin-bottom:5px;font-weight:bold;color:black;cursor:pointer" 
 								*ngIf="!show_change_branch"
 								(click)="show_change_branch = !show_change_branch">									
@@ -42,92 +37,142 @@
 									style="cursor:pointer" 
 									(click)="show_change_branch = !show_change_branch">
 									x
-								</span>															
+								</span>
 							</div>
-							<div class="col-6" style="text-align: center;">		
-								<table cellpadding=0 cellspacing=0>
-									<tr>
-										<td valign="middle">
-											<span style="font-weight:bold">Período:</span>
-										</td>
-										<td valign="middle">
-											<button type="button" 
-												(click)="change_week(-1)"
-												class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-left">									
-											</button>
-										</td>
-										<td valign="middle">
-											{{ current_week_range }} 
-										</td>
-										<td valign="middle">
-											<button type="button" 
-												(click)="change_week(1)"
-												class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-right"
-												>									
-											</button>
-										</td>
-										<td valign="middle">
-											<button type="button" 
-												(click)="reset_new_incident();open(new_activity, null)"
-												class="btn btn-success btn-raised btn-fab btn-sm ft-plus"
-												title="Registrar Atividade"
-												style="margin-left:20px"
-												>									
-											</button>
-										</td>
-									</tr>
-								</table>							
+							<div class="col-5">										
+								<div class="row">									
+									<div class="col-6 text-center">
+										<span class="input-group">
+											<span class="input-group-btn">
+												<button type="button" 
+													(click)="change_week(-1)"
+													class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-left">									
+												</button>
+											</span>											
+											<input type="text" class='form-control text-center'
+												style="background-color: white"
+												[value]="current_week_range" readonly="readonly"/>																								
+											<span class="input-group-btn">
+												<button type="button" 
+													id="btn_next_week"
+													(click)="change_week(1)"											
+													class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-right"
+													>									
+												</button>
+											</span>
+										</span>
+									</div>
+									<div class="col-6">
+										<button type="button" 
+											(click)="reset_new_incident();open(new_activity, null)"
+											class="btn btn-success btn-raised ft-plus"
+											title="Registrar Atividade"
+											style="margin-left:10px"
+											>									
+										</button>	
+										<button type="button" 
+											(click)="reset_new_incident();open(new_activity, null)"
+											class="btn btn-primary btn-raised ft-plus"
+											title="Registrar Atividade"
+											style="margin-left:5px"
+											>									
+										</button>								
+									</div>
+								</div>																																
 							</div>								
-						</div>
+						</div>						
 					</div>					
 				</div>
 			</div>
 			<div class="card-body">						
-				<table style="width:100%;">					
-					<tr>
-						<td>
+				<div class="row">
+					<div class="col-7">
+						<table class="table-sm table-striped table-bordered"															
+						style="margin-bottom:50px;width:100%">															
+							<tr style="background-color: #AAA;color:white">						
+								<td width="75%" align="center">
+									<b>Atividades</b>
+								</td>
+								<td width="3%" align="center">
+									<i  												
+										class="ft-calendar"
+										title="Agendados">
+									</i>
+								</td>
+								<td width="3%" align="center">
+									<i  												
+										class="fa fa-check"
+										title="Concluídos">
+									</i>
+								</td>
+								<td width="3%" align="center">
+									<i  												
+										class="fa fa-times"
+										title="Não Concluídos">
+									</i>
+								</td>
+								<td width="3%" align="center">
+									<i  												
+										class="ft-check-circle"
+										title="Tratados">
+									</i>
+								</td>
+								<td width="3%" align="center">
+									<i  												
+										class="ft-zap"
+										title="Inesperados">
+									</i>
+								</td>									
+							</tr>
+							<tr *ngFor="let acs of activity_sumary, let asi = index" >
+								<td>
+									{{ acs.name }}
+								</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</div>					
+					<div class="col-4">
 							<table class="table-sm table-striped table-bordered"															
-								style="margin-bottom:50px;width:100%">
-								<tr>
-									<td colspan="12"
-										style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center;background-color:grey">
-										{{ current_branch_name }}
-									</td>						
-								</tr>
-								<tr>						
-									<td *ngFor="let c of branch_cols, let k3 = index" 
-										align="center" 
-										
-										[ngStyle]="{ 'width': c.width, 'color': 'white',
-													'background-color': '#AAA' }"
-										[colSpan]="c.colspan || 1"
-									>
-									<div>										
-										<i  												
-											[ngClass]="c.icon"
-											*ngIf="c.icon != null"
-											[title]="c.description">
-										</i>
-										{{ c.name }} 
-									</div>
-									</td>
-								</tr>
-								<tr *ngFor="let s of sumary, let si = index" >
-									<td>
-										{{ s.program }}
-									</td>
-									<td *ngFor="let sc of s.cols, let scIndex = index">
-										<span 
-										*ngIf="sc.people || sc.people === 0"
-										[style.font-weight]="scIndex > 0 && sc.people > 0 ? 'bold' : 'normal'"
-										[style.color]="scIndex > 0 && sc.people > 0 ? 'red' : ''">
-											{{ ('00' + sc.people ).slice(-2)  }} 											
-										</span>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
+							style="margin-bottom:50px;width:100%">								
+							<tr>						
+								<td *ngFor="let c of sumary_cols, let k3 = index" 
+									align="center" 									
+									[ngStyle]="{ 'width': c.width, 'color': 'white',
+												'background-color': '#AAA' }"
+									[colSpan]="c.colspan || 1"
+								>
+								<div>										
+									<i  												
+										[ngClass]="c.icon"
+										*ngIf="c.icon != null"
+										[title]="c.description">
+									</i>
+									<b>{{ c.name }}</b>
+								</div>
+								</td>
+							</tr>
+							<tr *ngFor="let s of sumary, let si = index" >
+								<td>
+									{{ s.program }}
+								</td>
+								<td *ngFor="let sc of s.cols, let scIndex = index">
+									<span 
+									*ngIf="sc.people || sc.people === 0"
+									[style.font-weight]="scIndex > 0 && sc.people > 0 ? 'bold' : 'normal'"
+									[style.color]="scIndex > 0 && sc.people > 0 ? 'red' : ''">
+										{{ ('00' + sc.people ).slice(-2)  }} 											
+									</span>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<table style="width:100%;">										<tr>						
 					<tr *ngFor="let d of domains, let k5 = index">
 						<td>																																		
 							<table class="table-sm table-striped table-bordered"															
@@ -167,7 +212,7 @@
 								<tr *ngFor="let person of d.daily, let k4 = index">
 									<td>
 										<div class="row">
-											<div class="col-2" style="padding:0 15px;">
+											<div class="col-2" style="padding:0;padding-left:5px">
 												<img alt="{{ person.name }}"
 												class="rounded-circle img-border " 
 												src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
@@ -190,12 +235,12 @@
 									</td>								
 									<td valign="middle" align="center">
 										<span *ngIf="person.scheduling_status == 3">												
-											<i class="ft-watch" style="color:orange"
+											<i class="ft-calendar" style="color:orange"
 												[title]="person.scheduling_description">
 											</i>
 										</span>
 										<span *ngIf="person.scheduling_status > 0 && person.scheduling_status != 3">
-											<i class="ft-watch" style="color:red"													
+											<i class="ft-calendar" style="color:red"													
 												[title]="person.scheduling_description">
 											</i>
 										</span>

@@ -95,11 +95,12 @@ function getParticipationList(people) {
             
         });
 
-        app.get("/api/daily/:branch?/:week?", async (request, response, next) => {
+        app.get("/api/daily/:branch?/:week?/:date?", async (request, response, next) => {
             try {
                 let result = await pool.request()                
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
                     .input('week_modifier', sql.Int, request.params.week || 0)
+                    .input('date', sql.VarChar(10), request.params.date)
                     .execute(`GetDailyMonitor`);                
 
                 response.send((result.recordset[0][0]));

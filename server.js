@@ -75,11 +75,12 @@ function getParticipationList(people) {
             let result = yield incident_service.register_contact_for_incident(request.body.incident, request.body.contact.contact_text);
             response.send("Ok");
         }));
-        app.get("/api/daily/:branch?/:week?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+        app.get("/api/daily/:branch?/:week?/:date?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 let result = yield pool.request()
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
                     .input('week_modifier', sql.Int, request.params.week || 0)
+                    .input('date', sql.VarChar(10), request.params.date)
                     .execute(`GetDailyMonitor`);
                 response.send((result.recordset[0][0]));
             }
