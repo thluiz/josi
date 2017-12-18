@@ -346,6 +346,7 @@ export class DailyPageComponent implements OnInit {
         this.current_week_range = result.current_week_range;
         this.week_days = result.columns;
         this.activity_sumary  = result.activity_sumary;
+        this.sumary = result.sumary;
         this.cols = [                    
           { width: "24.5%" },
           { width: "3%", icon: "ft-calendar", description: "Agendamento" },
@@ -360,49 +361,7 @@ export class DailyPageComponent implements OnInit {
           { width: "3%", icon: "icon-wallet", description: "Financeiro" },
           { width: "3%", icon: "ft-radio", description: "Comunicados" }
         ];        
-
-        if(result && result.people) {
-          this.sumary = [];
-          this.sumary[this.sumary.length] = {
-            program: 'Tradicional',
-            cols: [
-              { people: result.people.filter(p => p.program_id == 1).length },
-              { people: result.people.filter(p => p.program_id == 1 && p.financial_status > 0 && p.financial_status != 3).length },
-              { people: result.people.filter(p => p.program_id == 1 && p.scheduling_status > 0 && p.scheduling_status != 3).length },
-              { people: 0 }
-            ],            
-          };
-          this.sumary[this.sumary.length] = {
-            program: 'Experiencial',
-            cols: [
-              { people: result.people.filter(p => p.program_id == 2).length },
-              { people: result.people.filter(p => p.program_id == 2 && p.financial_status > 0 && p.financial_status != 3).length },
-              { people: result.people.filter(p => p.program_id == 2 && p.scheduling_status > 0 && p.scheduling_status != 3).length },
-              { people: 0 },
-            ],            
-          };
-          this.sumary[this.sumary.length] = {
-            program: 'Fundamental',
-            cols: [
-              { people: result.people.filter(p => p.program_id == 3).length },
-              { people: result.people.filter(p => p.program_id == 3 && p.financial_status > 0 && p.financial_status != 3).length },
-              { people: result.people.filter(p => p.program_id == 3 && p.scheduling_status > 0 && p.scheduling_status != 3).length },
-              { people: 0 }, 
-            ],            
-          };
-          this.sumary[this.sumary.length] = {
-            program: 'Total',
-            cols: [
-              { people: result.people.length },
-              { people: result.people.filter(p => p.financial_status > 0 && p.financial_status != 3).length },
-              { people: result.people.filter(p => p.scheduling_status > 0 && p.scheduling_status != 3).length },
-              { people: 0 },
-            ]            
-          };
-        } else {
-          this.sumary = {}
-        }
-
+        
         for(var i = 0; i< result.columns.length; i++) {
           let c = result.columns[i];
           this.cols[this.cols.length] = {

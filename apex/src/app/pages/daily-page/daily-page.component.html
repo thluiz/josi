@@ -91,7 +91,7 @@
 						style="margin-bottom:50px;width:100%">															
 							<tr style="background-color: #AAA;color:white">						
 								<td width="75%" align="center">
-									<b>Atividades</b>
+									<b>Atividades do Dia</b>
 								</td>
 								<td width="3%" align="center">
 									<i  												
@@ -136,7 +136,7 @@
 							</tr>
 						</table>
 					</div>					
-					<div class="col-4">
+					<div class="col-1">
 							<table class="table-sm table-striped table-bordered"															
 							style="margin-bottom:50px;width:100%">								
 							<tr>						
@@ -160,12 +160,28 @@
 								<td>
 									{{ s.program }}
 								</td>
-								<td *ngFor="let sc of s.cols, let scIndex = index">
-									<span 
-									*ngIf="sc.people || sc.people === 0"
-									[style.font-weight]="scIndex > 0 && sc.people > 0 ? 'bold' : 'normal'"
-									[style.color]="scIndex > 0 && sc.people > 0 ? 'red' : ''">
-										{{ ('00' + sc.people ).slice(-2)  }} 											
+								<td>
+									{{ ('00' + s.people ).slice(-2)  }}
+								</td>
+								<td>
+									<span 									
+									[style.font-weight]="s.scheduling > 0 ? 'bold' : 'normal'"
+									[style.color]="s.scheduling > 0 ? 'red' : ''">
+										{{ ('00' + s.scheduling ).slice(-2)  }} 											
+									</span>
+								</td>
+								<td>
+									<span 									
+									[style.font-weight]="s.financial > 0 ? 'bold' : 'normal'"
+									[style.color]="s.financial > 0 ? 'red' : ''">
+										{{ ('00' + s.financial ).slice(-2)  }} 											
+									</span>
+								</td>
+								<td>
+									<span 									
+									[style.font-weight]="s.comunications > 0 ? 'bold' : 'normal'"
+									[style.color]="s.comunications > 0 ? 'red' : ''">
+										{{ ('00' + s.comunications ).slice(-2)  }} 											
 									</span>
 								</td>
 							</tr>
