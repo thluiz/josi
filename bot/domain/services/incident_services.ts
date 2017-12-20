@@ -11,6 +11,7 @@ export class IncidentService {
         const result = await this.sql_pool
                         .request()
                         .input('id', sql.Int, incident.id)
+                        .input('close_description', sql.VarChar(sql.MAX), incident.closing_contact_text || "")                        
                         .execute(`CloseIncident`);
     }
         
