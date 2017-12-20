@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
+import { MarkdownModule } from 'ngx-markdown';
 import { FormControl, FormsModule, ReactiveFormsModule,
         FormGroup, Validators, NgForm } from '@angular/forms';
 
@@ -12,7 +13,7 @@ import { NgbModal,
     ModalDismissReasons, 
     NgbTimepickerModule,
     NgbActiveModal,
-    NgbModule 
+    NgbModule     
   } from '@ng-bootstrap/ng-bootstrap';
 
 import { DailyPagesRoutingModule } from "./daily-pages-routing.module";
@@ -27,7 +28,8 @@ import { DailyPageComponent } from './daily-page.component';
         ReactiveFormsModule,                        
         NgbDatepickerModule.forRoot(),
         NgbTimepickerModule.forRoot(),
-        NgbModule
+        NgbModule,
+        MarkdownModule.forRoot()
     ],
     declarations: [       
         DailyPageComponent

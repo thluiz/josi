@@ -312,45 +312,41 @@
 						</table>
 					</div>
 				</div>
-				<div class="row">																													
-					<div class="offset-md-7 col-3 text-right">
-						<span class="input-group">
-							<span class="input-group-btn">
-								<button type="button" 
-									(click)="change_week(-1)"
-									class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-left">									
-								</button>
-							</span>											
-							<input type="text" class='form-control text-center'
-								style="background-color: white"
-								[value]="current_week_range" readonly="readonly"/>																								
-							<span class="input-group-btn">
-								<button type="button" 
-									id="btn_next_week"
-									(click)="change_week(1)"											
-									class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-right"
-									>									
-								</button>
-							</span>
-						</span>
-					</div>
-					<div class="col-2">
-						<button type="button" 
-							(click)="reset_new_incident();open(new_activity, null)"
-							class="btn btn-success btn-raised ft-plus"
-							title="Registrar Atividade"
-							style="margin-left:10px"
-							>																
-						</button>	
-						<button type="button" 
-							(click)="reset_new_incident();open(new_activity, null)"
-							class="btn btn-primary btn-raised ft-plus"
-							title="Registrar Atividade"
-							style="margin-left:5px"
-							>									
-						</button>								
-					</div>
-				</div>	
+				<div class="sticky-top" style="background-color:white;width:100%;padding:10px">
+					<div class="row">																													
+						<div class="col-6"></div>
+						<div class="col-4 text-right">
+							<span class="input-group">
+								<span class="input-group-btn">
+									<button type="button" 
+										(click)="change_week(-1)"
+										class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-left">									
+									</button>
+								</span>											
+								<input type="text" class='form-control text-center'
+									style="background-color: white"
+									[value]="current_week_range" readonly="readonly"/>																								
+								<span class="input-group-btn">
+									<button type="button" 
+										id="btn_next_week"
+										(click)="change_week(1)"											
+										class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-right"
+										>									
+									</button>
+								</span>
+							</span>			
+						</div>
+						<div class="col-2 text-center">
+							<button type="button" 
+								(click)="reset_new_incident();open(new_activity, null)"
+								class="btn btn-success btn-raised ft-plus"
+								title="Registrar Atividade"
+								style="margin-left:10px"
+								>																
+							</button>
+						</div>
+					</div>	
+				</div>
 				<table style="width:100%;">
 					<tr *ngFor="let d of domains, let k5 = index">
 						<td>																																		
@@ -662,19 +658,15 @@
 		<span aria-hidden="true">&times;</span>
 		</button>
 	</div>
-	<div class="modal-body">
+	<div class="modal-body">		
 		<div class="row" *ngIf="current_incident.title">
-			<div class="col-12">
-				<h6>
-					{{ current_incident.title }}
-				</h6>
+			<div class="col-12">													
+				<markdown [data]="current_incident.title"></markdown>			
 			</div>
-		</div>
-		<div class="row" *ngIf="current_incident.treatment_text">
+		</div>		
+		<div class="row" *ngIf="current_incident.treatment_text">						
 			<div class="col-12">
-				<h6>
-					{{ current_incident.treatment_text }}
-				</h6>
+				<markdown [data]="current_incident.treatment_text"></markdown>			
 			</div>
 		</div>
 		<div class="row" *ngIf="current_incident.new_schedule_date">
@@ -683,11 +675,25 @@
 			</div>
 		</div>
 		<div class="row">
+			<div class="col-12" *ngIf="!current_incident.in_treatment 
+										&& current_incident.need_description_for_closing
+										&& !current_incident.closed">				
+				<div class="row">					
+					<div class="col-12">							
+						<h6 style="font-weight: bold">Contato</h6>
+						<fieldset class="form-group">					
+							<textarea class="form-control" 
+								[(ngModel)]="current_incident.closing_contact_text"				
+								rows="3" placeholder="O que vocês conversaram?"></textarea>
+						</fieldset>		
+					</div>
+				</div>
+			</div>
 			<div class="col-12" *ngIf="!current_incident.in_treatment && !current_incident.closed && !current_incident.treated">
 				<h6 style="font-weight: bold">Realizado</h6>				
 				<button type="button" class="btn btn-success btn-raised" (click)="close_incident(current_incident);d('close!');">Sim</button>
 				<button type="button" class="btn btn-primary btn-raised" (click)="begin_treat_incident(current_incident)">Não</button>		
-			</div>
+			</div>			
 			<div class="col-12" *ngIf="current_incident.in_treatment">				
 				<div class="row">					
 					<div class="col-12">							
