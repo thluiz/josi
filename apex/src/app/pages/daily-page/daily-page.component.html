@@ -669,6 +669,11 @@
 				<markdown [data]="current_incident.treatment_text"></markdown>			
 			</div>
 		</div>
+		<div class="row" *ngIf="current_incident.close_text">						
+			<div class="col-12">
+				<markdown [data]="current_incident.close_text"></markdown>			
+			</div>
+		</div>
 		<div class="row" *ngIf="current_incident.new_schedule_date">
 			<div class="col-12">
 				<b>Reagendado para: </b>{{ current_incident.new_schedule_small_date }} {{ current_incident.new_schedule_hour }}
@@ -752,6 +757,24 @@
 			(click)="reset_reschedule(current_incident);"
 			*ngIf="current_incident.in_treatment && current_incident.reschedule">
 			Voltar
+		</button>		
+		<button type="button" class="btn btn-grey btn-raised" 			
+			*ngIf="!current_incident.begin_remove"
+			(click)="begin_remove_incident(current_incident);">
+			Excluir
+		</button>
+		<span *ngIf="current_incident.begin_remove">
+			Confirma exclusão: 
+		</span>
+		<button type="button" class="btn btn-danger btn-raised" 
+			*ngIf="current_incident.begin_remove"
+			(click)="remove_incident(current_incident);d('remove!');">
+			Excluir
+		</button>
+		<button type="button" class="btn btn-primary btn-raised" 
+			*ngIf="current_incident.begin_remove"
+			(click)="rollback_remove_incident(current_incident);">
+			Não
 		</button>
 	</div>
 </ng-template>

@@ -14,6 +14,12 @@ constructor(private http:Http) { }
     });
   }
 
+  remove_incident(incident) {
+    return this.http.post(this.dataUrl + '/incident/remove', { 
+      incident
+    });
+  }
+
   reschedule_incident(incident, new_incident, contact) {
     return this.http.post(this.dataUrl + '/incident/reschedule', { 
       incident, new_incident, contact     

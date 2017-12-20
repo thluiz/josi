@@ -9,10 +9,27 @@ export class IncidentService {
 
     public async close_incident(incident) {
         const result = await this.sql_pool
-                        .request()
-                        .input('id', sql.Int, incident.id)
-                        .input('close_description', sql.VarChar(sql.MAX), incident.closing_contact_text || "")                        
-                        .execute(`CloseIncident`);
+                                .request()
+                                .input('id', sql.Int, incident.id)
+                                .input('close_description', sql.VarChar(sql.MAX), incident.closing_contact_text || "")                        
+                                .execute(`CloseIncident`);
+
+        return result;                        
+    }
+
+    public async remove_incident(incident) {        
+        try {
+
+            const result = await this.sql_pool
+                                    .request()
+                                    .input('id', sql.Int, incident.id)        
+                                    .execute(`RemoveIncident`);
+
+            return result;
+
+        } catch(ex) {
+            console.log(ex);
+        }        
     }
         
     public async register_incident(incident) {
@@ -31,6 +48,8 @@ export class IncidentService {
             .input('branch', sql.Int, incident.branch.id)
             .input('value', sql.Decimal(12,2), incident.value)
             .execute(`RegisterNewIncident`);
+
+            return result;
         } catch(ex) {
             console.log(ex);
         }

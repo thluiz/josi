@@ -141,6 +141,15 @@ export class DailyPageComponent implements OnInit {
     });      
   }
 
+  remove_incident(incident) {
+    this.incidentService.remove_incident(incident)
+    .toPromise().then((response) => {
+      this.getMonitorData();
+    }).catch((reason) => {
+      console.log(reason);
+    });
+  }
+
   reschedule_incident(incident) {
     incident.treated = true;
     let new_incident = {
@@ -207,7 +216,7 @@ export class DailyPageComponent implements OnInit {
     });
 
     this.reset_new_incident();
-  }
+  } 
 
   reset_new_incident() {    
     let date = new Date();
@@ -255,6 +264,14 @@ export class DailyPageComponent implements OnInit {
   remove_person_from_new_incident(person) {        
     this.new_incident.people = this.new_incident.people.filter(p => p.person_id != person.person_id);        
     this.validate_new_event();
+  }
+
+  begin_remove_incident(incident) {
+    incident.begin_remove = true;
+  }
+
+  rollback_remove_incident(incident) {
+    incident.begin_remove = false;
   }
 
   validate_new_event_value() {
@@ -412,6 +429,10 @@ export class DailyPageComponent implements OnInit {
     var hours = d.getHours();
     
     const update_interval = hours >= 22 || hours < 6 ? 600000 : 30000;
+
+    if(this.update_timer) {
+      clearTimeout(this.update_timer);
+    }
 
     this.update_timer = setTimeout(() => { this.getMonitorData() }, update_interval);
   }

@@ -20,6 +20,21 @@ class IncidentService {
                 .input('id', sql.Int, incident.id)
                 .input('close_description', sql.VarChar(sql.MAX), incident.closing_contact_text || "")
                 .execute(`CloseIncident`);
+            return result;
+        });
+    }
+    remove_incident(incident) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.sql_pool
+                    .request()
+                    .input('id', sql.Int, incident.id)
+                    .execute(`RemoveIncident`);
+                return result;
+            }
+            catch (ex) {
+                console.log(ex);
+            }
         });
     }
     register_incident(incident) {
@@ -38,6 +53,7 @@ class IncidentService {
                     .input('branch', sql.Int, incident.branch.id)
                     .input('value', sql.Decimal(12, 2), incident.value)
                     .execute(`RegisterNewIncident`);
+                return result;
             }
             catch (ex) {
                 console.log(ex);

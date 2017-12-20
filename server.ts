@@ -58,6 +58,12 @@ function getParticipationList(people) {
             response.send("Ok");
         });
 
+        app.post("/api/incident/remove", async (request, response, next) => {            
+            let result = await incident_service.remove_incident(request.body.incident);            
+                        
+            response.send("Ok");
+        });
+
         app.post("/api/incident/reschedule", async (request, response, next) => {            
             let result = await incident_service.reschedule_incident(
                 request.body.incident, 
@@ -65,7 +71,7 @@ function getParticipationList(people) {
                 request.body.contact.contact_text
             );            
 
-            response.send("Ok");
+            response.send("Ok"); 
         });
 
         app.post("/api/incident/register_incident", async (request, response, next) => {      
