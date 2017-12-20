@@ -37,11 +37,11 @@ import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-full-layout-page',
-  templateUrl: './daily-page.component.html',
-  styleUrls: ['./daily-page.component.scss'],
+  templateUrl: './sumary-page.component.html',
+  styleUrls: ['./sumary-page.component.scss'],
   providers: [PersonService, IncidentService]
 })
-export class DailyPageComponent implements OnInit {
+export class SumaryPageComponent implements OnInit {
   daily: Observable<any[]>;
   cols;
   sumary_cols;

@@ -13,11 +13,11 @@
 <div class="row">
 	<div class="col-12">		
 		<div class="card">
-			<div class="card-header" style="padding-bottom:0">
+			<div class="card-header" class="sticky-top" style="background-color:white;width:100%;padding:10px">
 				<div class="row">
 					<div class="col-12">
 						<div class="row">
-							<div class="col-7">
+							<div class="col-6">
 								<h4 class="card-title">
 									Diário de Atividades - Membros Ativos 																																
 								</h4>
@@ -38,315 +38,42 @@
 									(click)="show_change_branch = !show_change_branch">
 									x
 								</span>
-							</div>															
+							</div>	
+							<div class="col-3 text-right">
+								<span class="input-group">
+									<span class="input-group-btn">
+										<button type="button" 
+											(click)="change_week(-1)"
+											class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-left">									
+										</button>
+									</span>											
+									<input type="text" class='form-control text-center'
+										style="background-color: white"
+										[value]="current_week_range" readonly="readonly"/>																								
+									<span class="input-group-btn">
+										<button type="button" 
+											id="btn_next_week"
+											(click)="change_week(1)"											
+											class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-right"
+											>									
+										</button>
+									</span>
+								</span>			
+							</div>
+							<div class="col-1 text-center">
+								<button type="button" 
+									(click)="reset_new_incident();open(new_activity, null)"
+									class="btn btn-success btn-raised ft-plus"
+									title="Registrar Atividade"
+									style="margin-left:10px"
+									>																
+								</button>
+							</div>														
 						</div>						
 					</div>					
 				</div>
 			</div>
 			<div class="card-body">						
-				<div class="row">
-					<div class="col-9">
-						<table class="table-sm table-striped table-bordered"															
-						style="margin-bottom:50px;width:100%">															
-							<tr style="background-color: #AAA;color:white;">						
-								<td width="25%" align="center" rowspan="2">
-									<b>Sumário do Núcleo</b>
-								</td>
-								<td colspan="5" width="25%">
-									<span class="input-group" style="margin:0">
-										<span class="input-group-btn">
-											<button type="button" 
-												(click)="change_week(-1)"
-												class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-left">									
-											</button>
-										</span>											
-										<input type="text" class='form-control text-center'
-											style="background-color: white"
-											value="18/12/2017" readonly="readonly"/>																								
-										<span class="input-group-btn">
-											<button type="button" 
-												id="btn_next_week"
-												(click)="change_week(1)"											
-												class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-right"
-												>									
-											</button>
-										</span>
-									</span>
-								</td>
-								<td colspan="5" width="25%">
-									<span class="input-group" style="margin:0">
-										<span class="input-group-btn">
-											<button type="button" 
-												(click)="change_week(-1)"
-												class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-left">									
-											</button>
-										</span>											
-										<input type="text" class='form-control text-center'
-											style="background-color: white"
-											value="51/2017" readonly="readonly"/>																								
-										<span class="input-group-btn">
-											<button type="button" 
-												id="btn_next_week"
-												(click)="change_week(1)"											
-												class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-right"
-												>									
-											</button>
-										</span>
-									</span>
-								</td>
-								<td colspan="5" width="25%">
-									<span class="input-group" style="margin:0">
-										<span class="input-group-btn">
-											<button type="button" 
-												(click)="change_week(-1)"
-												class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-left">									
-											</button>
-										</span>											
-										<input type="text" class='form-control text-center'
-											style="background-color: white"
-											value="Dez/2017" readonly="readonly"/>																								
-										<span class="input-group-btn">
-											<button type="button" 
-												id="btn_next_week"
-												(click)="change_week(1)"											
-												class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-right"
-												>									
-											</button>
-										</span>
-									</span>
-								</td>
-							</tr>
-							<tr style="background-color: #AAA;color:white;">								
-								<td width="3%" align="center">
-									<i  												
-										class="fa fa-check"
-										title="Concluídos">
-									</i>
-								</td>
-								<td width="3%" align="center">
-									<i  												
-										class="fa fa-times"
-										title="Não Concluídos">
-									</i>
-								</td>
-								<td width="3%" align="center">
-									<i  												
-										class="ft-check-circle"
-										title="Tratados">
-									</i>
-								</td>
-								<td width="3%" align="center">
-									<i  												
-										class="ft-calendar"
-										title="Agendados">
-									</i>
-								</td>
-								<td width="3%" align="center">
-									<i  												
-										class="ft-zap"
-										title="Inesperados">
-									</i>
-								</td>	
-								<td width="3%" align="center">
-									<i  												
-										class="fa fa-check"
-										title="Concluídos">
-									</i>
-								</td>
-								<td width="3%" align="center">
-									<i  												
-										class="fa fa-times"
-										title="Não Concluídos">
-									</i>
-								</td>
-								<td width="3%" align="center">
-									<i  												
-										class="ft-check-circle"
-										title="Tratados">
-									</i>
-								</td>
-								<td width="3%" align="center">
-									<i  												
-										class="ft-calendar"
-										title="Agendados">
-									</i>
-								</td>
-								<td width="3%" align="center">
-									<i  												
-										class="ft-zap"
-										title="Inesperados">
-									</i>
-								</td>
-								<td width="3%" align="center">
-									<i  												
-										class="fa fa-check"
-										title="Concluídos">
-									</i>
-								</td>
-								<td width="3%" align="center">
-									<i  												
-										class="fa fa-times"
-										title="Não Concluídos">
-									</i>
-								</td>
-								<td width="3%" align="center">
-									<i  												
-										class="ft-check-circle"
-										title="Tratados">
-									</i>
-								</td>
-								<td width="3%" align="center">
-									<i  												
-										class="ft-calendar"
-										title="Agendados">
-									</i>
-								</td>
-								<td width="3%" align="center">
-									<i  												
-										class="ft-zap"
-										title="Inesperados">
-									</i>
-								</td>								
-							</tr>
-							<tr *ngFor="let acs of activity_sumary, let asi = index">
-								<td style="border-left:1px solid gray; border-right:1px solid gray" [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-									{{ acs.name }}
-								</td>
-								<td  [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td style="border-right:1px solid gray" [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td style="border-right:1px solid gray" [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-								<td style="border-right:1px solid gray" [ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null }">
-
-								</td>
-							</tr>
-						</table>
-					</div>					
-					<div class="col-1">
-						<table class="table-sm table-striped table-bordered"															
-							style="margin-bottom:50px;width:100%">								
-							<tr>						
-								<td *ngFor="let c of sumary_cols, let k3 = index" 
-									align="center" 									
-									[ngStyle]="{ 'width': c.width, 'color': 'white',
-												'background-color': '#AAA' }"
-									[colSpan]="c.colspan || 1"
-								>
-								<div>										
-									<i  												
-										[ngClass]="c.icon"
-										*ngIf="c.icon != null"
-										[title]="c.description">
-									</i>
-									<b>{{ c.name }}</b>
-								</div>
-								</td>
-							</tr>
-							<tr *ngFor="let s of sumary, let si = index" >
-								<td>
-									{{ s.program }}
-								</td>
-								<td>
-									{{ ('00' + s.people ).slice(-2)  }}
-								</td>
-								<td>
-									<span 									
-									[style.font-weight]="s.scheduling > 0 ? 'bold' : 'normal'"
-									[style.color]="s.scheduling > 0 ? 'red' : ''">
-										{{ ('00' + s.scheduling ).slice(-2)  }} 											
-									</span>
-								</td>
-								<td>
-									<span 									
-									[style.font-weight]="s.financial > 0 ? 'bold' : 'normal'"
-									[style.color]="s.financial > 0 ? 'red' : ''">
-										{{ ('00' + s.financial ).slice(-2)  }} 											
-									</span>
-								</td>
-								<td>
-									<span 									
-									[style.font-weight]="s.comunications > 0 ? 'bold' : 'normal'"
-									[style.color]="s.comunications > 0 ? 'red' : ''">
-										{{ ('00' + s.comunications ).slice(-2)  }} 											
-									</span>
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-				<div class="sticky-top" style="background-color:white;width:100%;padding:10px">
-					<div class="row">																													
-						<div class="col-6"></div>
-						<div class="col-4 text-right">
-							<span class="input-group">
-								<span class="input-group-btn">
-									<button type="button" 
-										(click)="change_week(-1)"
-										class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-left">									
-									</button>
-								</span>											
-								<input type="text" class='form-control text-center'
-									style="background-color: white"
-									[value]="current_week_range" readonly="readonly"/>																								
-								<span class="input-group-btn">
-									<button type="button" 
-										id="btn_next_week"
-										(click)="change_week(1)"											
-										class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-right"
-										>									
-									</button>
-								</span>
-							</span>			
-						</div>
-						<div class="col-2 text-center">
-							<button type="button" 
-								(click)="reset_new_incident();open(new_activity, null)"
-								class="btn btn-success btn-raised ft-plus"
-								title="Registrar Atividade"
-								style="margin-left:10px"
-								>																
-							</button>
-						</div>
-					</div>	
-				</div>
 				<table style="width:100%;">
 					<tr *ngFor="let d of domains, let k5 = index">
 						<td>																																		

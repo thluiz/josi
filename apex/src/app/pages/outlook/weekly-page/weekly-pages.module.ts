@@ -16,14 +16,14 @@ import { NgbModal,
     NgbModule     
   } from '@ng-bootstrap/ng-bootstrap';
 
-import { DailyPagesRoutingModule } from "./daily-pages-routing.module";
-import { DailyPageComponent } from './daily-page.component'; 
+import { WeeklyPagesRoutingModule } from "./weekly-pages-routing.module";
+import { WeeklyPageComponent } from './weekly-page.component'; 
 
 
 @NgModule({
     imports: [
         CommonModule,
-        DailyPagesRoutingModule,                
+        WeeklyPagesRoutingModule,                
         FormsModule, 
         ReactiveFormsModule,                        
         NgbDatepickerModule.forRoot(),
@@ -32,7 +32,7 @@ import { DailyPageComponent } from './daily-page.component';
         MarkdownModule.forRoot()
     ],
     declarations: [       
-        DailyPageComponent
+        WeeklyPageComponent
     ]
 })
-export class DailyPagesModule { }
+export class WeeklyPagesModule { }
