@@ -14,7 +14,7 @@ import { NgbModal,
   ModalDismissReasons, 
   NgbActiveModal
 } from '@ng-bootstrap/ng-bootstrap';
-import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import { OnInit, OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
 import { IntervalObservable } from "rxjs/observable/IntervalObservable";
 
@@ -41,7 +41,7 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./weekly-page.component.scss'],
   providers: [PersonService, IncidentService]
 })
-export class WeeklyPageComponent implements OnInit {
+export class WeeklyPageComponent implements OnInit, OnDestroy {
   daily: Observable<any[]>;
   cols;
   sumary_cols;
@@ -63,6 +63,7 @@ export class WeeklyPageComponent implements OnInit {
   newIncidentForm: FormGroup;
   week_days;
   branch_cols;
+  external_people;
   activity_sumary;
   
   private alive;
@@ -81,8 +82,9 @@ export class WeeklyPageComponent implements OnInit {
   }
 
   ngOnDestroy() {    
-    this.alive = false;
-    console.log('destroy timer!');
+    if(this.update_timer) {    
+      clearTimeout(this.update_timer);
+    }    
   }
 
   branchSelected(id) {
@@ -183,8 +185,6 @@ export class WeeklyPageComponent implements OnInit {
     } 
     const type = t[0];
     
-    console.log(type);
-
     if(type.childrens != null) {
       this.new_incident.type = null;
       this.new_incident.tmp_type = type;
@@ -206,8 +206,6 @@ export class WeeklyPageComponent implements OnInit {
   }
 
   register_new_incident() {
-    console.log(this.new_incident);
-
     this.incidentService.register_new_incident(this.new_incident)
     .toPromise().then((response) => {
       this.getMonitorData();
@@ -420,6 +418,31 @@ export class WeeklyPageComponent implements OnInit {
               }
             }       
           }   
+
+          this.external_people = [];
+          let external_people = result.people.filter(p => p.branch_id == -1 
+                                                    || (this.current_branch > 0 && p.branch_id != this.current_branch));
+          for(var i = 0; i< result.columns.length; i++) {    
+            let c = result.columns[i];
+            
+            for(var z = 0; z < external_people.length; z++) {
+              let person_incidents = external_people[z];  
+              if(!person_incidents.dates) {
+                person_incidents.dates = [];
+              }
+
+              person_incidents.dates[i] = person_incidents.dates[i] || [];
+              let incidents = result.incidents.filter((i : any) => { 
+                return i.date == c.date && i.person_id == external_people[z].person_id;
+              });
+
+              if(incidents.length > 0) {
+                person_incidents.dates[i] = person_incidents.dates[i].concat(incidents);              
+              }
+
+              this.external_people[z] = person_incidents;
+            }
+          } 
         }                
       },
       err => console.error(err)      

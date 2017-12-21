@@ -218,6 +218,84 @@
 					</td>
 				</tr>
 				</table>	
+
+				<table class="table-sm table-striped table-bordered" 
+					*ngIf="external_people != null && external_people.length > 0" 
+					style="width:100%;margin-bottom:50px">
+					<tr>
+						<td colspan="8"
+							style="background-color:gray;font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center">
+							Público Externo
+						</td>
+					</tr>								
+					<tr>		
+						<td style="width:33.5%;background-color: gray"></td>				
+						<td *ngFor="let c of week_days, let k3 = index" 							
+							style="width:9.5%;text-align: center"
+							[ngStyle]="{'background-color': k3 == current_week_day ? 'rgb(100,100,100)': 'gray', 
+										'color': 'white' }"							
+							>																				
+							<div>								
+								<i  												
+									[ngClass]="c.icon"
+									*ngIf="c.icon != null"
+									[title]="c.description">
+								</i>
+								{{ c.name }} 
+							</div>									
+						</td>
+					</tr>
+					<tr *ngFor="let visitant of external_people, let ke = index">					
+						<td>
+							<div class="row">
+								<div class="col-2" style="padding:0;padding-left:5px">
+									<img
+									class="rounded-circle img-border " 
+									src="https://myvtmiim.blob.core.windows.net/avatars/{{ visitant.avatar_img }}" 											
+									style="min-width:50px;width:100%;" 
+									*ngIf="visitant.avatar_img && visitant.avatar_img.length > 0">	
+								</div>								
+								<div class="col-10"  style="padding:0;padding-left:2px">
+									<div class="row">
+										<div class="col-12">
+											{{ visitant.name }}
+										</div>
+									</div>
+									<div class="row" style="font-size:10px;">
+										<div class="col-12">
+											{{ visitant.kf_name }}
+										</div>
+									</div>
+								</div>	
+							</div>
+						</td>						
+						<td valign="middle" align="center" 										
+							*ngFor="let item of visitant.dates, let k2 = index" 
+							style="border-right:1px solid grey"
+							[ngClass]=" k2 == current_week_day ? (ke % 2 == 0 ? 'current2' : 'current') : '' ">
+
+							<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
+								<div class="text-center" 
+									style="line-height:15px;"												
+									[style.border-top]="k > 0 ? '1px solid #CCC' : ''">
+									<a (click)="open(content, i)" 
+										[style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'orange' : (i.past ? 'red' : 'black'  )  )  "
+										style="font-size:12px">
+										<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
+										<b *ngIf="i.type == 2">{{ i.title }}</b>																	
+										<span 
+											*ngIf="i.short_description != null 
+													&& i.short_description.length > 0 
+													&& i.type != 2 && i.type != 4"
+											style="font-size:11px"
+										> - {{ i.short_description }} </span>
+									</a>	
+								</div>																															
+							</ng-template>
+
+						</td>
+					</tr>
+				</table>
 			</div>
 		</div>		
 	</div>
@@ -314,7 +392,7 @@
 									></i>
 								</span>
 							</div>
-						</li>
+						</li>						
 					</ul>												
 					<div class="form-group" [class.has-danger]="search_failed">
 					<input type="text" class="form-control" 
@@ -337,6 +415,9 @@
 						style="min-width:50px;max-width:50px;" 
 						*ngIf="p.avatar_url && p.avatar_url.length > 0" />						
 						{{ p.name }}
+						<span *ngIf="!p.found" style="font-style: italic;">
+							(novo)
+						</span>
 					</ng-template>					
 				</div>
 			</div>
