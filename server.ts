@@ -1,6 +1,7 @@
 import * as sql from 'mssql';
 import * as builder from 'botbuilder';
 import { IncidentService } from './bot/domain/services/incident_services';
+import { JobsService } from './bot/domain/services/jobs_services';
 
 const express = require('express');
 if (process.env.LOAD_ENV === 'true') {
@@ -45,12 +46,15 @@ function getParticipationList(people) {
         const bodyParser = require("body-parser");
         const cors = require("cors");
         const incident_service = new IncidentService(pool);
+        const jobs_service = new JobsService(pool);
 
         app.use(cors());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
 
         app.get("/api/hourly-jobs", async (request, response, next) => {            
+            await jobs_service.hourly_jobs();
+            
             response.send("Ok");
         });
 

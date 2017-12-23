@@ -11,6 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
 const builder = require("botbuilder");
 const incident_services_1 = require("./bot/domain/services/incident_services");
+const jobs_services_1 = require("./bot/domain/services/jobs_services");
 const express = require('express');
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
@@ -48,10 +49,12 @@ function getParticipationList(people) {
         const bodyParser = require("body-parser");
         const cors = require("cors");
         const incident_service = new incident_services_1.IncidentService(pool);
+        const jobs_service = new jobs_services_1.JobsService(pool);
         app.use(cors());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
         app.get("/api/hourly-jobs", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            yield jobs_service.hourly_jobs();
             response.send("Ok");
         }));
         app.post("/api/messages", connector.listen());
