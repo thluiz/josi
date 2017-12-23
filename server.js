@@ -51,6 +51,9 @@ function getParticipationList(people) {
         app.use(cors());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
+        app.get("/api/hourly-jobs", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            response.send("Ok");
+        }));
         app.post("/api/messages", connector.listen());
         app.post("/api/incident/close", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             let result = yield incident_service.close_incident(request.body.incident);

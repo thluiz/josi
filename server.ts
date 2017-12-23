@@ -50,6 +50,10 @@ function getParticipationList(people) {
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
 
+        app.get("/api/hourly-jobs", async (request, response, next) => {            
+            response.send("Ok");
+        });
+
         app.post("/api/messages", connector.listen());
 
         app.post("/api/incident/close", async (request, response, next) => {
