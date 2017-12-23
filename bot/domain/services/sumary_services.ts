@@ -14,4 +14,12 @@ export class SumaryService {
 
         return result;  
     }
+
+    async consolidate_activity_sumary() {        
+        const result = await this.sql_pool
+                                .request()                                
+                                .execute(`ConsolidateActivitySumary`);
+
+        return result;  
+    }
 }

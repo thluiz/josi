@@ -17,7 +17,13 @@ class JobsService {
     }
     hourly_jobs() {
         return __awaiter(this, void 0, void 0, function* () {
-            let members_sumary_result = yield this.sumary_service.consolidate_members_sumary();
+            try {
+                this.sumary_service.consolidate_members_sumary();
+                this.sumary_service.consolidate_activity_sumary();
+            }
+            catch (ex) {
+                console.log(ex);
+            }
         });
     }
 }

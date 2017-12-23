@@ -377,8 +377,8 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
           { width: "3%", icon: "ft-radio", description: "Comunicados" }
         ];        
         
-        for(var i = 0; i< result.columns.length; i++) {
-          let c = result.columns[i];
+        for(var i = 0; i< this.week_days.length; i++) {
+          let c = this.week_days[i];
           this.cols[this.cols.length] = {
             prop: 'incidents' + c.date,
             name: c.name,
@@ -396,8 +396,8 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
             let people = result.people != null ? result.people.filter(p => p.domain_id == domain.id) : [];
             this.domains[w].number_of_members = people.length;
 
-            for(var i = 0; i< result.columns.length; i++) {    
-              let c = result.columns[i];
+            for(var i = 0; i< this.week_days.length; i++) {    
+              let c = this.week_days[i];
               
               for(var z = 0; z< people.length; z++) {
                 let person_incidents = people[z];  
@@ -422,8 +422,8 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
           this.external_people = [];
           let external_people = result.people.filter(p => p.branch_id == -1 
                                                     || (this.current_branch > 0 && p.branch_id != this.current_branch));
-          for(var i = 0; i< result.columns.length; i++) {    
-            let c = result.columns[i];
+          for(var i = 0; i< this.week_days.length; i++) {    
+            let c = this.week_days[i];
             
             for(var z = 0; z < external_people.length; z++) {
               let person_incidents = external_people[z];  

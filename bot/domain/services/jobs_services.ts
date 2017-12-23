@@ -12,6 +12,11 @@ export class JobsService {
     }
 
     async hourly_jobs() {
-        let members_sumary_result  = await this.sumary_service.consolidate_members_sumary();
+        try {
+        this.sumary_service.consolidate_members_sumary();
+        this.sumary_service.consolidate_activity_sumary();
+        } catch(ex) {
+            console.log(ex);
+        }
     }
 }

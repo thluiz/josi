@@ -21,6 +21,14 @@ class SumaryService {
             return result;
         });
     }
+    consolidate_activity_sumary() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.sql_pool
+                .request()
+                .execute(`ConsolidateActivitySumary`);
+            return result;
+        });
+    }
 }
 exports.SumaryService = SumaryService;
 //# sourceMappingURL=sumary_services.js.map
