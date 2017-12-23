@@ -359,7 +359,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
         this.domains = result.domains;   
         this.incident_types = result.incident_types;
         this.current_week_range = result.current_week_range;
-        this.week_days = result.columns;
+        this.week_days = result.week_days;
         this.activity_sumary  = result.activity_sumary;
         this.sumary = result.sumary;
         this.cols = [                    
