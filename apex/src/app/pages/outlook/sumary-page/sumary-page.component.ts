@@ -128,6 +128,7 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
         this.current_week_text = result.current_week_text;
         this.current_month_text = result.current_month_text;
         this.current_date_text = result.current_date_text;
+        this.members_sumary = result.members_sumary;
         this.branches = [{ id: 0, name: 'Todos os Núcleos' }].concat(result.branches);
         
         this.current_branch_name = (this.current_branch > 0 ? 
