@@ -32,10 +32,10 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
   current_month_text;
   current_date_text;
   show_change_branch;
+  current_date : { year : number, month: number, day: number };
   private update_timer;      
   private current_week = 0;
-  private current_month = 0;
-  private current_date : { year : number, month: number, day: number };
+  private current_month = 0;  
 
   constructor(private incidentService: IncidentService) {
     this.branches = [];
@@ -81,13 +81,14 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
   }
 
   change_date(new_date) {
+    console.log(new_date);
     if(this.update_timer) {
       clearTimeout(this.update_timer);    
       this.update_timer = null;
     }
 
     this.update_timer = null;
-    this.current_date += new_date;
+    this.current_date = new_date;
     this.getSumaryData();
   }
 

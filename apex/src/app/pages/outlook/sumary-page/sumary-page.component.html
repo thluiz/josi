@@ -53,19 +53,19 @@
 									<b>Sumário do Núcleo</b>
 								</td>
 								<td colspan="5" width="25%">
-									<span class="input-group" style="margin:0">																					
-										<input type="text" class='form-control text-center'
-											style="background-color: white"
-											value="{{ current_date_text }}" readonly="readonly"/>																								
-										<span class="input-group-btn">
-											<button type="button" 
-												id="btn_next_week"
-												(click)="change_week(1)"											
-												class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-right"
-												>									
-											</button>
-										</span>
-									</span>
+									<div class="form-group" style="padding-top:12px;margin:0">													
+										<div class="input-group">							
+											<input class="form-control" 
+											placeholder="yyyy-mm-dd" 											
+											[(ngModel)]="current_date"
+											(ngModelChange) ="change_date($event)" 
+											style="text-align: center"
+											ngbDatepicker #niReschedule="ngbDatepicker" />
+											<div class="input-group-addon" (click)="niReschedule.toggle()">
+												<i class="fa fa-calendar" style="cursor: pointer;"></i>
+											</div>																																
+										</div>							
+									</div>
 								</td>
 								<td colspan="5" width="25%">
 									<span class="input-group" style="margin:0">
