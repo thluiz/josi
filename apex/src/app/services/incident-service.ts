@@ -8,6 +8,10 @@ export class IncidentService {
 constructor(private http:Http) { }
   private dataUrl = environment.api_url;    
 
+  getSumary(branch, month, week, date) {
+    return this.http.get(this.dataUrl + `/sumary/${branch}/${month}/${week}/${date}`);
+  }
+
   close_incident(incident) {
     return this.http.post(this.dataUrl + '/incident/close', { 
       incident

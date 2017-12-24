@@ -98,6 +98,20 @@ function getParticipationList(people) {
                 response.send(error.message);
             }
         }));
+        app.get("/api/sumary/:branch?/:month?/:week?/:date?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                let result = yield pool.request()
+                    .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
+                    .input('month_modifier', sql.Int, request.params.month || 0)
+                    .input('week_modifier', sql.Int, request.params.week || 0)
+                    .input('date', sql.VarChar(10), request.params.date)
+                    .execute(`GetSumary`);
+                response.send((result.recordset[0][0]));
+            }
+            catch (error) {
+                response.send(error.message);
+            }
+        }));
         app.get(/^((?!\.).)*$/, (req, res) => {
             var path = "index.html";
             res.sendfile(path, { root: "./apex/public" });

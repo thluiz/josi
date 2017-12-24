@@ -1,18 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
-import { MarkdownModule } from 'ngx-markdown';
-import { FormControl, FormsModule, ReactiveFormsModule,
-        FormGroup, Validators, NgForm } from '@angular/forms';
+
+import { FormsModule } from '@angular/forms';
 
 import { NgbModal, 
     NgbDateStruct, 
     NgbDatepickerI18n, 
     NgbDatepickerModule,
     NgbCalendar, 
-    NgbTimeStruct,      
-    ModalDismissReasons, 
-    NgbTimepickerModule,
-    NgbActiveModal,
+    NgbTimeStruct,          
+    NgbTimepickerModule,    
     NgbModule     
   } from '@ng-bootstrap/ng-bootstrap';
 
@@ -23,13 +20,11 @@ import { SumaryPageComponent } from './sumary-page.component';
 @NgModule({
     imports: [
         CommonModule,
-        SumaryPagesRoutingModule,                
-        FormsModule, 
-        ReactiveFormsModule,                        
+        SumaryPagesRoutingModule,                             
         NgbDatepickerModule.forRoot(),
         NgbTimepickerModule.forRoot(),
-        NgbModule,
-        MarkdownModule.forRoot()
+        NgbModule,          
+        FormsModule      
     ],
     declarations: [       
         SumaryPageComponent
