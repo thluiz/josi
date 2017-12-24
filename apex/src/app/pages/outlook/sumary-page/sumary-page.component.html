@@ -210,7 +210,9 @@
 								<td *ngFor="let s of acs.cols, let si = index"
 								style="text-align:center"
 								[ngStyle]="{ 'border-bottom': acs.close_group ? '1px solid gray' : null,
-												'border-right':  (si + 1) % 5 == 0 ? '1px solid gray' : null }">
+												'border-right':  (si + 1) % 5 == 0 ? '1px solid gray' : null,
+												'color': acs.obrigatory && (si - 1) % 5 == 0 && s > 0 ? 'red' : null,
+												'font-weight': acs.obrigatory && (si - 1) % 5 == 0 && s > 0 ? 'bold' : null }">
 									{{ s }}
 								</td>								
 							</tr>
