@@ -17,9 +17,9 @@ export class SidebarComponent implements OnInit {
         private route: ActivatedRoute) {
     }
 
-    ngOnInit() {
+    ngOnInit() {        
         $.getScript('./assets/js/app-sidebar.js');
-        this.menuItems = ROUTES.filter(menuItem => menuItem);
+        this.menuItems = ROUTES;
     }
 
 }

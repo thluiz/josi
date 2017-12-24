@@ -6,7 +6,7 @@ import { FullLayoutPageComponent } from 'app/pages/full-layout-page/full-layout-
 const routes: Routes = [
   {
     path: '',
-     component: FullLayoutPageComponent,
+    component: FullLayoutPageComponent,
     data: {
       title: 'Full Layout Page'
     },    

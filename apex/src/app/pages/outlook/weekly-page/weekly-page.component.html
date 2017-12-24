@@ -138,7 +138,7 @@
 											</div>	
 										</div>																					
 									</td>								
-									<td valign="middle" align="center">
+									<td valign="middle" align="center">										
 										<span *ngIf="person.scheduling_status == 3">												
 											<i class="ft-calendar" style="color:orange"
 												[title]="person.scheduling_description">
@@ -175,12 +175,12 @@
 									</td>
 									<td valign="middle" align="center" style="cursor:pointer">
 											<span *ngIf="person.comunication_status == 3">												
-												<i class="ft-radio" style="color:orange"
+												<i class="fa fa-envelope-o" style="color:orange"
 												[title]="person.comunication_description"
 												></i>
 											</span>
 											<span *ngIf="person.comunication_status > 0 && person.comunication_status != 3">
-												<i class="ft-radio" style="color:red"													
+												<i class="fa fa-envelope-o" style="color:red"													
 													[title]="person.comunication_description"
 												>
 												</i>

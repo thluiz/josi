@@ -31,13 +31,13 @@
         listItem = $this.parent('li');
 
         if(listItem.hasClass('has-sub') && listItem.hasClass('open')){
-            collapse(listItem);
+            //collapse(listItem);
         }
         else{
             if(listItem.hasClass('has-sub')){
                 expand(listItem);
             }
-
+            
             // If menu collapsible then do not take any action
             if ($sidebar_content.data('collapsible')) {
                 return false;
@@ -45,7 +45,7 @@
             // If menu accordion then close all except clicked once
             else {
                 openListItems = listItem.siblings('.open');
-                collapse(openListItems);
+                //collapse(openListItems);
                 listItem.siblings('.open').find('li.open').removeClass('open');
                 // openListItems.removeClass('open');
             }
@@ -66,7 +66,7 @@
                 callback();
             }
 
-            // $.app.nav.container.trigger('collapsed.app.menu');
+            $.app.nav.container.trigger('collapsed.app.menu');
         });
 
     }
@@ -84,7 +84,7 @@
                 callback();
             }
 
-            // $.app.nav.container.trigger('expanded.app.menu');
+            $.app.nav.container.trigger('expanded.app.menu');
         });
 
         

@@ -1,6 +1,5 @@
 import { Routes, RouterModule } from '@angular/router';
 
-//Route for content layout with sidebar, navbar and footer
 export const Full_ROUTES: Routes = [
   {
     path: 'changelog',
@@ -17,5 +16,9 @@ export const Full_ROUTES: Routes = [
   {
     path: 'outlook/sumary',
     loadChildren: './pages/outlook/sumary-page/sumary-pages.module#SumaryPagesModule'
+  },
+  {
+    path: 'under-construction',
+    loadChildren: './pages/under-construction/under-construction.module#UnderConstructionModule'
   }
 ];

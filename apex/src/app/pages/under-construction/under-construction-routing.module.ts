@@ -1,11 +1,11 @@
-import { SumaryPageComponent } from './sumary-page.component';
+import { UnderConstructionComponent } from './under-construction.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 let routes: Routes = [
   {
     path: '',
-    component: SumaryPageComponent,
+     component: UnderConstructionComponent,
     data: {
       title: 'Diário de Atividades'
     },    
@@ -16,4 +16,4 @@ let routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class SumaryPagesRoutingModule { }
+export class UnderConstructionRoutingModule { }

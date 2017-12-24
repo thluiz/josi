@@ -52,7 +52,7 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
       { width: "3%", icon: "fa fa-user", description: "Membros" },
       { width: "3", icon: "ft-calendar", description: "Agendamento" },
       { width: "3%", icon: "icon-wallet", description: "Financeiro" },
-      { width: "3%", icon: "ft-radio", description: "Comunicados" }
+      { width: "3%", icon: "fa fa-envelope-o", description: "Comunicados" }
     ];        
   }
   
@@ -88,8 +88,7 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
     this.getSumaryData();
   }
 
-  change_date(new_date) {
-    console.log(new_date);
+  change_date(new_date) {    
     if(this.update_timer) {
       clearTimeout(this.update_timer);    
       this.update_timer = null;
@@ -115,9 +114,6 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
     if(!this.incidentService) {
       return;
     }
-
-    console.log(this.current_month);
-    console.log(this.current_week);
 
     this.incidentService.getSumary(this.current_branch, this.current_month, this.current_week, 
                 `${this.current_date.year}-${this.current_date.month}-${this.current_date.day}`)
