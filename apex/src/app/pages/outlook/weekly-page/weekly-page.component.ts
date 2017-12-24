@@ -48,7 +48,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   current_week_range;
   current_week_day;  
   current_week = 0;
-  current_branch = 1;
+  current_branch;
   current_branch_name = "";
   branches;
   domains;
@@ -353,9 +353,11 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     }
     this.personService.getDailyMonitor(this.current_branch, this.current_week).subscribe(
       data => {          
-        const result = data.json();
-        this.branches = result.branches;
-        this.current_branch_name = this.branches.filter(b => b.id == this.current_branch)[0].name;
+        const result = data.json();        
+        this.branches = [{ id: 0, name: 'Todos os Núcleos' }].concat(result.branches);
+        this.current_branch_name = (this.current_branch > 0 ? 
+                            this.branches.filter(b => b.id == this.current_branch)[0]
+                            : this.branches[0]).name;
         this.domains = result.domains;   
         this.incident_types = result.incident_types;
         this.current_week_range = result.current_week_range;
