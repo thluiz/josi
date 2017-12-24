@@ -45,7 +45,15 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
       year: actual_date.getFullYear(),
       month: actual_date.getMonth() + 1,
       day: actual_date.getDate()
-    }
+    };
+
+    this.members_sumary_cols = [                    
+      { width: "88%", name: "Membros" },
+      { width: "3%", icon: "fa fa-user", description: "Membros" },
+      { width: "3", icon: "ft-calendar", description: "Agendamento" },
+      { width: "3%", icon: "icon-wallet", description: "Financeiro" },
+      { width: "3%", icon: "ft-radio", description: "Comunicados" }
+    ];        
   }
   
   ngOnInit() {
