@@ -122,7 +122,11 @@
 											<div class="col-10"  style="padding:0;padding-left:2px">
 												<div class="row">
 													<div class="col-12">
-														{{ person.name }}
+														<a 
+														style="color:black"
+														[routerLink]="['/person', person.person_id]">
+														{{ person.name }}														
+														</a>														
 													</div>
 												</div>
 												<div class="row" style="font-size:10px;">

@@ -19,7 +19,7 @@ export const ROUTES: RouteInfo[] = [
          ]
     },
     {
-        path: '/under-construction', title: 'Membros',
+        path: '/people', title: 'Pessoas',
         icon: 'icon-users',
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,
@@ -33,7 +33,7 @@ export const ROUTES: RouteInfo[] = [
         submenu: []
     },
     {
-        path: '/under-construction', title: 'Contato',
+        path: '/under-construction', title: 'Contatos',
         icon: 'fa fa-envelope-o',
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,

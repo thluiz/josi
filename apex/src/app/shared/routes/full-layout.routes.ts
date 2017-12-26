@@ -18,6 +18,14 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/outlook/sumary-page/sumary-pages.module#SumaryPagesModule'
   },
   {
+    path: 'people',
+    loadChildren: './pages/people/list/people-list-page.module#PeopleListPageModule'
+  },
+  {
+    path: 'person/:id',
+    loadChildren: './pages/people/person/person-page.module#PersonPageModule'
+  },
+  {
     path: 'under-construction',
     loadChildren: './pages/under-construction/under-construction.module#UnderConstructionModule'
   }

@@ -91,6 +91,14 @@ function getParticipationList(people) {
             response.send("Ok");
         });
 
+        app.get("/api/people/:id", async (request, response, next) => {                        
+            const result = await pool.request()
+            .input('id', sql.Int, request.params.id)
+            .execute(`GetPersonData`);                
+
+            response.send(result.recordset[0][0]);
+        });
+
         app.get("/api/people/search/:name?", async (request, response, next) => {                        
             const result = await pool.request()
             .input('names', sql.VarChar(sql.MAX), request.params.name)

@@ -1,13 +1,13 @@
-import { SumaryPageComponent } from './sumary-page.component';
+import { PersonPageComponent } from './person-page.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 let routes: Routes = [
   {
     path: '',
-    component: SumaryPageComponent,
+     component: PersonPageComponent,
     data: {
-      title: 'Sumário de Atividades'
+      title: 'Detalhes da Pessoa'
     },    
   }
 ];
@@ -16,4 +16,4 @@ let routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class SumaryPagesRoutingModule { }
+export class PersonRoutingModule { }

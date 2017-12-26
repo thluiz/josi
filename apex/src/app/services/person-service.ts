@@ -12,6 +12,11 @@ constructor(private http:Http) { }
     return this.http.get(this.dataUrl + `/daily/${branche}/${week}`);    
   }  
 
+  getAllData(id) {    
+    return this.http
+        .get(this.dataUrl + `/people/${id}`);
+  }
+
   search(term) {    
     return this.http
         .get(this.dataUrl + `/people/search/${term}`);
