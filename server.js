@@ -11,6 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
 const builder = require("botbuilder");
 const incident_services_1 = require("./bot/domain/services/incident_services");
+const person_services_1 = require("./bot/domain/services/person_services");
 const jobs_services_1 = require("./bot/domain/services/jobs_services");
 const express = require('express');
 if (process.env.LOAD_ENV === 'true') {
@@ -50,6 +51,7 @@ function getParticipationList(people) {
         const cors = require("cors");
         const incident_service = new incident_services_1.IncidentService(pool);
         const jobs_service = new jobs_services_1.JobsService(pool);
+        const person_service = new person_services_1.PersonService(pool);
         app.use(cors());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
@@ -91,6 +93,18 @@ function getParticipationList(people) {
             let result = yield incident_service.register_contact_for_incident(request.body.incident, request.body.contact.contact_text);
             response.send("Ok");
         }));
+        app.post("/api/person_role", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            let result = yield person_service.add_role(request.body.person_id, request.body.role_id);
+            response.send("Ok");
+        }));
+        app.post("/api/people_alias/kf_name", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            let result = yield person_service.change_kf_name(request.body.person_id, request.body.kf_name);
+            response.send("Ok");
+        }));
+        app.post("/api/person_role/delete", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            let result = yield person_service.remove_role(request.body.person_id, request.body.role_id);
+            response.send("Ok");
+        }));
         app.get("/api/daily/:branch?/:week?/:date?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 let result = yield pool.request()
@@ -101,7 +115,8 @@ function getParticipationList(people) {
                 response.send((result.recordset[0][0]));
             }
             catch (error) {
-                response.send(error.message);
+                response.status(500);
+                response.render('error', { error: error });
             }
         }));
         app.get("/api/sumary/:branch?/:month?/:week?/:date?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
@@ -115,7 +130,8 @@ function getParticipationList(people) {
                 response.send((result.recordset[0][0]));
             }
             catch (error) {
-                response.send(error.message);
+                response.status(500);
+                response.render('error', { error: error });
             }
         }));
         app.get(/^((?!\.).)*$/, (req, res) => {

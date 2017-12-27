@@ -17,6 +17,28 @@ constructor(private http:Http) { }
         .get(this.dataUrl + `/people/${id}`);
   }
 
+  addRole(person_id, role_id) {
+    return this.http
+        .post(this.dataUrl + `/person_role`, {
+          person_id, role_id
+        });
+  }
+
+  removeRole(person_id, role_id) {
+    return this.http
+        .post(this.dataUrl + `/person_role/delete`, {
+          person_id, role_id
+        });
+  }
+
+  saveKFName(person_id, kf_name) {
+    return this.http
+        .post(this.dataUrl + `/people_alias/kf_name`, {
+          person_id, 
+          kf_name
+        });
+  }
+
   search(term) {    
     return this.http
         .get(this.dataUrl + `/people/search/${term}`);

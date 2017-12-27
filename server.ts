@@ -1,6 +1,7 @@
 import * as sql from 'mssql';
 import * as builder from 'botbuilder';
 import { IncidentService } from './bot/domain/services/incident_services';
+import { PersonService } from './bot/domain/services/person_services';
 import { JobsService } from './bot/domain/services/jobs_services';
 
 const express = require('express');
@@ -47,6 +48,7 @@ function getParticipationList(people) {
         const cors = require("cors");
         const incident_service = new IncidentService(pool);
         const jobs_service = new JobsService(pool);
+        const person_service = new PersonService(pool);
 
         app.use(cors());
         app.use(bodyParser.urlencoded({ extended: false }));
@@ -117,7 +119,34 @@ function getParticipationList(people) {
             
         });
 
-        app.get("/api/daily/:branch?/:week?/:date?", async (request, response, next) => {
+        app.post("/api/person_role", async (request, response, next) => {            
+            let result = await person_service.add_role(
+                request.body.person_id, 
+                request.body.role_id
+            );            
+
+            response.send("Ok");                        
+        });
+
+        app.post("/api/people_alias/kf_name", async (request, response, next) => {            
+            let result = await person_service.change_kf_name(
+                request.body.person_id, 
+                request.body.kf_name
+            );            
+
+            response.send("Ok");                        
+        });
+ 
+        app.post("/api/person_role/delete", async (request, response, next) => {            
+            let result = await person_service.remove_role(
+                request.body.person_id, 
+                request.body.role_id
+            );            
+
+            response.send("Ok");                        
+        });
+
+        app.get("/api/daily/:branch?/:week?/:date?", async (request, response, next) => {            
             try {
                 let result = await pool.request()                
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
@@ -126,8 +155,9 @@ function getParticipationList(people) {
                     .execute(`GetDailyMonitor`);                
 
                 response.send((result.recordset[0][0]));
-            } catch (error) {                
-                response.send(error.message);
+            } catch (error) {                                
+                response.status(500);
+                response.render('error', { error: error });
             } 
         });   
 
@@ -141,8 +171,9 @@ function getParticipationList(people) {
                     .execute(`GetSumary`);                
 
                 response.send((result.recordset[0][0]));
-            } catch (error) {                
-                response.send(error.message);
+            } catch (error) {                                
+                response.status(500);
+                response.render('error', { error: error });
             } 
         });
         

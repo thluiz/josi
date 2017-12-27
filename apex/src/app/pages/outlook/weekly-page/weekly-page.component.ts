@@ -352,8 +352,9 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
       return;
     }
     this.personService.getDailyMonitor(this.current_branch, this.current_week).subscribe(
-      data => {          
+      data => {    
         const result = data.json();        
+
         this.branches = [{ id: 0, name: 'Todos os Núcleos' }].concat(result.branches);
         this.current_branch_name = (this.current_branch > 0 ? 
                             this.branches.filter(b => b.id == this.current_branch)[0]
@@ -403,10 +404,8 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
                 let incidents = result.incidents.filter((i : any) => { 
                   return i.date == c.date && i.person_id == people[z].person_id;
                 });
-
-                if(incidents.length > 0) {
-                  person_incidents.dates[i] = person_incidents.dates[i].concat(incidents);              
-                }
+                
+                person_incidents.dates[i] = person_incidents.dates[i].concat(incidents);                              
 
                 this.domains[w].daily[z] = person_incidents;
               }

@@ -5,7 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 let routes: Routes = [
   {
     path: '',
-     component: PersonPageComponent,
+    component: PersonPageComponent,
     data: {
       title: 'Detalhes da Pessoa'
     },    

@@ -119,7 +119,7 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
     this.incidentService.getSumary(this.current_branch, this.current_month, this.current_week, 
                 `${this.current_date.year}-${this.current_date.month}-${this.current_date.day}`)
       .subscribe(
-      data => {          
+      data => {                  
         const result = data.json();
         let sumary = result.sumary;
         this.current_week_text = result.current_week_text;
