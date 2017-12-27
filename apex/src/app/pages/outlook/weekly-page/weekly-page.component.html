@@ -47,7 +47,7 @@
 									</span>											
 									<input type="text" class='form-control text-center'
 										style="background-color: white"
-										[value]="current_week_range" readonly="readonly"/>																								
+										[value]="selected_week ? selected_week.range : ''" readonly="readonly"/>																								
 									<span class="input-group-btn">
 										<button type="button" 
 											id="btn_next_week"
@@ -88,12 +88,12 @@
 									<td *ngFor="let c of cols, let k3 = index" 
 										align="center" 
 										[ngStyle]="{ 'width': c.width, 
-													'background-color': k3 == current_week_day + 4 ? 
-													d.program_id == 1 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)')
-													: d.program_id == 1 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : 'rgb(8, 82, 1)'), 
+													'background-color': selected_week.current && k3 == current_week_day + 4 ? 
+														d.program_id == 1 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)')
+														: d.program_id == 1 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : 'rgb(8, 82, 1)'), 
 													'color': 'white' }"
 										[colSpan]="c.colspan || 1"
-										>																				
+										>																													
 										<div>
 											<span *ngIf="k3 == 0" style="font-weight:bold">
 												{{ d.number_of_members }} 
@@ -198,7 +198,7 @@
 									<td valign="middle" align="center" 										
 										*ngFor="let item of person.dates, let k2 = index" 
 										style="border-right:1px solid grey"
-										[ngClass]=" k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">																	
+										[ngClass]=" selected_week.current && k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">																	
 
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
 											<div class="text-center" 
@@ -242,7 +242,7 @@
 						</td>
 						<td *ngFor="let c of week_days, let k3 = index" 							
 							style="width:9.5%;text-align: center"
-							[ngStyle]="{'background-color': k3 == current_week_day ? 'rgb(100,100,100)': 'gray', 
+							[ngStyle]="{'background-color': selected_week.current && k3 == current_week_day ? 'rgb(100,100,100)': 'gray', 
 										'color': 'white' }"							
 							>																				
 							<div>								
@@ -285,7 +285,7 @@
 						<td valign="middle" align="center" 										
 							*ngFor="let item of visitant.dates, let k2 = index" 
 							style="border-right:1px solid grey"
-							[ngClass]=" k2 == current_week_day ? (ke % 2 == 0 ? 'current2' : 'current') : '' ">
+							[ngClass]=" selected_week.current && k2 == current_week_day ? (ke % 2 == 0 ? 'current2' : 'current') : '' ">
 
 							<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
 								<div class="text-center" 

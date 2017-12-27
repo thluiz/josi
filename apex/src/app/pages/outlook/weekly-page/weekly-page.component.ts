@@ -45,6 +45,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   daily: Observable<any[]>;
   cols;
   sumary_cols;
+  selected_week;
   current_week_range;
   current_week_day;  
   current_week = 0;
@@ -365,6 +366,8 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
         this.week_days = result.week_days;
         this.activity_sumary  = result.activity_sumary;
         this.sumary = result.sumary;
+        this.selected_week = result.selected_week[0];
+
         this.cols = [                    
           { width: "24.5%" },
           { width: "3%", icon: "ft-calendar", description: "Agendamento" },
