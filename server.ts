@@ -132,7 +132,7 @@ function getParticipationList(people) {
             let result = await person_service.change_kf_name(
                 request.body.person_id, 
                 request.body.kf_name,
-                request.body.transliteration
+                request.body.ideograms
             );            
 
             response.send("Ok");                        
@@ -158,7 +158,7 @@ function getParticipationList(people) {
                 response.send((result.recordset[0][0]));
             } catch (error) {                                
                 response.status(500);
-                response.render('error', { error: error });
+                response.json({ error: error });
             } 
         });   
 
@@ -174,7 +174,7 @@ function getParticipationList(people) {
                 response.send((result.recordset[0][0]));
             } catch (error) {                                
                 response.status(500);
-                response.render('error', { error: error });
+                response.json('error', { error: error });
             } 
         });
         
