@@ -31,7 +31,7 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
 
   new_role: any;
   editing_kf_name = false;
-  editing_kf_transliteration = false;  
+  editing_kf_ideograms = false;  
 
   private sub: any;
 
@@ -99,19 +99,19 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
     this.editing_kf_name = true;    
   }
 
-  begin_change_kf_transliteration() {    
-    this.person.new_kf_transliteration = this.person.kf_name_transliteration;
-    this.editing_kf_transliteration = true;    
+  begin_change_kf_ideograms() {    
+    this.person.new_kf_ideograms = this.person.kf_name_ideograms;
+    this.editing_kf_ideograms = true;    
   }
 
   save_kf_name() {
     this.personService.saveKFName(this.id, 
         this.person.new_kf_name || this.person.kf_name, 
-        this.person.new_kf_transliteration || this.person.kf_name_transliteration
+        this.person.new_kf_ideograms || this.person.kf_name_ideograms
       ).toPromise().then(() => {
         this.load_person_data();
         this.editing_kf_name = false;
-        this.editing_kf_transliteration = false;
+        this.editing_kf_ideograms = false;
       });
   }
 
@@ -120,9 +120,9 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
     this.person.new_kf_name = this.person.kf_name;
   }
 
-  cancel_kf_transliteration() {
-    this.editing_kf_transliteration = false;
-    this.person.new_kf_transliteration = this.person.kf_name_transliteration;
+  cancel_kf_ideograms() {
+    this.editing_kf_ideograms = false;
+    this.person.new_kf_ideograms = this.person.kf_name_ideograms;
   }
 
   showPage(str) {

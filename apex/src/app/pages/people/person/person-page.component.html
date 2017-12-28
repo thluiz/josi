@@ -40,7 +40,7 @@
                                         <div *ngIf="editing_kf_name" style="display:inline-block">
                                             <span class="input-group">                                            									
                                                 <input type="text" class='form-control'
-                                                    placeholder="Nome Kung Fu"                                                
+                                                    placeholder="Transliteração"                                                
                                                     [(ngModel)]="person.new_kf_name"/>																								
                                                 <span class="input-group-btn">
                                                     <button type="button" 
@@ -52,7 +52,7 @@
                                                     <button type="button" 
                                                         id="btn_next_week"
                                                         (click)="cancel_kf_name()"											
-                                                        class="btn btn-secundary btn-raised btn-fab btn-sm fa fa-times"
+                                                        class="btn btn-secundary btn-raised btn-fab btn-sm icon-action-undo"
                                                         >									
                                                     </button>
                                                 </span>
@@ -60,17 +60,17 @@
                                         </div>
                                     </div>
                                     <div style="float:left;" *ngIf="person.is_disciple" >                                        
-                                        <a (click)="begin_change_kf_transliteration()"
-                                            *ngIf="!editing_kf_transliteration">
+                                        <a (click)="begin_change_kf_ideograms()"
+                                            *ngIf="!editing_kf_ideograms">
                                             <h5>
-                                                &nbsp;- {{ person.kf_name_transliteration || 'Transliteração' }}
+                                                &nbsp;- {{ person.kf_name_ideograms || 'Ideogramas' }}
                                             </h5>                                        
                                         </a>                                        
-                                        <div *ngIf="editing_kf_transliteration"  style="display:inline-block">
+                                        <div *ngIf="editing_kf_ideograms"  style="display:inline-block">
                                             <span class="input-group">                                            									
                                                 <input type="text" class='form-control'  
-                                                    placeholder="Transliteração"                                              
-                                                    [(ngModel)]="person.new_kf_transliteration"
+                                                    placeholder="Ideogramas"                                              
+                                                    [(ngModel)]="person.new_kf_ideograms"
                                                     style="text-align:center"/>																								
                                                 <span class="input-group-btn">
                                                     <button type="button" 
@@ -81,8 +81,8 @@
                                                     </button>
                                                     <button type="button" 
                                                         id="btn_next_week"
-                                                        (click)="cancel_kf_transliteration()"											
-                                                        class="btn btn-secundary btn-raised btn-fab btn-sm fa fa-times"
+                                                        (click)="cancel_kf_ideograms()"											
+                                                        class="btn btn-secundary btn-raised btn-fab btn-sm icon-action-undo"
                                                         >									
                                                     </button>
                                                 </span>
