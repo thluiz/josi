@@ -33,13 +33,14 @@ class PersonService {
             return result;
         });
     }
-    change_kf_name(person_id, kf_name) {
+    change_kf_name(person_id, kf_name, transliteration) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.sql_pool
                 .request()
                 .input('person_id', sql.Int, person_id)
                 .input('alias', sql.VarChar(150), kf_name)
                 .input('kf_name', sql.Bit, 1)
+                .input('transliteration', sql.NVarChar(100), transliteration)
                 .execute(`AddAlias`);
             return result;
         });

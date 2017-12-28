@@ -98,7 +98,7 @@ function getParticipationList(people) {
             response.send("Ok");
         }));
         app.post("/api/people_alias/kf_name", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield person_service.change_kf_name(request.body.person_id, request.body.kf_name);
+            let result = yield person_service.change_kf_name(request.body.person_id, request.body.kf_name, request.body.transliteration);
             response.send("Ok");
         }));
         app.post("/api/person_role/delete", (request, response, next) => __awaiter(this, void 0, void 0, function* () {

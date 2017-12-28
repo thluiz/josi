@@ -27,12 +27,13 @@ export class PersonService {
         return result;                        
     }
 
-    public async change_kf_name(person_id, kf_name) {
+    public async change_kf_name(person_id, kf_name, transliteration) {
         const result = await this.sql_pool
                                 .request()
                                 .input('person_id', sql.Int, person_id)                                
                                 .input('alias', sql.VarChar(150), kf_name)
                                 .input('kf_name', sql.Bit, 1)
+                                .input('transliteration', sql.NVarChar(100), transliteration)
                                 .execute(`AddAlias`);
 
         return result;    

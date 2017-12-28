@@ -128,10 +128,14 @@
 														{{ person.name }}														
 														</a>														
 													</div>
-												</div>
-												<div class="row" style="font-size:10px;">
+												</div>												
+												<div class="row" style="font-size:12px;">
 													<div class="col-12">
-														{{ person.kf_name }}														
+														{{ person.kf_name }}																												
+														<span													
+															*ngIf="person.kf_name_transliteration">																									
+															, {{ person.kf_name_transliteration }}																										
+														</span>
 														<span 
 															*ngIf="!current_branch || current_branch == '' || current_branch == 0">
 															<span *ngIf="person.kf_name && person.kf_name.length > 0"> - </span>

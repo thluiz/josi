@@ -31,11 +31,12 @@ constructor(private http:Http) { }
         });
   }
 
-  saveKFName(person_id, kf_name) {
+  saveKFName(person_id, kf_name, transliteration) {
     return this.http
         .post(this.dataUrl + `/people_alias/kf_name`, {
           person_id, 
-          kf_name
+          kf_name,
+          transliteration
         });
   }
 

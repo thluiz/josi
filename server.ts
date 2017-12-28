@@ -131,7 +131,8 @@ function getParticipationList(people) {
         app.post("/api/people_alias/kf_name", async (request, response, next) => {            
             let result = await person_service.change_kf_name(
                 request.body.person_id, 
-                request.body.kf_name
+                request.body.kf_name,
+                request.body.transliteration
             );            
 
             response.send("Ok");                        

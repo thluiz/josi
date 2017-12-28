@@ -28,32 +28,68 @@
                                 </div>                                
                             </div>
                             <div class="row">
-                                <div class="col-12" *ngIf="person.is_disciple">
-                                    <a (click)="begin_change_kf_name()"
-                                        *ngIf="!editing_kf_name">
-                                        <h5>{{ person.kf_name || 'Nome Kung Fu' }}</h5>
-                                    </a>
-                                    <div *ngIf="editing_kf_name">
-                                        <span class="input-group">                                            									
-                                            <input type="text" class='form-control'                                                
-                                                [(ngModel)]="person.new_kf_name"/>																								
-                                            <span class="input-group-btn">
-                                                <button type="button" 
-                                                    id="btn_next_week"
-                                                    (click)="save_kf_name()"											
-                                                    class="btn btn-success btn-raised btn-fab btn-sm fa fa-check"
-                                                    >									
-                                                </button>
-                                                <button type="button" 
-                                                    id="btn_next_week"
-                                                    (click)="cancel_kf_name()"											
-                                                    class="btn btn-secundary btn-raised btn-fab btn-sm fa fa-times"
-                                                    >									
-                                                </button>
+                                <div class="col-4">
+                                    <div *ngIf="person.is_disciple" style="float:left;">
+                                        <a (click)="begin_change_kf_name()"
+                                            *ngIf="!editing_kf_name">
+                                            <h5>
+                                                {{ person.kf_name || 'Nome Kung Fu' }}
+
+                                            </h5>                                        
+                                        </a>
+                                        <div *ngIf="editing_kf_name" style="display:inline-block">
+                                            <span class="input-group">                                            									
+                                                <input type="text" class='form-control'
+                                                    placeholder="Nome Kung Fu"                                                
+                                                    [(ngModel)]="person.new_kf_name"/>																								
+                                                <span class="input-group-btn">
+                                                    <button type="button" 
+                                                        id="btn_next_week"
+                                                        (click)="save_kf_name()"											
+                                                        class="btn btn-success btn-raised btn-fab btn-sm fa fa-check"
+                                                        >									
+                                                    </button>
+                                                    <button type="button" 
+                                                        id="btn_next_week"
+                                                        (click)="cancel_kf_name()"											
+                                                        class="btn btn-secundary btn-raised btn-fab btn-sm fa fa-times"
+                                                        >									
+                                                    </button>
+                                                </span>
                                             </span>
-                                        </span>
+                                        </div>
                                     </div>
-                                </div>                                
+                                    <div style="float:left;" *ngIf="person.is_disciple" >                                        
+                                        <a (click)="begin_change_kf_transliteration()"
+                                            *ngIf="!editing_kf_transliteration">
+                                            <h5>
+                                                &nbsp;- {{ person.kf_name_transliteration || 'Transliteração' }}
+                                            </h5>                                        
+                                        </a>                                        
+                                        <div *ngIf="editing_kf_transliteration"  style="display:inline-block">
+                                            <span class="input-group">                                            									
+                                                <input type="text" class='form-control'  
+                                                    placeholder="Transliteração"                                              
+                                                    [(ngModel)]="person.new_kf_transliteration"
+                                                    style="text-align:center"/>																								
+                                                <span class="input-group-btn">
+                                                    <button type="button" 
+                                                        id="btn_next_week"
+                                                        (click)="save_kf_name()"											
+                                                        class="btn btn-success btn-raised btn-fab btn-sm fa fa-check"
+                                                        >									
+                                                    </button>
+                                                    <button type="button" 
+                                                        id="btn_next_week"
+                                                        (click)="cancel_kf_transliteration()"											
+                                                        class="btn btn-secundary btn-raised btn-fab btn-sm fa fa-times"
+                                                        >									
+                                                    </button>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>                                
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -62,16 +98,33 @@
                             <b>Papéis:</b>
                             <ng-template ngFor let-person_role [ngForOf]="person.roles" let-pri=index let-m=first>                                
                                 <span *ngIf="pri > 0">,</span>
-                                <a (click)="remove_role(person_role.role_id)">
+                                <a (click)="begin_remove_role(person_role)"
+                                [ngStyle]="{'font-weight': person_role.removing ? 'bold' : null, 
+                                            'border-bottom': person_role.removing ? '1px dotted #000' : null }">
                                     {{ person_role.role }}
                                 </a>
+                                <button type="button" 
+                                    (click)="remove_role(person_role.role_id)"
+                                    class="btn btn-danger btn-raised btn-sm icon-trash"
+                                    title="Confirmar Remoção de Papel"                                    
+                                    *ngIf="person_role.removing"
+                                    >																
+                                </button>
+                                <button type="button" 
+                                    (click)="cancel_remove_role(person_role)"
+                                    class="btn btn-gray btn-raised btn-sm icon-action-undo"
+                                    title="Cancelar Remoção"
+                                    style="margin-left:5px"
+                                    *ngIf="person_role.removing"
+                                    >																
+                                </button>
                             </ng-template>																
                             
                             <span *ngIf="!person.roles || person.roles.length == 0">Nenhum papel definido</span>
                             <button type="button" 
                                 (click)="open(new_role_modal)"
                                 class="btn btn-secundary btn-raised btn-sm ft-plus"
-                                title="Registrar Atividade"
+                                title="Adicionar Papel"
                                 style="margin-left:10px"
                                 >																
                             </button>
