@@ -54,6 +54,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   branches;
   domains;
   incident_types;
+  manual_incident_types;
   dpReschedule;
   current_incident;
   new_incident : any = {};
@@ -362,6 +363,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
                             : this.branches[0]).name;
         this.domains = result.domains;   
         this.incident_types = result.incident_types;
+        this.manual_incident_types = this.incident_types.filter(f => !f.automatically_generated);
         this.current_week_range = result.current_week_range;
         this.week_days = result.week_days;
         this.activity_sumary  = result.activity_sumary;

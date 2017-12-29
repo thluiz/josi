@@ -207,9 +207,11 @@
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
 											<div class="text-center" 
 												style="line-height:15px;"												
-												[style.border-top]="k > 0 ? '1px solid #CCC' : ''">
+												[style.border-top]="k > 0 ? '1px solid #CCC' : ''">	
+																								
 												<a (click)="open(content, i)" 
 													[style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'orange' : (i.past ? 'red' : 'black'  )  )  "
+													*ngIf="i.type != 30 && i.type != 31"
 													style="font-size:12px">
 													<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
 													<b *ngIf="i.type == 2">{{ i.title }}</b>																	
@@ -219,7 +221,19 @@
 																&& i.type != 2 && i.type != 4"
 														style="font-size:11px"
 													> - {{ i.short_description }} </span>
-												</a>	
+												</a>																																																																	
+												<i  												
+													class="icon-present"
+													style="color:blue"
+													*ngIf="i.type == 30"
+													title="Aniversário Kung Fu">
+												</i>
+												<i  												
+													class="icon-present"
+													style="color:green"
+													*ngIf="i.type == 31"
+													title="Aniversário">
+												</i>												
 											</div>																															
 										</ng-template>																	
 
@@ -301,6 +315,7 @@
 									[style.border-top]="k > 0 ? '1px solid #CCC' : ''">
 									<a (click)="open(content, i)" 
 										[style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'orange' : (i.past ? 'red' : 'black'  )  )  "
+										*ngIf="i.type != 30 && i.type != 31"
 										style="font-size:12px">
 										<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
 										<b *ngIf="i.type == 2">{{ i.title }}</b>																	
@@ -311,6 +326,18 @@
 											style="font-size:11px"
 										> - {{ i.short_description }} </span>
 									</a>	
+									<i  												
+										class="icon-present"
+										style="color:blue"
+										*ngIf="i.type == 31"
+										title="Aniversário Kung Fu">
+									</i>
+									<i  												
+										class="icon-present"
+										style="color: green"
+										*ngIf="i.type == 30"
+										title="Aniversário">
+									</i>
 								</div>																															
 							</ng-template>
 
@@ -355,7 +382,7 @@
 							style="width:100%"
 							>		
 							<option></option>
-							<option *ngFor="let t of incident_types" [value]="t.id">{{t.name}}</option>
+							<option *ngFor="let t of manual_incident_types" [value]="t.id">{{t.name}}</option>
 						</select>
 						<select id="new_incident_children_type" 
 							[(ngModel)]="new_incident.children_type" 
