@@ -494,14 +494,16 @@
 	</div>
 	<div class="modal-footer">
 		<button type="button" 
-			class="btn btn-primary btn-raised" 
+			class="btn btn-success btn-raised" 
 			(click)="register_new_incident();d('new incident!');"
 			*ngIf="new_incident.correct">
+			<i class="icon-check"></i>
 			Registrar
 		</button>															
-		<button type="button" class="btn btn-grey btn-raised" 
+		<button type="button" class="btn btn-raised" 
 			(click)="reset_new_incident();d('reset new incident!');"
 			>
+			<i class="icon-action-undo"></i>
 			Cancelar
 		</button>	
 	</div>
@@ -552,9 +554,13 @@
 				</div>
 			</div>
 			<div class="col-12" *ngIf="!current_incident.in_treatment && !current_incident.closed && !current_incident.treated">
-				<h6 style="font-weight: bold">Realizado</h6>				
-				<button type="button" class="btn btn-success btn-raised" (click)="close_incident(current_incident);d('close!');">Sim</button>
-				<button type="button" class="btn btn-primary btn-raised" (click)="begin_treat_incident(current_incident)">Não</button>		
+				<h6 style="font-weight: bold">Realizado?</h6>				
+				<button type="button" class="btn btn-lg btn-success btn-raised" (click)="close_incident(current_incident);d('close!');">
+					<i class="icon-check"></i> Sim
+				</button>
+				<button type="button" class="btn btn-lg btn-primary btn-raised" (click)="begin_treat_incident(current_incident)">
+					<i class="icon-ban"></i> Não
+				</button>		
 			</div>			
 			<div class="col-12" *ngIf="current_incident.in_treatment">				
 				<div class="row">					
@@ -589,48 +595,56 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button type="button" class="btn btn-primary btn-raised" 
+		<button type="button" class="btn btn-success btn-raised" 
 			(click)="register_contact_for_incident(current_incident);d('contact!');"
 			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
+			<i class="fa fa-envelope-o"></i>
 			Registrar Contato
 		</button>
-		<button type="button" class="btn btn-success btn-raised" 
+		<button type="button" class="btn btn-primary btn-raised" 
 			(click)="begin_reschedule_incident(current_incident)"
 			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
+			<i class="ft-calendar"></i>
 			Reagendar
 		</button>		
 		<button type="button" 
-			class="btn btn-primary btn-raised" 
+			class="btn btn-success btn-raised" 
 			(click)="reschedule_incident(current_incident);d('reschedule!');"
 			*ngIf="current_incident.in_treatment && current_incident.reschedule">
-			Registrar Reagendamento
+			<i class="ft-calendar"></i>
+			Reagendar!
 		</button>															
 		<button type="button" class="btn btn-grey btn-raised" 
 			(click)="reset_treat_incident(current_incident);"
 			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
+			<i class="icon-action-undo"></i>
 			Voltar
 		</button>		
 		<button type="button" class="btn btn-grey btn-raised" 
 			(click)="reset_reschedule(current_incident);"
 			*ngIf="current_incident.in_treatment && current_incident.reschedule">
+			<i class="icon-action-undo"></i>
 			Voltar
 		</button>		
-		<button type="button" class="btn btn-grey btn-raised" 			
-			*ngIf="!current_incident.begin_remove"
+		<button type="button" class="btn btn-secondary btn-raised" 			
+			*ngIf="!current_incident.begin_remove && !current_incident.in_treatment"
 			(click)="begin_remove_incident(current_incident);">
+			<i class="ft-trash-2"></i>
 			Excluir
 		</button>
 		<span *ngIf="current_incident.begin_remove">
-			Confirma exclusão: 
+			Confirma exclusão?
 		</span>
 		<button type="button" class="btn btn-danger btn-raised" 
 			*ngIf="current_incident.begin_remove"
 			(click)="remove_incident(current_incident);d('remove!');">
+			<i class="ft-trash-2"></i>
 			Excluir
 		</button>
-		<button type="button" class="btn btn-primary btn-raised" 
+		<button type="button" class="btn btn-raised" 
 			*ngIf="current_incident.begin_remove"
 			(click)="rollback_remove_incident(current_incident);">
+			<i class="icon-action-undo"></i>
 			Não
 		</button>
 	</div>

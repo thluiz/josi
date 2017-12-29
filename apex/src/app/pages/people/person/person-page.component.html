@@ -21,7 +21,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="col-9">
+                        <div class="col-8">
                             <div class="row">
                                 <div class="col-12">
                                     <h3 style="font-weight:bold">{{ person.name }}</h3>
@@ -60,12 +60,13 @@
                                 </div>                                
                             </div>
                         </div>
-                        <div class="col-1">
+                        <div class="col-2 text-center">
                             <button type="button"                                 
                                 [routerLink]="['/person/edit', id]"
-                                class="btn btn-primary btn-raised btn-xl icon-edit"
+                                class="btn btn-primary btn-raised btn-xl"
                                 title="Alterar pessoa"                                                                    
-                                >					
+                                >			
+                                <i class="icon-pencil"></i>		                                
                                 Alterar											
                             </button>
                         </div>
@@ -82,14 +83,15 @@
                                 </a>
                                 <button type="button" 
                                     (click)="remove_role(person_role.role_id)"
-                                    class="btn btn-danger btn-raised btn-sm icon-trash"
+                                    class="btn btn-fab btn-danger btn-raised btn-sm ft-trash-2"
                                     title="Confirmar Remoção de Papel"                                    
+                                    style="margin-left:5px"
                                     *ngIf="person_role.removing"
-                                    >																
+                                    >										                                    			
                                 </button>
                                 <button type="button" 
                                     (click)="cancel_remove_role(person_role)"
-                                    class="btn btn-gray btn-raised btn-sm icon-action-undo"
+                                    class="btn btn-fab btn-sm icon-action-undo"
                                     title="Cancelar Remoção"
                                     style="margin-left:5px"
                                     *ngIf="person_role.removing"
@@ -98,11 +100,11 @@
                             </ng-template>																
                             
                             <span *ngIf="!person.roles || person.roles.length == 0">Nenhum papel definido</span>
-                            <button type="button" 
+                            <button
                                 (click)="open(new_role_modal)"
-                                class="btn btn-secundary btn-raised btn-sm ft-plus"
-                                title="Adicionar Papel"
-                                style="margin-left:10px"
+                                class="btn btn-fab btn-sm ft-plus"
+                                title="Adicionar Papel"   
+                                style="margin-left:10px"                             
                                 >																
                             </button>
                         </div>
@@ -131,13 +133,15 @@
         </select>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary btn-raised" 
+        <button type="button" class="btn btn-success btn-raised" 
             (click)="add_role();d('add role!');"
             *ngIf="new_role">
+            <i class="fa fa-check-square-o"></i>
             Adicionar
         </button>        
-        <button type="button" class="btn btn-grey btn-raised" 			            
+        <button type="button" class="btn btn-raised" 			            
             (click)="d('Cancelled')">
+            <i class="icon-action-undo"></i>
             Cancelar
         </button>        
     </div>

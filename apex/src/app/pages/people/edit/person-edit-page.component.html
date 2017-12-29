@@ -98,15 +98,16 @@
                                                                                                                                                                                         
                                 </div>
     
-                                <div class="form-actions">
-                                    <button type="button" class="btn btn-raised btn-primary" 
-                                    (click)="save_person_data()">
+                                <div class="form-actions text-right">
+                                    <button type="button" class="btn btn-raised btn-success" 
+                                    (click)="save_person_data()"
+                                    style="margin-right:10px">
                                         <i class="fa fa-check-square-o"></i> Salvar
                                     </button>
 
-                                    <button type="button" class="btn btn-raised btn-gray mr-1" 
+                                    <button type="button" class="btn btn-raised" 
                                     [routerLink]="['/person', id]">
-                                        <i class="ft-x"></i> Cancelar
+                                        <i class="icon-action-undo"></i> Cancelar
                                     </button>                                    
                                 </div>
                             </form>
