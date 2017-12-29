@@ -1,0 +1,103 @@
+import { Router, ActivatedRoute } from '@angular/router';
+import { PersonService } from './../../../services/person-service';
+import {  Component, TemplateRef, ViewChild, ViewEncapsulation, Input  } from '@angular/core';
+
+import { OnInit, OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
+
+import { FormControl, FormsModule, ReactiveFormsModule,
+  FormGroup, Validators, NgForm } from '@angular/forms';
+
+import { NgbModal, 
+ModalDismissReasons, 
+NgbActiveModal
+} from '@ng-bootstrap/ng-bootstrap';
+
+@Component({
+  selector: 'app-full-layout-page',
+  templateUrl: './person-edit-page.component.html',
+  styleUrls: ['./person-edit-page.component.scss'],  
+  providers: [PersonService]
+})
+export class PersonEditPageComponent implements OnInit, OnDestroy  {
+  id: number;
+  person: any;    
+  new_role: any;
+
+  private sub: any;
+
+  constructor(private personService: PersonService, 
+              private route: ActivatedRoute,
+              private router: Router, 
+              private modalService: NgbModal) {      
+  }  
+
+  ngOnInit() {
+    this.sub = this.route.params.subscribe(params => {
+      this.id = +params['id'];      
+      
+      this.load_person_data();      
+    });
+  }
+  
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
+  
+  open(content, incident){        
+    this.modalService.open(content).result.then((result) => {                                  
+        
+    }, (reason) => {
+        console.log(reason);
+    });
+
+  }  
+
+  save_person_data() {
+    let p = this.person;
+    p.birth_date = this.translate_date_to_server(this.person.birth_date);        
+    p.admission_date = this.translate_date_to_server(this.person.admission_date);        
+    p.baaisi_date = this.translate_date_to_server(this.person.baaisi_date);  
+
+    this.personService.savePersonData(p).toPromise().then(
+      () => {
+        this.router.navigateByUrl(`person/${this.id}`);
+      }
+    )
+  }
+
+  private translate_date_to_view(date) {      
+    if(!date || date.split("-").length != 3) {
+      return null;
+    }
+    const splitted_date = date.split("-");
+
+    return {
+      year: parseInt(splitted_date[0], 10),
+      month: parseInt(splitted_date[1], 10),
+      day: parseInt(splitted_date[2], 10)
+    }
+  }
+
+  private translate_date_to_server(date) {
+    if(!date || !date.year)
+      return null;
+
+    return `${date.year}-${date.month}-${date.day}`;
+  }
+
+
+  load_person_data() {
+    this.personService.getAllData(this.id).subscribe(
+      data => {           
+        const result = data.json();    
+        this.person = result;  
+        this.person.birth_date = this.translate_date_to_view(this.person.birth_date);        
+        this.person.admission_date = this.translate_date_to_view(this.person.admission_date);        
+        this.person.baaisi_date = this.translate_date_to_view(this.person.baaisi_date);  
+        
+        console.log(this.person.birth_date);
+
+      }
+    );
+  }
+}

@@ -45,6 +45,20 @@ class PersonService {
             return result;
         });
     }
+    update_person_data(person) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.sql_pool
+                .request()
+                .input('id', sql.Int, person.id)
+                .input('name', sql.VarChar(200), person.name)
+                .input('birth_date', sql.VarChar(10), person.birth_date)
+                .input('admission_date', sql.VarChar(10), person.admission_date)
+                .input('baaisi_date', sql.VarChar(10), person.baaisi_date)
+                .input('kf_name', sql.VarChar(200), person.kf_name)
+                .input('kf_name_ideograms', sql.NVarChar(200), person.kf_name_ideograms)
+                .execute(`UpdatePersonData`);
+        });
+    }
 }
 exports.PersonService = PersonService;
 //# sourceMappingURL=person_services.js.map

@@ -101,6 +101,16 @@ function getParticipationList(people) {
             response.send(result.recordset[0][0]);
         });
 
+        app.post("/api/people_updater", async (request, response, next) => {                        
+            console.log(request.body.person);
+            
+            const result = await person_service.update_person_data(
+                request.body.person
+            );
+
+            response.send("Ok");
+        });
+
         app.get("/api/people/search/:name?", async (request, response, next) => {                        
             const result = await pool.request()
             .input('names', sql.VarChar(sql.MAX), request.params.name)

@@ -83,6 +83,11 @@ function getParticipationList(people) {
                 .execute(`GetPersonData`);
             response.send(result.recordset[0][0]);
         }));
+        app.post("/api/people_updater", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            console.log(request.body.person);
+            const result = yield person_service.update_person_data(request.body.person);
+            response.send("Ok");
+        }));
         app.get("/api/people/search/:name?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             const result = yield pool.request()
                 .input('names', sql.VarChar(sql.MAX), request.params.name)

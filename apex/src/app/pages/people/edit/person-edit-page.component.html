@@ -1,0 +1,119 @@
+
+<section id="person-edit-profile" *ngIf="person">
+    <div>        
+        <div class="row justify-content-md-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title" id="basic-layout-form">Alterar Dados</h4>
+                        <p class="mb-0">{{ person.name }}</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="px-3">
+                            <form class="form">
+                                <div class="form-body">
+                                    <h4 class="form-section"><i class="ft-user"></i> Dados Pessoais </h4>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="person_name">Nome</label>
+                                                <input type="text" id="person_name" name="person_name"
+                                                class="form-control" [(ngModel)]="person.name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="person_birth_date">Nascimento</label>                                                									
+                                                <div class="input-group">							
+                                                    <input class="form-control text-center" placeholder="yyyy-mm-dd" 
+                                                    [(ngModel)]="person.birth_date" id="person_birth_date"
+                                                    name="person_birth_date" type="date"
+                                                    ngbDatepicker #niReschedule="ngbDatepicker" />
+                                                    <div class="input-group-addon" (click)="niReschedule.toggle()">
+                                                        <i class="fa fa-calendar" style="cursor: pointer;"></i>
+                                                    </div>																																                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h4 class="form-section" *ngIf="person.is_active_member"><i class="ft-user" style="color: red"></i> Membro </h4>
+                                            <div class="row" *ngIf="person.is_active_member">                                        
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="person_admission_date">Admissão</label>                                                									
+                                                        <div class="input-group">							
+                                                            <input class="form-control text-center" placeholder="dd-mm-yyyy" 
+                                                            [(ngModel)]="person.admission_date" id="person_admission_date"
+                                                            name="person_admission_date" type="date"
+                                                            ngbDatepicker #niRescheduleAdmission="ngbDatepicker" />
+                                                            <div class="input-group-addon" (click)="niRescheduleAdmission.toggle()">
+                                                                <i class="fa fa-calendar" style="cursor: pointer;"></i>
+                                                            </div>																																                                                    
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <h4 class="form-section" *ngIf="person.is_disciple"><i class="ft-user" style="color: darkorange"></i> Discípulo </h4>
+                                            <div class="row" *ngIf="person.is_disciple">   
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="person_kf_name">Nome Kung Fu</label>
+                                                        <input type="text" class="form-control text-center"
+                                                        id="person_kf_name" name="person_kf_name"
+                                                        [(ngModel)]="person.kf_name" />                                                
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="person_kf_name_ideograms">Ideogramas</label>
+                                                        <input type="text" class="form-control text-center"
+                                                        id="person_kf_name_ideograms" name="person_kf_name_ideograms"
+                                                        [(ngModel)]="person.kf_name_ideograms" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" *ngIf="person.is_disciple">                                        
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="person_baaisi_date">Baai Si</label>                                                									
+                                                        <div class="input-group">							
+                                                            <input class="form-control text-center" placeholder="dd-mm-yyyy" 
+                                                            [(ngModel)]="person.baaisi_date" id="person_baaisi_date"
+                                                            name="person_baaisi_date" type="date"
+                                                            ngbDatepicker #niRescheduleBaaiSiDate="ngbDatepicker" />
+                                                            <div class="input-group-addon" (click)="niRescheduleBaaiSiDate.toggle()">
+                                                                <i class="fa fa-calendar" style="cursor: pointer;"></i>
+                                                            </div>																																                                                    
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                                                                                                                                                                        
+                                </div>
+    
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-raised btn-primary" 
+                                    (click)="save_person_data()">
+                                        <i class="fa fa-check-square-o"></i> Salvar
+                                    </button>
+
+                                    <button type="button" class="btn btn-raised btn-gray mr-1" 
+                                    [routerLink]="['/person', id]">
+                                        <i class="ft-x"></i> Cancelar
+                                    </button>                                    
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>           
+        </div>
+    </div>        
+</section>

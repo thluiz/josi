@@ -31,6 +31,13 @@ constructor(private http:Http) { }
         });
   }
 
+  savePersonData(person) {          
+    return this.http
+        .post(this.dataUrl + `/people_updater`, {
+          person
+        });
+  }
+  
   saveKFName(person_id, kf_name, ideograms) {
     return this.http
         .post(this.dataUrl + `/people_alias/kf_name`, {

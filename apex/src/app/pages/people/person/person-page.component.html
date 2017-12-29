@@ -3,7 +3,7 @@
     <div>
         <div class="row">
             <div class="col-12">
-                <div class="card">
+                <div class="card" style="padding:1%">
                     <div class="row">
                         <div class="col-2">
                             <div class="align-self-center halfway-fab text-center">
@@ -21,76 +21,53 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="col-10">
+                        <div class="col-9">
                             <div class="row">
                                 <div class="col-12">
                                     <h3 style="font-weight:bold">{{ person.name }}</h3>
                                 </div>                                
                             </div>
-                            <div class="row">
+                            <div class="row" *ngIf="person.is_disciple && (person.kf_name_ideograms || person.kf_name_ideograms )">
                                 <div class="col-4">
-                                    <div *ngIf="person.is_disciple" style="float:left;">
-                                        <a (click)="begin_change_kf_name()"
-                                            *ngIf="!editing_kf_name">
-                                            <h5>
-                                                {{ person.kf_name || 'Nome Kung Fu' }}
-
-                                            </h5>                                        
-                                        </a>
-                                        <div *ngIf="editing_kf_name" style="display:inline-block">
-                                            <span class="input-group">                                            									
-                                                <input type="text" class='form-control'
-                                                    placeholder="Transliteração"                                                
-                                                    [(ngModel)]="person.new_kf_name"/>																								
-                                                <span class="input-group-btn">
-                                                    <button type="button" 
-                                                        id="btn_next_week"
-                                                        (click)="save_kf_name()"											
-                                                        class="btn btn-success btn-raised btn-fab btn-sm fa fa-check"
-                                                        >									
-                                                    </button>
-                                                    <button type="button" 
-                                                        id="btn_next_week"
-                                                        (click)="cancel_kf_name()"											
-                                                        class="btn btn-secundary btn-raised btn-fab btn-sm icon-action-undo"
-                                                        >									
-                                                    </button>
-                                                </span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div style="float:left;" *ngIf="person.is_disciple" >                                        
-                                        <a (click)="begin_change_kf_ideograms()"
-                                            *ngIf="!editing_kf_ideograms">
-                                            <h5>
-                                                &nbsp;- {{ person.kf_name_ideograms || 'Ideogramas' }}
-                                            </h5>                                        
-                                        </a>                                        
-                                        <div *ngIf="editing_kf_ideograms"  style="display:inline-block">
-                                            <span class="input-group">                                            									
-                                                <input type="text" class='form-control'  
-                                                    placeholder="Ideogramas"                                              
-                                                    [(ngModel)]="person.new_kf_ideograms"
-                                                    style="text-align:center"/>																								
-                                                <span class="input-group-btn">
-                                                    <button type="button" 
-                                                        id="btn_next_week"
-                                                        (click)="save_kf_name()"											
-                                                        class="btn btn-success btn-raised btn-fab btn-sm fa fa-check"
-                                                        >									
-                                                    </button>
-                                                    <button type="button" 
-                                                        id="btn_next_week"
-                                                        (click)="cancel_kf_ideograms()"											
-                                                        class="btn btn-secundary btn-raised btn-fab btn-sm icon-action-undo"
-                                                        >									
-                                                    </button>
-                                                </span>
-                                            </span>
-                                        </div>
+                                    <div>                                        
+                                        <h4>
+                                            {{ person.kf_name }} - {{ person.kf_name_ideograms }}
+                                        </h4>                                                                                                                        
                                     </div>                                
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-2" *ngIf="person.is_active_member || person.is_disciple">
+                                    <label for="admission_date">Admissão</label> 
+                                    <span id="admission_date"
+                                        [ngStyle]="{ 'color': !person.admission_date ? 'red' : null }">
+                                        {{ person.admission_date || 'Não definida'  }}                                    
+                                    </span>
+                                </div> 
+                                <div class="col-2" *ngIf="person.is_active_member || person.is_disciple">
+                                    <label for="admission_date">Aniversário</label> 
+                                    <span id="admission_date" 
+                                        [ngStyle]="{ 'color': !person.birth_date ? 'red' : null }">
+                                        {{ person.birth_date || 'Não definido'  }}                                    
+                                    </span>
+                                </div>
+                                <div class="col-2" *ngIf="person.is_disciple">
+                                    <label for="baaisi_date">Baai Si</label> 
+                                    <span id="baaisi_date" 
+                                        [ngStyle]="{ 'color': !person.baaisi_date ? 'red' : null }">
+                                        {{ person.baaisi_date || 'Não definido'  }}                                    
+                                    </span>
+                                </div>                                
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <button type="button"                                 
+                                [routerLink]="['/person/edit', id]"
+                                class="btn btn-primary btn-raised btn-xl icon-edit"
+                                title="Alterar pessoa"                                                                    
+                                >					
+                                Alterar											
+                            </button>
                         </div>
                     </div>
                     <div class="row">
