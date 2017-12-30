@@ -62,7 +62,7 @@
                                 </div>                                
                             </div>
                             <div class="row" *ngIf="person.is_disciple && (person.kf_name_ideograms || person.kf_name_ideograms )">
-                                <div class="col-4">
+                                <div class="col-5">
                                     <div>                                        
                                         <h4>
                                             {{ person.kf_name }} - {{ person.kf_name_ideograms }}
@@ -71,6 +71,13 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-2" *ngIf="person.is_disciple">
+                                    <label for="baaisi_date">Baai Si</label> 
+                                    <span id="baaisi_date" 
+                                        [ngStyle]="{ 'color': !person.baaisi_date ? 'red' : null }">
+                                        {{ person.baaisi_date_br || 'Não definido'  }}                                    
+                                    </span>
+                                </div>
                                 <div class="col-2" *ngIf="person.is_active_member || person.is_disciple">
                                     <label for="admission_date">Admissão</label> 
                                     <span id="admission_date"
@@ -84,14 +91,45 @@
                                         [ngStyle]="{ 'color': !person.birth_date ? 'red' : null }">
                                         {{ person.birth_date_br || 'Não definido'  }}                                    
                                     </span>
+                                </div>                                                                
+                            </div>
+                            <div class="row" style="padding-top:15px">
+                                <div class="col-12">
+                                    <b>Papéis:</b>
+                                    <ng-template ngFor let-person_role [ngForOf]="person.roles" let-pri=index let-m=first>                                
+                                        <span *ngIf="pri > 0">,</span>
+                                        <a (click)="begin_remove_role(person_role)"
+                                        [ngStyle]="{'font-weight': person_role.removing ? 'bold' : null, 
+                                                    'border-bottom': person_role.removing ? '1px dotted #000' : null }">
+                                            {{ person_role.role }}
+                                        </a>
+                                        <button type="button" 
+                                            (click)="remove_role(person_role.role_id)"
+                                            class="btn btn-fab btn-danger btn-raised btn-sm ft-trash-2"
+                                            title="Confirmar Remoção de Papel"                                    
+                                            style="margin-left:5px"
+                                            *ngIf="person_role.removing"
+                                            >										                                    			
+                                        </button>
+                                        <button type="button" 
+                                            (click)="cancel_remove_role(person_role)"
+                                            class="btn btn-fab btn-sm icon-action-undo"
+                                            title="Cancelar Remoção"
+                                            style="margin-left:5px"
+                                            *ngIf="person_role.removing"
+                                            >																
+                                        </button>
+                                    </ng-template>																
+                                    
+                                    <span *ngIf="!person.roles || person.roles.length == 0">Nenhum papel definido</span>
+                                    <button
+                                        (click)="open(new_role_modal)"
+                                        class="btn btn-fab btn-sm ft-plus"
+                                        title="Adicionar Papel"   
+                                        style="margin-left:10px;padding:0 3px;margin:0;"                             
+                                        >																
+                                    </button>
                                 </div>
-                                <div class="col-2" *ngIf="person.is_disciple">
-                                    <label for="baaisi_date">Baai Si</label> 
-                                    <span id="baaisi_date" 
-                                        [ngStyle]="{ 'color': !person.baaisi_date ? 'red' : null }">
-                                        {{ person.baaisi_date_br || 'Não definido'  }}                                    
-                                    </span>
-                                </div>                                
                             </div>
                         </div>
                         <div class="col-2 text-center">
@@ -105,47 +143,12 @@
                             </button>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-10 offset-2">
-                            <b>Papéis:</b>
-                            <ng-template ngFor let-person_role [ngForOf]="person.roles" let-pri=index let-m=first>                                
-                                <span *ngIf="pri > 0">,</span>
-                                <a (click)="begin_remove_role(person_role)"
-                                [ngStyle]="{'font-weight': person_role.removing ? 'bold' : null, 
-                                            'border-bottom': person_role.removing ? '1px dotted #000' : null }">
-                                    {{ person_role.role }}
-                                </a>
-                                <button type="button" 
-                                    (click)="remove_role(person_role.role_id)"
-                                    class="btn btn-fab btn-danger btn-raised btn-sm ft-trash-2"
-                                    title="Confirmar Remoção de Papel"                                    
-                                    style="margin-left:5px"
-                                    *ngIf="person_role.removing"
-                                    >										                                    			
-                                </button>
-                                <button type="button" 
-                                    (click)="cancel_remove_role(person_role)"
-                                    class="btn btn-fab btn-sm icon-action-undo"
-                                    title="Cancelar Remoção"
-                                    style="margin-left:5px"
-                                    *ngIf="person_role.removing"
-                                    >																
-                                </button>
-                            </ng-template>																
-                            
-                            <span *ngIf="!person.roles || person.roles.length == 0">Nenhum papel definido</span>
-                            <button
-                                (click)="open(new_role_modal)"
-                                class="btn btn-fab btn-sm ft-plus"
-                                title="Adicionar Papel"   
-                                style="margin-left:10px"                             
-                                >																
-                            </button>
-                        </div>
-                    </div>
-                    <div class="row">
+                    <div class="row" style="padding-top:10px">
                         <div class="col-5 offset-2">
-                            <h4 class="form-section"><i class="icon-paper-clip" style="color: red"></i> Atividades </h4>
+                            <h5 style="border-bottom: 1px solid black"><i class="fa fa-list"></i> Atividades </h5>
+                        </div>
+                        <div class="col-5">
+                            <h5 style="border-bottom: 1px solid black"><i class="fa fa-calendar"></i> Agendamento </h5>
                         </div>
                     </div>
                 </div>
