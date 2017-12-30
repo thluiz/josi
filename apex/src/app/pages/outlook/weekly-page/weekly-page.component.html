@@ -223,16 +223,10 @@
 												</a>																																																																	
 												<i  												
 													class="icon-present"
-													style="color:goldenrod;"
-													*ngIf="i.type == 30"
-													title="Aniversário Kung Fu">
-												</i>
-												<i  												
-													class="icon-present"
-													style="color:goldenrod;"
-													*ngIf="i.type == 31"
-													title="Aniversário">
-												</i>												
+													[style.color]="i.past ? 'silver' : 'goldenrod'"
+													*ngIf="i.type == 30 || i.type == 31"
+													[title]="'Aniversário' + ( i.type == 31 ? 'Kung Fu' : '')">
+												</i>																						
 											</div>																															
 										</ng-template>																	
 
