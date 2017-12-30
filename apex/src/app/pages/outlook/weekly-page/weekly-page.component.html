@@ -42,7 +42,7 @@
 									<span class="input-group-btn">
 										<button type="button" 
 											(click)="change_week(-1)"
-											class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-left">									
+											class="btn btn-silver btn-fab btn-sm ft-chevrons-left">									
 										</button>
 									</span>											
 									<input type="text" class='form-control text-center'
@@ -52,7 +52,7 @@
 										<button type="button" 
 											id="btn_next_week"
 											(click)="change_week(1)"											
-											class="btn btn-success btn-raised btn-fab btn-sm ft-chevrons-right"
+											class="btn btn-silver btn-fab btn-sm ft-chevrons-right"
 											>									
 										</button>
 									</span>
@@ -61,7 +61,7 @@
 							<div class="col-1 text-center">
 								<button type="button" 
 									(click)="reset_new_incident();open(new_activity, null)"
-									class="btn btn-success btn-raised ft-plus"
+									class="btn btn-silver ft-plus"
 									title="Registrar Atividade"
 									style="margin-left:10px"
 									>																
@@ -182,12 +182,12 @@
 									</td>
 									<td valign="middle" align="center" style="cursor:pointer">
 											<span *ngIf="person.comunication_status == 3">												
-												<i class="fa fa-envelope-o" style="color:orange"
+												<i class="far fa-envelope" style="color:orange"
 												[title]="person.comunication_description"
 												></i>
 											</span>
 											<span *ngIf="person.comunication_status > 0 && person.comunication_status != 3">
-												<i class="fa fa-envelope-o" style="color:red"													
+												<i class="far fa-envelope" style="color:red"													
 													[title]="person.comunication_description"
 												>
 												</i>
@@ -226,7 +226,6 @@
 													style="color:goldenrod;"
 													*ngIf="i.type == 30"
 													title="Aniversário Kung Fu">
-													KF
 												</i>
 												<i  												
 													class="icon-present"
@@ -331,7 +330,6 @@
 										style="color:goldenrod;"
 										*ngIf="i.type == 30"
 										title="Aniversário Kung Fu">
-										KF
 									</i>
 									<i  												
 										class="icon-present"
@@ -410,7 +408,7 @@
 							[(ngModel)]="new_incident.date" id="new_incident_date"
 							type="date" ngbDatepicker #niReschedule="ngbDatepicker" />
 							<div class="input-group-addon" (click)="niReschedule.toggle()">
-								<i class="fa fa-calendar" style="cursor: pointer;"></i>
+								<i class="ft-calendar" style="cursor: pointer;"></i>
 							</div>																																
 						</div>	
 						
@@ -495,13 +493,13 @@
 	</div>
 	<div class="modal-footer">
 		<button type="button" 
-			class="btn btn-success btn-raised" 
+			class="btn btn-success" 
 			(click)="register_new_incident();d('new incident!');"
 			*ngIf="new_incident.correct">
 			<i class="icon-check"></i>
 			Registrar
 		</button>															
-		<button type="button" class="btn btn-raised" 
+		<button type="button" class="btn btn-silver" 
 			(click)="reset_new_incident();d('reset new incident!');"
 			>
 			<i class="icon-action-undo"></i>
@@ -556,10 +554,10 @@
 			</div>
 			<div class="col-12" *ngIf="!current_incident.in_treatment && !current_incident.closed && !current_incident.treated">
 				<h6 style="font-weight: bold">Realizado?</h6>				
-				<button type="button" class="btn btn-success btn-raised" (click)="close_incident(current_incident);d('close!');">
+				<button type="button" class="btn btn-success" (click)="close_incident(current_incident);d('close!');">
 					<i class="icon-check"></i> Sim
 				</button>
-				<button type="button" class="btn btn-primary btn-raised" (click)="begin_treat_incident(current_incident)">
+				<button type="button" class="btn btn-primary" (click)="begin_treat_incident(current_incident)">
 					<i class="icon-ban"></i> Não
 				</button>		
 			</div>			
@@ -583,7 +581,7 @@
 								[(ngModel)]="current_incident.new_date" 
 								ngbDatepicker #dpReschedule="ngbDatepicker" />
 								<div class="input-group-addon" (click)="dpReschedule.toggle()">
-									<i class="fa fa-calendar" style="cursor: pointer;"></i>
+									<i class="ft-calendar" style="cursor: pointer;"></i>
 								</div>							
 							</div>																
 						</div>						
@@ -596,38 +594,38 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button type="button" class="btn btn-success btn-raised" 
+		<button type="button" class="btn btn-success" 
 			(click)="register_contact_for_incident(current_incident);d('contact!');"
 			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
-			<i class="fa fa-envelope-o"></i>
+			<i class="far fa-envelope"></i>
 			Registrar Contato
 		</button>
-		<button type="button" class="btn btn-primary btn-raised" 
+		<button type="button" class="btn btn-primary" 
 			(click)="begin_reschedule_incident(current_incident)"
 			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
 			<i class="ft-calendar"></i>
 			Reagendar
 		</button>		
 		<button type="button" 
-			class="btn btn-success btn-raised" 
+			class="btn btn-success" 
 			(click)="reschedule_incident(current_incident);d('reschedule!');"
 			*ngIf="current_incident.in_treatment && current_incident.reschedule">
 			<i class="ft-calendar"></i>
 			Reagendar!
 		</button>															
-		<button type="button" class="btn btn-grey btn-raised" 
+		<button type="button" class="btn btn-silver" 
 			(click)="reset_treat_incident(current_incident);"
 			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
 			<i class="icon-action-undo"></i>
 			Voltar
 		</button>		
-		<button type="button" class="btn btn-grey btn-raised" 
+		<button type="button" class="btn btn-silver" 
 			(click)="reset_reschedule(current_incident);"
 			*ngIf="current_incident.in_treatment && current_incident.reschedule">
 			<i class="icon-action-undo"></i>
 			Voltar
 		</button>		
-		<button type="button" class="btn btn-secondary btn-raised" 			
+		<button type="button" class="btn btn-silver" 			
 			*ngIf="!current_incident.begin_remove && !current_incident.in_treatment"
 			(click)="begin_remove_incident(current_incident);">
 			<i class="ft-trash-2"></i>
@@ -636,13 +634,13 @@
 		<span *ngIf="current_incident.begin_remove">
 			Confirma exclusão?
 		</span>
-		<button type="button" class="btn btn-danger btn-raised" 
+		<button type="button" class="btn btn-danger" 
 			*ngIf="current_incident.begin_remove"
 			(click)="remove_incident(current_incident);d('remove!');">
 			<i class="ft-trash-2"></i>
 			Excluir
 		</button>
-		<button type="button" class="btn btn-raised" 
+		<button type="button" class="btn btn-secondary" 
 			*ngIf="current_incident.begin_remove"
 			(click)="rollback_remove_incident(current_incident);">
 			<i class="icon-action-undo"></i>

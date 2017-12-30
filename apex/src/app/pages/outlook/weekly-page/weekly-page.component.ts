@@ -374,7 +374,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
           { width: "24.5%" },
           { width: "3%", icon: "ft-calendar", description: "Agendamento" },
           { width: "3%", icon: "icon-wallet", description: "Financeiro" },
-          { width: "3%", icon: "fa fa-envelope-o", description: "Comunicados" }
+          { width: "3%", icon: "far fa-envelope", description: "Comunicados" }
         ];
                 
         for(var i = 0; i< this.week_days.length; i++) {

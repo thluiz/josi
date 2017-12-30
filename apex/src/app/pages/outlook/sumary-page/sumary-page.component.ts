@@ -53,7 +53,7 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
       { width: "3%", icon: "fa fa-user", description: "Membros" },
       { width: "3", icon: "ft-calendar", description: "Agendamento" },
       { width: "3%", icon: "icon-wallet", description: "Financeiro" },
-      { width: "3%", icon: "fa fa-envelope-o", description: "Comunicados" }
+      { width: "3%", icon: "far fa-envelope", description: "Comunicados" }
     ];        
   }
   

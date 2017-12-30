@@ -27,14 +27,7 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '/under-construction', title: 'Calendário',
-        icon: 'fa fa-calendar',
-        class: '', badge: '',
-        badgeClass: '', isExternalLink: false,
-        submenu: []
-    },
-    {
-        path: '/under-construction', title: 'Contatos',
-        icon: 'fa fa-envelope-o',
+        icon: 'ft-calendar',
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,
         submenu: []

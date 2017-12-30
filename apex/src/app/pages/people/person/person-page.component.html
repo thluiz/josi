@@ -48,12 +48,12 @@
                                             </i>
                                         </span>
                                         <span *ngIf="person.comunication_status == 3">												
-                                            <i class="fa fa-envelope-o" style="color:orange"
+                                            <i class="far fa-envelope" style="color:orange"
                                             [title]="person.comunication_description"
                                             ></i>
                                         </span>
                                         <span *ngIf="person.comunication_status > 0 && person.comunication_status != 3">
-                                            <i class="fa fa-envelope-o" style="color:red"													
+                                            <i class="far fa-envelope" style="color:red"													
                                                 [title]="person.comunication_description"
                                             >
                                             </i>
@@ -71,13 +71,13 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-2" *ngIf="person.is_disciple">
-                                    <label for="baaisi_date">Baai Si</label> 
-                                    <span id="baaisi_date" 
-                                        [ngStyle]="{ 'color': !person.baaisi_date ? 'red' : null }">
-                                        {{ person.baaisi_date_br || 'Não definido'  }}                                    
+                                <div class="col-2" *ngIf="person.is_active_member || person.is_disciple">
+                                    <label for="admission_date">Nascimento</label> 
+                                    <span id="admission_date" 
+                                        [ngStyle]="{ 'color': !person.birth_date ? 'red' : null }">
+                                        {{ person.birth_date_br || 'Não definido'  }}                                    
                                     </span>
-                                </div>
+                                </div>                                     
                                 <div class="col-2" *ngIf="person.is_active_member || person.is_disciple">
                                     <label for="admission_date">Admissão</label> 
                                     <span id="admission_date"
@@ -85,13 +85,13 @@
                                         {{ person.admission_date_br || 'Não definida'  }}                                    
                                     </span>
                                 </div> 
-                                <div class="col-2" *ngIf="person.is_active_member || person.is_disciple">
-                                    <label for="admission_date">Nascimento</label> 
-                                    <span id="admission_date" 
-                                        [ngStyle]="{ 'color': !person.birth_date ? 'red' : null }">
-                                        {{ person.birth_date_br || 'Não definido'  }}                                    
+                                <div class="col-2" *ngIf="person.is_disciple">
+                                    <label for="baaisi_date">Baai Si</label> 
+                                    <span id="baaisi_date" 
+                                        [ngStyle]="{ 'color': !person.baaisi_date ? 'red' : null }">
+                                        {{ person.baaisi_date_br || 'Não definido'  }}                                    
                                     </span>
-                                </div>                                                                
+                                </div>                                                
                             </div>
                             <div class="row" style="padding-top:15px">
                                 <div class="col-12">
@@ -105,7 +105,7 @@
                                         </a>
                                         <button type="button" 
                                             (click)="remove_role(person_role.role_id)"
-                                            class="btn btn-fab btn-danger btn-raised btn-sm ft-trash-2"
+                                            class="btn btn-fab btn-danger btn-sm ft-trash-2"
                                             title="Confirmar Remoção de Papel"                                    
                                             style="margin-left:5px"
                                             *ngIf="person_role.removing"
@@ -124,7 +124,7 @@
                                     <span *ngIf="!person.roles || person.roles.length == 0">Nenhum papel definido</span>
                                     <button
                                         (click)="open(new_role_modal)"
-                                        class="btn btn-fab btn-sm ft-plus"
+                                        class="btn btn-fab btn-sm ft-plus btn-silver"
                                         title="Adicionar Papel"   
                                         style="margin-left:10px;padding:0 3px;margin:0;"                             
                                         >																
@@ -135,7 +135,7 @@
                         <div class="col-2 text-center">
                             <button type="button"                                 
                                 [routerLink]="['/person/edit', id]"
-                                class="btn btn-primary btn-raised btn-xl"
+                                class="btn btn-primary btn-lg"
                                 title="Alterar pessoa"                                                                    
                                 >			
                                 <i class="icon-pencil"></i>		                                
@@ -145,10 +145,10 @@
                     </div>
                     <div class="row" style="padding-top:10px">
                         <div class="col-5 offset-2">
-                            <h5 style="border-bottom: 1px solid black"><i class="fa fa-list"></i> Atividades </h5>
+                            <h5 style="border-bottom: 1px solid black"><i class="fa fa-tasks"></i> Atividades </h5>
                         </div>
                         <div class="col-5">
-                            <h5 style="border-bottom: 1px solid black"><i class="fa fa-calendar"></i> Agendamento </h5>
+                            <h5 style="border-bottom: 1px solid black"><i class="ft-calendar"></i> Agendamento </h5>
                         </div>
                     </div>
                 </div>
@@ -175,13 +175,13 @@
         </select>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-success btn-raised" 
+        <button type="button" class="btn btn-success" 
             (click)="add_role();d('add role!');"
             *ngIf="new_role">
-            <i class="fa fa-check-square-o"></i>
+            <i class="icon-check"></i>
             Adicionar
         </button>        
-        <button type="button" class="btn btn-raised" 			            
+        <button type="button" class="btn btn-silver" 			            
             (click)="d('Cancelled')">
             <i class="icon-action-undo"></i>
             Cancelar

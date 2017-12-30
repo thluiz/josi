@@ -30,7 +30,7 @@
                                                     name="person_birth_date" type="date"
                                                     ngbDatepicker #niReschedule="ngbDatepicker" />
                                                     <div class="input-group-addon" (click)="niReschedule.toggle()">
-                                                        <i class="fa fa-calendar" style="cursor: pointer;"></i>
+                                                        <i class="ft-calendar" style="cursor: pointer;"></i>
                                                     </div>																																                                                    
                                                 </div>
                                             </div>
@@ -50,7 +50,7 @@
                                                             name="person_admission_date" type="date"
                                                             ngbDatepicker #niRescheduleAdmission="ngbDatepicker" />
                                                             <div class="input-group-addon" (click)="niRescheduleAdmission.toggle()">
-                                                                <i class="fa fa-calendar" style="cursor: pointer;"></i>
+                                                                <i class="ft-calendar" style="cursor: pointer;"></i>
                                                             </div>																																                                                    
                                                         </div>
                                                     </div>
@@ -87,7 +87,7 @@
                                                             name="person_baaisi_date" type="date"
                                                             ngbDatepicker #niRescheduleBaaiSiDate="ngbDatepicker" />
                                                             <div class="input-group-addon" (click)="niRescheduleBaaiSiDate.toggle()">
-                                                                <i class="fa fa-calendar" style="cursor: pointer;"></i>
+                                                                <i class="ft-calendar" style="cursor: pointer;"></i>
                                                             </div>																																                                                    
                                                         </div>
                                                     </div>
@@ -99,13 +99,13 @@
                                 </div>
     
                                 <div class="form-actions text-right">
-                                    <button type="button" class="btn btn-raised btn-success" 
+                                    <button type="button" class="btn btn-success" 
                                     (click)="save_person_data()"
                                     style="margin-right:10px">
-                                        <i class="fa fa-check-square-o"></i> Salvar
+                                        <i class="icon-check"></i> Salvar
                                     </button>
 
-                                    <button type="button" class="btn btn-raised" 
+                                    <button type="button" class="btn btn-silver" 
                                     [routerLink]="['/person', id]">
                                         <i class="icon-action-undo"></i> Cancelar
                                     </button>                                    
