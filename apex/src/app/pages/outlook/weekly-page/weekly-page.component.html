@@ -127,15 +127,14 @@
 														[routerLink]="['/person', person.person_id]">
 														{{ person.name }}														
 														</a>														
-													</div>
+														<div *ngIf="person.kf_name_ideograms" style="float:right;margin-right:20px">													
+															{{ person.kf_name_ideograms }}																																								
+														</div>
+													</div>													
 												</div>												
 												<div class="row" style="font-size:12px;">
 													<div class="col-12">
-														{{ person.kf_name }}																												
-														<span													
-															*ngIf="person.kf_name_ideograms">																									
-															, {{ person.kf_name_ideograms }}																										
-														</span>
+														{{ person.kf_name }}																																										
 														<span 
 															*ngIf="!current_branch || current_branch == '' || current_branch == 0">
 															<span *ngIf="person.kf_name && person.kf_name.length > 0"> - </span>
