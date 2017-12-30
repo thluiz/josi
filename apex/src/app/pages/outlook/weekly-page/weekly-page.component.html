@@ -206,7 +206,7 @@
 
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
 											<div class="text-center" 
-												style="line-height:15px;"												
+												style="line-height:15px;"
 												[style.border-top]="k > 0 ? '1px solid #CCC' : ''">	
 																								
 												<a (click)="open(content, i)" 
@@ -224,13 +224,14 @@
 												</a>																																																																	
 												<i  												
 													class="icon-present"
-													style="color:blue"
+													style="color:goldenrod;"
 													*ngIf="i.type == 30"
 													title="Aniversário Kung Fu">
+													KF
 												</i>
 												<i  												
 													class="icon-present"
-													style="color:green"
+													style="color:goldenrod;"
 													*ngIf="i.type == 31"
 													title="Aniversário">
 												</i>												
@@ -555,10 +556,10 @@
 			</div>
 			<div class="col-12" *ngIf="!current_incident.in_treatment && !current_incident.closed && !current_incident.treated">
 				<h6 style="font-weight: bold">Realizado?</h6>				
-				<button type="button" class="btn btn-lg btn-success btn-raised" (click)="close_incident(current_incident);d('close!');">
+				<button type="button" class="btn btn-success btn-raised" (click)="close_incident(current_incident);d('close!');">
 					<i class="icon-check"></i> Sim
 				</button>
-				<button type="button" class="btn btn-lg btn-primary btn-raised" (click)="begin_treat_incident(current_incident)">
+				<button type="button" class="btn btn-primary btn-raised" (click)="begin_treat_incident(current_incident)">
 					<i class="icon-ban"></i> Não
 				</button>		
 			</div>			

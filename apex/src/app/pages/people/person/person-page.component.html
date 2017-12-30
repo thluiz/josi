@@ -24,7 +24,41 @@
                         <div class="col-8">
                             <div class="row">
                                 <div class="col-12">
-                                    <h3 style="font-weight:bold">{{ person.name }}</h3>
+                                    <h3 style="font-weight:bold">
+                                        {{ person.name }}
+                                        <span *ngIf="person.financial_status == 3">												
+                                            <i class="icon-wallet" style="color:orange"
+                                            [title]="person.financial_description"
+                                            ></i>
+                                        </span>
+                                        <span *ngIf="person.financial_status > 0 && person.financial_status != 3">
+                                            <i class="icon-wallet" style="color:red"													
+                                                [title]="person.financial_description"
+                                            >
+                                            </i>
+                                        </span>
+                                        <span *ngIf="person.scheduling_status == 3">												
+                                            <i class="ft-calendar" style="color:orange"
+                                                [title]="person.scheduling_description">
+                                            </i>
+                                        </span>
+                                        <span *ngIf="person.scheduling_status > 0 && person.scheduling_status != 3">
+                                            <i class="ft-calendar" style="color:red"													
+                                                [title]="person.scheduling_description">
+                                            </i>
+                                        </span>
+                                        <span *ngIf="person.comunication_status == 3">												
+                                            <i class="fa fa-envelope-o" style="color:orange"
+                                            [title]="person.comunication_description"
+                                            ></i>
+                                        </span>
+                                        <span *ngIf="person.comunication_status > 0 && person.comunication_status != 3">
+                                            <i class="fa fa-envelope-o" style="color:red"													
+                                                [title]="person.comunication_description"
+                                            >
+                                            </i>
+                                        </span>	
+                                    </h3>
                                 </div>                                
                             </div>
                             <div class="row" *ngIf="person.is_disciple && (person.kf_name_ideograms || person.kf_name_ideograms )">
@@ -41,21 +75,21 @@
                                     <label for="admission_date">Admissão</label> 
                                     <span id="admission_date"
                                         [ngStyle]="{ 'color': !person.admission_date ? 'red' : null }">
-                                        {{ person.admission_date || 'Não definida'  }}                                    
+                                        {{ person.admission_date_br || 'Não definida'  }}                                    
                                     </span>
                                 </div> 
                                 <div class="col-2" *ngIf="person.is_active_member || person.is_disciple">
-                                    <label for="admission_date">Aniversário</label> 
+                                    <label for="admission_date">Nascimento</label> 
                                     <span id="admission_date" 
                                         [ngStyle]="{ 'color': !person.birth_date ? 'red' : null }">
-                                        {{ person.birth_date || 'Não definido'  }}                                    
+                                        {{ person.birth_date_br || 'Não definido'  }}                                    
                                     </span>
                                 </div>
                                 <div class="col-2" *ngIf="person.is_disciple">
                                     <label for="baaisi_date">Baai Si</label> 
                                     <span id="baaisi_date" 
                                         [ngStyle]="{ 'color': !person.baaisi_date ? 'red' : null }">
-                                        {{ person.baaisi_date || 'Não definido'  }}                                    
+                                        {{ person.baaisi_date_br || 'Não definido'  }}                                    
                                     </span>
                                 </div>                                
                             </div>
@@ -107,6 +141,11 @@
                                 style="margin-left:10px"                             
                                 >																
                             </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5 offset-2">
+                            <h4 class="form-section"><i class="icon-paper-clip" style="color: red"></i> Atividades </h4>
                         </div>
                     </div>
                 </div>
