@@ -3,20 +3,11 @@ import { RouteInfo } from './sidebar.metadata';
 export const ROUTES: RouteInfo[] = [
 
     {
-        path: '/outlook/weekly', title: 'Panorama',
+        path: '/outlook/weekly', title: 'Diário',
         icon: 'ft-monitor',
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,
-        submenu: [
-            { path: '/outlook/weekly', 
-                title: 'Semana', icon: '', 
-                class: '', badge: '', badgeClass: '', 
-                isExternalLink: false, submenu: [] },             
-            { path: '/outlook/sumary', 
-                title: 'Sumário', icon: '', 
-                class: '', badge: '', badgeClass: '', 
-                isExternalLink: false, submenu: [] },             
-         ]
+        submenu: [ ]
     },
     {
         path: '/people', title: 'Pessoas',
@@ -38,12 +29,5 @@ export const ROUTES: RouteInfo[] = [
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,
         submenu: []
-    },
-    {
-        path: '/under-construction', title: 'Parâmetros',
-        icon: 'icon-settings',
-        class: '', badge: '',
-        badgeClass: '', isExternalLink: false,
-        submenu: []
-    }    
+    }
 ];
