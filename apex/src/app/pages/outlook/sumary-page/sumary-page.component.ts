@@ -58,7 +58,7 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
   }
   
   ngOnInit() {
-    this.getSumaryData();          
+    this.getSummaryData();          
   }
 
   ngOnDestroy() {
@@ -75,7 +75,7 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
 
     this.update_timer = null;        
     this.current_branch = id;
-    this.getSumaryData();
+    this.getSummaryData();
   }
 
   change_week(modifier) {
@@ -86,7 +86,7 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
 
     this.update_timer = null;
     this.current_week += modifier;
-    this.getSumaryData();
+    this.getSummaryData();
   }
 
   change_date(new_date) {    
@@ -97,7 +97,7 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
 
     this.update_timer = null;
     this.current_date = new_date;
-    this.getSumaryData();
+    this.getSummaryData();
   }
 
   change_month(modifier) {
@@ -107,10 +107,10 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
     }
 
     this.current_month += modifier;
-    this.getSumaryData();
+    this.getSummaryData();
   }
    
-  getSumaryData() {
+  getSummaryData() {
 
     if(!this.incidentService) {
       return;
@@ -153,7 +153,7 @@ export class SumaryPageComponent implements OnInit, OnDestroy {
     }
 
     const update_interval = 600000;
-    this.update_timer = setTimeout(() => { this.getSumaryData() }, update_interval);
+    this.update_timer = setTimeout(() => { this.getSummaryData() }, update_interval);
   }
    
 }

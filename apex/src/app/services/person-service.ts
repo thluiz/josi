@@ -9,7 +9,11 @@ constructor(private http:Http) { }
   private dataUrl = environment.api_url;  
 
   getDailyMonitor(branche, week) {
-    return this.http.get(this.dataUrl + `/daily/${branche}/${week}`);    
+    return this.http.get(this.dataUrl + `/daily/${branche || 0}/${week}`);    
+  }  
+
+  getPeopleSummary(branche, week) {
+    return this.http.get(this.dataUrl + `/people_summary/${branche || 0}/${week}`);    
   }  
 
   getAllData(id) {    

@@ -172,6 +172,21 @@ function getParticipationList(people) {
             } 
         });   
 
+        app.get("/api/people_summary/:branch?/:week?", async (request, response, next) => {            
+            try {
+                let result = await pool.request()                
+                    .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
+                    .input('week_modifier', sql.Int, request.params.week || 0)
+                    .input('date', sql.VarChar(10), request.params.date)
+                    .execute(`GetPeopleSummary`);                
+
+                response.send((result.recordset[0]));
+            } catch (error) {                                
+                response.status(500);
+                response.json({ error: error });
+            } 
+        });
+
         app.get("/api/sumary/:branch?/:month?/:week?/:date?", async (request, response, next) => {
             try {
                 let result = await pool.request()                

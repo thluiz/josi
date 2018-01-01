@@ -17,7 +17,7 @@
 						<div class="row">
 							<div class="col-8">
 								<h4 class="card-title">
-									Diário de Atividades - Membros Ativos 																																
+									Diário de Atividades - Praticantes 																																
 								</h4>
 								<h6 style="margin:0;margin-top:5px;margin-bottom:5px;font-weight:bold;color:black;cursor:pointer" 
 								*ngIf="!show_change_branch"
@@ -71,266 +71,326 @@
 					</div>					
 				</div>
 			</div>
-			<div class="card-body">						
-				<table style="width:100%;">
-					<tr *ngFor="let d of domains, let k5 = index">
-						<td>																																		
-							<table class="table-sm table-striped table-bordered table-hover"															
-								style="margin-bottom:50px;width:100%">
-								<tr>
-									<td colspan="11"
-										style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center"
-										[ngStyle]="{ 'background-color': d.program_id == 1 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)') }">
-										{{ d.program }} - {{ d.long_name }}
-									</td>
-								</tr>								
-								<tr>						
-									<td *ngFor="let c of cols, let k3 = index" 
-										align="center" 
-										[ngStyle]="{ 'width': c.width, 
-													'background-color': selected_week.current && k3 == current_week_day + 4 ? 
-														d.program_id == 1 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)')
-														: d.program_id == 1 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : 'rgb(8, 82, 1)'), 
-													'color': 'white' }"
-										[colSpan]="c.colspan || 1"
-										>																													
-										<div>
-											<span *ngIf="k3 == 0" style="font-weight:bold">
-												{{ d.number_of_members }} 
-												Membro<span *ngIf="d.number_of_members > 1">s</span> 
-												Ativo<span *ngIf="d.number_of_members > 1">s</span>
-											</span>
-											<i  												
-												[ngClass]="c.icon"
-												*ngIf="c.icon != null"
-												[title]="c.description">
-											</i>
-											{{ c.name }} 
-										</div>									
-									</td>
-								</tr>
-								<tr *ngFor="let person of d.daily, let k4 = index">
-									<td>
-										<div class="row">
-											<div class="col-2" style="padding:0;padding-left:5px">
-												<img alt="{{ person.name }}"
-												class="rounded-circle img-border " 
-												src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
-												style="min-width:50px;width:100%;" 
-												*ngIf="person.avatar_img && person.avatar_img.length > 0">	
-											</div>								
-											<div class="col-10"  style="padding:0;padding-left:2px">
+			<div class="card-body">	
+				<div class="row">					
+					<div class="col-10">
+						<table style="width:100%;">
+							<tr *ngFor="let d of domains, let k5 = index">
+								<td>																																		
+									<table class="table-sm table-striped table-bordered table-hover"															
+										style="margin-bottom:50px;width:100%">
+										<tr>
+											<td colspan="11"
+												style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center"
+												[ngStyle]="{ 'background-color': d.program_id == 1 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)') }">
+												{{ d.program }} - {{ d.long_name }}
+											</td>
+										</tr>								
+										<tr>						
+											<td *ngFor="let c of cols, let k3 = index" 
+												align="center" 
+												[ngStyle]="{ 'width': c.width, 
+															'background-color': selected_week.current && k3 == current_week_day + 4 ? 
+																d.program_id == 1 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)')
+																: d.program_id == 1 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : 'rgb(8, 82, 1)'), 
+															'color': 'white' }"
+												[colSpan]="c.colspan || 1"
+												>	
+
+												<div>
+													<span *ngIf="k3 == 0" style="font-weight:bold">
+														{{ d.number_of_members }} 
+														Membro<span *ngIf="d.number_of_members > 1">s</span> 
+														Ativo<span *ngIf="d.number_of_members > 1">s</span>
+													</span>
+													<i  												
+														[ngClass]="c.icon"
+														*ngIf="c.icon != null"
+														[title]="c.description">
+													</i>
+													{{ c.name }} 
+												</div>									
+											</td>
+										</tr>
+										<tr *ngFor="let person of d.daily, let k4 = index">
+											<td>
 												<div class="row">
-													<div class="col-12">
-														<a 
-														style="color:black"
-														[routerLink]="['/person', person.person_id]">
-														{{ person.name }}														
-														</a>														
-														<div *ngIf="person.kf_name_ideograms" style="float:right;margin-right:20px">													
-															{{ person.kf_name_ideograms }}																																								
+													<div class="col-2" style="padding:0;padding-left:5px">
+														<img alt="{{ person.name }}"
+														class="rounded-circle img-border d-none d-xl-block" 
+														src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
+														style="min-width:50px;width:100%;" 
+														*ngIf="person.avatar_img && person.avatar_img.length > 0">	
+													</div>								
+													<div class="col-10" style="padding:0;padding-left:8px">
+														<div class="row">
+															<div class="col-12">
+																<a 
+																style="color:black"
+																[routerLink]="['/person', person.person_id]">
+																{{ person.name }}														
+																</a>														
+																<div *ngIf="person.kf_name_ideograms" style="float:right;margin-right:20px">													
+																	{{ person.kf_name_ideograms }}																																								
+																</div>																
+															</div>													
+														</div>												
+														<div class="row" style="font-size:12px;">
+															<div class="col-12">
+																<span 
+																	*ngIf="!current_branch || current_branch == '' || current_branch == 0">																	
+																	{{ person.branch_initials }}
+																</span>
+																<div *ngIf="person.kf_name" style="float:right;margin-right:20px">													
+																	{{ person.kf_name }}																																								
+																</div>
+															</div>															
 														</div>
-													</div>													
-												</div>												
-												<div class="row" style="font-size:12px;">
-													<div class="col-12">
-														{{ person.kf_name }}																																										
-														<span 
-															*ngIf="!current_branch || current_branch == '' || current_branch == 0">
-															<span *ngIf="person.kf_name && person.kf_name.length > 0"> - </span>
-															{{ person.branch_abrev }}
-														</span>
-													</div>
-												</div>
-											</div>	
-										</div>																					
-									</td>								
-									<td valign="middle" align="center">										
-										<span *ngIf="person.scheduling_status == 3">												
-											<i class="ft-calendar" style="color:orange"
-												[title]="person.scheduling_description">
-											</i>
-										</span>
-										<span *ngIf="person.scheduling_status > 0 && person.scheduling_status != 3">
-											<i class="ft-calendar" style="color:red"													
-												[title]="person.scheduling_description">
-											</i>
-										</span>
-										<span *ngIf="person.scheduling_status == 0">
-											<i class="ft-thumbs-up" style="color:green"													
-												[title]="person.scheduling_description">
-											</i>
-										</span>
-									</td>
-									<td valign="middle" align="center">
-											<span *ngIf="person.financial_status == 3">												
-												<i class="icon-wallet" style="color:orange"
-												[title]="person.financial_description"
-												></i>
-											</span>
-											<span *ngIf="person.financial_status > 0 && person.financial_status != 3">
-												<i class="icon-wallet" style="color:red"													
-													[title]="person.financial_description"
-												>
-												</i>
-											</span>	
-											<span *ngIf="person.financial_status == 0">
-												<i class="ft-thumbs-up" style="color:green"													
-													[title]="person.financial_description">
-												</i>
-											</span>
-									</td>
-									<td valign="middle" align="center" style="cursor:pointer">
-											<span *ngIf="person.comunication_status == 3">												
-												<i class="far fa-envelope" style="color:orange"
-												[title]="person.comunication_description"
-												></i>
-											</span>
-											<span *ngIf="person.comunication_status > 0 && person.comunication_status != 3">
-												<i class="far fa-envelope" style="color:red"													
-													[title]="person.comunication_description"
-												>
-												</i>
-											</span>	
-											<span *ngIf="person.comunication_status == 0">
-												<i class="ft-thumbs-up" style="color:green"													
-													[title]="person.comunication_description">
-												</i>
-											</span>
-									</td>	
-									<td valign="middle" align="center" 										
-										*ngFor="let item of person.dates, let k2 = index" 
-										style="border-right:1px solid grey"
-										[ngClass]=" selected_week.current && k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">																	
+													</div>	
+												</div>																					
+											</td>								
+											<td valign="middle" align="center">										
+												<span *ngIf="person.scheduling_status == 3">												
+													<i class="ft-calendar" style="color:orange"
+														[title]="person.scheduling_description">
+													</i>
+												</span>
+												<span *ngIf="person.scheduling_status > 0 && person.scheduling_status != 3">
+													<i class="ft-calendar" style="color:red"													
+														[title]="person.scheduling_description">
+													</i>
+												</span>
+												<span *ngIf="person.scheduling_status == 0">
+													<i class="ft-thumbs-up" style="color:green"													
+														[title]="person.scheduling_description">
+													</i>
+												</span>
+											</td>
+											<td valign="middle" align="center">
+													<span *ngIf="person.financial_status == 3">												
+														<i class="icon-wallet" style="color:orange"
+														[title]="person.financial_description"
+														></i>
+													</span>
+													<span *ngIf="person.financial_status > 0 && person.financial_status != 3">
+														<i class="icon-wallet" style="color:red"													
+															[title]="person.financial_description"
+														>
+														</i>
+													</span>	
+													<span *ngIf="person.financial_status == 0">
+														<i class="ft-thumbs-up" style="color:green"													
+															[title]="person.financial_description">
+														</i>
+													</span>
+											</td>
+											<td valign="middle" align="center" style="cursor:pointer">
+													<span *ngIf="person.comunication_status == 3">												
+														<i class="far fa-envelope" style="color:orange"
+														[title]="person.comunication_description"
+														></i>
+													</span>
+													<span *ngIf="person.comunication_status > 0 && person.comunication_status != 3">
+														<i class="far fa-envelope" style="color:red"													
+															[title]="person.comunication_description"
+														>
+														</i>
+													</span>	
+													<span *ngIf="person.comunication_status == 0">
+														<i class="ft-thumbs-up" style="color:green"													
+															[title]="person.comunication_description">
+														</i>
+													</span>
+											</td>	
+											<td valign="middle" align="center" 										
+												*ngFor="let item of person.dates, let k2 = index" 
+												style="border-right:1px solid grey"
+												[ngClass]=" selected_week.current && k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">																	
 
-										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-											<div class="text-center" 
-												style="line-height:15px;"
-												[style.border-top]="k > 0 ? '1px solid #CCC' : ''">	
-																								
-												<a (click)="open(content, i)" 
-													[style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'orange' : (i.past ? 'red' : 'black'  )  )  "
-													*ngIf="i.type != 30 && i.type != 31"
-													style="font-size:12px">
-													<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
-													<b *ngIf="i.type == 2">{{ i.title }}</b>																	
-													<span 
-														*ngIf="i.short_description != null 
-																&& i.short_description.length > 0 
-																&& i.type != 2 && i.type != 4"
-														style="font-size:11px"
-													> - {{ i.short_description }} </span>
-												</a>																																																																	
-												<i  												
-													class="icon-present"
-													[style.color]="i.past ? 'silver' : 'goldenrod'"
-													*ngIf="i.type == 30 || i.type == 31"
-													[title]="'Aniversário' + ( i.type == 31 ? 'Kung Fu' : '')">
-												</i>																						
-											</div>																															
-										</ng-template>																	
+												<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
+													<div class="text-center" 
+														style="line-height:15px;"
+														[style.border-top]="k > 0 ? '1px solid #CCC' : ''">	
+																										
+														<a (click)="open(content, i)" 
+															[style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'orange' : (i.past ? 'red' : 'black'  )  )  "
+															*ngIf="i.type != 30 && i.type != 31"
+															style="font-size:12px">
+															<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
+															<b *ngIf="i.type == 2">{{ i.title }}</b>																	
+															<span 
+																*ngIf="i.short_description != null 
+																		&& i.short_description.length > 0 
+																		&& i.type != 2 && i.type != 4"
+																style="font-size:11px"
+															> - {{ i.short_description }} </span>
+														</a>																																																																	
+														<i  												
+															class="icon-present"
+															[style.color]="i.past ? 'silver' : 'goldenrod'"
+															*ngIf="i.type == 30 || i.type == 31"
+															[title]="'Aniversário' + ( i.type == 31 ? 'Kung Fu' : '')">
+														</i>																						
+													</div>																															
+												</ng-template>																	
 
-									</td>																		
-								</tr>
-							</table>	
-					</td>
-				</tr>
-				</table>	
+											</td>																		
+										</tr>
+									</table>	
+							</td>
+						</tr>
+						</table>	
 
-				<table class="table-sm table-striped table-bordered" 
-					*ngIf="external_people != null && external_people.length > 0" 
-					style="width:100%;margin-bottom:50px">
-					<tr>
-						<td colspan="9"
-							style="background-color:gray;font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center">
-							Público Externo
-						</td>
-					</tr>								
-					<tr>		
-						<td style="width:24.5%;background-color: gray"></td>				
-						<td style="width:9%;background-color: gray">
+						<table class="table-sm table-striped table-bordered" 
+							*ngIf="external_people != null && external_people.length > 0" 
+							style="width:100%;margin-bottom:50px">
+							<tr>
+								<td colspan="9"
+									style="background-color:gray;font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center">
+									Público Externo
+								</td>
+							</tr>								
+							<tr>		
+								<td style="width:24.5%;background-color: gray"></td>				
+								<td style="width:9%;background-color: gray">
 
-						</td>
-						<td *ngFor="let c of week_days, let k3 = index" 							
-							style="width:9.5%;text-align: center"
-							[ngStyle]="{'background-color': selected_week.current && k3 == current_week_day ? 'rgb(100,100,100)': 'gray', 
-										'color': 'white' }"							
-							>																				
-							<div>								
-								<i  												
-									[ngClass]="c.icon"
-									*ngIf="c.icon != null"
-									[title]="c.description">
-								</i>
-								{{ c.name }} 
-							</div>									
-						</td>						
-					</tr>
-					<tr *ngFor="let visitant of external_people, let ke = index">					
-						<td>
-							<div class="row">
-								<div class="col-2" style="padding:0;padding-left:5px">
-									<img
-									class="rounded-circle img-border " 
-									src="https://myvtmiim.blob.core.windows.net/avatars/{{ visitant.avatar_img }}" 											
-									style="min-width:50px;width:100%;" 
-									*ngIf="visitant.avatar_img && visitant.avatar_img.length > 0">	
-								</div>								
-								<div class="col-10"  style="padding:0;padding-left:2px">
+								</td>
+								<td *ngFor="let c of week_days, let k3 = index" 							
+									style="width:9.5%;text-align: center"
+									[ngStyle]="{'background-color': selected_week.current && k3 == current_week_day ? 'rgb(100,100,100)': 'gray', 
+												'color': 'white' }"							
+									>																				
+									<div>								
+										<i  												
+											[ngClass]="c.icon"
+											*ngIf="c.icon != null"
+											[title]="c.description">
+										</i>
+										{{ c.name }} 
+									</div>									
+								</td>						
+							</tr>
+							<tr *ngFor="let visitant of external_people, let ke = index">					
+								<td>
 									<div class="row">
-										<div class="col-12">											
-											<a 
-											style="color:black"
-											[routerLink]="['/person', visitant.person_id]">
-												{{ visitant.name }}														
-											</a>
-										</div>
+										<div class="col-2" style="padding:0;padding-left:5px">
+											<img
+											class="rounded-circle img-border " 
+											src="https://myvtmiim.blob.core.windows.net/avatars/{{ visitant.avatar_img }}" 											
+											style="min-width:50px;width:100%;" 
+											*ngIf="visitant.avatar_img && visitant.avatar_img.length > 0">	
+										</div>								
+										<div class="col-10"  style="padding:0;padding-left:2px">
+											<div class="row">
+												<div class="col-12">											
+													<a 
+													style="color:black"
+													[routerLink]="['/person', visitant.person_id]">
+														{{ visitant.name }}														
+													</a>
+												</div>
+											</div>
+											<div class="row" style="font-size:10px;">
+												<div class="col-12">
+													{{ visitant.kf_name }}											
+												</div>
+											</div>
+										</div>	
 									</div>
-									<div class="row" style="font-size:10px;">
-										<div class="col-12">
-											{{ visitant.kf_name }}											
-										</div>
+								</td>
+								<td>
+									
+								</td>						
+								<td valign="middle" align="center" 										
+									*ngFor="let item of visitant.dates, let k2 = index" 
+									style="border-right:1px solid grey"
+									[ngClass]=" selected_week.current && k2 == current_week_day ? (ke % 2 == 0 ? 'current2' : 'current') : '' ">
+
+									<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
+										<div class="text-center" 
+											style="line-height:15px;"												
+											[style.border-top]="k > 0 ? '1px solid #CCC' : ''">
+											<a (click)="open(content, i)" 
+												[style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'orange' : (i.past ? 'red' : 'black'  )  )  "
+												*ngIf="i.type != 30 && i.type != 31"
+												style="font-size:12px">
+												<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
+												<b *ngIf="i.type == 2">{{ i.title }}</b>																	
+												<span 
+													*ngIf="i.short_description != null 
+															&& i.short_description.length > 0 
+															&& i.type != 2 && i.type != 4"
+													style="font-size:11px"
+												> - {{ i.short_description }} </span>
+											</a>	
+											<i  												
+												class="icon-present"
+												[style.color]="i.past ? 'silver' : 'goldenrod'"
+												*ngIf="i.type == 30 || i.type == 31"
+												[title]="'Aniversário' + ( i.type == 31 ? 'Kung Fu' : '')">
+											</i>
+										</div>																															
+									</ng-template>
+
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="col-2">
+						
+						<div class="sticky-top" style="top:60px; padding-right:10px">
+								<table class="table-sm table-striped table-bordered"															
+								style="margin-bottom:50px;width:100%">								
+								<tr>						
+									<td *ngFor="let c of people_summary_cols, let k3 = index" 
+										align="center" 									
+										[ngStyle]="{ 'width': c.width, 'color': 'white',
+													'background-color': '#AAA' }"
+										[colSpan]="c.colspan || 1"
+									>
+									<div>										
+										<i  												
+											[ngClass]="c.icon"
+											*ngIf="c.icon != null"
+											[title]="c.description">
+										</i>
+										<b>{{ c.name }}</b>
 									</div>
-								</div>	
-							</div>
-						</td>
-						<td>
-							
-						</td>						
-						<td valign="middle" align="center" 										
-							*ngFor="let item of visitant.dates, let k2 = index" 
-							style="border-right:1px solid grey"
-							[ngClass]=" selected_week.current && k2 == current_week_day ? (ke % 2 == 0 ? 'current2' : 'current') : '' ">
-
-							<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-								<div class="text-center" 
-									style="line-height:15px;"												
-									[style.border-top]="k > 0 ? '1px solid #CCC' : ''">
-									<a (click)="open(content, i)" 
-										[style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'orange' : (i.past ? 'red' : 'black'  )  )  "
-										*ngIf="i.type != 30 && i.type != 31"
-										style="font-size:12px">
-										<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
-										<b *ngIf="i.type == 2">{{ i.title }}</b>																	
-										<span 
-											*ngIf="i.short_description != null 
-													&& i.short_description.length > 0 
-													&& i.type != 2 && i.type != 4"
-											style="font-size:11px"
-										> - {{ i.short_description }} </span>
-									</a>	
-									<i  												
-										class="icon-present"
-										[style.color]="i.past ? 'silver' : 'goldenrod'"
-										*ngIf="i.type == 30 || i.type == 31"
-										[title]="'Aniversário' + ( i.type == 31 ? 'Kung Fu' : '')">
-									</i>
-								</div>																															
-							</ng-template>
-
-						</td>
-					</tr>
-				</table>
+									</td>
+								</tr>
+								<tr *ngFor="let s of people_summary, let si = index" >
+									<td>
+										{{ s.program }}
+									</td>
+									<td>
+										{{ ('00' + s.people ).slice(-2)  }}
+									</td>
+									<td>
+										<span 									
+										[style.font-weight]="s.scheduling > 0 ? 'bold' : 'normal'"
+										[style.color]="s.scheduling > 0 ? 'red' : ''">
+											{{ ('00' + s.scheduling ).slice(-2)  }} 											
+										</span>
+									</td>
+									<td>
+										<span 									
+										[style.font-weight]="s.financial > 0 ? 'bold' : 'normal'"
+										[style.color]="s.financial > 0 ? 'red' : ''">
+											{{ ('00' + s.financial ).slice(-2)  }} 											
+										</span>
+									</td>
+									<td>
+										<span 									
+										[style.font-weight]="s.comunications > 0 ? 'bold' : 'normal'"
+										[style.color]="s.comunications > 0 ? 'red' : ''">
+											{{ ('00' + s.comunications ).slice(-2)  }} 											
+										</span>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>		
 	</div>

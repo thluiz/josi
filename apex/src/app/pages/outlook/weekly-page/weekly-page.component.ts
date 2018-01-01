@@ -44,7 +44,10 @@ import { switchMap } from 'rxjs/operators';
 export class WeeklyPageComponent implements OnInit, OnDestroy {
   daily: Observable<any[]>;
   cols;
-  sumary_cols;
+  
+  people_summary_cols = [];
+  people_summary : Observable<any[]>;
+
   selected_week;
   current_week_range;
   current_week_day;  
@@ -57,50 +60,61 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   manual_incident_types;
   dpReschedule;
   current_incident;
-  new_incident : any = {};
-  sumary;
-  show_change_branch = false;
-  update_timer;
+  new_incident : any = {};  
+  show_change_branch = false;  
   closeResult: string;  
   newIncidentForm: FormGroup;
   week_days;
   branch_cols;
-  external_people;
-  activity_sumary;
-  
-  private alive;
+  external_people;  
+
+  private update_members_timer;
+  private update_summary_timer;
 
   constructor(private personService: PersonService, 
               private incidentService: IncidentService, 
               private modalService: NgbModal) {
 
-    this.current_week_day = (new Date).getDay() - 1;  
+    this.current_week_day = (new Date).getDay() - 1;
+    
+    if(this.current_week_day < 0) {
+      this.current_week_day = 6;
+    }
 
+    this.people_summary_cols = [                    
+      { width: "88%", name: "Membros" },
+      { width: "3%", icon: "fa fa-user", description: "Membros" },
+      { width: "3", icon: "ft-calendar", description: "Agendamento" },
+      { width: "3%", icon: "icon-wallet", description: "Financeiro" },
+      { width: "3%", icon: "far fa-envelope", description: "Comunicados" }
+    ];
   }
   
   ngOnInit() {
-    this.getMonitorData();    
-    this.alive = true;      
+    this.getMonitorData();  
+    this.getPeopleSummaryData();        
   }
 
   ngOnDestroy() {    
-    if(this.update_timer) {    
-      clearTimeout(this.update_timer);
+    if(this.update_members_timer) {    
+      clearTimeout(this.update_members_timer);
     }    
   }
 
   branchSelected(id) {
-    clearTimeout(this.update_timer);
-    this.update_timer = null;        
+    clearTimeout(this.update_members_timer);
+    this.update_members_timer = null;        
     this.current_branch = id;
     this.getMonitorData();
+    this.getPeopleSummaryData();
   }
 
   change_week(modifier) {
-    clearTimeout(this.update_timer);
-    this.update_timer = null;
+    clearTimeout(this.update_members_timer);
+    this.update_members_timer = null;
     this.current_week += modifier;
     this.getMonitorData();
+    this.getPeopleSummaryData();
   }
 
   begin_treat_incident(incident) {
@@ -347,6 +361,37 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
           console.log(reason);
       });
   }
+
+  getPeopleSummaryData() {
+    let current_date = { 
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      day: new Date().getDate()          
+    };
+
+    this.personService.getPeopleSummary(this.current_branch, this.current_week)
+    .subscribe(
+      data => {                  
+      const result = data.json();
+      
+      this.people_summary = result.people_summary;
+    },
+    err => console.error(err)      
+    );
+
+
+
+    var d = new Date();
+    var hours = d.getHours();
+    
+    const update_interval = hours >= 22 || hours < 6 ? 600000 : 300000;
+
+    if(this.update_summary_timer) {
+      clearTimeout(this.update_summary_timer);
+    }
+
+    this.update_summary_timer = setTimeout(() => { this.getPeopleSummaryData() }, update_interval);  
+  }
   
   getMonitorData() {
 
@@ -365,9 +410,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
         this.incident_types = result.incident_types;
         this.manual_incident_types = this.incident_types.filter(f => !f.automatically_generated);
         this.current_week_range = result.current_week_range;
-        this.week_days = result.week_days;
-        this.activity_sumary  = result.activity_sumary;
-        this.sumary = result.sumary;
+        this.week_days = result.week_days;        
         this.selected_week = result.selected_week[0];
 
         this.cols = [                    
@@ -451,11 +494,11 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     
     const update_interval = hours >= 22 || hours < 6 ? 600000 : 30000;
 
-    if(this.update_timer) {
-      clearTimeout(this.update_timer);
+    if(this.update_members_timer) {
+      clearTimeout(this.update_members_timer);
     }
 
-    this.update_timer = setTimeout(() => { this.getMonitorData() }, update_interval);
+    this.update_members_timer = setTimeout(() => { this.getMonitorData() }, update_interval);
   }
    
 }

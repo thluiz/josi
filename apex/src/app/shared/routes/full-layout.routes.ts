@@ -10,11 +10,19 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/full-layout-page/full-pages.module#FullPagesModule'
   },
   {
+    path: 'daily',
+    loadChildren: './pages/outlook/weekly-page/weekly-pages.module#WeeklyPagesModule'
+  },
+  {
     path: 'outlook/weekly',
     loadChildren: './pages/outlook/weekly-page/weekly-pages.module#WeeklyPagesModule'
   },
   {
     path: 'outlook/sumary',
+    loadChildren: './pages/outlook/sumary-page/sumary-pages.module#SumaryPagesModule'
+  },
+  {
+    path: 'outlook/summary',
     loadChildren: './pages/outlook/sumary-page/sumary-pages.module#SumaryPagesModule'
   },
   {

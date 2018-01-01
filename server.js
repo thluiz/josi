@@ -124,6 +124,20 @@ function getParticipationList(people) {
                 response.json({ error: error });
             }
         }));
+        app.get("/api/people_summary/:branch?/:week?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                let result = yield pool.request()
+                    .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
+                    .input('week_modifier', sql.Int, request.params.week || 0)
+                    .input('date', sql.VarChar(10), request.params.date)
+                    .execute(`GetPeopleSummary`);
+                response.send((result.recordset[0]));
+            }
+            catch (error) {
+                response.status(500);
+                response.json({ error: error });
+            }
+        }));
         app.get("/api/sumary/:branch?/:month?/:week?/:date?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 let result = yield pool.request()
