@@ -144,11 +144,33 @@
                         </div>
                     </div>
                     <div class="row" style="padding-top:10px">
-                        <div class="col-5 offset-2">
+                        <div class="col-5 offset-2" *ngIf="person.last_activities && person.last_activities.length > 0">
                             <h5 style="border-bottom: 1px solid black"><i class="fa fa-tasks"></i> Atividades </h5>
+                            <div class="row" *ngFor="let a of person.last_activities">
+                                <div class="col-3">
+                                
+                                </div>
+                            </div>
                         </div>
                         <div class="col-5">
                             <h5 style="border-bottom: 1px solid black"><i class="ft-calendar"></i> Agendamento </h5>
+                            <div class="row" *ngFor="let ps of person.scheduling">
+                                <div class="col-3">
+                                    {{ ps.type_description }}
+                                </div>
+                                <div class="col-3">
+                                    {{ ps.recurrence_description }}
+                                </div>
+                                <div class="col-3" *ngIf="ps.week_day_description">
+                                    {{ ps.week_day_description + " " + ps.start_hour + ":" + ps.start_minute }}
+                                </div>
+                                <div class="col-3" *ngIf="ps.month_day">
+                                    {{ 'Dia ' + ps.month_day }}
+                                </div>
+                                <div class="col-auto" *ngIf="ps.value > 0">
+                                    {{ ps.value }}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
