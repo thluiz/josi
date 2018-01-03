@@ -24,18 +24,25 @@
 								(click)="show_change_branch = !show_change_branch">									
 									{{ current_branch_name }}
 								</h6>
-								<select id="branch" 
-									[(ngModel)]="current_branch" 
-									(ngModelChange)="branchSelected($event)"									
-									*ngIf="show_change_branch"
-									>						
-									<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
-								</select>	
-								<span *ngIf="show_change_branch"
-									style="cursor:pointer" 
-									(click)="show_change_branch = !show_change_branch">
-									x
-								</span>
+								<div class="form-group">
+									<select id="branch" 
+										[(ngModel)]="current_branch" 
+										(ngModelChange)="branchSelected($event)"									
+										*ngIf="show_change_branch"
+										class="form-control"
+										style="width:90%"
+										>						
+										<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
+									</select>	
+									<!-- span *ngIf="show_change_branch"
+										style="cursor:pointer" 
+										class="input-group-btn"
+										(click)="show_change_branch = !show_change_branch">
+										<button class="btn btn-silver" type="button">
+											<i class="icon-action-undo"></i>
+										</button>
+									</span -->
+								</div>
 							</div>	
 							<div class="col-3 text-right">
 								<span class="input-group">
@@ -119,7 +126,8 @@
 														<img alt="{{ person.name }}"
 														class="rounded-circle img-border d-none d-xl-block" 
 														src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
-														style="min-width:50px;width:100%;" 
+														style="min-width:50px;width:100%;border:2px solid;"
+														[style.border-color]="person.is_leaving || person.is_inactive_member ? 'goldenrod' : null " 
 														*ngIf="person.avatar_img && person.avatar_img.length > 0">	
 													</div>								
 													<div class="col-10" style="padding:0;padding-left:8px">
@@ -138,9 +146,10 @@
 														<div class="row" style="font-size:12px;">
 															<div class="col-12">
 																<span 
-																	*ngIf="!current_branch || current_branch == '' || current_branch == 0">																	
-																	{{ person.branch_initials }}
-																</span>
+																	*ngIf="!current_branch || current_branch == '' || current_branch == 0">{{ person.branch_initials }}</span><span 
+																	*ngIf="(!current_branch || current_branch == '' || current_branch == 0) && person.family_abrev">.</span><span 
+																	*ngIf="person.family_abrev">{{ person.family_abrev }}</span>
+
 																<div *ngIf="person.kf_name" style="float:right;margin-right:20px">													
 																	{{ person.kf_name }}																																								
 																</div>

@@ -56,6 +56,7 @@ class PersonService {
                 .input('baaisi_date', sql.VarChar(10), person.baaisi_date)
                 .input('kf_name', sql.VarChar(200), person.kf_name)
                 .input('kf_name_ideograms', sql.NVarChar(200), person.kf_name_ideograms)
+                .input('family_id', sql.Int, person.family_id)
                 .execute(`UpdatePersonData`);
         });
     }

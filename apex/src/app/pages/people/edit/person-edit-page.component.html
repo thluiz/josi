@@ -43,6 +43,18 @@
                                             <div class="row">                                        
                                                 <div class="col-md-6">
                                                     <div class="form-group">
+                                                        <label for="person_family">Família</label>                                                									
+                                                        <div class="input-group">							
+                                                            <select id="person_family" name="person_family" 
+                                                                class="form-control"                                                                 
+                                                                [(ngModel)]="person.family_id">						
+                                                                <option *ngFor="let f of person.possible_families" [value]="f.id">{{ f.name }}</option>
+                                                            </select>																															                                                    
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
                                                         <label for="person_admission_date">Admissão</label>                                                									
                                                         <div class="input-group">							
                                                             <input class="form-control text-center" placeholder="dd-mm-yyyy" 
@@ -54,7 +66,7 @@
                                                             </div>																																                                                    
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div>                                                
                                             </div>
                                         </div>
                                         <div class="col-6">

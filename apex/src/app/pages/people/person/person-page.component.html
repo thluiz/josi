@@ -91,6 +91,15 @@
                                         [ngStyle]="{ 'color': !person.baaisi_date ? 'red' : null }">
                                         {{ person.baaisi_date_br || 'Não definido'  }}                                    
                                     </span>
+                                </div>
+                                <div class="col-2" *ngIf="person.is_active_member || person.is_disciple">
+                                    <label for="family">Família</label> 
+                                    <span id="family" *ngIf="person.family && person.family.length > 0 ">
+                                        {{ person.family[0].name }}                                    
+                                    </span>       
+                                    <span id="family" style="color:red" *ngIf="!person.family || person.family.length <=0 ">
+                                        Não definida
+                                    </span>                                    
                                 </div>                                                
                             </div>
                             <div class="row" style="padding-top:15px">
