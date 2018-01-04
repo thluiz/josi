@@ -48,7 +48,7 @@ export class IncidentService {
             .input('people', sql.VarChar(sql.MAX), incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(","))
             .input('date', sql.VarChar(100), date)        
             .input('type', sql.Int, incident.type.id)
-            .input('branch', sql.Int, incident.branch.id)
+            .input('branch', sql.Int, incident.branch_id)
             .input('value', sql.Decimal(12,2), incident.value)
             .input('new_people', sql.VarChar(sql.MAX), incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(","))
             .execute(`RegisterNewIncident`);

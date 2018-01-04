@@ -236,7 +236,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     let date = new Date();
 
     this.new_incident = {
-      branch: { id: this.current_branch },
+      branch_id: this.current_branch,
       date: {
         year: date.getFullYear(),
         month: date.getMonth() + 1,
@@ -297,10 +297,13 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     this.validate_new_event();
   }
 
-  validate_new_event() {        
-    if(this.new_incident.people != null
-      && this.new_incident.people.length > 0
-      && this.new_incident.type != null
+  validate_new_event() {  
+    let new_incident = this.new_incident;
+
+    if(new_incident.people != null
+      && new_incident.people.length > 0
+      && new_incident.type != null
+      && new_incident.branch_id > 0
       && (!this.new_incident.type.need_description
           || ((this.new_incident.description || "").length > 3))
       && (
@@ -401,11 +404,11 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     this.personService.getDailyMonitor(this.current_branch, this.current_week).subscribe(
       data => {    
         const result = data.json();        
-
-        this.branches = [{ id: 0, name: 'Todos os Núcleos' }].concat(result.branches);
+        
+        this.branches = result.branches;
         this.current_branch_name = (this.current_branch > 0 ? 
-                            this.branches.filter(b => b.id == this.current_branch)[0]
-                            : this.branches[0]).name;
+                            this.branches.filter(b => b.id == this.current_branch)[0].name
+                            : "Todos os Núcleos");
         this.domains = result.domains;   
         this.incident_types = result.incident_types;
         this.manual_incident_types = this.incident_types.filter(f => !f.automatically_generated);

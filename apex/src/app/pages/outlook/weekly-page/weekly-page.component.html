@@ -31,7 +31,8 @@
 										*ngIf="show_change_branch"
 										class="form-control"
 										style="width:90%"
-										>						
+										>			
+										<option value="0">Todos os Núcleos</option>			
 										<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
 									</select>	
 									<!-- span *ngIf="show_change_branch"
@@ -126,32 +127,40 @@
 														<img alt="{{ person.name }}"
 														class="rounded-circle img-border d-none d-xl-block" 
 														src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
-														style="min-width:50px;width:100%;"														
+														style="min-width:50px;width:100%;"																												
 														[style.border-color]="person.is_leaving || person.is_inactive_member ? 'orange' : null " 
 														[style.opacity]="person.is_leaving || person.is_inactive_member ? '0.5' : null " 
-														*ngIf="person.avatar_img && person.avatar_img.length > 0">	
+														*ngIf="person.avatar_img && person.avatar_img.length > 0" />
+														<!-- rgb(155, 14, 4) -->	
 													</div>								
 													<div class="col-10" style="padding:0;padding-left:8px">
 														<div class="row">
-															<div class="col-12">
-																<a 																
+															<div class="col-12"
+															[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
+															>
+																<a
 																[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
 																[routerLink]="['/person', person.person_id]">
 																{{ person.name }}														
 																</a>														
-																<div *ngIf="person.kf_name_ideograms" style="float:right;margin-right:20px">													
+																<div																	
+																	*ngIf="person.kf_name_ideograms" 
+																	style="float:right;margin-right:20px">													
 																	{{ person.kf_name_ideograms }}																																								
 																</div>																
 															</div>													
 														</div>												
 														<div class="row" style="font-size:12px;">
-															<div class="col-12">
-																<span 
+															<div class="col-12"
+																[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
+															>
+																<span 																	
 																	*ngIf="!current_branch || current_branch == '' || current_branch == 0">{{ person.branch_initials }}</span><span 
 																	*ngIf="(!current_branch || current_branch == '' || current_branch == 0) && person.family_abrev">, </span><span 
 																	*ngIf="person.family_abrev">{{ person.family_abrev }}</span>
 
-																<div *ngIf="person.kf_name" style="float:right;margin-right:20px">													
+																<div *ngIf="person.kf_name" 																	
+																	style="float:right;margin-right:20px">													
 																	{{ person.kf_name }}																																								
 																</div>
 															</div>															
@@ -417,9 +426,23 @@
 		<div class="form-body">			
 			<div class="row">
 				<div class="col-12">
-					<fieldset class="form-group">
-						<label for="new_incident_tmp_type" style="font-weight: bold">Tipo de Atividade</label>		
-						<br />										
+					<fieldset class="form-group">						
+						<label for="new_incident_branch" 
+							*ngIf="!current_branch || current_branch <= 0"
+							style="font-weight: bold">
+							Núcleo
+						</label>		
+						<div class="form-group"
+							*ngIf="!current_branch || current_branch <= 0">
+							<select id="branch" 
+								[(ngModel)]="new_incident.branch_id" 
+								(ngModelChange)="validate_new_event()"																	
+								class="form-control"								
+								>						
+								<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
+							</select>								
+						</div>
+						<label for="new_incident_tmp_type" style="font-weight: bold">Tipo de Atividade</label>																		
 						<span *ngIf="new_incident.tmp_type != null">
 							{{ new_incident.tmp_type.name }}
 							<span *ngIf="new_incident.children_type != null">
