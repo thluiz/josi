@@ -71,28 +71,51 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-2" *ngIf="person.is_active_member || person.is_disciple">
+                                <div class="col-2">
                                     <label for="admission_date">Nascimento</label> 
                                     <span id="admission_date" 
                                         [ngStyle]="{ 'color': !person.birth_date ? 'red' : null }">
                                         {{ person.birth_date_br || 'Não definido'  }}                                    
                                     </span>
-                                </div>                                     
-                                <div class="col-2" *ngIf="person.is_active_member || person.is_disciple">
-                                    <label for="admission_date">Admissão</label> 
-                                    <span id="admission_date"
-                                        [ngStyle]="{ 'color': !person.admission_date ? 'red' : null }">
-                                        {{ person.admission_date_br || 'Não definida'  }}                                    
-                                    </span>
-                                </div> 
-                                <div class="col-2" *ngIf="person.is_disciple">
-                                    <label for="baaisi_date">Baai Si</label> 
-                                    <span id="baaisi_date" 
-                                        [ngStyle]="{ 'color': !person.baaisi_date ? 'red' : null }">
-                                        {{ person.baaisi_date_br || 'Não definido'  }}                                    
+                                </div>                                                                                                                                                                                 
+                            </div>
+                            <div class="row">
+                                <div class="col-12" *ngIf="person.is_active_member || person.is_disciple || person.is_leaving || person.is_inactive_member">
+                                    <h6 style="border-bottom: 1px solid black;margin-top:15px;font-weight:bold"> Membro </h6>
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="person.is_active_member || person.is_disciple || person.is_leaving || person.is_inactive_member">                                
+                                <div class="col-2">
+                                    <label for="branch">Núcleo</label> 
+                                    <span id="branch"
+                                        [ngStyle]="{ 'color': !person.branch_name ? 'red' : null }">
+                                        {{ person.branch_name.replace("Núcleo", '') || 'Não definido'  }}                                    
+                                    </span>                                   
+                                </div>  
+                                <div class="col-2">
+                                    <label for="program">Programa</label> 
+                                    <span id="program"
+                                        [ngStyle]="{ 'color': !person.program_name ? 'red' : null }">
+                                        {{ person.program_name.replace("Programa", '') || 'Não definido'  }}                                    
                                     </span>
                                 </div>
-                                <div class="col-2" *ngIf="person.is_active_member || person.is_disciple">
+                                <div class="col-3">
+                                    <label for="domain" *ngIf="person.program_id == 3">
+                                        Domínio
+                                    </label> 
+                                    <label for="domain" *ngIf="person.program_id != 3">
+                                        Nível
+                                    </label> 
+                                    <span id="domain" 
+                                        [ngStyle]="{ 'color': !person.domain_name ? 'red' : null }">
+                                        {{ person.domain_name || 'Não definido'  }}                                    
+                                    </span>
+                                </div>   
+                            </div>
+                            <div class="row" 
+                                style="padding-top:10px"
+                                *ngIf="person.is_active_member || person.is_disciple || person.is_leaving || person.is_inactive_member">                                
+                                <div class="col-2">
                                     <label for="family">Família</label> 
                                     <span id="family" *ngIf="person.family && person.family.length > 0 ">
                                         {{ person.family[0].name }}                                    
@@ -100,7 +123,21 @@
                                     <span id="family" style="color:red" *ngIf="!person.family || person.family.length <=0 ">
                                         Não definida
                                     </span>                                    
-                                </div>                                                
+                                </div>  
+                                <div class="col-2">
+                                    <label for="admission_date">Admissão</label> 
+                                    <span id="admission_date"
+                                        [ngStyle]="{ 'color': !person.admission_date ? 'red' : null }">
+                                        {{ person.admission_date_br || 'Não definida'  }}                                    
+                                    </span>
+                                </div>
+                                <div class="col-2" *ngIf="person.is_disciple">
+                                    <label for="baaisi_date">Baai Si</label> 
+                                    <span id="baaisi_date" 
+                                        [ngStyle]="{ 'color': !person.baaisi_date ? 'red' : null }">
+                                        {{ person.baaisi_date_br || 'Não definido'  }}                                    
+                                    </span>
+                                </div>   
                             </div>
                             <div class="row" style="padding-top:15px">
                                 <div class="col-12">
