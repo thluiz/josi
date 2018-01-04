@@ -127,7 +127,7 @@
 														class="rounded-circle img-border d-none d-xl-block" 
 														src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
 														style="min-width:50px;width:100%;"														
-														[style.border-color]="person.is_leaving || person.is_inactive_member ? 'yellow' : null " 
+														[style.border-color]="person.is_leaving || person.is_inactive_member ? 'orange' : null " 
 														[style.opacity]="person.is_leaving || person.is_inactive_member ? '0.5' : null " 
 														*ngIf="person.avatar_img && person.avatar_img.length > 0">	
 													</div>								
