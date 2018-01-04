@@ -200,7 +200,8 @@
     </div>
     <div class="modal-body">		
         <select id="branch" 
-            [(ngModel)]="new_role"                         
+            [(ngModel)]="new_role" 
+            class="form-control"                        
             >						
             <option *ngFor="let r of person.possible_roles" [value]="r.id">{{r.name}}</option>
         </select>

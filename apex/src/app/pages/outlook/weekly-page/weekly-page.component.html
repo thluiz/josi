@@ -126,15 +126,16 @@
 														<img alt="{{ person.name }}"
 														class="rounded-circle img-border d-none d-xl-block" 
 														src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
-														style="min-width:50px;width:100%;border:2px solid;"
-														[style.border-color]="person.is_leaving || person.is_inactive_member ? 'goldenrod' : null " 
+														style="min-width:50px;width:100%;"														
+														[style.border-color]="person.is_leaving || person.is_inactive_member ? 'yellow' : null " 
+														[style.opacity]="person.is_leaving || person.is_inactive_member ? '0.5' : null " 
 														*ngIf="person.avatar_img && person.avatar_img.length > 0">	
 													</div>								
 													<div class="col-10" style="padding:0;padding-left:8px">
 														<div class="row">
 															<div class="col-12">
-																<a 
-																style="color:black"
+																<a 																
+																[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
 																[routerLink]="['/person', person.person_id]">
 																{{ person.name }}														
 																</a>														
@@ -147,7 +148,7 @@
 															<div class="col-12">
 																<span 
 																	*ngIf="!current_branch || current_branch == '' || current_branch == 0">{{ person.branch_initials }}</span><span 
-																	*ngIf="(!current_branch || current_branch == '' || current_branch == 0) && person.family_abrev">.</span><span 
+																	*ngIf="(!current_branch || current_branch == '' || current_branch == 0) && person.family_abrev">, </span><span 
 																	*ngIf="person.family_abrev">{{ person.family_abrev }}</span>
 
 																<div *ngIf="person.kf_name" style="float:right;margin-right:20px">													
