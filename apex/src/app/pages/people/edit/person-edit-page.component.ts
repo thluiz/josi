@@ -22,6 +22,7 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
   id: number;
   person: any;    
   new_role: any;
+  domains: any;
 
   private sub: any;
 
@@ -51,6 +52,12 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
     });
 
   }  
+
+  change_program(program) {
+    console.log(this.person.programs);
+    console.log(program);
+    this.domains = this.person.programs.filter(p => p.id == program)[0].domains;
+  }
 
   save_person_data() {
     let p = this.person;
@@ -85,7 +92,6 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
     return `${date.year}-${date.month}-${date.day}`;
   }
 
-
   load_person_data() {
     this.personService.getAllData(this.id).subscribe(
       data => {           
@@ -95,8 +101,7 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
         this.person.admission_date = this.translate_date_to_view(this.person.admission_date);        
         this.person.baaisi_date = this.translate_date_to_view(this.person.baaisi_date);  
         
-        console.log(this.person.birth_date);
-
+        this.domains = this.person.programs.filter(p => p.id == this.person.program_id)[0].domains;
       }
     );
   }

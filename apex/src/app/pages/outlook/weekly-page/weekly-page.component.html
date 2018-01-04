@@ -90,7 +90,7 @@
 										<tr>
 											<td colspan="11"
 												style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center"
-												[ngStyle]="{ 'background-color': d.program_id == 1 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)') }">
+												[ngStyle]="{ 'background-color': d.program_id == 3 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)') }">
 												{{ d.program }} - {{ d.long_name }}
 											</td>
 										</tr>								
@@ -99,8 +99,8 @@
 												align="center" 
 												[ngStyle]="{ 'width': c.width, 
 															'background-color': selected_week.current && k3 == current_week_day + 4 ? 
-																d.program_id == 1 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)')
-																: d.program_id == 1 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : 'rgb(8, 82, 1)'), 
+																d.program_id == 3 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)')
+																: d.program_id == 3 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : 'rgb(8, 82, 1)'), 
 															'color': 'white' }"
 												[colSpan]="c.colspan || 1"
 												>	

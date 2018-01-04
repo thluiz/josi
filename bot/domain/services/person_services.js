@@ -56,7 +56,10 @@ class PersonService {
                 .input('baaisi_date', sql.VarChar(10), person.baaisi_date)
                 .input('kf_name', sql.VarChar(200), person.kf_name)
                 .input('kf_name_ideograms', sql.NVarChar(200), person.kf_name_ideograms)
-                .input('family_id', sql.Int, person.family_id)
+                .input('family_id', sql.Int, person.family_id > 0 ? person.family_id : null)
+                .input('branch_id', sql.Int, person.branch_id > 0 ? person.branch_id : null)
+                .input('domain_id', sql.Int, person.domain_id > 0 ? person.domain_id : null)
+                .input('program_id', sql.Int, person.program_id > 0 ? person.program_id : null)
                 .execute(`UpdatePersonData`);
         });
     }
