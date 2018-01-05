@@ -88,15 +88,25 @@
                                 <div class="col-2">
                                     <label for="branch">Núcleo</label> 
                                     <span id="branch"
-                                        [ngStyle]="{ 'color': !person.branch_name ? 'red' : null }">
-                                        {{ person.branch_name.replace("Núcleo", '') || 'Não definido'  }}                                    
-                                    </span>                                   
+                                        *ngIf="person.branch_name">
+                                        {{ person.branch_name.replace("Núcleo", '') }}                                    
+                                    </span>
+                                    <span id="branch"
+                                        *ngIf="!person.branch_name"
+                                        style="color:red">
+                                        Não definido
+                                    </span>                            
                                 </div>  
                                 <div class="col-2">
                                     <label for="program">Programa</label> 
                                     <span id="program"
-                                        [ngStyle]="{ 'color': !person.program_name ? 'red' : null }">
-                                        {{ person.program_name.replace("Programa", '') || 'Não definido'  }}                                    
+                                        *ngIf="person.program_name">
+                                        {{ person.program_name.replace("Programa", '') }}                                    
+                                    </span>
+                                    <span id="branch"
+                                        *ngIf="!person.program_name"
+                                        style="color:red">
+                                        Não definido
                                     </span>
                                 </div>
                                 <div class="col-3">

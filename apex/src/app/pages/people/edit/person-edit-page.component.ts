@@ -53,9 +53,11 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
 
   }  
 
-  change_program(program) {
-    console.log(this.person.programs);
-    console.log(program);
+  change_program(program) {   
+    if(!this.person.programs) {
+      return;
+    }
+    
     this.domains = this.person.programs.filter(p => p.id == program)[0].domains;
   }
 
