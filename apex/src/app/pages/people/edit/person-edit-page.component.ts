@@ -103,7 +103,7 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
         this.person.admission_date = this.translate_date_to_view(this.person.admission_date);        
         this.person.baaisi_date = this.translate_date_to_view(this.person.baaisi_date);  
         
-        if(!this.person.programs && this.person.program_id > 0) {
+        if(this.person.programs || !this.person.program_id || this.person.program_id <= 0) {
           return;
         }
 
