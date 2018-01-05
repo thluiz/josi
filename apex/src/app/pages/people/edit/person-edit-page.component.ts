@@ -54,7 +54,7 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
   }  
 
   change_program(program) {   
-    if(!this.person.programs) {
+    if(!program || !this.person.programs) {
       return;
     }
 
@@ -62,16 +62,43 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
   }
 
   save_person_data() {
+    if(!this.validate_person()) {
+      return;
+    }
+
     let p = this.person;
     p.birth_date = this.translate_date_to_server(this.person.birth_date);        
     p.admission_date = this.translate_date_to_server(this.person.admission_date);        
     p.baaisi_date = this.translate_date_to_server(this.person.baaisi_date);  
-
+        
     this.personService.savePersonData(p).toPromise().then(
       () => {
         this.router.navigateByUrl(`person/${this.id}`);
       }
     )
+  }
+
+  validate_person() {    
+    this.person.errors = this.person.errors || [];
+
+    this.person.is_valid = true;
+    
+    if(this.person.branch_id > 0 && (!this.person.program_id || this.person.program_id <= 0)) {
+      this.person.errors['need_program'] = true;      
+      this.person.is_valid = false;
+    }
+
+    if(this.person.program_id > 0 && (!this.person.domain_id || this.person.domain_id <= 0)) {      
+      this.person.errors['need_domain'] = true;
+      this.person.is_valid = false;
+    }
+
+    if(this.person.is_valid) {
+      this.person.errors = [];      
+      return true;
+    }
+    
+    return false;
   }
 
   private translate_date_to_view(date) {      

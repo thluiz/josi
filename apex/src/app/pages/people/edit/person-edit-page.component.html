@@ -88,13 +88,17 @@
                                                         <label for="person_program">Programa</label>                                                									
                                                         <div class="input-group">							
                                                             <select id="person_program" name="person_program" 
-                                                                class="form-control"   
+                                                                class="form-control" required  
                                                                 (ngModelChange)="change_program($event)"                                                              
                                                                 [(ngModel)]="person.program_id">
                                                                 <option></option>						
                                                                 <option *ngFor="let p of person.programs" [value]="p.id">{{ p.name }}</option>
                                                             </select>																															                                                    
                                                         </div>
+                                                        <small class="form-text text-muted danger" 
+                                                            *ngIf="person.errors && person.errors['need_program']">
+                                                            Informe o programa antes de prosseguir!
+                                                        </small>
                                                     </div>
                                                 </div>                                                 
                                                 <div class="col-md-4" *ngIf="person.program_id && person.program_id > 0">
@@ -102,12 +106,17 @@
                                                         <label for="person_program">Domínio/Nível</label>                                                									
                                                         <div class="input-group">							
                                                             <select id="person_domain" name="person_domain" 
-                                                                class="form-control"                                                                 
+                                                                class="form-control"    
+                                                                required                                                             
                                                                 [(ngModel)]="person.domain_id">	
                                                                 <option></option>					
                                                                 <option *ngFor="let d of domains" [value]="d.id">{{ d.name }}</option>
-                                                            </select>																															                                                    
+                                                            </select>	                                                            	                                                            																												                                                    
                                                         </div>
+                                                        <small class="form-text text-muted danger" 
+                                                            *ngIf="person.errors && person.errors['need_domain']">
+                                                            Informe o domínio antes de prosseguir!
+                                                        </small>
                                                     </div>
                                                 </div>                                               
                                             </div>                                                
