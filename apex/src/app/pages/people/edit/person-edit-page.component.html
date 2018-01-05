@@ -47,8 +47,9 @@
                                                         <div class="input-group">							
                                                             <select id="person_branch" name="person_branch" 
                                                                 class="form-control"                                                                 
-                                                                [(ngModel)]="person.branch_id">						
-                                                                <option *ngFor="let b of person.branches" [value]="b.id">{{ b.name }}</option>
+                                                                [(ngModel)]="person.branch_id">	
+                                                                <option></option>					
+                                                                <option *ngFor="let b of person.branches" [value]="b.id">{{ b.abrev }}</option>
                                                             </select>																															                                                    
                                                         </div>
                                                     </div>
@@ -59,7 +60,8 @@
                                                         <div class="input-group">							
                                                             <select id="person_family" name="person_family" 
                                                                 class="form-control"                                                                 
-                                                                [(ngModel)]="person.family_id">						
+                                                                [(ngModel)]="person.family_id">		
+                                                                <option></option>									
                                                                 <option *ngFor="let f of person.possible_families" [value]="f.id">{{ f.name }}</option>
                                                             </select>																															                                                    
                                                         </div>
