@@ -9,17 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sumary_services_1 = require("./sumary_services");
+const person_services_1 = require("./person_services");
 const sql = require('mssql');
 class JobsService {
     constructor(sql_pool) {
         this.sql_pool = sql_pool;
         this.sumary_service = new sumary_services_1.SumaryService(sql_pool);
+        this.person_service = new person_services_1.PersonService(sql_pool);
     }
     hourly_jobs() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 this.sumary_service.consolidate_members_sumary();
                 this.sumary_service.consolidate_activity_sumary();
+                this.person_service.check_people_status();
             }
             catch (ex) {
                 console.log(ex);

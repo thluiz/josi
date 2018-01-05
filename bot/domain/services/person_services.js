@@ -63,6 +63,14 @@ class PersonService {
                 .execute(`UpdatePersonData`);
         });
     }
+    check_people_status() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.sql_pool
+                .request()
+                .execute(`CheckPeopleStatus`);
+            return result;
+        });
+    }
 }
 exports.PersonService = PersonService;
 //# sourceMappingURL=person_services.js.map

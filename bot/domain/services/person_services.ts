@@ -55,4 +55,12 @@ export class PersonService {
                                 .input('program_id', sql.Int, person.program_id > 0 ? person.program_id : null )
                                 .execute(`UpdatePersonData`);
     }
+
+    async check_people_status() {        
+        const result = await this.sql_pool
+                                .request()                                
+                                .execute(`CheckPeopleStatus`);
+
+        return result;  
+    }
 }
