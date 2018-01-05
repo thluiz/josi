@@ -57,7 +57,7 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
     if(!this.person.programs) {
       return;
     }
-    
+
     this.domains = this.person.programs.filter(p => p.id == program)[0].domains;
   }
 
@@ -103,6 +103,10 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
         this.person.admission_date = this.translate_date_to_view(this.person.admission_date);        
         this.person.baaisi_date = this.translate_date_to_view(this.person.baaisi_date);  
         
+        if(!this.person.programs && this.person.program_id > 0) {
+          return;
+        }
+
         this.domains = this.person.programs.filter(p => p.id == this.person.program_id)[0].domains;
       }
     );
