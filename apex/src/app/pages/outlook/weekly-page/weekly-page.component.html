@@ -159,7 +159,7 @@
 																	*ngIf="(!current_branch || current_branch == '' || current_branch == 0) && person.family_abrev">, </span><span 
 																	*ngIf="person.family_abrev">{{ person.family_abrev }}</span>
 																<span 
-																	*ngIf="!person.admission_date"
+																	*ngIf="!person.admission_date && person.family_abrev"
 																	style="font-style: italic; color:gray">
 																	(candidato)
 																</span>
