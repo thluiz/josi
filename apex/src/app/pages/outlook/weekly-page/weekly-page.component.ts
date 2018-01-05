@@ -237,6 +237,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
 
     this.new_incident = {
       branch_id: this.current_branch,
+      contact_text: "",
       date: {
         year: date.getFullYear(),
         month: date.getMonth() + 1,
@@ -334,15 +335,35 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
           }))
       .do(() => this.searching_people = false)
 
-  register_contact_for_incident(incident) {
+  validade_treatment_contact_text(incident) {
+    if(!incident.contact_text || incident.contact_text.length < 5) {
+      incident.errors = incident.errors || [];
+      incident.errors["need_contact_text"] = true;
+      return false; 
+    } 
+
+    incident.errors = incident.errors || [];
+    incident.errors["need_contact_text"] = false;    
+    return true;
+  }
+
+  register_contact_for_incident(incident, close_modal_action) {
+    if(!this.validade_treatment_contact_text(incident)) {
+      return;
+    }
+
     this.incidentService.register_contact_for_incident(incident, { 
       contact_text: incident.contact_text 
     })
     .toPromise().then((response) => {
       this.getMonitorData();
+      
+      if(close_modal_action) {
+        close_modal_action();
+      }
     }).catch((reason) => {
       console.log(reason);
-    }); 
+    });     
   }
   
   open_new_activity_from_existent(content, incident) {
