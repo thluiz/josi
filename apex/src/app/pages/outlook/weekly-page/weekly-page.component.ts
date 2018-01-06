@@ -12,7 +12,9 @@ import { NgbModal,
   NgbCalendar, 
   NgbTimeStruct,      
   ModalDismissReasons, 
-  NgbActiveModal
+  NgbActiveModal,
+  NgbDatepickerConfig,
+  NgbDateParserFormatter
 } from '@ng-bootstrap/ng-bootstrap';
 import { OnInit, OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
@@ -34,12 +36,15 @@ import { of } from 'rxjs/observable/of';
 import { catchError } from 'rxjs/operators';
 import { tap } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
+import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './weekly-page.component.html',
   styleUrls: ['./weekly-page.component.scss'],
-  providers: [PersonService, IncidentService]
+  providers: [PersonService, IncidentService, DatePickerI18n,
+    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
+    {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
 export class WeeklyPageComponent implements OnInit, OnDestroy {
   daily: Observable<any[]>;
@@ -73,7 +78,10 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
 
   constructor(private personService: PersonService, 
               private incidentService: IncidentService, 
-              private modalService: NgbModal) {
+              private modalService: NgbModal, 
+              private datePickerConfig: NgbDatepickerConfig) {
+
+    datePickerConfig.firstDayOfWeek = 7
 
     this.current_week_day = (new Date).getDay() - 1;
     

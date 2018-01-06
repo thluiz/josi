@@ -491,7 +491,7 @@
 				<div class="col-6">
 					<div class="form-group">													
 						<div class="input-group">							
-							<input class="form-control" placeholder="dd-mm-yyyy" 
+							<input class="form-control" placeholder="dd/mm/aaaa" 
 							[(ngModel)]="new_incident.date" id="new_incident_date"
 							ngbDatepicker #niReschedule="ngbDatepicker" />
 							<div class="input-group-addon" (click)="niReschedule.toggle()">
@@ -673,7 +673,7 @@
 							<h6 style="font-weight: bold">Reagendamento</h6>									
 							<div class="form-group">
 								<div class="input-group">
-									<input class="form-control" style="width:100%" placeholder="yyyy-mm-dd"
+									<input class="form-control" style="width:100%" placeholder="dd/mm/aaaa"
 									name="new_date" 
 									[(ngModel)]="current_incident.new_date" 
 									ngbDatepicker #dpReschedule="ngbDatepicker" />

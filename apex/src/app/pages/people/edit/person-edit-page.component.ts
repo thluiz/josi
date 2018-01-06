@@ -9,14 +9,22 @@ import { FormControl, FormsModule, ReactiveFormsModule,
 
 import { NgbModal, 
 ModalDismissReasons, 
-NgbActiveModal
+NgbActiveModal,
+NgbDateParserFormatter,
+NgbDatepickerI18n,
+NgbDatepickerConfig,
+NgbDateStruct
 } from '@ng-bootstrap/ng-bootstrap';
+import { DatePickerI18n, NgbDatePTParserFormatter, 
+      PortugueseDatepicker} from 'app/shared/datepicker-i18n';
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './person-edit-page.component.html',
   styleUrls: ['./person-edit-page.component.scss'],  
-  providers: [PersonService]
+  providers: [PersonService, DatePickerI18n,
+      {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
+      {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
 export class PersonEditPageComponent implements OnInit, OnDestroy  {
   id: number;
@@ -29,7 +37,10 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
   constructor(private personService: PersonService, 
               private route: ActivatedRoute,
               private router: Router, 
-              private modalService: NgbModal) {      
+              private modalService: NgbModal,
+              private datePickerConfig: NgbDatepickerConfig) {      
+    
+    datePickerConfig.firstDayOfWeek = 7
   }  
 
   ngOnInit() {
