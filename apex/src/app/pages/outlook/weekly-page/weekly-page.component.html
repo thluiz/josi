@@ -491,9 +491,9 @@
 				<div class="col-6">
 					<div class="form-group">													
 						<div class="input-group">							
-							<input class="form-control" placeholder="yyyy-mm-dd" 
+							<input class="form-control" placeholder="dd-mm-yyyy" 
 							[(ngModel)]="new_incident.date" id="new_incident_date"
-							type="date" ngbDatepicker #niReschedule="ngbDatepicker" />
+							ngbDatepicker #niReschedule="ngbDatepicker" />
 							<div class="input-group-addon" (click)="niReschedule.toggle()">
 								<i class="ft-calendar" style="cursor: pointer;"></i>
 							</div>																																
