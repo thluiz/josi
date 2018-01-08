@@ -202,6 +202,22 @@ function getParticipationList(people) {
                 response.json('error', { error: error });
             } 
         });
+
+        app.post("/api/person_schedule/delete", async (request, response, next) => { 
+            let result = await person_service.remove_schedule(
+                request.body.id
+            );            
+
+            response.send("Ok");             
+        });
+
+        app.post("/api/person_schedule", async (request, response, next) => { 
+            let result = await person_service.save_schedule(
+                request.body.schedule
+            );            
+
+            response.send("Ok");             
+        });
         
         app.get(/^((?!\.).)*$/, (req, res) => {
             var path = "index.html";

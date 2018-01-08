@@ -55,5 +55,19 @@ constructor(private http:Http) { }
     return this.http
         .get(this.dataUrl + `/people/search/${term}`);
   }
+
+  remove_schedule(schedule) {
+    return this.http
+        .post(this.dataUrl + `/person_schedule/delete`, {
+          id: schedule.id
+        });
+  }
+
+  save_schedule(schedule) {
+    return this.http
+        .post(this.dataUrl + `/person_schedule`, {
+          schedule
+        });
+  }
 }
 

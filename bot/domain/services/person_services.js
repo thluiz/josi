@@ -63,6 +63,34 @@ class PersonService {
                 .execute(`UpdatePersonData`);
         });
     }
+    remove_schedule(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.sql_pool
+                .request()
+                .input('person_schedule_id', sql.Int, id)
+                .execute(`CancelPersonSchedule`);
+        });
+    }
+    save_schedule(schedule) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.sql_pool
+                .request()
+                .input('person_id', sql.Int, schedule.person_id)
+                .input('branch_id', sql.Int, schedule.branch_id)
+                .input('incident_type', sql.Int, schedule.incident_type)
+                .input('recurrence_type', sql.Int, schedule.recurrence_type)
+                .input('start_date', sql.VarChar(10), schedule.start_date)
+                .input('start_hour', sql.Int, schedule.start_hour)
+                .input('start_minute', sql.Int, schedule.start_minute)
+                .input('end_date', sql.VarChar(10), schedule.end_date)
+                .input('end_hour', sql.Int, schedule.end_hour)
+                .input('end_minute', sql.Int, schedule.end_minute)
+                .input('number_of_incidents', sql.Int, schedule.number_of_incidents)
+                .input('description', sql.NVarChar(sql.MAX), schedule.description)
+                .input('value', sql.Decimal(12, 2), schedule.value)
+                .execute(`SavePersonScheduleAndGenerateIncidents`);
+        });
+    }
     check_people_status() {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.sql_pool

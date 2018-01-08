@@ -19,7 +19,7 @@
 								<h4 class="card-title">
 									Diário de Atividades - Praticantes 																																
 								</h4>
-								<h6 style="margin:0;margin-top:5px;margin-bottom:5px;font-weight:bold;color:black;cursor:pointer" 
+								<h6 style="margin:0;margin-top:5px;margin-bottom:5px;font-weight:bold;color:black;cursor:pointer;border-bottom:1px dotted silver;" 
 								*ngIf="!show_change_branch"
 								(click)="show_change_branch = !show_change_branch">									
 									{{ current_branch_name }}
@@ -81,7 +81,7 @@
 			</div>
 			<div class="card-body">	
 				<div class="row">					
-					<div class="col-10">
+					<div class="col-9" style="border-right:1px solid #ddd;padding-right:1%">
 						<table style="width:100%;">
 							<tr *ngFor="let d of domains, let k5 = index">
 								<td>																																		
@@ -125,9 +125,10 @@
 												<div class="row">
 													<div class="col-2" style="padding:0;padding-left:5px">
 														<img alt="{{ person.name }}"
+														[routerLink]="['/person', person.person_id]"
 														class="rounded-circle img-border d-none d-xl-block" 
 														src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
-														style="min-width:50px;width:100%;"																												
+														style="min-width:50px;width:100%;cursor:pointer"																												
 														[style.border-color]="person.is_leaving || person.is_inactive_member ? 'orange' : null " 
 														[style.opacity]="person.is_leaving || person.is_inactive_member ? '0.5' : null " 
 														*ngIf="person.avatar_img && person.avatar_img.length > 0" />
@@ -360,7 +361,7 @@
 							</tr>
 						</table>
 					</div>
-					<div class="col-2">
+					<div class="col-3">
 						
 						<div class="sticky-top" style="top:60px; padding-right:10px">
 								<table class="table-sm table-striped table-bordered"															
@@ -491,7 +492,7 @@
 				<div class="col-6">
 					<div class="form-group">													
 						<div class="input-group">							
-							<input class="form-control" placeholder="dd/mm/aaaa" 
+							<input class="form-control text-center" placeholder="dd/mm/aaaa" 
 							[(ngModel)]="new_incident.date" id="new_incident_date"
 							ngbDatepicker #niReschedule="ngbDatepicker" />
 							<div class="input-group-addon" (click)="niReschedule.toggle()">
@@ -673,7 +674,7 @@
 							<h6 style="font-weight: bold">Reagendamento</h6>									
 							<div class="form-group">
 								<div class="input-group">
-									<input class="form-control" style="width:100%" placeholder="dd/mm/aaaa"
+									<input class="form-control text-center" style="width:100%" placeholder="dd/mm/aaaa"
 									name="new_date" 
 									[(ngModel)]="current_incident.new_date" 
 									ngbDatepicker #dpReschedule="ngbDatepicker" />

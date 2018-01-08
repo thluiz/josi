@@ -90,7 +90,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     }
 
     this.people_summary_cols = [                    
-      { width: "88%", name: "Membros" },
+      { width: "88%", name: "Sumário" },
       { width: "3%", icon: "fa fa-user", description: "Membros" },
       { width: "3", icon: "ft-calendar", description: "Agendamento" },
       { width: "3%", icon: "icon-wallet", description: "Financeiro" },
@@ -115,6 +115,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     this.current_branch = id;
     this.getMonitorData();
     this.getPeopleSummaryData();
+    this.show_change_branch = false;
   }
 
   change_week(modifier) {

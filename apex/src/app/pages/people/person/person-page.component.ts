@@ -22,12 +22,14 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
   id: number;
   person: any;    
   new_role: any;
+  new_schedule: any;
 
   private sub: any;
 
   constructor(private personService: PersonService, 
               private route: ActivatedRoute, 
-              private modalService: NgbModal) {      
+              private modalService: NgbModal) {
+      this.reset_new_schedule();      
   }  
 
   ngOnInit() {
@@ -81,6 +83,74 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
         this.person = result;  
       }
     );
+  }
+
+  begin_remove_schedule(schedule) {
+    schedule.begin_remove = true;
+  }
+
+  rollback_remove_schedule(schedule) {
+    schedule.begin_remove = false;
+  }
+
+  remove_schedule(schedule) {
+    this.personService.remove_schedule(schedule)
+    .toPromise()
+    .then(() => {
+      this.load_person_data();
+    });
+  }
+
+  save_schedule(schedule) {
+    this.personService.save_schedule(schedule)
+    .toPromise()
+    .then(() => {
+      this.load_person_data();
+    });
+  }
+
+  reset_new_schedule() {
+    this.new_schedule = {
+
+    }
+  }
+
+  reset_new_schedule_type(){
+    this.new_schedule.type = null;
+    this.new_schedule.tmp_type = null;
+    this.new_schedule.children_type = null;
+    this.validate_new_schedule();
+  }
+
+  change_new_schedule_type(tp) {    
+    const t = this.person.incident_types.filter(t => t.id == tp);
+    if(t.length != 1) {
+      return;
+    } 
+    const type = t[0];
+    
+    if(type.childrens != null) {
+      this.new_schedule.type = null;
+      this.new_schedule.tmp_type = type;
+      this.new_schedule.correct = false;
+    } else {
+      this.new_schedule.tmp_type = type;
+      this.new_schedule.type = type;
+    }
+  }
+
+  change_new_schedule_children_type(tp) {    
+    const t = this.new_schedule.tmp_type.childrens.filter(t => t.id == tp);
+    if(t.length != 1) {
+      return;
+    } 
+    const type = t[0];
+    this.new_schedule.children_type = type;
+    this.new_schedule.type = type;    
+  }
+
+  validate_new_schedule() {
+
   }
 
   showPage(str) {

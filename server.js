@@ -153,6 +153,14 @@ function getParticipationList(people) {
                 response.json('error', { error: error });
             }
         }));
+        app.post("/api/person_schedule/delete", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            let result = yield person_service.remove_schedule(request.body.id);
+            response.send("Ok");
+        }));
+        app.post("/api/person_schedule", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            let result = yield person_service.save_schedule(request.body.schedule);
+            response.send("Ok");
+        }));
         app.get(/^((?!\.).)*$/, (req, res) => {
             var path = "index.html";
             res.sendfile(path, { root: "./apex/public" });
