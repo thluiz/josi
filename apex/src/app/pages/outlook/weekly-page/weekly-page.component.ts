@@ -262,6 +262,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   reset_new_incident_type(){
     this.new_incident.type = null;
     this.new_incident.tmp_type = null;
+    this.new_incident.tmp_combo_type = null;
     this.new_incident.children_type = null;
     this.validate_new_event();
   }

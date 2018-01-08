@@ -234,33 +234,36 @@
                                 <div class="col-3">
                                     {{ ps.type_description }}
                                 </div>
-                                <div class="col-4">
+                                <div class="col-7">
                                     {{ ps.recurrence_description }}
-                                    <span *ngIf="ps.month_day">
+                                    <span *ngIf="ps.recurrence_type == 4">
                                         - Dia {{ ps.month_day }}
                                     </span>
-                                    <span *ngIf="ps.week_day_description">
+                                    <span *ngIf="ps.recurrence_type == 2 || ps.recurrence_type == 3">
                                         - {{ ps.week_day_description + " " + ps.start_hour + ":" + ps.start_minute }}
                                     </span>
-                                </div>                                
-                                <div class="col-1" *ngIf="ps.value > 0">
-                                    {{ ps.value }}
+                                    <span *ngIf="ps.value > 0n">
+                                        - {{ ps.value }}
+                                    </span>
                                 </div>
-                                <div class="col-3">
-                                    <button type="button" class="btn btn-silver btn-sm" 			                                        
+                                <div class="col-2 text-right" style="padding-right:0">
+                                    <button type="button" class="btn btn-silver btn-sm" 
+                                        style="margin:0;padding:2px;line-height:10px"			                                        
                                         *ngIf="!ps.begin_remove"
                                         (click)="begin_remove_schedule(ps);">
+                                        <i class="ft-trash-2"></i>                                        
+                                    </button>                                    
+                                    <button type="button" class="btn btn-danger btn-sm" 
+                                        *ngIf="ps.begin_remove"
+                                        style="margin:0;padding:2px;line-height:10px"			                                        
+                                        (click)="remove_schedule(ps);">
                                         <i class="ft-trash-2"></i>                                        
                                     </button>
                                     <button type="button" class="btn btn-secondary btn-sm" 
                                         *ngIf="ps.begin_remove"
+                                        style="margin:0;padding:2px;line-height:10px"			                                        
                                         (click)="rollback_remove_schedule(ps);">
                                         <i class="icon-action-undo"></i>                                        
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm" 
-                                        *ngIf="ps.begin_remove"
-                                        (click)="remove_schedule(ps);">
-                                        <i class="ft-trash-2"></i>                                        
                                     </button>                                    
                                 </div>
                             </div>
@@ -404,7 +407,8 @@
                     <div class="form-group">													
                         <div class="input-group">							
                             <input class="form-control text-center" placeholder="dd/mm/aaaa" 
-                            [(ngModel)]="new_schedule.date" id="new_schedule_start_date"
+                            [(ngModel)]="new_schedule.start_date_tmp" id="new_schedule_start_date"
+                            (ngModelChange) ="validate_new_schedule()"
                             ngbDatepicker #niReschedule="ngbDatepicker" />
                             <div class="input-group-addon" (click)="niReschedule.toggle()">
                                 <i class="ft-calendar" style="cursor: pointer;"></i>
@@ -414,7 +418,9 @@
                     </div>
                 </div>
                 <div class="col-6">					
-                    <ngb-timepicker [spinners]="false" [(ngModel)]="new_schedule.time"></ngb-timepicker>					
+                    <ngb-timepicker [spinners]="false" 
+                        [(ngModel)]="new_schedule.time"
+                        (ngModelChange) ="validate_new_schedule()"></ngb-timepicker>					
                 </div>
             </div>                         
 
@@ -446,7 +452,7 @@
             (click)="save_schedule();d('new schedule!');"
             *ngIf="new_schedule.correct">
             <i class="icon-check"></i>
-            Registrar
+            Agendar
         </button>															
         <button type="button" class="btn btn-silver" 
             (click)="reset_new_schedule();d('reset new new_schedule!');"

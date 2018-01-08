@@ -9,14 +9,20 @@ import { FormControl, FormsModule, ReactiveFormsModule,
 
 import { NgbModal, 
 ModalDismissReasons, 
-NgbActiveModal
+NgbActiveModal,
+NgbDateParserFormatter,
+NgbDatepickerI18n,
+NgbDatepickerConfig
 } from '@ng-bootstrap/ng-bootstrap';
+import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './person-page.component.html',
   styleUrls: ['./person-page.component.scss'],  
-  providers: [PersonService]
+  providers: [PersonService, DatePickerI18n,
+    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
+    {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
 export class PersonPageComponent implements OnInit, OnDestroy  {
   id: number;
@@ -31,7 +37,8 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
 
   constructor(private personService: PersonService, 
               private route: ActivatedRoute, 
-              private modalService: NgbModal) {      
+              private modalService: NgbModal,
+              private datePickerConfig: NgbDatepickerConfig) {      
   }  
 
   ngOnInit() {
@@ -108,20 +115,37 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
   }
 
   save_schedule() {
+    let start_date = this.new_schedule.start_date_tmp;
+    if(start_date) {
+      this.new_schedule.start_date = `${start_date.year}-${start_date.month}-${start_date.day}`;
+    }
+
+    if(this.new_schedule.time) {
+      this.new_schedule.start_hour = this.new_schedule.time.hour;
+      this.new_schedule.start_minute = this.new_schedule.time.minute;    
+    }
+
+    if(this.new_schedule.type) {
+      this.new_schedule.incident_type = this.new_schedule.type.id;
+    }
+    
     this.personService.save_schedule(this.new_schedule)
     .toPromise()
     .then(() => {
       this.load_person_data();
+      this.reset_new_schedule();
     });
   }
 
   reset_new_schedule() {
     this.new_schedule = {      
+      person_id: this.id
     };
   }
 
   reset_new_schedule_type(){
     this.new_schedule.type = null;
+    this.new_schedule.tmp_combo_type = null;
     this.new_schedule.tmp_type = null;
     this.new_schedule.children_type = null;
     this.validate_new_schedule();
@@ -155,7 +179,28 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
   }
 
   validate_new_schedule() {
+    this.new_schedule.correct = false;
+    let schedule = this.new_schedule;
 
+    console.log(this.new_schedule.time);
+
+    if(parseInt(schedule.person_id, 10) > 0
+      && parseInt(schedule.branch_id, 10) > 0
+      && schedule.type != null
+      && parseInt(schedule.recurrence_type, 10) > 0
+      && parseInt(schedule.number_of_incidents, 10) > 0
+      && schedule.start_date_tmp != null) {
+        if(schedule.type.need_value
+          && (!schedule.value || schedule.value <= 0)) {          
+          return;
+        }
+
+        if(schedule.type.need_start_hour_minute && !schedule.time) {          
+          return;
+        }
+
+        this.new_schedule.correct = true;           
+      }
   }
 
   validate_new_schedule_value() {
