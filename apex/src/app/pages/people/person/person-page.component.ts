@@ -22,14 +22,16 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
   id: number;
   person: any;    
   new_role: any;
-  new_schedule: any;
+  new_schedule: any = {};
+  manual;
+  incident_types;
+  manual_incident_types;
 
   private sub: any;
 
   constructor(private personService: PersonService, 
               private route: ActivatedRoute, 
-              private modalService: NgbModal) {
-      this.reset_new_schedule();      
+              private modalService: NgbModal) {      
   }  
 
   ngOnInit() {
@@ -38,6 +40,7 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
       
       this.load_person_data();      
     });
+    this.reset_new_schedule();
   }
   
   ngOnDestroy() {
@@ -80,7 +83,10 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
     this.personService.getAllData(this.id).subscribe(
       data => {           
         const result = data.json();    
-        this.person = result;  
+        this.person = result;
+        
+        this.incident_types = result.incident_types;
+        this.manual_incident_types = this.incident_types.filter(f => !f.automatically_generated);
       }
     );
   }
@@ -101,8 +107,8 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
     });
   }
 
-  save_schedule(schedule) {
-    this.personService.save_schedule(schedule)
+  save_schedule() {
+    this.personService.save_schedule(this.new_schedule)
     .toPromise()
     .then(() => {
       this.load_person_data();
@@ -110,9 +116,8 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
   }
 
   reset_new_schedule() {
-    this.new_schedule = {
-
-    }
+    this.new_schedule = {      
+    };
   }
 
   reset_new_schedule_type(){
@@ -151,6 +156,15 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
 
   validate_new_schedule() {
 
+  }
+
+  validate_new_schedule_value() {
+    if(parseFloat(this.new_schedule.value) != NaN) {      
+      this.validate_new_schedule();
+      return;
+    }
+    this.new_schedule.value = 0;
+    this.validate_new_schedule();
   }
 
   showPage(str) {

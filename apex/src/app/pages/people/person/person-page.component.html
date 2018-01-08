@@ -210,7 +210,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-5">
+                        <div class="col-5">                            
                             <div class="row" style="border-bottom: 1px solid black">
                                 <div class="col-10">
                                     <h5 style="padding:0;margin:0"><i class="ft-calendar"></i> Agendamento </h5>
@@ -218,7 +218,7 @@
                                 <div class="col-2 text-right" style="padding-right:0">
                                     <button type="button" class="btn btn-silver btn-sm" 
                                         style="margin:0;padding:2px;line-height:10px"
-                                        (click)="open(new_schedule);">
+                                        (click)="open(new_schedule_modal);">
                                         <i class="ft-plus"></i>                                        
                                         <i class="ft-calendar"></i>
                                     </button>
@@ -305,14 +305,14 @@
     </div>
 </ng-template>
 
-<ng-template #new_schedule let-c="close" let-d="dismiss">
+<ng-template #new_schedule_modal let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h5 class="modal-title" style="font-weight: bold">Novo Agendamento</h5>
         <button type="button" class="close" aria-label="Close" (click)="reset_new_schedule();d('Cross click')">
         <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="modal-body">			
+    <div class="modal-body" *ngIf="new_schedule">			
         <div class="form-body">			
             <div class="row">
                 <div class="col-12">
@@ -353,29 +353,58 @@
                             <option></option>
                             <option *ngFor="let t of manual_incident_types" [value]="t.id">{{t.name}}</option>
                         </select>
-                        <select id="new_incident_children_type" 
+                        <select id="new_schedule_children_type" 
                             [(ngModel)]="new_schedule.children_type" 
                             class="form-control" 
                             (ngModelChange)="change_new_schedule_children_type($event)"																								
-                            *ngIf="new_incident.tmp_type != null && new_incident.children_type == null && new_incident.tmp_type.childrens != null"
+                            *ngIf="new_schedule.tmp_type != null && new_schedule.children_type == null && new_schedule.tmp_type.childrens != null"
                             style="width:100%"
                             >						
-                            <option *ngFor="let t of new_incident.tmp_type.childrens" [value]="t.id">{{t.name}}</option>
+                            <option *ngFor="let t of new_schedule.tmp_type.childrens" [value]="t.id">{{t.name}}</option>
                         </select>						
                     </fieldset>                                
                 </div>
             </div>
             <div class="row">
                 <div class="col-6">
-                    <label for="new_incident_date" style="font-weight: bold">Data</label>
+                    <label for="new_schedule_recurrence_types" style="font-weight: bold">Recorrência</label>
+                </div>
+                <div class="col-6">
+                    <label for="new_schedule_number_of_incidents" style="font-weight: bold">Número de Eventos</label>
+                </div>
+            </div>            
+            <div class="row">				
+                <div class="col-6">
+                    <div class="form-group">													
+                        <select id="new_schedule_recurrence_types" 
+                            [(ngModel)]="new_schedule.recurrence_type" 
+                            (ngModelChange)="validate_new_schedule()"																	
+                            class="form-control"								
+                            >			
+                            <option></option>			
+                            <option *ngFor="let r of person.recurrence_types" [value]="r.id">{{r.description}}</option>
+                        </select>	
+                    </div>
+                </div>
+                <div class="col-6">					
+                    <input type="number" id="new_schedule_number_of_incidents" 
+                        [(ngModel)]="new_schedule.number_of_incidents"							
+                        class="form-control text-right"
+                        (ngModelChange) ="validate_new_schedule()" 						
+                        />
                 </div>
             </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="new_schedule_start_date" style="font-weight: bold">Data de Início</label>
+                </div>
+            </div>            
             <div class="row">				
                 <div class="col-6">
                     <div class="form-group">													
                         <div class="input-group">							
                             <input class="form-control text-center" placeholder="dd/mm/aaaa" 
-                            [(ngModel)]="new_incident.date" id="new_incident_date"
+                            [(ngModel)]="new_schedule.date" id="new_schedule_start_date"
                             ngbDatepicker #niReschedule="ngbDatepicker" />
                             <div class="input-group-addon" (click)="niReschedule.toggle()">
                                 <i class="ft-calendar" style="cursor: pointer;"></i>
@@ -385,78 +414,28 @@
                     </div>
                 </div>
                 <div class="col-6">					
-                    <ngb-timepicker [spinners]="false" [(ngModel)]="new_incident.time"></ngb-timepicker>					
+                    <ngb-timepicker [spinners]="false" [(ngModel)]="new_schedule.time"></ngb-timepicker>					
                 </div>
-            </div>
-            <div class="row" *ngIf="new_incident.type != null">
+            </div>                         
+
+            <div class="row" *ngIf="new_schedule.type != null">
                 <div class="col-12">
-                    <label for="new_incident_search_people" style="font-weight: bold">Participante{{ new_incident.people == null || new_incident.people.length <= 1 ? '' : 's' }}</label>	
-                    <ul *ngIf="new_incident.people != null && new_incident.people.length > 0"
-                        class="list-group">
-                        <li *ngFor="let p of new_incident.people"
-                            class="list-group-item">
-                            <img alt="{{ p.name }}" 
-                            class="rounded-circle img-border " 
-                            src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}" 											
-                            style="min-width:50px;max-width:50px;" 
-                            *ngIf="p.avatar_url && p.avatar_url.length > 0" />							
-                            {{ p.name }}
-                            <div style="float:right">
-                                <span class="badge badge-pill">
-                                    <i class="fa fa-times" 
-                                        style="cursor: pointer;"
-                                        (click)="remove_person_from_new_incident(p)"
-                                    ></i>
-                                </span>
-                            </div>
-                        </li>						
-                    </ul>												
-                    <div class="form-group" [class.has-danger]="search_failed">
-                    <input type="text" class="form-control" 
-                        id="new_incident_search_people"
-                        [ngbTypeahead]="search_people" 
-                        placeholder="Pesquise {{ new_incident.people == null || new_incident.people.length <= 0 ? 'a' : 'mais' }} participante{{ new_incident.people == null || new_incident.people.length <= 0 ? '' : 's' }}"
-                        [resultTemplate]="person_typeahead_template"
-                        [inputFormatter]="people_typeahead_formatter"
-                        [(ngModel)]="new_incident.tmp_person" 
-                        (ngModelChange) ="add_person_to_new_incident($event)" 
-                    />
-                    <span *ngIf="searching_people">buscando...</span>
-                    <div class="form-control-feedback" *ngIf="search_failed">
-                        ops... ocorreu algum erro na busca</div>
-                    </div>
-                    <ng-template #person_typeahead_template let-p="result">
-                        <img alt="{{ p.name }}" 
-                        class="rounded-circle img-border " 
-                        src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}" 											
-                        style="min-width:50px;max-width:50px;" 
-                        *ngIf="p.avatar_url && p.avatar_url.length > 0" />						
-                        {{ p.name }}
-                        <span *ngIf="!p.found" style="font-style: italic;">
-                            (novo)
-                        </span>
-                    </ng-template>					
-                </div>
-            </div>
-            <div class="row" *ngIf="new_incident.type != null">
-                <div class="col-12">
-                    <label for="new_incident_description" style="font-weight: bold">Descrição</label>								
+                    <label for="new_schedule_description" style="font-weight: bold">Descrição</label>								
                     <textarea class="form-control"
-                    id="new_incident_description"
-                    [(ngModel)]="new_incident.description"							
-                    (ngModelChange) ="validate_new_event()" 		
+                    id="new_schedule_description"
+                    [(ngModel)]="new_schedule.description"							
+                    (ngModelChange) ="validate_new_schedule()" 		
                     rows="3"></textarea>
                 </div>
             </div>			
-            <div class="row" *ngIf="new_incident.type != null && new_incident.type.need_value">
+            <div class="row" *ngIf="new_schedule.type != null && new_schedule.type.need_value">
                 <div class="col-12">
-                    <label for="new_incident_value" style="font-weight: bold">Valor</label>								
-                    <input type="number" id="new_incident_value" 
-                        [(ngModel)]="new_incident.value"							
+                    <label for="new_schedule_value" style="font-weight: bold">Valor</label>								
+                    <input type="number" id="new_schedule_value" 
+                        [(ngModel)]="new_schedule.value"							
                         class="form-control text-right"
-                        (ngModelChange) ="validate_new_event_value()" 						
-                        />
-                    <small class="form-text text-muted danger" *ngIf="new_incident.value != null && new_incident.value.errors?.gt">gt error</small>
+                        (ngModelChange) ="validate_new_schedule_value()" 						
+                        />                    
                 </div>
             </div>
         </div>			
@@ -464,13 +443,13 @@
     <div class="modal-footer">
         <button type="button" 
             class="btn btn-success" 
-            (click)="register_new_incident();d('new incident!');"
-            *ngIf="new_incident.correct">
+            (click)="save_schedule();d('new schedule!');"
+            *ngIf="new_schedule.correct">
             <i class="icon-check"></i>
             Registrar
         </button>															
         <button type="button" class="btn btn-silver" 
-            (click)="reset_new_incident();d('reset new incident!');"
+            (click)="reset_new_schedule();d('reset new new_schedule!');"
             >
             <i class="icon-action-undo"></i>
             Cancelar
