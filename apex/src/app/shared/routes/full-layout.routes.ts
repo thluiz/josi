@@ -18,6 +18,10 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/outlook/weekly-page/weekly-pages.module#WeeklyPagesModule'
   },
   {
+    path: 'outlook/daily',
+    loadChildren: './pages/outlook/daily-page/daily-pages.module#DailyPagesModule'
+  },
+  {
     path: 'outlook/sumary',
     loadChildren: './pages/outlook/sumary-page/sumary-pages.module#SumaryPagesModule'
   },

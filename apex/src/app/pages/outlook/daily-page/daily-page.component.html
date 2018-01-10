@@ -20,9 +20,9 @@
 				<div class="row">
 					<div class="col-12">
 						<div class="row">
-							<div class="col-7">
+							<div class="col-12">
 								<h4 class="card-title">
-									Diário de Atividades - Praticantes 																																
+									Diário de Praticantes 																																
 								</h4>
 								<h6 style="margin:0;margin-top:5px;margin-bottom:5px;font-weight:bold;color:black;cursor:pointer;border-bottom:1px dotted silver;" 
 								*ngIf="!show_change_branch"
@@ -49,19 +49,10 @@
 										</button>
 									</span -->
 								</div>
-							</div>	
-							<div class="col-1 text-right">
-								<select id="branch" 	
-									[(ngModel)]="current_display"								
-									(ngModelChange)="change_display($event)"																		
-									class="form-control"
-									style="width:100%"
-									>			
-									<option value="0" selected>Semana</option>			
-									<option value="1">Dia</option>
-								</select>	
 							</div>
-							<div class="col-3 text-right">
+						</div>	
+						<div class="row">
+							<div class="col-8 text-right">
 								<span class="input-group">
 									<span class="input-group-btn">
 										<button type="button" 
@@ -97,7 +88,62 @@
 			</div>
 			<div class="card-body">	
 				<div class="row">					
-					<div class="col-9" style="border-right:1px solid #ddd;padding-right:1%">
+					<div class="col-12">							
+						<div >
+								<table class="table-sm table-striped table-bordered"															
+								style="margin-bottom:50px;width:100%">								
+								<tr>						
+									<td *ngFor="let c of people_summary_cols, let k3 = index" 
+										align="center" 									
+										[ngStyle]="{ 'width': c.width, 'color': 'white',
+													'background-color': '#AAA' }"
+										[colSpan]="c.colspan || 1"
+									>
+									<div>										
+										<i  												
+											[ngClass]="c.icon"
+											*ngIf="c.icon != null"
+											[title]="c.description">
+										</i>
+										<b>{{ c.name }}</b>
+									</div>
+									</td>
+								</tr>
+								<tr *ngFor="let s of people_summary, let si = index" >
+									<td>
+										{{ s.program }}
+									</td>
+									<td>
+										{{ ('00' + s.people ).slice(-2)  }}
+									</td>
+									<td>
+										<span 									
+										[style.font-weight]="s.scheduling > 0 ? 'bold' : 'normal'"
+										[style.color]="s.scheduling > 0 ? 'red' : ''">
+											{{ ('00' + s.scheduling ).slice(-2)  }} 											
+										</span>
+									</td>
+									<td>
+										<span 									
+										[style.font-weight]="s.financial > 0 ? 'bold' : 'normal'"
+										[style.color]="s.financial > 0 ? 'red' : ''">
+											{{ ('00' + s.financial ).slice(-2)  }} 											
+										</span>
+									</td>
+									<td>
+										<span 									
+										[style.font-weight]="s.comunications > 0 ? 'bold' : 'normal'"
+										[style.color]="s.comunications > 0 ? 'red' : ''">
+											{{ ('00' + s.comunications ).slice(-2)  }} 											
+										</span>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="row">					
+					<div class="col-12" style="border-right:1px solid #ddd;padding-right:1%">
 						<table style="width:100%;">
 							<tr *ngFor="let d of domains, let k5 = index">
 								<td>																																		
@@ -375,61 +421,7 @@
 							</tr>
 						</table>
 					</div>
-					<div class="col-3">
-						
-						<div class="sticky-top" style="top:60px; padding-right:10px">
-								<table class="table-sm table-striped table-bordered"															
-								style="margin-bottom:50px;width:100%">								
-								<tr>						
-									<td *ngFor="let c of people_summary_cols, let k3 = index" 
-										align="center" 									
-										[ngStyle]="{ 'width': c.width, 'color': 'white',
-													'background-color': '#AAA' }"
-										[colSpan]="c.colspan || 1"
-									>
-									<div>										
-										<i  												
-											[ngClass]="c.icon"
-											*ngIf="c.icon != null"
-											[title]="c.description">
-										</i>
-										<b>{{ c.name }}</b>
-									</div>
-									</td>
-								</tr>
-								<tr *ngFor="let s of people_summary, let si = index" >
-									<td>
-										{{ s.program }}
-									</td>
-									<td>
-										{{ ('00' + s.people ).slice(-2)  }}
-									</td>
-									<td>
-										<span 									
-										[style.font-weight]="s.scheduling > 0 ? 'bold' : 'normal'"
-										[style.color]="s.scheduling > 0 ? 'red' : ''">
-											{{ ('00' + s.scheduling ).slice(-2)  }} 											
-										</span>
-									</td>
-									<td>
-										<span 									
-										[style.font-weight]="s.financial > 0 ? 'bold' : 'normal'"
-										[style.color]="s.financial > 0 ? 'red' : ''">
-											{{ ('00' + s.financial ).slice(-2)  }} 											
-										</span>
-									</td>
-									<td>
-										<span 									
-										[style.font-weight]="s.comunications > 0 ? 'bold' : 'normal'"
-										[style.color]="s.comunications > 0 ? 'red' : ''">
-											{{ ('00' + s.comunications ).slice(-2)  }} 											
-										</span>
-									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-				</div>
+				</div>				
 			</div>
 		</div>		
 	</div>

@@ -3,13 +3,19 @@ import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
 
-@Injectable()
-export class PersonService {
-constructor(private http:Http) { }  
-  private dataUrl = environment.api_url;  
+export enum DailyMonitorDisplayType {
+    week = 0,
+    day = 1,
+    month = 2
+}
 
-  getDailyMonitor(branche, week) {
-    return this.http.get(this.dataUrl + `/daily/${branche || 0}/${week}`);    
+@Injectable()
+export class PersonService {  
+ constructor(private http:Http) { }  
+  private dataUrl = environment.api_url;    
+
+  getDailyMonitor(branche, display : DailyMonitorDisplayType, display_modifier: number) {
+    return this.http.get(this.dataUrl + `/daily/${branche || 0}/${display}/${display_modifier}`);    
   }  
 
   getPeopleSummary(branche, week) {

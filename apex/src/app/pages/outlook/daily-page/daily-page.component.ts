@@ -37,17 +37,16 @@ import { catchError } from 'rxjs/operators';
 import { tap } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-full-layout-page',
-  templateUrl: './weekly-page.component.html',
-  styleUrls: ['./weekly-page.component.scss'],
+  templateUrl: './daily-page.component.html',
+  styleUrls: ['./daily-page.component.scss'],
   providers: [PersonService, IncidentService, DatePickerI18n,
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
-export class WeeklyPageComponent implements OnInit, OnDestroy {
+export class DailyPageComponent implements OnInit, OnDestroy {
   daily: Observable<any[]>;
   cols;
   
@@ -55,7 +54,6 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   people_summary : Observable<any[]>;
 
   selected_week;
-  current_display:any = 0;
   current_week_range;
   current_week_day;  
   current_week = 0;
@@ -81,9 +79,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   constructor(private personService: PersonService, 
               private incidentService: IncidentService, 
               private modalService: NgbModal, 
-              private datePickerConfig: NgbDatepickerConfig,
-              private route: ActivatedRoute,
-              private router: Router) {
+              private datePickerConfig: NgbDatepickerConfig) {
 
     datePickerConfig.firstDayOfWeek = 7
 
@@ -111,14 +107,6 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     if(this.update_members_timer) {    
       clearTimeout(this.update_members_timer);
     }    
-  }
-
-  change_display(display) {
-    if(display == 0) {
-      this.router.navigateByUrl(`outlook/weekly`);
-    } else {
-      this.router.navigateByUrl(`outlook/daily`);
-    }
   }
 
   branchSelected(id) {
@@ -444,7 +432,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     if(!this.personService) {
       return;
     }
-    this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.week, this.current_week).subscribe(
+    this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.day, this.current_week).subscribe(
       data => {    
         const result = data.json();        
         

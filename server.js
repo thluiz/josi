@@ -110,12 +110,12 @@ function getParticipationList(people) {
             let result = yield person_service.remove_role(request.body.person_id, request.body.role_id);
             response.send("Ok");
         }));
-        app.get("/api/daily/:branch?/:week?/:date?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+        app.get("/api/daily/:branch?/:display?/:display_modifier?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 let result = yield pool.request()
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
-                    .input('week_modifier', sql.Int, request.params.week || 0)
-                    .input('date', sql.VarChar(10), request.params.date)
+                    .input('display_modifier', sql.Int, request.params.display_modifier || 0)
+                    .input('display', sql.Int, request.params.display || 0)
                     .execute(`GetDailyMonitor`);
                 response.send((result.recordset[0][0]));
             }
