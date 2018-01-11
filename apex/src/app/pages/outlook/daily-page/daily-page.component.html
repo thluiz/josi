@@ -20,7 +20,7 @@
 				<div class="row">
 					<div class="col-12">
 						<div class="row">
-							<div class="col-12">
+							<div class="col-12 col-xl-6 col-lg-6 col-md-12">
 								<h4 class="card-title">
 									Diário de Praticantes 																																
 								</h4>
@@ -50,9 +50,19 @@
 									</span -->
 								</div>
 							</div>
-						</div>	
-						<div class="row">
-							<div class="col-8 text-right">
+							<div class="col-12 col-xl-2 col-lg-2 col-md-4 col-sm-12">
+								<select 	
+									[(ngModel)]="current_display"								
+									(ngModelChange)="change_display($event)"																		
+									class="form-control"
+									style="width:100%"
+									>			
+									<option value="0">Semana</option>			
+									<option value="1" selected>Dia</option>
+									<option value="3">Agenda</option>
+								</select>	
+							</div>
+							<div class="col-9 col-xl-3 col-lg-3 col-md-6">
 								<span class="input-group">
 									<span class="input-group-btn">
 										<button type="button" 
@@ -73,7 +83,7 @@
 									</span>
 								</span>			
 							</div>
-							<div class="col-1 text-center">
+							<div class="col-1" style="padding-left:0">
 								<button type="button" 
 									(click)="reset_new_incident();open(new_activity, null)"
 									class="btn btn-silver ft-plus"
@@ -87,7 +97,7 @@
 				</div>
 			</div>
 			<div class="card-body">	
-				<div class="row">					
+				<div class="row  d-block d-lg-none">					
 					<div class="col-12">							
 						<div >
 								<table class="table-sm table-striped table-bordered"															
@@ -143,7 +153,7 @@
 					</div>
 				</div>
 				<div class="row">					
-					<div class="col-12" style="border-right:1px solid #ddd;padding-right:1%">
+					<div class="col-12 col-lg-9" style="border-right:1px solid #ddd;padding-right:1%">
 						<table style="width:100%;">
 							<tr *ngFor="let d of domains, let k5 = index">
 								<td>																																		
@@ -177,26 +187,31 @@
 														[ngClass]="c.icon"
 														*ngIf="c.icon != null"
 														[title]="c.description">
-													</i>
-													{{ c.name }} 
+													</i>													
+													<span class="d-none d-md-block">
+														{{ c.name }} 
+													</span>	
+													<span class="d-block d-md-none" *ngIf="c.name">
+														{{ c.name.substring(0,5) }} 
+													</span>
 												</div>									
 											</td>
 										</tr>
 										<tr *ngFor="let person of d.daily, let k4 = index">
 											<td>
 												<div class="row">
-													<div class="col-2" style="padding:0;padding-left:5px">
+													<div class="col-2 d-none d-xl-block text-right">
 														<img alt="{{ person.name }}"
 														[routerLink]="['/person', person.person_id]"
-														class="rounded-circle img-border d-none d-xl-block" 
+														class="img-border" 
 														src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
-														style="min-width:50px;width:100%;cursor:pointer"																												
+														style="width:100%;cursor:pointer"																												
 														[style.border-color]="person.is_leaving || person.is_inactive_member ? 'orange' : null " 
 														[style.opacity]="person.is_leaving || person.is_inactive_member ? '0.5' : null " 
 														*ngIf="person.avatar_img && person.avatar_img.length > 0" />
 														<!-- rgb(155, 14, 4) -->	
 													</div>								
-													<div class="col-10" style="padding:0;padding-left:8px">
+													<div class="col-12 col-md-12 col-lg-10">
 														<div class="row">
 															<div class="col-12"
 															[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
@@ -206,14 +221,16 @@
 																[routerLink]="['/person', person.person_id]">
 																{{ person.name }}														
 																</a>														
-																<div																	
+																<div
+																	class="d-none d-md-block"																	
 																	*ngIf="person.kf_name_ideograms" 
 																	style="float:right;margin-right:20px">													
 																	{{ person.kf_name_ideograms }}																																								
 																</div>																
 															</div>													
 														</div>												
-														<div class="row" style="font-size:12px;">
+														<div class="row d-none d-xl-block" 
+															style="font-size:12px;">
 															<div class="col-12"
 																[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
 															>
@@ -420,7 +437,60 @@
 								</td>
 							</tr>
 						</table>
-					</div>
+					</div>										
+					<div class="col-3 d-none d-lg-block">							
+						<div >
+							<table class="table-sm table-striped table-bordered"															
+								style="margin-bottom:50px;width:100%">								
+								<tr>						
+									<td *ngFor="let c of people_summary_cols, let k3 = index" 
+										align="center" 									
+										[ngStyle]="{ 'width': c.width, 'color': 'white',
+													'background-color': '#AAA' }"
+										[colSpan]="c.colspan || 1"
+									>
+									<div>										
+										<i  												
+											[ngClass]="c.icon"
+											*ngIf="c.icon != null"
+											[title]="c.description">
+										</i>
+										<b>{{ c.name }}</b>
+									</div>
+									</td>
+								</tr>
+								<tr *ngFor="let s of people_summary, let si = index" >
+									<td>
+										{{ s.program }}
+									</td>
+									<td>
+										{{ ('00' + s.people ).slice(-2)  }}
+									</td>
+									<td>
+										<span 									
+										[style.font-weight]="s.scheduling > 0 ? 'bold' : 'normal'"
+										[style.color]="s.scheduling > 0 ? 'red' : ''">
+											{{ ('00' + s.scheduling ).slice(-2)  }} 											
+										</span>
+									</td>
+									<td>
+										<span 									
+										[style.font-weight]="s.financial > 0 ? 'bold' : 'normal'"
+										[style.color]="s.financial > 0 ? 'red' : ''">
+											{{ ('00' + s.financial ).slice(-2)  }} 											
+										</span>
+									</td>
+									<td>
+										<span 									
+										[style.font-weight]="s.comunications > 0 ? 'bold' : 'normal'"
+										[style.color]="s.comunications > 0 ? 'red' : ''">
+											{{ ('00' + s.comunications ).slice(-2)  }} 											
+										</span>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>						
 				</div>				
 			</div>
 		</div>		

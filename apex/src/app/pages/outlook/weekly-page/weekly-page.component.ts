@@ -94,7 +94,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     }
 
     this.people_summary_cols = [                    
-      { width: "88%", name: "Sumário" },
+      { width: "88%", name: "Panorama" },
       { width: "3%", icon: "fa fa-user", description: "Membros" },
       { width: "3", icon: "ft-calendar", description: "Agendamento" },
       { width: "3%", icon: "icon-wallet", description: "Financeiro" },

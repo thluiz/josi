@@ -20,7 +20,7 @@
 				<div class="row">
 					<div class="col-12">
 						<div class="row">
-							<div class="col-7">
+							<div class="col-12 col-xl-6 col-lg-6 col-md-12">
 								<h4 class="card-title">
 									Diário de Atividades - Praticantes 																																
 								</h4>
@@ -35,7 +35,7 @@
 										(ngModelChange)="branchSelected($event)"									
 										*ngIf="show_change_branch"
 										class="form-control"
-										style="width:90%"
+										style="width:100%"
 										>			
 										<option value="0">Todos os Núcleos</option>			
 										<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
@@ -50,8 +50,8 @@
 									</span -->
 								</div>
 							</div>	
-							<div class="col-1 text-right">
-								<select id="branch" 	
+							<div class="col-12 col-xl-2 col-lg-2 col-md-4 col-sm-12">
+								<select 	
 									[(ngModel)]="current_display"								
 									(ngModelChange)="change_display($event)"																		
 									class="form-control"
@@ -62,7 +62,7 @@
 									<option value="3">Agenda</option>
 								</select>	
 							</div>
-							<div class="col-3 text-right">
+							<div class="col-9 col-xl-3 col-lg-3 col-md-6">
 								<span class="input-group">
 									<span class="input-group-btn">
 										<button type="button" 
@@ -83,7 +83,7 @@
 									</span>
 								</span>			
 							</div>
-							<div class="col-1 text-center">
+							<div class="col-1" style="padding-left:0">
 								<button type="button" 
 									(click)="reset_new_incident();open(new_activity, null)"
 									class="btn btn-silver ft-plus"
@@ -98,7 +98,7 @@
 			</div>
 			<div class="card-body">	
 				<div class="row">					
-					<div class="col-9" style="border-right:1px solid #ddd;padding-right:1%">
+					<div class="col-9 col-md-12 col-lg-9 d-none d-md-block" style="border-right:1px solid #ddd;padding-right:1%">
 						<table style="width:100%;">
 							<tr *ngFor="let d of domains, let k5 = index">
 								<td>																																		
@@ -133,14 +133,19 @@
 														*ngIf="c.icon != null"
 														[title]="c.description">
 													</i>
-													{{ c.name }} 
+													<span class="d-none d-xl-block">
+														{{ c.name }} 
+													</span>	
+													<span class="d-none d-md-block d-xl-none" *ngIf="c.name">
+														{{ c.name.substring(0,5) }} 
+													</span>													
 												</div>									
 											</td>
 										</tr>
 										<tr *ngFor="let person of d.daily, let k4 = index">
 											<td>
 												<div class="row">
-													<div class="col-2" style="padding:0;padding-left:5px">
+													<div class="col-2 d-none d-lg-block" style="padding:0;padding-left:5px">
 														<img alt="{{ person.name }}"
 														[routerLink]="['/person', person.person_id]"
 														class="img-border d-none d-xl-block" 
@@ -151,7 +156,7 @@
 														*ngIf="person.avatar_img && person.avatar_img.length > 0" />
 														<!-- rgb(155, 14, 4) -->	
 													</div>								
-													<div class="col-10" style="padding:0;padding-left:8px">
+													<div class="col-10 col-md-12 col-lg-10">
 														<div class="row">
 															<div class="col-12"
 															[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
@@ -161,14 +166,16 @@
 																[routerLink]="['/person', person.person_id]">
 																{{ person.name }}														
 																</a>														
-																<div																	
+																<div
+																	class="d-none d-xl-block"																	
 																	*ngIf="person.kf_name_ideograms" 
 																	style="float:right;margin-right:20px">													
 																	{{ person.kf_name_ideograms }}																																								
 																</div>																
 															</div>													
 														</div>												
-														<div class="row" style="font-size:12px;">
+														<div class="row d-none d-xl-block"
+															style="font-size:12px;">
 															<div class="col-12"
 																[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
 															>
@@ -376,7 +383,7 @@
 							</tr>
 						</table>
 					</div>
-					<div class="col-3">
+					<div class="col-12 col-md-12 col-lg-3 col-sm-12">
 						
 						<div class="sticky-top" style="top:60px; padding-right:10px">
 								<table class="table-sm table-striped table-bordered"															

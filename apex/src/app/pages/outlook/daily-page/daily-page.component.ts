@@ -37,6 +37,7 @@ import { catchError } from 'rxjs/operators';
 import { tap } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -53,6 +54,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
   people_summary_cols = [];
   people_summary : Observable<any[]>;
 
+  current_display = 1;
   selected_week;
   current_week_range;
   current_week_day;  
@@ -79,7 +81,9 @@ export class DailyPageComponent implements OnInit, OnDestroy {
   constructor(private personService: PersonService, 
               private incidentService: IncidentService, 
               private modalService: NgbModal, 
-              private datePickerConfig: NgbDatepickerConfig) {
+              private datePickerConfig: NgbDatepickerConfig,
+              private route: ActivatedRoute,
+              private router: Router) {
 
     datePickerConfig.firstDayOfWeek = 7
 
@@ -90,7 +94,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     }
 
     this.people_summary_cols = [                    
-      { width: "88%", name: "Sumário" },
+      { width: "88%", name: "Panorama" },
       { width: "3%", icon: "fa fa-user", description: "Membros" },
       { width: "3", icon: "ft-calendar", description: "Agendamento" },
       { width: "3%", icon: "icon-wallet", description: "Financeiro" },
@@ -98,6 +102,16 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     ];
   }
   
+  change_display(display) {
+    if(display == DailyMonitorDisplayType.Week) {
+      this.router.navigateByUrl(`outlook/weekly`);
+    } else if(display == DailyMonitorDisplayType.Day) {
+      this.router.navigateByUrl(`outlook/daily`);
+    } else if(display == DailyMonitorDisplayType.Agenda) {
+      this.router.navigateByUrl(`outlook/agenda`);
+    }
+  }
+
   ngOnInit() {
     this.getMonitorData();  
     this.getPeopleSummaryData();        
