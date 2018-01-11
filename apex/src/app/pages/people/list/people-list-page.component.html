@@ -59,16 +59,16 @@
                     style="vertical-align: top"
                     *ngFor="let d of p.domains">                                                       
                     <h3 style="font-weight:bold;">{{ d.long_name }} do Sistema Ving Tsun</h3>
-                    <div *ngFor="let m of d.members" style="border:1px solid black;padding-bottom:5px;margin:10px;display:inline-block;width:200px;">
+                    <div *ngFor="let m of d.members" style="border:1px solid black;padding-bottom:5px;margin:10px;display:inline-block;width:220px;height:322px">
                         <div
                         style="color:white;"
                         [ngStyle]="{ 'background': d.program_id == 3 ? 'linear-gradient(#9c1000, #690b01)' : (d.program_id == 2 ? 'linear-gradient(rgb(55, 65, 199), rgb(38, 44, 122))' : 'rgb(5, 53, 1)') }">
                             {{ m.branch }}                
                         </div>
-                        <div class="card_body">                            
+                        <div class="card_body" style="padding-top:50px;">                            
                             <img alt="{{ m.name }}"
                             [routerLink]="['/person', m.id]"
-                            class="rounded-circle img-border shadow" 
+                            class="img-border shadow" 
                             src="https://myvtmiim.blob.core.windows.net/avatars/{{ m.avatar_img }}" 											
                             style="min-width:0px;max-width:80px;width:80px;cursor:pointer;"																												
                             [style.border-color]="m.is_leaving || m.is_inactive_member ? 'orange' : null " 
@@ -76,7 +76,7 @@
                             *ngIf="m.avatar_img && m.avatar_img.length > 0" />
                             <img alt="{{ m.name }}"
                             [routerLink]="['/person', m.id]"
-                            class="rounded-circle img-border shadow" 
+                            class="img-border shadow" 
                             src="/assets/img/portrait/avatars/avatar-08.png" 											
                             style="min-width:50px;max-width:80px;width:80px;cursor:pointer"																												
                             [style.border-color]="m.is_leaving || m.is_inactive_member ? 'orange' : null " 
@@ -91,7 +91,7 @@
                             </div>                                                        
                         </div> 
                         
-                        <div class="text-center person_name">
+                        <div class="text-center person_name" style="padding-top:20px;">
                             {{ m.name }}
                         </div>                       
                         <div class="text-center person_kf_name"                             
