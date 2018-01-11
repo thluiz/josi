@@ -1,0 +1,125 @@
+
+<style>    
+    h2 { 
+       margin:0;
+       padding: 0;       
+       font-weight: bold;
+    }
+    h3 { 
+       margin:0;
+       padding: 0;       
+    }
+    img.shadow {
+        box-shadow: 1px 5px 5px 2px #CCC;
+    }
+    .person_name {
+        font-size:16px;
+        font-weight:bold;
+        padding-top:5px;
+        line-height: 16px;
+    }
+    .person_kf_name {
+        padding:10px;
+        padding-top:2px;
+        padding-bottom:5px;
+        font-size: smaller;
+        line-height: 12px;
+        border-bottom:1px solid black;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-bottom:5px;
+    }
+    .ideograms {        
+        position:relative;
+        float:right;
+        font-weight:bold;        
+        text-orientation: upright;
+        writing-mode: vertical-rl;
+        padding:5px;
+        padding-top:5px;   
+        padding-left:10px;    
+    }
+    .card_body {
+        display: inline-block;
+    }
+    .card_body img {
+        float:left;
+    }
+    .card_footer {
+        font-size:12px;
+        line-height: 13px;
+    }
+</style>
+<div class="card text-center">
+    <div class="row" *ngFor="let p of programs">
+        <div class="col-12 text-center">        
+            <h2>{{ p.long_name }}</h2>
+            <div class="row">
+                <div class="col-12 text-center" 
+                    style="vertical-align: top"
+                    *ngFor="let d of p.domains">                                                       
+                    <h3 style="font-weight:bold;">{{ d.long_name }} do Sistema Ving Tsun</h3>
+                    <div *ngFor="let m of d.members" style="border:1px solid black;padding-bottom:5px;margin:10px;display:inline-block;width:200px;">
+                        <div
+                        style="color:white;"
+                        [ngStyle]="{ 'background': d.program_id == 3 ? 'linear-gradient(#9c1000, #690b01)' : (d.program_id == 2 ? 'linear-gradient(rgb(55, 65, 199), rgb(38, 44, 122))' : 'rgb(5, 53, 1)') }">
+                            {{ m.branch }}                
+                        </div>
+                        <div class="card_body">                            
+                            <img alt="{{ m.name }}"
+                            [routerLink]="['/person', m.id]"
+                            class="rounded-circle img-border shadow" 
+                            src="https://myvtmiim.blob.core.windows.net/avatars/{{ m.avatar_img }}" 											
+                            style="min-width:0px;max-width:80px;width:80px;cursor:pointer;"																												
+                            [style.border-color]="m.is_leaving || m.is_inactive_member ? 'orange' : null " 
+                            [style.opacity]="m.is_leaving || m.is_inactive_member ? '0.5' : null " 
+                            *ngIf="m.avatar_img && m.avatar_img.length > 0" />
+                            <img alt="{{ m.name }}"
+                            [routerLink]="['/person', m.id]"
+                            class="rounded-circle img-border shadow" 
+                            src="/assets/img/portrait/avatars/avatar-08.png" 											
+                            style="min-width:50px;max-width:80px;width:80px;cursor:pointer"																												
+                            [style.border-color]="m.is_leaving || m.is_inactive_member ? 'orange' : null " 
+                            [style.opacity]="m.is_leaving || m.is_inactive_member ? '0.5' : null " 
+                            *ngIf="!m.avatar_img || m.avatar_img.length <= 0" />     
+
+                            <div class="ideograms" 
+                                [style.padding-left]="m.kf_name_ideograms.length == 2 ? '15px' : '10px'"
+                                [style.font-size]="m.kf_name_ideograms.length == 4 ? '22px' : m.kf_name_ideograms.length == 3 ? '33px' : '50px'"
+                                *ngIf="m.kf_name_ideograms && m.kf_name_ideograms != '(convidado)' && m.kf_name_ideograms != '(convidada)'">
+                                {{ m.kf_name_ideograms.substring(1, m.kf_name_ideograms.length) }}                                
+                            </div>                                                        
+                        </div> 
+                        
+                        <div class="text-center person_name">
+                            {{ m.name }}
+                        </div>                       
+                        <div class="text-center person_kf_name"                             
+                            *ngIf="m.kf_name">
+                            "{{ m.kf_name }}"
+                        </div>
+                        <div class="text-center person_kf_name"                             
+                            *ngIf="!m.kf_name">
+                            &nbsp;
+                        </div>
+                        <div class="text-center card_footer" *ngIf="m.family_name && m.admission_date_br ">
+                            Membro da <b>Família {{ m.family_name }}</b>
+                        </div>
+                        <div class="text-center card_footer" *ngIf="m.admission_date_br ">
+                            desde {{ m.admission_date_br }}
+                        </div>
+                        <div class="text-center card_footer" *ngIf="m.family_name && !m.admission_date_br ">
+                            Futuro Membro da <br /> <b>Família {{ m.family_name }}</b>
+                        </div>
+                        <div class="text-center card_footer" *ngIf="!m.admission_date_br && !m.family_name">
+                            &#160;
+                        </div>
+                        <div class="text-center card_footer" *ngIf="!m.admission_date_br && !m.family_name">
+                            &#160;
+                        </div>
+                    </div>
+                </div>
+            </div>        
+        </div>
+    </div>
+</div>

@@ -18,6 +18,10 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/outlook/weekly-page/weekly-pages.module#WeeklyPagesModule'
   },
   {
+    path: 'outlook/agenda',
+    loadChildren: './pages/outlook/agenda-page/agenda-pages.module#AgendaPagesModule'
+  },
+  {
     path: 'outlook/daily',
     loadChildren: './pages/outlook/daily-page/daily-pages.module#DailyPagesModule'
   },

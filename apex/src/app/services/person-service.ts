@@ -4,9 +4,10 @@ import {Observable} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
 
 export enum DailyMonitorDisplayType {
-    week = 0,
-    day = 1,
-    month = 2
+    Week = 0,
+    Day = 1,
+    Month = 2,
+    Agenda = 3
 }
 
 @Injectable()
@@ -21,6 +22,10 @@ export class PersonService {
   getPeopleSummary(branche, week) {
     return this.http.get(this.dataUrl + `/people_summary/${branche || 0}/${week}`);    
   }  
+
+  getMembersList() {
+    return this.http.get(this.dataUrl + `/people/members`);    
+  }
 
   getAllData(id) {    
     return this.http

@@ -114,10 +114,12 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   }
 
   change_display(display) {
-    if(display == 0) {
+    if(display == DailyMonitorDisplayType.Week) {
       this.router.navigateByUrl(`outlook/weekly`);
-    } else {
+    } else if(display == DailyMonitorDisplayType.Day) {
       this.router.navigateByUrl(`outlook/daily`);
+    } else if(display == DailyMonitorDisplayType.Agenda) {
+      this.router.navigateByUrl(`outlook/agenda`);
     }
   }
 
@@ -444,7 +446,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     if(!this.personService) {
       return;
     }
-    this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.week, this.current_week).subscribe(
+    this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Week, this.current_week).subscribe(
       data => {    
         const result = data.json();        
         

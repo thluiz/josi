@@ -77,6 +77,11 @@ function getParticipationList(people) {
             let result = yield incident_service.register_incident(request.body.incident);
             response.send("Ok");
         }));
+        app.get("/api/people/members", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            const result = yield pool.request()
+                .execute(`GetMembersList`);
+            response.send(result.recordset[0]);
+        }));
         app.get("/api/people/:id", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             const result = yield pool.request()
                 .input('id', sql.Int, request.params.id)

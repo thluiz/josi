@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute } from '@angular/router';
 import { PersonService } from './../../../services/person-service';
 import {  Component, TemplateRef, ViewChild, ViewEncapsulation, Input  } from '@angular/core';
@@ -15,6 +16,7 @@ NgbDatepickerI18n,
 NgbDatepickerConfig
 } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -33,7 +35,8 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
   incident_types;
   manual_incident_types;
 
-  private sub: any;
+  private sub: Subscription;
+  private person_data_sub: Subscription;
 
   constructor(private personService: PersonService, 
               private route: ActivatedRoute, 
@@ -47,11 +50,12 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
       
       this.load_person_data();      
     });
-    this.reset_new_schedule();
+    this.reset_new_schedule();    
   }
   
-  ngOnDestroy() {
+  ngOnDestroy() {    
     this.sub.unsubscribe();
+    this.person_data_sub.unsubscribe();    
   }
   
   open(content, incident){        
@@ -87,7 +91,11 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
   }
 
   load_person_data() {
-    this.personService.getAllData(this.id).subscribe(
+    if(this.person_data_sub) {
+      this.person_data_sub.unsubscribe();
+    }
+
+    this.person_data_sub = this.personService.getAllData(this.id).subscribe(
       data => {           
         const result = data.json();    
         this.person = result;

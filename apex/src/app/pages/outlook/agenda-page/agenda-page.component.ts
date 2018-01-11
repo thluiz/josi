@@ -40,13 +40,13 @@ import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from '
 
 @Component({
   selector: 'app-full-layout-page',
-  templateUrl: './daily-page.component.html',
-  styleUrls: ['./daily-page.component.scss'],
+  templateUrl: './agenda-page.component.html',
+  styleUrls: ['./agenda-page.component.scss'],
   providers: [PersonService, IncidentService, DatePickerI18n,
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
-export class DailyPageComponent implements OnInit, OnDestroy {
+export class AgendaPageComponent implements OnInit, OnDestroy {
   daily: Observable<any[]>;
   cols;
   
