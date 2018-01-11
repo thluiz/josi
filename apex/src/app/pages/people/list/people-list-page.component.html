@@ -12,32 +12,36 @@
     img.shadow {
         box-shadow: 1px 5px 5px 2px #CCC;
     }
-    .person_name {
-        font-size:16px;
+    .person_name {        
         font-weight:bold;
         padding-top:5px;
-        line-height: 16px;
+        line-height: 0.8em;
+        font-family: Palatino, 'Times New Roman', Times, serif;
+        text-transform: uppercase;
     }
     .person_kf_name {
         padding:10px;
         padding-top:2px;
         padding-bottom:5px;
-        font-size: smaller;
-        line-height: 12px;
+        font-size: 0.8em;
+        line-height: 1.6em;
         border-bottom:1px solid black;
         margin-left: 10px;
         margin-right: 10px;
-        margin-bottom:5px;
+        margin-bottom:10px;
+        font-family: Palatino, 'Times New Roman', Times, serif;
+        text-transform: uppercase;
     }
     .ideograms {        
         position:relative;
         float:right;
         font-weight:bold;        
         text-orientation: upright;
-        writing-mode: vertical-rl;
-        padding:5px;
+        writing-mode: vertical-rl;        
         padding-top:5px;   
-        padding-left:10px;    
+        padding-left:10px;
+        font-size: 2.5em;    
+        letter-spacing: 0.25em;
     }
     .card_body {
         display: inline-block;
@@ -46,8 +50,9 @@
         float:left;
     }
     .card_footer {
-        font-size:12px;
-        line-height: 13px;
+        font-size:0.8em;
+        line-height: 1.1em;
+        font-family: Palatino, 'Times New Roman', Times, serif
     }
 </style>
 <div class="card text-center">
@@ -59,18 +64,20 @@
                     style="vertical-align: top"
                     *ngFor="let d of p.domains">                                                       
                     <h3 style="font-weight:bold;">{{ d.long_name }} do Sistema Ving Tsun</h3>
-                    <div *ngFor="let m of d.members" style="border:1px solid black;padding-bottom:5px;margin:10px;display:inline-block;width:220px;height:322px">
+                    <div *ngFor="let m of d.members" 
+                        [routerLink]="['/person', m.id]"
+                        style="border:1px solid black;cursor:pointer;padding-bottom:5px;margin:10px;display:inline-block;width:221px;height:323px">
                         <div
-                        style="color:white;"
+                        style="color:white;text-shadow: 0px 2px 2px black;"                        
                         [ngStyle]="{ 'background': d.program_id == 3 ? 'linear-gradient(#9c1000, #690b01)' : (d.program_id == 2 ? 'linear-gradient(rgb(55, 65, 199), rgb(38, 44, 122))' : 'rgb(5, 53, 1)') }">
                             {{ m.branch }}                
                         </div>
-                        <div class="card_body" style="padding-top:50px;">                            
+                        <div class="card_body" style="padding-top:20px;">                            
                             <img alt="{{ m.name }}"
                             [routerLink]="['/person', m.id]"
                             class="img-border shadow" 
                             src="https://myvtmiim.blob.core.windows.net/avatars/{{ m.avatar_img }}" 											
-                            style="min-width:0px;max-width:80px;width:80px;cursor:pointer;"																												
+                            style="min-width:120px;max-width:120px;width:120px;height:160px;cursor:pointer;"																												
                             [style.border-color]="m.is_leaving || m.is_inactive_member ? 'orange' : null " 
                             [style.opacity]="m.is_leaving || m.is_inactive_member ? '0.5' : null " 
                             *ngIf="m.avatar_img && m.avatar_img.length > 0" />
@@ -78,29 +85,34 @@
                             [routerLink]="['/person', m.id]"
                             class="img-border shadow" 
                             src="/assets/img/portrait/avatars/avatar-08.png" 											
-                            style="min-width:50px;max-width:80px;width:80px;cursor:pointer"																												
+                            style="min-width:120px;max-width:120px;width:120px;height:160px;cursor:pointer"																												
                             [style.border-color]="m.is_leaving || m.is_inactive_member ? 'orange' : null " 
                             [style.opacity]="m.is_leaving || m.is_inactive_member ? '0.5' : null " 
                             *ngIf="!m.avatar_img || m.avatar_img.length <= 0" />     
 
-                            <div class="ideograms" 
-                                [style.padding-left]="m.kf_name_ideograms.length == 2 ? '15px' : '10px'"
-                                [style.font-size]="m.kf_name_ideograms.length == 4 ? '22px' : m.kf_name_ideograms.length == 3 ? '33px' : '50px'"
+                            <div class="ideograms"                                 
+                                [style.padding-top]="m.kf_name_ideograms.length == 4 ? '10px' : m.kf_name_ideograms.length == 3 ? '25px' : '40px'"
                                 *ngIf="m.kf_name_ideograms && m.kf_name_ideograms != '(convidado)' && m.kf_name_ideograms != '(convidada)'">
                                 {{ m.kf_name_ideograms.substring(1, m.kf_name_ideograms.length) }}                                
                             </div>                                                        
                         </div> 
                         
-                        <div class="text-center person_name" style="padding-top:20px;">
+                        <div class="text-center person_name"                             
+                            [style.padding-top]="!m.kf_name ? '1em' : '0.8em'"                            
+                            [style.font-size]="'1em'"
+                            [style.line-height]="!m.kf_name ? '1.6em' : '0.8em'"                            
+                            [style.padding-bottom]="!m.kf_name ? '0.2em' : '0'"                            
+                            >
                             {{ m.name }}
                         </div>                       
                         <div class="text-center person_kf_name"                             
                             *ngIf="m.kf_name">
                             "{{ m.kf_name }}"
                         </div>
-                        <div class="text-center person_kf_name"                             
+                        <div class="text-center"                
+                            style="border-bottom: 1px solid black;margin-left:10px;margin-right:10px;margin-bottom:0.6em;line-height:0.5em"             
                             *ngIf="!m.kf_name">
-                            &nbsp;
+                            &#160;                            
                         </div>
                         <div class="text-center card_footer" *ngIf="m.family_name && m.admission_date_br ">
                             Membro da <b>Família {{ m.family_name }}</b>
@@ -109,7 +121,7 @@
                             desde {{ m.admission_date_br }}
                         </div>
                         <div class="text-center card_footer" *ngIf="m.family_name && !m.admission_date_br ">
-                            Futuro Membro da <br /> <b>Família {{ m.family_name }}</b>
+                            Candidato à <br /> <b>Família {{ m.family_name }}</b>
                         </div>
                         <div class="text-center card_footer" *ngIf="!m.admission_date_br && !m.family_name">
                             &#160;
