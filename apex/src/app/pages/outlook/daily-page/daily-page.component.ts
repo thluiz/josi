@@ -101,6 +101,13 @@ export class DailyPageComponent implements OnInit, OnDestroy {
       { width: "3%", icon: "far fa-envelope", description: "Comunicados" }
     ];
   }
+
+  scrollToTop(e) {
+    alert('a');
+    window.scrollTo(0, 0);
+    window.scroll(0, 0);
+    console.log(e);
+  }
   
   change_display(display) {
     if(display == DailyMonitorDisplayType.Week) {

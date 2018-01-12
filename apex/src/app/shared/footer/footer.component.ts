@@ -9,4 +9,10 @@ import { Component, HostBinding } from '@angular/core';
 
 export class FooterComponent{
     currentDate : Date = new Date();
+
+    goToTop() {        
+        document.body.scrollTop = 0; 
+        document.documentElement.scrollTop = 0;
+        window.scrollTo(0, 0);
+    }
 }
