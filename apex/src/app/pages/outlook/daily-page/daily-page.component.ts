@@ -469,10 +469,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
         this.selected_week = result.selected_week[0];
 
         this.cols = [                    
-          { width: "24.5%" },
-          { width: "3%", icon: "ft-calendar", description: "Agendamento" },
-          { width: "3%", icon: "icon-wallet", description: "Financeiro" },
-          { width: "3%", icon: "far fa-envelope", description: "Comunicados" }
+          { width: "45%" }
         ];
                 
         for(var i = 0; i< this.week_days.length; i++) {

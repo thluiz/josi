@@ -12,7 +12,17 @@
 	}
 </style>
 				
-
+<div class="sticky-top" style="bottom:10px;z-index:100000">
+	<div style="position:absolute;float:right;right:10px;" class="d-block d-md-none">
+		<button type="button" 
+			(click)="reset_new_incident();open(new_activity, null)"
+			class="btn btn-silver ft-plus"
+			title="Registrar Atividade"
+			style="margin-left:10px"
+			>																
+		</button>
+	</div>
+</div>
 <div class="row">
 	<div class="col-12">		
 		<div class="card">

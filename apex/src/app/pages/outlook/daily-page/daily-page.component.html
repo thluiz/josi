@@ -13,7 +13,7 @@
 </style>
 			
 <div class="sticky-top" style="bottom:10px;z-index:10000">
-	<div style="position:absolute;float:right;right:10px;" class="d-block d-sm-block">
+	<div style="position:absolute;float:right;right:10px;" class="d-block d-md-none">
 		<button type="button" 
 			(click)="reset_new_incident();open(new_activity, null)"
 			class="btn btn-silver ft-plus"
@@ -92,6 +92,15 @@
 										</button>
 									</span>
 								</span>			
+							</div>
+							<div class="col-1" class="d-none d-md-block">
+								<button type="button" 
+									(click)="reset_new_incident();open(new_activity, null)"
+									class="btn btn-silver ft-plus"
+									title="Registrar Atividade"
+									style="margin-left:10px"
+									>																
+								</button>
 							</div>																			
 						</div>						
 					</div>					
@@ -251,61 +260,33 @@
 																</div>
 															</div>															
 														</div>
+														<div class="row">
+															<div class="col-12">
+																<span *ngIf="person.scheduling_status == 3">												
+																		<i class="ft-calendar" style="color:orange"
+																			[title]="person.scheduling_description">
+																		</i>
+																	</span>
+																<span *ngIf="person.scheduling_status > 0 && person.scheduling_status != 3">
+																	<i class="ft-calendar" style="color:red"													
+																		[title]="person.scheduling_description">
+																	</i>
+																</span>											
+																<span *ngIf="person.financial_status == 3">												
+																	<i class="icon-wallet" style="color:orange"
+																	[title]="person.financial_description"
+																	></i>
+																</span>
+																<span *ngIf="person.financial_status > 0 && person.financial_status != 3">
+																	<i class="icon-wallet" style="color:red"													
+																		[title]="person.financial_description"
+																	>
+																	</i>
+																</span>
+															</div>
+														</div>
 													</div>	
-												</div>																					
-											</td>								
-											<td valign="middle" align="center">										
-												<span *ngIf="person.scheduling_status == 3">												
-													<i class="ft-calendar" style="color:orange"
-														[title]="person.scheduling_description">
-													</i>
-												</span>
-												<span *ngIf="person.scheduling_status > 0 && person.scheduling_status != 3">
-													<i class="ft-calendar" style="color:red"													
-														[title]="person.scheduling_description">
-													</i>
-												</span>
-												<span *ngIf="person.scheduling_status == 0">
-													<i class="ft-thumbs-up" style="color:green"													
-														[title]="person.scheduling_description">
-													</i>
-												</span>
-											</td>
-											<td valign="middle" align="center">
-													<span *ngIf="person.financial_status == 3">												
-														<i class="icon-wallet" style="color:orange"
-														[title]="person.financial_description"
-														></i>
-													</span>
-													<span *ngIf="person.financial_status > 0 && person.financial_status != 3">
-														<i class="icon-wallet" style="color:red"													
-															[title]="person.financial_description"
-														>
-														</i>
-													</span>	
-													<span *ngIf="person.financial_status == 0">
-														<i class="ft-thumbs-up" style="color:green"													
-															[title]="person.financial_description">
-														</i>
-													</span>
-											</td>
-											<td valign="middle" align="center" style="cursor:pointer">
-													<span *ngIf="person.comunication_status == 3">												
-														<i class="far fa-envelope" style="color:orange"
-														[title]="person.comunication_description"
-														></i>
-													</span>
-													<span *ngIf="person.comunication_status > 0 && person.comunication_status != 3">
-														<i class="far fa-envelope" style="color:red"													
-															[title]="person.comunication_description"
-														>
-														</i>
-													</span>	
-													<span *ngIf="person.comunication_status == 0">
-														<i class="ft-thumbs-up" style="color:green"													
-															[title]="person.comunication_description">
-														</i>
-													</span>
+												</div>																																													
 											</td>	
 											<td valign="middle" align="center" 										
 												*ngFor="let item of person.dates, let k2 = index" 
