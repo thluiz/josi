@@ -10,7 +10,7 @@ export const ROUTES: RouteInfo[] = [
         submenu: [ ]
     },
     {
-        path: '/people', title: 'Pessoas',
+        path: '/people', title: 'Painel',
         icon: 'icon-users',
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,

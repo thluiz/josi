@@ -469,7 +469,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
         this.selected_week = result.selected_week[0];
 
         this.cols = [                    
-          { width: "45%" }
+          { width: "30%" }
         ];
                 
         for(var i = 0; i< this.week_days.length; i++) {
@@ -478,7 +478,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
             prop: 'incidents' + c.date,
             name: c.name,
             current: c.current,
-            width: '9.5%'
+            width: '60%'
           };
         }
 
