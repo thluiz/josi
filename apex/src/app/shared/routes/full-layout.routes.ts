@@ -35,10 +35,6 @@ export const Full_ROUTES: Routes = [
   },
   {
     path: 'people',
-    loadChildren: './pages/people/list/people-list-page.module#PeopleListPageModule'
-  },
-  {
-    path: 'people2',
     loadChildren: './pages/people/list2/people-list-page.module#PeopleList2PageModule'
   },
   {

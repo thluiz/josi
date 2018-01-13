@@ -16,13 +16,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class PeopleList2PageComponent implements OnInit, OnDestroy {
   people: any;    
   all_people: any;
-  issues_level = 2;
-  current_branch = 0;
-  show_change_branch = false;
-  show_change_issues_level = false;
-
-  current_branch_name = "Todos os Núcleos"
-  current_issues_level = "Painel - Praticantes com pendências"  
+  current_view = 0;
+  only_people_with_issues = "true";
+  current_branch = 0; 
   branches: any;
 
 
@@ -44,18 +40,16 @@ export class PeopleList2PageComponent implements OnInit, OnDestroy {
     this.person_list_sub.unsubscribe();
   }
 
-  filter_people(branch, level) {
+  change_view(view) {
+
+  }
+
+  filter_people() {      
     this.people = this.all_people.filter( (p :any) => {
-      return  this.issues_level == 0 || p.issues_level >= this.issues_level;
+      return this.only_people_with_issues === "false" || p.issues_level > 0;
     }).filter( (p :any) => {
       return  this.current_branch == 0 || p.branch_id == this.current_branch;
     });
-
-    this.current_issues_level = this.issues_level == 2 ? 
-                              "Painel - Praticantes com pendências" :
-                              this.issues_level == 1 ?
-                              "Painel - Praticantes com tratamentos " 
-                              : "Painel - Praticantes";
   }
 
   load_members_list() {    
@@ -68,7 +62,7 @@ export class PeopleList2PageComponent implements OnInit, OnDestroy {
         const result = data.json();   
         this.all_people = result;
 
-        this.filter_people(this.current_branch, this.issues_level);
+        this.filter_people();
       }
     );  
   }

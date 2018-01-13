@@ -5,56 +5,67 @@
         <div class="row">
             <div class="col-12">
                 <div class="row">
-                    <div class="col-12 col-xl-6 col-lg-6 col-md-12">
-                        <h4 class="card-title"
-                        style="cursor:pointer"
-                        *ngIf="!show_change_issues_level"
-                        (click)="show_change_issues_level = !show_change_issues_level"
-                        >
-                            {{ current_issues_level }}                                                         
-                        </h4>
-                        <select 	
-                            [(ngModel)]="issues_level"
-                            (ngModelChange)="filter_people(current_branch, $event);show_change_issues_level = !show_change_issues_level"																		
-                            class="form-control"
-                            *ngIf="show_change_issues_level"
-                            style="width:100%"
-                            >			
-                            <option value="0">Todos os praticantes</option>			
-                            <option value="1">Praticantes com tratamentos</option>
-                            <option value="2">Praticantes com pendências</option>
-                        </select>
-                        <h6 style="margin:0;margin-top:5px;margin-bottom:5px;font-weight:bold;color:black;cursor:pointer;border-bottom:1px dotted silver;" 
-                        *ngIf="!show_change_branch"
-                        (click)="show_change_branch = !show_change_branch">									
-                            {{ current_branch_name }}
-                        </h6>
-                        <div class="form-group">
-                            <select id="branch" 
-                                [(ngModel)]="current_branch" 
-                                (ngModelChange)="filter_people($event, issues_level)"									
-                                *ngIf="show_change_branch"
-                                class="form-control"
-                                style="width:100%"
-                                >			
-                                <option value="0">Todos os Núcleos</option>			
-                                <option value="1">Núcleo Barra</option>
-                                <option value="2">Núcleo Méier</option>
-                                <option value="3">Núcleo Ipanema</option>
-                                <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
-                            </select>
-                        </div>
-                    </div>	
-                    <div class="col-12 col-xl-2 col-lg-2 col-md-4 col-sm-12">
-                        <h6></h6>
-                        	
-                    </div>                    													
-                </div>						
+                    <div class="col-12">
+                        <form class="form form-horizontal" novalidate="">
+                            <div class="form-group row">                                                            
+                                <div class="col-md-12 col-sm-12">
+                                    <select id="view" 
+                                        [(ngModel)]="current_view" 
+                                        (ngModelChange)="change_view($event)"									                            
+                                        [ngModelOptions]="{standalone: true}"
+                                        class="form-control form-control-lg"
+                                        style="border:0;border-bottom:1px solid silver;font-weight:bold"
+                                        >			
+                                        <option value="0" selected>Painel de Praticantes</option>			
+                                        <option value="1">Painel de Membros</option>                                                        
+                                    </select>
+                                </div>
+                            </div>
+                        </form>                                            
+                    </div>                    
+                </div>                
             </div>					
         </div>
     </div>
-    <div class="card-body text-center">
-        <div class="row">        
+    <div class="card-body" style="padding-left:2%">
+        <div class="row">
+            <div class="col-2">
+                <div class="form-body">
+                    <div class="form-group">
+                        <label for="branch">Núcleo</label>
+                        <select id="branch" 
+                            [(ngModel)]="current_branch" 
+                            (ngModelChange)="filter_people()"									                            
+                            class="form-control form-control-sm"
+                            [ngModelOptions]="{standalone: true}"                            
+                            >			
+                            <option value="0">Todos os Núcleos</option>			
+                            <option value="1">Núcleo Barra</option>
+                            <option value="2">Núcleo Méier</option>
+                            <option value="3">Núcleo Ipanema</option>
+                            <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
+                        </select>
+                    </div>                            
+                </div>                                                                  
+            </div>
+            <div class="col-3">
+                <div class="form-body">
+                    <div class="form-group">
+                        <label for="branch">Status</label>
+                        <select id="branch" 
+                            [(ngModel)]="only_people_with_issues" 
+                            (ngModelChange)="filter_people()"									                            
+                            class="form-control form-control-sm"
+                            [ngModelOptions]="{standalone: true}"
+                            >			
+                            <option value="false">Todos</option>			
+                            <option value="true">Apenas praticantes com pendências</option>
+                        </select>
+                    </div>                            
+                </div>                                                                  
+            </div>                     
+        </div>
+        <div class="row text-center">        
             <div *ngFor="let person of people"
                 [routerLink]="['/person', person.id]"
                 class="text-left"
