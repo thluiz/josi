@@ -82,6 +82,16 @@ function getParticipationList(people) {
                 .execute(`GetMembersList`);
             response.send(result.recordset[0]);
         }));
+        app.get("/api/branches", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            const result = yield pool.request()
+                .execute(`GetBranches`);
+            response.send(result.recordset[0]);
+        }));
+        app.get("/api/people", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            const result = yield pool.request()
+                .execute(`GetPeopleList`);
+            response.send(result.recordset[0]);
+        }));
         app.get("/api/people/:id", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             const result = yield pool.request()
                 .input('id', sql.Int, request.params.id)

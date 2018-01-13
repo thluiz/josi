@@ -38,6 +38,10 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/people/list/people-list-page.module#PeopleListPageModule'
   },
   {
+    path: 'people2',
+    loadChildren: './pages/people/list2/people-list-page.module#PeopleList2PageModule'
+  },
+  {
     path: 'person/edit/:id',
     loadChildren: './pages/people/edit/person-edit-page.module#PersonEditPageModule'
   },

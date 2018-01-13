@@ -34,5 +34,5 @@ import { WeeklyPageComponent } from './weekly-page.component';
     declarations: [       
         WeeklyPageComponent
     ]
-})
+}) 
 export class WeeklyPagesModule { }

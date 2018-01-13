@@ -17,6 +17,13 @@ export const ROUTES: RouteInfo[] = [
         submenu: []
     },
     {
+        path: '/people2', title: 'Painel 2',
+        icon: 'icon-users',
+        class: '', badge: '',
+        badgeClass: '', isExternalLink: false,
+        submenu: []
+    },
+    {
         path: '/under-construction', title: 'Calendário',
         icon: 'ft-calendar',
         class: '', badge: '',

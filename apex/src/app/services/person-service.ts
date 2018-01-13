@@ -27,6 +27,10 @@ export class PersonService {
     return this.http.get(this.dataUrl + `/people/members`);    
   }
 
+  getPeopleList() {
+    return this.http.get(this.dataUrl + `/people`);    
+  }
+
   getAllData(id) {    
     return this.http
         .get(this.dataUrl + `/people/${id}`);

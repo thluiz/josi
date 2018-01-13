@@ -100,6 +100,20 @@ function getParticipationList(people) {
             response.send(result.recordset[0]);
         });
 
+        app.get("/api/branches", async (request, response, next) => {                        
+            const result = await pool.request()            
+            .execute(`GetBranches`);                
+
+            response.send(result.recordset[0]);
+        });
+
+        app.get("/api/people", async (request, response, next) => {                        
+            const result = await pool.request()            
+            .execute(`GetPeopleList`);                
+
+            response.send(result.recordset[0]);
+        });
+
         app.get("/api/people/:id", async (request, response, next) => {                        
             const result = await pool.request()
             .input('id', sql.Int, request.params.id)
