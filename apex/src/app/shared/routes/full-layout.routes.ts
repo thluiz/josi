@@ -35,7 +35,11 @@ export const Full_ROUTES: Routes = [
   },
   {
     path: 'people',
-    loadChildren: './pages/people/list2/people-list-page.module#PeopleList2PageModule'
+    loadChildren: './pages/people/people.module#PeopleModule'
+  },
+  {
+    path: 'people/members',
+    loadChildren: './pages/people/people.module#PeopleModule'
   },
   {
     path: 'person/edit/:id',
