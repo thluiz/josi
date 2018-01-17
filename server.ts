@@ -68,6 +68,12 @@ function getParticipationList(people) {
             response.send("Ok");
         });
 
+        app.post("/api/incident/start", async (request, response, next) => {
+            let result = await incident_service.start_incident(request.body.incident);
+
+            response.send("Ok");
+        });
+
         app.post("/api/incident/remove", async (request, response, next) => {            
             let result = await incident_service.remove_incident(request.body.incident);            
                         

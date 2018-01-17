@@ -3,7 +3,7 @@ import { RouteInfo } from './sidebar.metadata';
 export const ROUTES: RouteInfo[] = [
 
     {
-        path: '/outlook/weekly', title: 'Diário',
+        path: '/daily', title: 'Diário',
         icon: 'ft-monitor',
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,

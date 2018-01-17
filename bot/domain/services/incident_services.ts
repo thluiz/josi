@@ -7,6 +7,15 @@ export class IncidentService {
         this.sql_pool = sql_pool;
     }
 
+    public async start_incident(incident) {
+        const result = await this.sql_pool
+                                .request()
+                                .input('incident', sql.Int, incident.id)                                
+                                .execute(`StartIncident`);
+
+        return result;                        
+    }
+
     public async close_incident(incident) {
         const result = await this.sql_pool
                                 .request()

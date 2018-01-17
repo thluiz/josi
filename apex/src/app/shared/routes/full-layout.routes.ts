@@ -11,27 +11,19 @@ export const Full_ROUTES: Routes = [
   },
   {
     path: 'daily',
-    loadChildren: './pages/outlook/weekly-page/weekly-pages.module#WeeklyPagesModule'
+    loadChildren: './pages/daily/daily.module#DailyModule'
   },
   {
-    path: 'outlook/weekly',
-    loadChildren: './pages/outlook/weekly-page/weekly-pages.module#WeeklyPagesModule'
+    path: 'daily/day',
+    loadChildren: './pages/daily/daily.module#DailyModule'
   },
   {
-    path: 'outlook/agenda',
-    loadChildren: './pages/outlook/agenda-page/agenda-pages.module#AgendaPagesModule'
+    path: 'daily/week',
+    loadChildren: './pages/daily/daily.module#DailyModule'
   },
   {
-    path: 'outlook/daily',
-    loadChildren: './pages/outlook/daily-page/daily-pages.module#DailyPagesModule'
-  },
-  {
-    path: 'outlook/sumary',
-    loadChildren: './pages/outlook/sumary-page/sumary-pages.module#SumaryPagesModule'
-  },
-  {
-    path: 'outlook/summary',
-    loadChildren: './pages/outlook/sumary-page/sumary-pages.module#SumaryPagesModule'
+    path: 'daily/agenda',
+    loadChildren: './pages/daily/daily.module#DailyModule'
   },
   {
     path: 'people',

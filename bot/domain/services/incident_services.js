@@ -13,6 +13,15 @@ class IncidentService {
     constructor(sql_pool) {
         this.sql_pool = sql_pool;
     }
+    start_incident(incident) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.sql_pool
+                .request()
+                .input('incident', sql.Int, incident.id)
+                .execute(`StartIncident`);
+            return result;
+        });
+    }
     close_incident(incident) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.sql_pool

@@ -1,3 +1,4 @@
+import { PersonCardModule } from './../../shared/components/person-card/person-card.module';
 import { ManagementPanelPageComponent } from './management-panel/management-panel-page.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
@@ -13,7 +14,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
         PeopleRoutingModule,
         FormsModule, 
         ReactiveFormsModule,
-        NgbModule
+        NgbModule,
+        PersonCardModule
     ],
     declarations: [       
         MembersPanelPageComponent,

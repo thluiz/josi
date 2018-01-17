@@ -1,0 +1,183 @@
+<div class="modal-header">
+    <h5 class="modal-title" style="font-weight: bold">{{ current_incident.long_description }}</h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form class="form" #f="ngForm">
+        <div class="row" *ngIf="current_incident.title">
+            <div class="col-12">													
+                <markdown [data]="current_incident.title"></markdown>			
+            </div>
+        </div>		
+        <div class="row" *ngIf="current_incident.treatment_text">						
+            <div class="col-12">
+                <markdown [data]="current_incident.treatment_text"></markdown>			
+            </div>
+        </div>
+        <div class="row" *ngIf="current_incident.close_text">						
+            <div class="col-12">
+                <div style="font-size:10px;font-weight:bold;line-height:10px;font-style:italic">Fechamento:</div>
+                <markdown [data]="current_incident.close_text"></markdown>			
+            </div>
+        </div>
+        <div class="row" *ngIf="current_incident.new_schedule_date">
+            <div class="col-12">
+                <b>Reagendado para: </b>{{ current_incident.new_schedule_small_date }} {{ current_incident.new_schedule_hour }}
+            </div>
+        </div>
+        <div class="row" *ngIf="current_incident.started_on_hour && !current_incident.treated">
+            <div class="col-1">
+                <b>Inicio: </b>
+            </div>
+            <div class="col-2 pl-3">
+                {{ current_incident.started_on_hour }}
+            </div>
+            <div class="col-1" *ngIf="current_incident.started_on_hour && current_incident.closed_on_hour">
+                <b>Fim: </b>
+            </div>
+            <div class="col-2 pl-3" *ngIf="current_incident.started_on_hour && current_incident.closed_on_hour">
+                {{ current_incident.closed_on_hour }}
+            </div>
+        </div>
+        <div class="row">            
+            <div class="col-12" *ngIf="!current_incident.in_treatment 
+                                        && current_incident.need_description_for_closing
+                                        && !current_incident.closed
+                                        && !current_incident.treated
+                                        && (!current_incident.need_to_be_started 
+                                         || current_incident.started_on_hour)">				
+                <div class="row">					
+                    <div class="col-12">													
+                        <fieldset class="form-group">					
+                            <textarea class="form-control" 
+                                name="closing_contact_text"
+                                [(ngModel)]="current_incident.closing_contact_text"				
+                                rows="3" placeholder="Como foi?"></textarea>
+                        </fieldset>		
+                    </div>
+                </div>
+            </div>
+            <div class="col-12" *ngIf="!current_incident.in_treatment 
+                                        && !current_incident.closed 
+                                        && !current_incident.treated
+                                        && current_incident.need_to_be_started 
+                                        && !current_incident.started_on_hour">
+                <h6 style="font-weight: bold">Iniciar?</h6>				
+                <button type="button" class="btn btn-success" (click)="start_incident(current_incident, d);">
+                    <i class="icon-clock"></i> Sim
+                </button>
+                <button type="button" class="btn btn-primary" (click)="begin_treat_incident(current_incident)">
+                    <i class="icon-ban"></i> Não
+                </button>		
+            </div>
+            <div class="col-12" *ngIf="!current_incident.in_treatment 
+                                        && !current_incident.closed 
+                                        && !current_incident.treated
+                                        && (!current_incident.need_to_be_started 
+                                         || current_incident.started_on_hour)">
+                <h6 style="font-weight: bold" *ngIf="! current_incident.started_on_hour">Realizado?</h6>				
+                <h6 style="font-weight: bold" *ngIf="current_incident.started_on_hour">Finalizar?</h6>				
+                <button type="button" class="btn btn-success" (click)="close_incident(current_incident);d('close!');">
+                    <i class="icon-check"></i> Sim
+                </button>
+                <button type="button" class="btn btn-primary" (click)="begin_treat_incident(current_incident)">
+                    <i class="icon-ban"></i> Não
+                </button>		
+            </div>			
+            <div class="col-12" *ngIf="current_incident.in_treatment">				
+                <div class="row">					
+                    <div class="col-12">							
+                        <h6 style="font-weight: bold">Contato</h6>
+                        <fieldset class="form-group">					
+                            <textarea class="form-control" 
+                                required minlength="4"
+                                name="contact_text"
+                                (ngModelChange)="validade_treatment_contact_text(current_incident)"
+                                [(ngModel)]="current_incident.contact_text"											
+                                rows="3" placeholder="O que vocês conversaram?"></textarea>
+                        </fieldset>		
+                        <small class="form-text text-muted danger" 
+                            *ngIf="current_incident.errors && current_incident.errors['need_contact_text']">
+                            Informe como foi o contato!
+                        </small>
+                    </div>
+                </div>
+                <div class="row" *ngIf="current_incident.reschedule">					
+                    <div class="col-6">			
+                        <h6 style="font-weight: bold">Reagendamento</h6>									
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input class="form-control text-center" style="width:100%" placeholder="dd/mm/aaaa"
+                                name="new_date" 
+                                [(ngModel)]="current_incident.new_date" 
+                                ngbDatepicker #dpReschedule="ngbDatepicker" />
+                                <div class="input-group-addon" (click)="dpReschedule.toggle()">
+                                    <i class="ft-calendar" style="cursor: pointer;"></i>
+                                </div>							
+                            </div>																
+                        </div>						
+                    </div>
+                    <div class="col-6">
+                        <ngb-timepicker [(ngModel)]="current_incident.new_time" [ngModelOptions]="{standalone: true}"></ngb-timepicker>							
+                    </div>																																								
+                </div>															
+            </div>
+        </div>
+    </form>
+</div>		
+<div class="modal-footer">
+    <button type="button" class="btn btn-success" 
+        (click)="register_contact_for_incident(current_incident, d);"
+        *ngIf="current_incident.in_treatment && !current_incident.reschedule">
+        <i class="far fa-envelope"></i>
+        Registrar Contato
+    </button>
+    <button type="button" class="btn btn-primary" 
+        (click)="begin_reschedule_incident(current_incident)"
+        *ngIf="current_incident.in_treatment && !current_incident.reschedule">
+        <i class="ft-calendar"></i>
+        Reagendar
+    </button>		
+    <button type="button" 
+        class="btn btn-success" 
+        (click)="reschedule_incident(current_incident);d('reschedule!');"
+        *ngIf="current_incident.in_treatment && current_incident.reschedule">
+        <i class="ft-calendar"></i>
+        Reagendar!
+    </button>															
+    <button type="button" class="btn btn-silver" 
+        (click)="reset_treat_incident(current_incident);"
+        *ngIf="current_incident.in_treatment && !current_incident.reschedule">
+        <i class="icon-action-undo"></i>
+        Voltar
+    </button>		
+    <button type="button" class="btn btn-silver" 
+        (click)="reset_reschedule(current_incident);"
+        *ngIf="current_incident.in_treatment && current_incident.reschedule">
+        <i class="icon-action-undo"></i>
+        Voltar
+    </button>		
+    <button type="button" class="btn btn-silver" 			
+        *ngIf="!current_incident.begin_remove && !current_incident.in_treatment"
+        (click)="begin_remove_incident(current_incident);">
+        <i class="ft-trash-2"></i>
+        Excluir
+    </button>
+    <span *ngIf="current_incident.begin_remove">
+        Confirma exclusão?
+    </span>
+    <button type="button" class="btn btn-danger" 
+        *ngIf="current_incident.begin_remove"
+        (click)="remove_incident(current_incident);d('remove!');">
+        <i class="ft-trash-2"></i>
+        Excluir
+    </button>
+    <button type="button" class="btn btn-secondary" 
+        *ngIf="current_incident.begin_remove"
+        (click)="rollback_remove_incident(current_incident);">
+        <i class="icon-action-undo"></i>
+        Não
+    </button>
+</div>
