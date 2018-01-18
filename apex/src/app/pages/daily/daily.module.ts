@@ -3,6 +3,7 @@ import { IncidentTreatmentModalModule } from './../../shared/components/incident
 import { NewIncidentModalModule } from './../../shared/components/new-incident-modal/new-incident-modal.module';
 import { PersonCardModule } from './../../shared/components/person-card/person-card.module';
 import { DailyChangeViewModule } from './shared/change-view/change-view.module';
+import { PersonStatusLineModule } from 'app/shared/components/person-status-line/person-status-line.module';
 
 import { DailyRoutingModule } from './daily-routing.module';
 
@@ -44,6 +45,7 @@ import { MarkdownModule } from 'ngx-markdown';
         NewIncidentModalModule,
         IncidentTreatmentModalModule,
         CompactIncidentListitemModule,
+        PersonStatusLineModule,
         MarkdownModule.forRoot()
     ],
     declarations: [       

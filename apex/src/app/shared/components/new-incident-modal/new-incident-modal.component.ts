@@ -7,6 +7,24 @@ import { PersonService } from 'app/services/person-service';
 import { IncidentService } from 'app/services/incident-service';
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/switchMap';
+
+import { debounceTime } from 'rxjs/operators';
+import { delay } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { distinctUntilChanged } from 'rxjs/operators';
+import { of } from 'rxjs/observable/of';
+import { catchError } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
+
 @Component({
   selector: 'new-incident-modal',
   templateUrl: './new-incident-modal.component.html',

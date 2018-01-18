@@ -10,19 +10,38 @@
 		line-height: 12px;
 		padding-left:5px;
 	}
+	.btn-action {
+		margin:0;
+		padding: 0 8px;
+	}
 </style>
 				
+<div class="sticky-top" style="top:30px;z-index:10000">
+	<div style="position:absolute;float:right;right:10px;">
+		<button type="button" 
+			(click)="open(new_activity, null)"
+			class="btn btn-silver ft-plus"
+			title="Registrar Atividade"
+			style="margin-left:10px"
+			>																
+		</button>
+	</div>
+</div>	
 
 <div class="row">
 	<div class="col-12">		
 		<div class="card">
-			<div class="card-header" class="sticky-top" style="background-color:white;width:100%;padding:10px">
+			<div class="card-header" style="background-color:white;width:100%;padding:10px">
 				<div class="row">
 					<div class="col-12">
 						<div class="row">
-							<div class="col-12">
-								<h4 class="card-title">
-									Agenda de Praticantes
+							<div class="col-12 col-xl-6 col-lg-6 col-md-12">
+								<h4 class="card-title d-none d-md-block">
+									Diário de Atividades - Praticantes 																																
+								</h4>
+								<h4 class="card-title d-block d-md-none" style="font-size:14px">
+									Diário de Atividades
+									<br /> Praticantes 																																
 								</h4>
 								<h6 style="margin:0;margin-top:5px;margin-bottom:5px;font-weight:bold;color:black;cursor:pointer;border-bottom:1px dotted silver;" 
 								*ngIf="!show_change_branch"
@@ -35,721 +54,196 @@
 										(ngModelChange)="branchSelected($event)"									
 										*ngIf="show_change_branch"
 										class="form-control"
-										style="width:90%"
+										style="width:100%"
 										>			
 										<option value="0">Todos os Núcleos</option>			
 										<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
-									</select>	
-									<!-- span *ngIf="show_change_branch"
-										style="cursor:pointer" 
-										class="input-group-btn"
-										(click)="show_change_branch = !show_change_branch">
-										<button class="btn btn-silver" type="button">
-											<i class="icon-action-undo"></i>
-										</button>
-									</span -->
+									</select>
 								</div>
+							</div>	
+							<div class="col-12 col-xl-2 col-lg-2 col-md-4 col-sm-12">
+								<daily-change-view initial_display="agenda"></daily-change-view>	
 							</div>
-						</div>	
-						<div class="row">
-							<div class="col-8 text-right">
-								<span class="input-group">
-									<span class="input-group-btn">
-										<button type="button" 
-											(click)="change_week(-1)"
-											class="btn btn-silver btn-fab btn-sm ft-chevrons-left">									
-										</button>
-									</span>											
-									<input type="text" class='form-control text-center'
-										style="background-color: white"
-										[value]="selected_week ? selected_week.range : ''" readonly="readonly"/>																								
-									<span class="input-group-btn">
-										<button type="button" 
-											id="btn_next_week"
-											(click)="change_week(1)"											
-											class="btn btn-silver btn-fab btn-sm ft-chevrons-right"
-											>									
-										</button>
-									</span>
-								</span>			
-							</div>
-							<div class="col-1 text-center">
-								<button type="button" 
-									(click)="reset_new_incident();open(new_activity, null)"
-									class="btn btn-silver ft-plus"
-									title="Registrar Atividade"
-									style="margin-left:10px"
-									>																
-								</button>
-							</div>														
+							<div class="col-9 col-xl-3 col-lg-3 col-md-6">
+								<div class="form-group">													
+									<div class="input-group">
+										<input class="form-control text-center" 
+										style="width:100%" 
+										placeholder="dd/mm/aaaa"
+										name="current_date" 
+										[(ngModel)]="current_date" 
+										(ngModelChange)="change_current_date($event)"
+										ngbDatepicker #dpCurrentDate="ngbDatepicker" />
+										<div class="input-group-addon" (click)="dpCurrentDate.toggle()">
+											<i class="ft-calendar" style="cursor: pointer;"></i>
+										</div>		
+									</div>
+								</div>
+							</div>													
 						</div>						
 					</div>					
 				</div>
 			</div>
 			<div class="card-body">	
-				<div class="row">					
-					<div class="col-12">							
-						<div >
-								<table class="table-sm table-striped table-bordered"															
-								style="margin-bottom:50px;width:100%">								
-								<tr>						
-									<td *ngFor="let c of people_summary_cols, let k3 = index" 
-										align="center" 									
-										[ngStyle]="{ 'width': c.width, 'color': 'white',
-													'background-color': '#AAA' }"
-										[colSpan]="c.colspan || 1"
-									>
-									<div>										
-										<i  												
-											[ngClass]="c.icon"
-											*ngIf="c.icon != null"
-											[title]="c.description">
-										</i>
-										<b>{{ c.name }}</b>
+				<div class="row" *ngFor="let schedule of agenda">					
+					<div class="col-12 col-sm-12 offset-md-1 col-md-10 offset-lg-3 col-lg-6" 
+					style="border:1px solid silver;margin-bottom:10px;border-bottom:0;" 
+					*ngIf="schedule.current_incidents && schedule.current_incidents.length > 0">	
+						<h4 *ngIf="schedule.schedule_group <= 0"></h4>																									
+						<h4 *ngIf="schedule.schedule_group > 0" style="margin-top:12px">{{ ('00' + schedule.schedule_group).slice(-2) }}:00</h4>																									
+						<div class="row" *ngFor="let incident of schedule.current_incidents, let k = index">
+							<div class="col-12" 
+								style="line-height:2em;border:1px solid silver;border-left:0;border-right:0"
+								*ngIf="current_branch <= 0 || incident.branch_id == current_branch"
+								[style.border-top]="k != 0 ? '0' : '1px solid silver'">
+								<div class="row">
+									<div class="col-8 pl-3 d-none d-md-block" 
+										[style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "
+										style="cursor:pointer;"
+										(click)="open(content, incident);">
+										<span *ngIf="current_branch <= 0" style="width:40px;display:inline-table;">{{ incident.branch_initials }}</span>
+										<span style="width:45px;display:inline-table;" *ngIf="incident.need_start_hour_minute">{{ incident.start_hour }}</span>
+										<span style="width:40px;display:inline-table;">{{ incident.abrev }}</span> 
+										{{ incident.person }}
 									</div>
-									</td>
-								</tr>
-								<tr *ngFor="let s of people_summary, let si = index" >
-									<td>
-										{{ s.program }}
-									</td>
-									<td>
-										{{ ('00' + s.people ).slice(-2)  }}
-									</td>
-									<td>
-										<span 									
-										[style.font-weight]="s.scheduling > 0 ? 'bold' : 'normal'"
-										[style.color]="s.scheduling > 0 ? 'red' : ''">
-											{{ ('00' + s.scheduling ).slice(-2)  }} 											
-										</span>
-									</td>
-									<td>
-										<span 									
-										[style.font-weight]="s.financial > 0 ? 'bold' : 'normal'"
-										[style.color]="s.financial > 0 ? 'red' : ''">
-											{{ ('00' + s.financial ).slice(-2)  }} 											
-										</span>
-									</td>
-									<td>
-										<span 									
-										[style.font-weight]="s.comunications > 0 ? 'bold' : 'normal'"
-										[style.color]="s.comunications > 0 ? 'red' : ''">
-											{{ ('00' + s.comunications ).slice(-2)  }} 											
-										</span>
-									</td>
-								</tr>
-							</table>
-						</div>
+
+									<div class="col-8 d-block d-md-none" 
+										style="cursor:pointer;"
+										[style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "
+										(click)="open(content, incident);">
+										<div class="row">
+											<div class="col-12 p-0 pl-2">
+												<span *ngIf="current_branch <= 0" style="width:40px;display:inline-table;">
+													{{ incident.branch_initials }}
+												</span>
+												<span style="width:45px;display:inline-table;">{{ incident.start_hour }}</span>
+												<span style="width:40px;display:inline-table;">{{ incident.abrev }}</span>
+											</div>
+											<div class="col-12 p-0 pl-2">												
+												{{ incident.person }}
+											</div>
+										</div>										
+									</div>
+										
+									<div class="col-1 d-none d-md-block">
+										<button type="button" 
+										class="btn btn-info btn-sm btn-action" 										
+										title="Iniciar Atividade"									
+										*ngIf="!incident.in_treatment 
+											&& !incident.closed 
+											&& !incident.treated
+											&& incident.need_to_be_started 
+											&& !incident.started_on_hour"
+										(click)="start_incident(incident);">
+											<i class="fas fa-play" style="color:white"></i>
+										</button>
+										<button type="button" 
+										class="btn btn-success btn-sm btn-action" 
+										title="Confirmar Atividade"									
+										*ngIf="!incident.in_treatment 
+											&& !incident.closed 
+											&& !incident.treated
+											&& !incident.need_to_be_started"
+										(click)="close_incident(incident);">
+											<i class="fas fa-check"></i>
+										</button>
+										<button type="button" 
+										class="btn btn-info btn-sm btn-action" 
+										title="Finalizar Atividade"									
+										*ngIf="!incident.in_treatment 
+											&& !incident.closed 
+											&& !incident.treated
+											&& incident.need_to_be_started 
+											&& incident.started_on_hour"
+										(click)="close_incident(incident);">
+											<i class="fas fa-stop" style="color:white"></i>
+										</button>
+									</div>
+									<div class="col-3 d-none d-md-block">
+										<person-status-line	
+											*ngIf="incident.person_data"										
+											[person]="incident.person_data[0]"
+										>
+										</person-status-line>
+									</div>	
+									<div class="col-4 d-block d-md-none">
+										<div class="row">
+											<div class="col-12">
+												<div class="row">
+													<div class="col-12">
+														<button type="button" 
+														class="btn btn-info btn-sm btn-action" 										
+														title="Iniciar Atividade"									
+														*ngIf="!incident.in_treatment 
+															&& !incident.closed 
+															&& !incident.treated
+															&& incident.need_to_be_started 
+															&& !incident.started_on_hour"
+														(click)="start_incident(incident);">
+															<i class="fas fa-play" style="color:white"></i>
+														</button>
+														<button type="button" 
+														class="btn btn-success btn-sm btn-action" 
+														title="Confirmar Atividade"									
+														*ngIf="!incident.in_treatment 
+															&& !incident.closed 
+															&& !incident.treated
+															&& !incident.need_to_be_started"
+														(click)="close_incident(incident);">
+															<i class="fas fa-check"></i>
+														</button>
+														<button type="button" 
+														class="btn btn-info btn-sm btn-action" 
+														title="Finalizar Atividade"									
+														*ngIf="!incident.in_treatment 
+															&& !incident.closed 
+															&& !incident.treated
+															&& incident.need_to_be_started 
+															&& incident.started_on_hour"
+														(click)="close_incident(incident);">
+															<i class="fas fa-stop" style="color:white"></i>
+														</button>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-12">
+														<person-status-line	
+															*ngIf="incident.person_data"										
+															[person]="incident.person_data[0]"
+														>
+														</person-status-line>
+													</div>
+												</div>
+											</div>
+										</div>										
+									</div>
+								</div>
+							</div>																			
+							
+						</div>					
 					</div>
 				</div>
-				<div class="row">					
-					<div class="col-12" style="border-right:1px solid #ddd;padding-right:1%">
-						<table style="width:100%;">
-							<tr *ngFor="let d of domains, let k5 = index">
-								<td>																																		
-									<table class="table-sm table-striped table-bordered table-hover"															
-										style="margin-bottom:50px;width:100%">
-										<tr>
-											<td colspan="11"
-												style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center"
-												[ngStyle]="{ 'background-color': d.program_id == 3 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)') }">
-												{{ d.program }} - {{ d.long_name }}
-											</td>
-										</tr>								
-										<tr>						
-											<td *ngFor="let c of cols, let k3 = index" 
-												align="center" 
-												[ngStyle]="{ 'width': c.width, 
-															'background-color': selected_week.current && k3 == current_week_day + 4 ? 
-																d.program_id == 3 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)')
-																: d.program_id == 3 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : 'rgb(8, 82, 1)'), 
-															'color': 'white' }"
-												[colSpan]="c.colspan || 1"
-												>	
-
-												<div>
-													<span *ngIf="k3 == 0" style="font-weight:bold">
-														{{ d.number_of_members }} 
-														Membro<span *ngIf="d.number_of_members > 1">s</span> 
-														Ativo<span *ngIf="d.number_of_members > 1">s</span>
-													</span>
-													<i  												
-														[ngClass]="c.icon"
-														*ngIf="c.icon != null"
-														[title]="c.description">
-													</i>
-													{{ c.name }} 
-												</div>									
-											</td>
-										</tr>
-										<tr *ngFor="let person of d.daily, let k4 = index">
-											<td>
-												<div class="row">
-													<div class="col-2" style="padding:0;padding-left:5px">
-														<img alt="{{ person.name }}"
-														[routerLink]="['/person', person.person_id]"
-														class="rounded-circle img-border d-none d-xl-block" 
-														src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
-														style="min-width:50px;width:100%;cursor:pointer"																												
-														[style.border-color]="person.is_leaving || person.is_inactive_member ? 'orange' : null " 
-														[style.opacity]="person.is_leaving || person.is_inactive_member ? '0.5' : null " 
-														*ngIf="person.avatar_img && person.avatar_img.length > 0" />
-														<!-- rgb(155, 14, 4) -->	
-													</div>								
-													<div class="col-10" style="padding:0;padding-left:8px">
-														<div class="row">
-															<div class="col-12"
-															[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
-															>
-																<a
-																[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
-																[routerLink]="['/person', person.person_id]">
-																{{ person.name }}														
-																</a>														
-																<div																	
-																	*ngIf="person.kf_name_ideograms" 
-																	style="float:right;margin-right:20px">													
-																	{{ person.kf_name_ideograms }}																																								
-																</div>																
-															</div>													
-														</div>												
-														<div class="row" style="font-size:12px;">
-															<div class="col-12"
-																[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
-															>
-																<span 																	
-																	*ngIf="!current_branch || current_branch == '' || current_branch == 0">{{ person.branch_initials }}</span><span 
-																	*ngIf="(!current_branch || current_branch == '' || current_branch == 0) && person.family_abrev">, </span><span 
-																	*ngIf="person.family_abrev">{{ person.family_abrev }}</span>
-																<span 
-																	*ngIf="!person.admission_date && person.family_abrev"
-																	style="font-style: italic; color:gray">
-																	(candidato)
-																</span>
-
-																<div *ngIf="person.kf_name" 																	
-																	style="float:right;margin-right:20px">													
-																	{{ person.kf_name }}																																								
-																</div>
-															</div>															
-														</div>
-													</div>	
-												</div>																					
-											</td>								
-											<td valign="middle" align="center">										
-												<span *ngIf="person.scheduling_status == 3">												
-													<i class="ft-calendar" style="color:orange"
-														[title]="person.scheduling_description">
-													</i>
-												</span>
-												<span *ngIf="person.scheduling_status > 0 && person.scheduling_status != 3">
-													<i class="ft-calendar" style="color:red"													
-														[title]="person.scheduling_description">
-													</i>
-												</span>
-												<span *ngIf="person.scheduling_status == 0">
-													<i class="ft-thumbs-up" style="color:green"													
-														[title]="person.scheduling_description">
-													</i>
-												</span>
-											</td>
-											<td valign="middle" align="center">
-													<span *ngIf="person.financial_status == 3">												
-														<i class="icon-wallet" style="color:orange"
-														[title]="person.financial_description"
-														></i>
-													</span>
-													<span *ngIf="person.financial_status > 0 && person.financial_status != 3">
-														<i class="icon-wallet" style="color:red"													
-															[title]="person.financial_description"
-														>
-														</i>
-													</span>	
-													<span *ngIf="person.financial_status == 0">
-														<i class="ft-thumbs-up" style="color:green"													
-															[title]="person.financial_description">
-														</i>
-													</span>
-											</td>
-											<td valign="middle" align="center" style="cursor:pointer">
-													<span *ngIf="person.comunication_status == 3">												
-														<i class="far fa-envelope" style="color:orange"
-														[title]="person.comunication_description"
-														></i>
-													</span>
-													<span *ngIf="person.comunication_status > 0 && person.comunication_status != 3">
-														<i class="far fa-envelope" style="color:red"													
-															[title]="person.comunication_description"
-														>
-														</i>
-													</span>	
-													<span *ngIf="person.comunication_status == 0">
-														<i class="ft-thumbs-up" style="color:green"													
-															[title]="person.comunication_description">
-														</i>
-													</span>
-											</td>	
-											<td valign="middle" align="center" 										
-												*ngFor="let item of person.dates, let k2 = index" 
-												style="border-right:1px solid grey"
-												[ngClass]=" selected_week.current && k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">																	
-
-												<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-													<div class="text-left incident_button">	
-																										
-														<a (click)="open(content, i)" 
-															[style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'orange' : (i.past ? 'red' : 'black'  )  )  "
-															*ngIf="i.type != 30 && i.type != 31"
-															style="font-size:12px">
-															<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
-															<b *ngIf="i.type == 2">{{ i.title }}</b>																	
-															<span 
-																*ngIf="i.short_description != null 
-																		&& i.short_description.length > 0 
-																		&& i.type != 2 && i.type != 4"
-																style="font-size:11px"
-															> - {{ i.short_description }} </span>
-														</a>																																																																	
-														<i  												
-															class="icon-present"
-															[style.color]="i.past ? 'silver' : 'goldenrod'"
-															*ngIf="i.type == 30 || i.type == 31"
-															[title]="'Aniversário' + ( i.type == 31 ? 'Kung Fu' : '')">
-														</i>																						
-													</div>																															
-												</ng-template>																	
-
-											</td>																		
-										</tr>
-									</table>	
-							</td>
-						</tr>
-						</table>	
-
-						<table class="table-sm table-striped table-bordered" 
-							*ngIf="external_people != null && external_people.length > 0" 
-							style="width:100%;margin-bottom:50px">
-							<tr>
-								<td colspan="9"
-									style="background-color:gray;font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center">
-									Público Externo
-								</td>
-							</tr>								
-							<tr>		
-								<td style="width:24.5%;background-color: gray"></td>				
-								<td style="width:9%;background-color: gray">
-
-								</td>
-								<td *ngFor="let c of week_days, let k3 = index" 							
-									style="width:9.5%;text-align: center"
-									[ngStyle]="{'background-color': selected_week.current && k3 == current_week_day ? 'rgb(100,100,100)': 'gray', 
-												'color': 'white' }"							
-									>																				
-									<div>								
-										<i  												
-											[ngClass]="c.icon"
-											*ngIf="c.icon != null"
-											[title]="c.description">
-										</i>
-										{{ c.name }} 
-									</div>									
-								</td>						
-							</tr>
-							<tr *ngFor="let visitant of external_people, let ke = index">					
-								<td>
-									<div class="row">
-										<div class="col-2" style="padding:0;padding-left:5px">
-											<img
-											class="rounded-circle img-border " 
-											src="https://myvtmiim.blob.core.windows.net/avatars/{{ visitant.avatar_img }}" 											
-											style="min-width:50px;width:100%;" 
-											*ngIf="visitant.avatar_img && visitant.avatar_img.length > 0">	
-										</div>								
-										<div class="col-10"  style="padding:0;padding-left:2px">
-											<div class="row">
-												<div class="col-12">											
-													<a 
-													style="color:black"
-													[routerLink]="['/person', visitant.person_id]">
-														{{ visitant.name }}														
-													</a>
-												</div>
-											</div>
-											<div class="row" style="font-size:10px;">
-												<div class="col-12">
-													{{ visitant.kf_name }}											
-												</div>
-											</div>
-										</div>	
-									</div>
-								</td>
-								<td>
-									
-								</td>						
-								<td valign="middle" align="center" 										
-									*ngFor="let item of visitant.dates, let k2 = index" 
-									style="border-right:1px solid grey"
-									[ngClass]=" selected_week.current && k2 == current_week_day ? (ke % 2 == 0 ? 'current2' : 'current') : '' ">
-
-									<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-										<div class="text-center" 
-											style="line-height:15px;"												
-											[style.border-top]="k > 0 ? '1px solid #CCC' : ''">
-											<a (click)="open(content, i)" 
-												[style.color]="i.closed && !i.treated ? 'silver' : ( i.treated ? 'orange' : (i.past ? 'red' : 'black'  )  )  "
-												*ngIf="i.type != 30 && i.type != 31"
-												style="font-size:12px">
-												<b *ngIf="i.type != 2">{{ i.abrev }}</b> 
-												<b *ngIf="i.type == 2">{{ i.title }}</b>																	
-												<span 
-													*ngIf="i.short_description != null 
-															&& i.short_description.length > 0 
-															&& i.type != 2 && i.type != 4"
-													style="font-size:11px"
-												> - {{ i.short_description }} </span>
-											</a>	
-											<i  												
-												class="icon-present"
-												[style.color]="i.past ? 'silver' : 'goldenrod'"
-												*ngIf="i.type == 30 || i.type == 31"
-												[title]="'Aniversário' + ( i.type == 31 ? 'Kung Fu' : '')">
-											</i>
-										</div>																															
-									</ng-template>
-
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>				
+						
 			</div>
 		</div>		
 	</div>
 </div>
 
-<ng-template #new_activity let-c="close" let-d="dismiss">
-	<div class="modal-header">
-		<h5 class="modal-title" style="font-weight: bold">Novo Registro de Atividade</h5>
-		<button type="button" class="close" aria-label="Close" (click)="reset_new_incident();d('Cross click')">
-		<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-	<div class="modal-body">			
-		<div class="form-body">			
-			<div class="row">
-				<div class="col-12">
-					<fieldset class="form-group">						
-						<label for="new_incident_branch" 
-							*ngIf="!current_branch || current_branch <= 0"
-							style="font-weight: bold">
-							Núcleo
-						</label>		
-						<div class="form-group"
-							*ngIf="!current_branch || current_branch <= 0">
-							<select id="branch" 
-								[(ngModel)]="new_incident.branch_id" 
-								(ngModelChange)="validate_new_event()"																	
-								class="form-control"								
-								>			
-								<option></option>			
-								<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
-							</select>								
-						</div>
-						<label for="new_incident_tmp_type" style="font-weight: bold">Tipo de Atividade</label>																		
-						<span *ngIf="new_incident.tmp_type != null">
-							{{ new_incident.tmp_type.name }}
-							<span *ngIf="new_incident.children_type != null">
-								- {{ new_incident.children_type.name }}
-							</span>							
 
-							<i class="ft-rotate-ccw" 
-								(click)="reset_new_incident_type();"
-								style="cursor: pointer;">
-							</i>							
-						</span>						
-						<select id="new_incident_tmp_type"
-							class="form-control" 
-							[(ngModel)]="new_incident.tmp_combo_type" 	
-							(ngModelChange)="change_new_incident_type($event)"
-							*ngIf="new_incident.tmp_type == null"
-							style="width:100%"
-							>		
-							<option></option>
-							<option *ngFor="let t of manual_incident_types" [value]="t.id">{{t.name}}</option>
-						</select>
-						<select id="new_incident_children_type" 
-							[(ngModel)]="new_incident.children_type" 
-							class="form-control" 
-							(ngModelChange)="change_new_incident_children_type($event)"																								
-							*ngIf="new_incident.tmp_type != null && new_incident.children_type == null && new_incident.tmp_type.childrens != null"
-							style="width:100%"
-							>						
-							<option *ngFor="let t of new_incident.tmp_type.childrens" [value]="t.id">{{t.name}}</option>
-						</select>						
-					</fieldset>                                
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-6">
-					<label for="new_incident_date" style="font-weight: bold">Data</label>
-				</div>
-			</div>
-			<div class="row">				
-				<div class="col-6">
-					<div class="form-group">													
-						<div class="input-group">							
-							<input class="form-control text-center" placeholder="dd/mm/aaaa" 
-							[(ngModel)]="new_incident.date" id="new_incident_date"
-							ngbDatepicker #niReschedule="ngbDatepicker" />
-							<div class="input-group-addon" (click)="niReschedule.toggle()">
-								<i class="ft-calendar" style="cursor: pointer;"></i>
-							</div>																																
-						</div>	
-						
-					</div>
-				</div>
-				<div class="col-6">					
-					<ngb-timepicker [spinners]="false" [(ngModel)]="new_incident.time"></ngb-timepicker>					
-				</div>
-			</div>
-			<div class="row" *ngIf="new_incident.type != null">
-				<div class="col-12">
-					<label for="new_incident_search_people" style="font-weight: bold">Participante{{ new_incident.people == null || new_incident.people.length <= 1 ? '' : 's' }}</label>	
-					<ul *ngIf="new_incident.people != null && new_incident.people.length > 0"
-						class="list-group">
-						<li *ngFor="let p of new_incident.people"
-							class="list-group-item">
-							<img alt="{{ p.name }}" 
-							class="rounded-circle img-border " 
-							src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}" 											
-							style="min-width:50px;max-width:50px;" 
-							*ngIf="p.avatar_url && p.avatar_url.length > 0" />							
-							{{ p.name }}
-							<div style="float:right">
-								<span class="badge badge-pill">
-									<i class="fa fa-times" 
-										style="cursor: pointer;"
-										(click)="remove_person_from_new_incident(p)"
-									></i>
-								</span>
-							</div>
-						</li>						
-					</ul>												
-					<div class="form-group" [class.has-danger]="search_failed">
-					<input type="text" class="form-control" 
-						id="new_incident_search_people"
-						[ngbTypeahead]="search_people" 
-						placeholder="Pesquise {{ new_incident.people == null || new_incident.people.length <= 0 ? 'a' : 'mais' }} participante{{ new_incident.people == null || new_incident.people.length <= 0 ? '' : 's' }}"
-						[resultTemplate]="person_typeahead_template"
-						[inputFormatter]="people_typeahead_formatter"
-						[(ngModel)]="new_incident.tmp_person" 
-						(ngModelChange) ="add_person_to_new_incident($event)" 
-					/>
-					<span *ngIf="searching_people">buscando...</span>
-					<div class="form-control-feedback" *ngIf="search_failed">
-						ops... ocorreu algum erro na busca</div>
-					</div>
-					<ng-template #person_typeahead_template let-p="result">
-						<img alt="{{ p.name }}" 
-						class="rounded-circle img-border " 
-						src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}" 											
-						style="min-width:50px;max-width:50px;" 
-						*ngIf="p.avatar_url && p.avatar_url.length > 0" />						
-						{{ p.name }}
-						<span *ngIf="!p.found" style="font-style: italic;">
-							(novo)
-						</span>
-					</ng-template>					
-				</div>
-			</div>
-			<div class="row" *ngIf="new_incident.type != null">
-				<div class="col-12">
-					<label for="new_incident_description" style="font-weight: bold">Descrição</label>								
-					<textarea class="form-control"
-					id="new_incident_description"
-					[(ngModel)]="new_incident.description"							
-					(ngModelChange) ="validate_new_event()" 		
-					rows="3"></textarea>
-				</div>
-			</div>			
-			<div class="row" *ngIf="new_incident.type != null && new_incident.type.need_value">
-				<div class="col-12">
-					<label for="new_incident_value" style="font-weight: bold">Valor</label>								
-					<input type="number" id="new_incident_value" 
-						[(ngModel)]="new_incident.value"							
-						class="form-control text-right"
-						(ngModelChange) ="validate_new_event_value()" 						
-						/>
-					<small class="form-text text-muted danger" *ngIf="new_incident.value != null && new_incident.value.errors?.gt">gt error</small>
-				</div>
-			</div>
-		</div>			
-	</div>
-	<div class="modal-footer">
-		<button type="button" 
-			class="btn btn-success" 
-			(click)="register_new_incident();d('new incident!');"
-			*ngIf="new_incident.correct">
-			<i class="icon-check"></i>
-			Registrar
-		</button>															
-		<button type="button" class="btn btn-silver" 
-			(click)="reset_new_incident();d('reset new incident!');"
-			>
-			<i class="icon-action-undo"></i>
-			Cancelar
-		</button>	
-	</div>
+<ng-template #new_activity let-c="close" let-d="dismiss">
+	<new-incident-modal [d]="d" [branches]="branches"
+		[current_branch]="current_branch"		
+		[incident_types]="manual_incident_types"	
+		[personService]="personService"
+		[incidentService]="incidentService"		
+	></new-incident-modal>
 </ng-template>
 
 <ng-template #content let-c="close" let-d="dismiss">
-	<div class="modal-header">
-		<h5 class="modal-title" style="font-weight: bold">{{ current_incident.long_description }}</h5>
-		<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-		<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-	<div class="modal-body">
-		<form class="form" #f="ngForm">
-			<div class="row" *ngIf="current_incident.title">
-				<div class="col-12">													
-					<markdown [data]="current_incident.title"></markdown>			
-				</div>
-			</div>		
-			<div class="row" *ngIf="current_incident.treatment_text">						
-				<div class="col-12">
-					<markdown [data]="current_incident.treatment_text"></markdown>			
-				</div>
-			</div>
-			<div class="row" *ngIf="current_incident.close_text">						
-				<div class="col-12">
-					<div style="font-size:10px;font-weight:bold;line-height:10px;font-style:italic">Fechamento:</div>
-					<markdown [data]="current_incident.close_text"></markdown>			
-				</div>
-			</div>
-			<div class="row" *ngIf="current_incident.new_schedule_date">
-				<div class="col-12">
-					<b>Reagendado para: </b>{{ current_incident.new_schedule_small_date }} {{ current_incident.new_schedule_hour }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-12" *ngIf="!current_incident.in_treatment 
-											&& current_incident.need_description_for_closing
-											&& !current_incident.closed
-											&& !current_incident.treated">				
-					<div class="row">					
-						<div class="col-12">													
-							<fieldset class="form-group">					
-								<textarea class="form-control" 
-									name="closing_contact_text"
-									[(ngModel)]="current_incident.closing_contact_text"				
-									rows="3" placeholder="Como foi?"></textarea>
-							</fieldset>		
-						</div>
-					</div>
-				</div>
-				<div class="col-12" *ngIf="!current_incident.in_treatment && !current_incident.closed && !current_incident.treated">
-					<h6 style="font-weight: bold">Realizado?</h6>				
-					<button type="button" class="btn btn-success" (click)="close_incident(current_incident);d('close!');">
-						<i class="icon-check"></i> Sim
-					</button>
-					<button type="button" class="btn btn-primary" (click)="begin_treat_incident(current_incident)">
-						<i class="icon-ban"></i> Não
-					</button>		
-				</div>			
-				<div class="col-12" *ngIf="current_incident.in_treatment">				
-					<div class="row">					
-						<div class="col-12">							
-							<h6 style="font-weight: bold">Contato</h6>
-							<fieldset class="form-group">					
-								<textarea class="form-control" 
-									required minlength="4"
-									name="contact_text"
-									(ngModelChange)="validade_treatment_contact_text(current_incident)"
-									[(ngModel)]="current_incident.contact_text"											
-									rows="3" placeholder="O que vocês conversaram?"></textarea>
-							</fieldset>		
-							<small class="form-text text-muted danger" 
-								*ngIf="current_incident.errors && current_incident.errors['need_contact_text']">
-								Informe como foi o contato!
-							</small>
-						</div>
-					</div>
-					<div class="row" *ngIf="current_incident.reschedule">					
-						<div class="col-6">			
-							<h6 style="font-weight: bold">Reagendamento</h6>									
-							<div class="form-group">
-								<div class="input-group">
-									<input class="form-control text-center" style="width:100%" placeholder="dd/mm/aaaa"
-									name="new_date" 
-									[(ngModel)]="current_incident.new_date" 
-									ngbDatepicker #dpReschedule="ngbDatepicker" />
-									<div class="input-group-addon" (click)="dpReschedule.toggle()">
-										<i class="ft-calendar" style="cursor: pointer;"></i>
-									</div>							
-								</div>																
-							</div>						
-						</div>
-						<div class="col-6">
-							<ngb-timepicker [(ngModel)]="current_incident.new_time" [ngModelOptions]="{standalone: true}"></ngb-timepicker>							
-						</div>																																								
-					</div>															
-				</div>
-			</div>
-		</form>
-	</div>		
-	<div class="modal-footer">
-		<button type="button" class="btn btn-success" 
-			(click)="register_contact_for_incident(current_incident, d);"
-			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
-			<i class="far fa-envelope"></i>
-			Registrar Contato
-		</button>
-		<button type="button" class="btn btn-primary" 
-			(click)="begin_reschedule_incident(current_incident)"
-			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
-			<i class="ft-calendar"></i>
-			Reagendar
-		</button>		
-		<button type="button" 
-			class="btn btn-success" 
-			(click)="reschedule_incident(current_incident);d('reschedule!');"
-			*ngIf="current_incident.in_treatment && current_incident.reschedule">
-			<i class="ft-calendar"></i>
-			Reagendar!
-		</button>															
-		<button type="button" class="btn btn-silver" 
-			(click)="reset_treat_incident(current_incident);"
-			*ngIf="current_incident.in_treatment && !current_incident.reschedule">
-			<i class="icon-action-undo"></i>
-			Voltar
-		</button>		
-		<button type="button" class="btn btn-silver" 
-			(click)="reset_reschedule(current_incident);"
-			*ngIf="current_incident.in_treatment && current_incident.reschedule">
-			<i class="icon-action-undo"></i>
-			Voltar
-		</button>		
-		<button type="button" class="btn btn-silver" 			
-			*ngIf="!current_incident.begin_remove && !current_incident.in_treatment"
-			(click)="begin_remove_incident(current_incident);">
-			<i class="ft-trash-2"></i>
-			Excluir
-		</button>
-		<span *ngIf="current_incident.begin_remove">
-			Confirma exclusão?
-		</span>
-		<button type="button" class="btn btn-danger" 
-			*ngIf="current_incident.begin_remove"
-			(click)="remove_incident(current_incident);d('remove!');">
-			<i class="ft-trash-2"></i>
-			Excluir
-		</button>
-		<button type="button" class="btn btn-secondary" 
-			*ngIf="current_incident.begin_remove"
-			(click)="rollback_remove_incident(current_incident);">
-			<i class="icon-action-undo"></i>
-			Não
-		</button>
-	</div>
+	<incident-treatment-modal
+		[incident]="current_incident"
+		[personService]="personService"
+		[incidentService]="incidentService"
+		[d]="d"	
+	></incident-treatment-modal>
 </ng-template>

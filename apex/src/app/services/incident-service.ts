@@ -51,6 +51,14 @@ export class IncidentService {
     });
   }
 
+  cancel_start_incident(incident) {
+    return this.http.post(this.dataUrl + '/incident/start/cancel', { 
+      incident
+    }).do((next) => {            
+      this.incident_changes.next(true);
+    });
+  }
+
   register_contact_for_incident(incident, contact) {
     return this.http.post(this.dataUrl + '/incident/register_contact', { 
       incident, contact     

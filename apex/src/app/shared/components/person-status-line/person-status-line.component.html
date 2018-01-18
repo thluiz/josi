@@ -1,0 +1,54 @@
+<div class="row" *ngIf="person">	
+	<div class="col-12 d-none d-xl-block pl-1">                                
+		<span *ngIf="person.scheduling_status > 0"
+			[title]="person.scheduling_description">
+				<i class="ft-calendar" 
+				style="color:red"></i>
+		</span>
+		<span *ngIf="person.financial_status > 0">
+				<i class="icon-wallet" 
+				style="color:red"													
+				[title]="person.financial_description"></i>
+		</span>
+		<span *ngIf="person.data_status == 1" 
+			[title]="person.data_status_description"
+			style="cursor:pointer">												
+				<i class="fas fa-user"
+				style="color:red"></i>
+		</span>
+		&nbsp;
+		<div style="float:right" class="pr-1">				
+			<i  *ngIf="person.has_birthday_this_month"												
+				class="icon-present"
+				[style.color]="'silver'"					
+				title="Aniversariante do mês">
+			</i>
+		</div>
+	</div>
+	<div class="col-12 d-block d-xl-none">                                
+		<span *ngIf="person.scheduling_status > 0"
+			[title]="person.scheduling_description">
+				<i class="ft-calendar" 
+				style="color:red"></i>
+		</span>
+		<span *ngIf="person.financial_status > 0"
+			[title]="person.financial_description">
+				<i class="icon-wallet" 
+				style="color:red"></i>
+		</span>
+		<span *ngIf="person.data_status == 1" 
+			[title]="person.data_status_description"	
+			style="cursor:pointer">												
+				<i class="fas fa-user"
+				style="color:red"></i>
+		</span>
+		&nbsp;
+		<div style="float:right" class="pr-1">
+			<i  *ngIf="person.has_birthday_this_month"												
+				class="icon-present"
+				[style.color]="'silver'"					
+				title="Aniversariante do mês">
+			</i>
+		</div>
+	</div>
+</div>

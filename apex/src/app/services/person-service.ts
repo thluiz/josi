@@ -15,8 +15,12 @@ export class PersonService {
  constructor(private http:Http) { }  
   private dataUrl = environment.api_url;    
 
-  getDailyMonitor(branche, display : DailyMonitorDisplayType, display_modifier: number) {
-    return this.http.get(this.dataUrl + `/daily/${branche || 0}/${display}/${display_modifier}`);    
+  getDailyAgenda(branch, date: any) {
+    return this.http.get(this.dataUrl + `/agenda/${branch || 0}/${date.year}-${date.month}-${date.day}`);    
+  }
+
+  getDailyMonitor(branch, display : DailyMonitorDisplayType, display_modifier: number) {
+    return this.http.get(this.dataUrl + `/daily/${branch || 0}/${display}/${display_modifier}`);    
   }  
 
   getPeopleSummary(branche, week) {

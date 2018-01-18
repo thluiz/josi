@@ -74,6 +74,12 @@ function getParticipationList(people) {
             response.send("Ok");
         });
 
+        app.post("/api/incident/start/cancel", async (request, response, next) => {
+            let result = await incident_service.cancel_start_incident(request.body.incident);
+
+            response.send("Ok");
+        });
+
         app.post("/api/incident/remove", async (request, response, next) => {            
             let result = await incident_service.remove_incident(request.body.incident);            
                         
@@ -109,6 +115,13 @@ function getParticipationList(people) {
         app.get("/api/branches", async (request, response, next) => {                        
             const result = await pool.request()            
             .execute(`GetBranches`);                
+
+            response.send(result.recordset[0]);
+        });
+
+        app.get("/api/incident_types", async (request, response, next) => {                        
+            const result = await pool.request()            
+            .execute(`GetIncidentTypes`);                
 
             response.send(result.recordset[0]);
         });
@@ -182,6 +195,20 @@ function getParticipationList(people) {
             );            
 
             response.send("Ok");                        
+        });
+
+        app.get("/api/agenda/:branch?/:date?", async (request, response, next) => {            
+            try {
+                let result = await pool.request()                
+                    .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
+                    .input('date', sql.VarChar(10), request.params.date || null)                    
+                    .execute(`GetAgenda`);  
+                    
+                response.send((result.recordset[0]));
+            } catch (error) {                                
+                response.status(500);
+                response.json({ error: error });
+            } 
         });
 
         app.get("/api/daily/:branch?/:display?/:display_modifier?", async (request, response, next) => {            

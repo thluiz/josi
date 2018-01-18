@@ -68,6 +68,10 @@ function getParticipationList(people) {
             let result = yield incident_service.start_incident(request.body.incident);
             response.send("Ok");
         }));
+        app.post("/api/incident/start/cancel", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            let result = yield incident_service.cancel_start_incident(request.body.incident);
+            response.send("Ok");
+        }));
         app.post("/api/incident/remove", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             let result = yield incident_service.remove_incident(request.body.incident);
             response.send("Ok");
@@ -89,6 +93,11 @@ function getParticipationList(people) {
         app.get("/api/branches", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             const result = yield pool.request()
                 .execute(`GetBranches`);
+            response.send(result.recordset[0]);
+        }));
+        app.get("/api/incident_types", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            const result = yield pool.request()
+                .execute(`GetIncidentTypes`);
             response.send(result.recordset[0]);
         }));
         app.get("/api/people", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
@@ -128,6 +137,19 @@ function getParticipationList(people) {
         app.post("/api/person_role/delete", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             let result = yield person_service.remove_role(request.body.person_id, request.body.role_id);
             response.send("Ok");
+        }));
+        app.get("/api/agenda/:branch?/:date?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                let result = yield pool.request()
+                    .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
+                    .input('date', sql.VarChar(10), request.params.date || null)
+                    .execute(`GetAgenda`);
+                response.send((result.recordset[0]));
+            }
+            catch (error) {
+                response.status(500);
+                response.json({ error: error });
+            }
         }));
         app.get("/api/daily/:branch?/:display?/:display_modifier?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {

@@ -28,11 +28,33 @@
             </div>
         </div>
         <div class="row" *ngIf="current_incident.started_on_hour && !current_incident.treated">
-            <div class="col-1">
+            <div class="col-2">
                 <b>Inicio: </b>
             </div>
-            <div class="col-2 pl-3">
+            <div class="col-2 pl-3" *ngIf="current_incident.closed_on_hour">
                 {{ current_incident.started_on_hour }}
+            </div>
+            <div class="col-4" *ngIf="!current_incident.closed_on_hour">
+                {{ current_incident.started_on_hour }}
+
+                <i class="ft-trash-2" 
+                    (click)="current_incident.cancelling_start = true"
+                    title="Cancelar inicio da atividade"
+                    *ngIf="!current_incident.closed_on_hour && !current_incident.cancelling_start"
+                    style="cursor: pointer;">
+                </i>
+                <i class="ft-rotate-ccw"                     
+                    title="Manter inicio da atividade"
+                    *ngIf="current_incident.cancelling_start"
+                    (click)="current_incident.cancelling_start = false"
+                    style="cursor: pointer;">
+                </i>
+                <i class="ft-trash-2"                              
+                    title="Confirmar cancelamento inicio da atividade"
+                    *ngIf="current_incident.cancelling_start"
+                    (click)="cancel_start_incident(current_incident, d);"
+                    style="cursor: pointer;color:red">
+                </i>
             </div>
             <div class="col-1" *ngIf="current_incident.started_on_hour && current_incident.closed_on_hour">
                 <b>Fim: </b>

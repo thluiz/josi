@@ -131,6 +131,18 @@ export class IncidentTreatmentModalComponent implements OnInit {
       }); 
   }
 
+  cancel_start_incident(incident, close_modal_action) {
+    this.incidentService.cancel_start_incident(incident)
+      .toPromise()
+      .then((value) => { 
+        close_modal_action()
+        incident.cancelling_start = false;
+      })
+      .catch((reason) => {
+        console.log(reason);
+      }); 
+  }
+
   register_contact_for_incident(incident, close_modal_action) {
     if(!this.validade_treatment_contact_text(incident)) {
       return;

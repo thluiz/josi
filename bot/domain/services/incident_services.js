@@ -22,6 +22,15 @@ class IncidentService {
             return result;
         });
     }
+    cancel_start_incident(incident) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.sql_pool
+                .request()
+                .input('incident', sql.Int, incident.id)
+                .execute(`CancelIncidentStart`);
+            return result;
+        });
+    }
     close_incident(incident) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.sql_pool
