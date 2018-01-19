@@ -15,16 +15,14 @@ class SumaryService {
     }
     consolidate_members_sumary() {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.sql_pool
-                .request()
+            const result = yield new sql.Request(this.sql_pool)
                 .execute(`ConsolidateMembersSumary`);
             return result;
         });
     }
     consolidate_activity_sumary() {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.sql_pool
-                .request()
+            const result = yield new sql.Request(this.sql_pool)
                 .execute(`ConsolidateActivitySumary`);
             return result;
         });

@@ -8,16 +8,14 @@ export class SumaryService {
     }
 
     async consolidate_members_sumary() {        
-        const result = await this.sql_pool
-                                .request()                                
+        const result = await new sql.Request(this.sql_pool)                             
                                 .execute(`ConsolidateMembersSumary`);
 
         return result;  
     }
 
     async consolidate_activity_sumary() {        
-        const result = await this.sql_pool
-                                .request()                                
+        const result = await new sql.Request(this.sql_pool)                               
                                 .execute(`ConsolidateActivitySumary`);
 
         return result;  

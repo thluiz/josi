@@ -8,8 +8,7 @@ export class PersonService {
     }
 
     public async add_role(person_id, role_id) {
-        const result = await this.sql_pool
-                                .request()
+        const result = await new sql.Request(this.sql_pool)
                                 .input('person_id', sql.Int, person_id)                                
                                 .input('role_id', sql.Int, role_id)
                                 .execute(`AddPersonRole`);
@@ -18,8 +17,7 @@ export class PersonService {
     }
     
     public async remove_role(person_id, role_id) {
-        const result = await this.sql_pool
-                                .request()
+        const result = await new sql.Request(this.sql_pool)
                                 .input('person_id', sql.Int, person_id)                                
                                 .input('role_id', sql.Int, role_id)
                                 .execute(`RemovePersonRole`);
@@ -28,8 +26,7 @@ export class PersonService {
     }
 
     public async change_kf_name(person_id, kf_name, ideograms) {
-        const result = await this.sql_pool
-                                .request()
+        const result = await new sql.Request(this.sql_pool)
                                 .input('person_id', sql.Int, person_id)                                
                                 .input('alias', sql.VarChar(150), kf_name)
                                 .input('kf_name', sql.Bit, 1)
@@ -40,8 +37,7 @@ export class PersonService {
     }
 
     public async update_person_data(person) {          
-        return await this.sql_pool
-                                .request()
+        return await new sql.Request(this.sql_pool)
                                 .input('id', sql.Int, person.id)                                                                
                                 .input('name', sql.VarChar(200), person.name)
                                 .input('birth_date', sql.VarChar(10), person.birth_date)
@@ -57,15 +53,13 @@ export class PersonService {
     }
 
     async remove_schedule(id) {
-        return await this.sql_pool
-                                .request()
+        return await new sql.Request(this.sql_pool)
                                 .input('person_schedule_id', sql.Int, id)
                                 .execute(`CancelPersonSchedule`);
     }
 
     async save_schedule(schedule) {
-        return await this.sql_pool
-            .request()
+        return await new sql.Request(this.sql_pool)
             .input('person_id', sql.Int, schedule.person_id)
             .input('branch_id', sql.Int, schedule.branch_id)
             .input('incident_type', sql.Int, schedule.incident_type)
@@ -83,8 +77,7 @@ export class PersonService {
     }
 
     async check_people_status() {        
-        const result = await this.sql_pool
-                                .request()                                
+        const result = await new sql.Request(this.sql_pool)                                
                                 .execute(`CheckPeopleStatus`);
 
         return result;  

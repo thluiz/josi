@@ -45,7 +45,11 @@ function getParticipationList(people) {
 }
 (() => __awaiter(this, void 0, void 0, function* () {
     try {
-        const pool = yield sql.connect(config);
+        const pool = new sql.ConnectionPool(config);
+        pool.on('error', err => {
+            console.log(err);
+        });
+        yield pool.connect();
         const app = express();
         const bodyParser = require("body-parser");
         const cors = require("cors");
@@ -86,27 +90,27 @@ function getParticipationList(people) {
             response.send("Ok");
         }));
         app.get("/api/people/members", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield pool.request()
+            const result = yield new sql.Request(pool)
                 .execute(`GetMembersList`);
             response.send(result.recordset[0]);
         }));
         app.get("/api/branches", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield pool.request()
+            const result = yield new sql.Request(pool)
                 .execute(`GetBranches`);
             response.send(result.recordset[0]);
         }));
         app.get("/api/incident_types", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield pool.request()
+            const result = yield new sql.Request(pool)
                 .execute(`GetIncidentTypes`);
             response.send(result.recordset[0]);
         }));
         app.get("/api/people", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield pool.request()
+            const result = yield new sql.Request(pool)
                 .execute(`GetPeopleList`);
             response.send(result.recordset[0]);
         }));
         app.get("/api/people/:id", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield pool.request()
+            const result = yield new sql.Request(pool)
                 .input('id', sql.Int, request.params.id)
                 .execute(`GetPersonData`);
             response.send(result.recordset[0][0]);
@@ -117,7 +121,7 @@ function getParticipationList(people) {
             response.send("Ok");
         }));
         app.get("/api/people/search/:name?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield pool.request()
+            const result = yield new sql.Request(pool)
                 .input('names', sql.VarChar(sql.MAX), request.params.name)
                 .execute(`GetPeopleByNameForTypeahead`);
             response.send(result.recordset[0]);
@@ -140,7 +144,7 @@ function getParticipationList(people) {
         }));
         app.get("/api/agenda/:branch?/:date?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                let result = yield pool.request()
+                let result = yield new sql.Request(pool)
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
                     .input('date', sql.VarChar(10), request.params.date || null)
                     .execute(`GetAgenda`);
@@ -153,7 +157,7 @@ function getParticipationList(people) {
         }));
         app.get("/api/daily/:branch?/:display?/:display_modifier?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                let result = yield pool.request()
+                let result = yield new sql.Request(pool)
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
                     .input('display_modifier', sql.Int, request.params.display_modifier || 0)
                     .input('display', sql.Int, request.params.display || 0)
@@ -167,7 +171,7 @@ function getParticipationList(people) {
         }));
         app.get("/api/people_summary/:branch?/:week?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                let result = yield pool.request()
+                let result = yield new sql.Request(pool)
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
                     .input('week_modifier', sql.Int, request.params.week || 0)
                     .input('date', sql.VarChar(10), request.params.date)
@@ -181,7 +185,7 @@ function getParticipationList(people) {
         }));
         app.get("/api/sumary/:branch?/:month?/:week?/:date?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                let result = yield pool.request()
+                let result = yield new sql.Request(pool)
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
                     .input('month_modifier', sql.Int, request.params.month || 0)
                     .input('week_modifier', sql.Int, request.params.week || 0)
@@ -271,7 +275,7 @@ function getParticipationList(people) {
                 const moment = results.response.moment || session.dialogData.moment;
                 try {
                     session.sendTyping();
-                    yield pool.request()
+                    yield new sql.Request(pool)
                         .input('participants', sql.VarChar(sql.MAX), moment.people.map(p => p.person_id).join(','))
                         .input('fund_value', sql.Decimal(10, 2), moment.fund_value)
                         .input('title', sql.VarChar(300), moment.title)
@@ -451,7 +455,7 @@ function getParticipationList(people) {
                 if (names != null && names.length > 0) {
                     try {
                         session.sendTyping();
-                        const result = yield pool.request()
+                        const result = yield new sql.Request(pool)
                             .input('names', sql.VarChar(sql.MAX), names)
                             .execute(`GetPeopleByNameForBot`);
                         session.dialogData.query = result.recordset;

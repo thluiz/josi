@@ -15,8 +15,7 @@ class IncidentService {
     }
     start_incident(incident) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.sql_pool
-                .request()
+            const result = yield new sql.Request(this.sql_pool)
                 .input('incident', sql.Int, incident.id)
                 .execute(`StartIncident`);
             return result;
@@ -24,8 +23,7 @@ class IncidentService {
     }
     cancel_start_incident(incident) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.sql_pool
-                .request()
+            const result = yield new sql.Request(this.sql_pool)
                 .input('incident', sql.Int, incident.id)
                 .execute(`CancelIncidentStart`);
             return result;
@@ -33,8 +31,7 @@ class IncidentService {
     }
     close_incident(incident) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.sql_pool
-                .request()
+            const result = yield new sql.Request(this.sql_pool)
                 .input('id', sql.Int, incident.id)
                 .input('close_description', sql.VarChar(sql.MAX), incident.closing_contact_text || "")
                 .execute(`CloseIncident`);
@@ -44,8 +41,7 @@ class IncidentService {
     remove_incident(incident) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.sql_pool
-                    .request()
+                const result = yield new sql.Request(this.sql_pool)
                     .input('id', sql.Int, incident.id)
                     .execute(`RemoveIncident`);
                 return result;
@@ -64,8 +60,7 @@ class IncidentService {
             try {
                 console.log(incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(","));
                 console.log(incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(","));
-                const result = yield this.sql_pool
-                    .request()
+                const result = yield new sql.Request(this.sql_pool)
                     .input('description', sql.VarChar(sql.MAX), incident.description)
                     .input('people', sql.VarChar(sql.MAX), incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(","))
                     .input('date', sql.VarChar(100), date)
@@ -83,8 +78,7 @@ class IncidentService {
     }
     reschedule_incident(incident, new_incident, contact) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.sql_pool
-                .request()
+            const result = yield new sql.Request(this.sql_pool)
                 .input('id', sql.Int, incident.id)
                 .input('new_date', sql.VarChar(16), new_incident.date + ' ' + new_incident.start_hour)
                 .input('contact', sql.VarChar(sql.MAX), contact)
@@ -93,8 +87,7 @@ class IncidentService {
     }
     register_contact_for_incident(incident, text) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.sql_pool
-                .request()
+            const result = yield new sql.Request(this.sql_pool)
                 .input('id', sql.Int, incident.id)
                 .input('contact', sql.VarChar(sql.MAX), text)
                 .execute(`RegisterContactForIncident`);

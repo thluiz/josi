@@ -15,8 +15,7 @@ class PersonService {
     }
     add_role(person_id, role_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.sql_pool
-                .request()
+            const result = yield new sql.Request(this.sql_pool)
                 .input('person_id', sql.Int, person_id)
                 .input('role_id', sql.Int, role_id)
                 .execute(`AddPersonRole`);
@@ -25,8 +24,7 @@ class PersonService {
     }
     remove_role(person_id, role_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.sql_pool
-                .request()
+            const result = yield new sql.Request(this.sql_pool)
                 .input('person_id', sql.Int, person_id)
                 .input('role_id', sql.Int, role_id)
                 .execute(`RemovePersonRole`);
@@ -35,8 +33,7 @@ class PersonService {
     }
     change_kf_name(person_id, kf_name, ideograms) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.sql_pool
-                .request()
+            const result = yield new sql.Request(this.sql_pool)
                 .input('person_id', sql.Int, person_id)
                 .input('alias', sql.VarChar(150), kf_name)
                 .input('kf_name', sql.Bit, 1)
@@ -47,8 +44,7 @@ class PersonService {
     }
     update_person_data(person) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.sql_pool
-                .request()
+            return yield new sql.Request(this.sql_pool)
                 .input('id', sql.Int, person.id)
                 .input('name', sql.VarChar(200), person.name)
                 .input('birth_date', sql.VarChar(10), person.birth_date)
@@ -65,16 +61,14 @@ class PersonService {
     }
     remove_schedule(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.sql_pool
-                .request()
+            return yield new sql.Request(this.sql_pool)
                 .input('person_schedule_id', sql.Int, id)
                 .execute(`CancelPersonSchedule`);
         });
     }
     save_schedule(schedule) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.sql_pool
-                .request()
+            return yield new sql.Request(this.sql_pool)
                 .input('person_id', sql.Int, schedule.person_id)
                 .input('branch_id', sql.Int, schedule.branch_id)
                 .input('incident_type', sql.Int, schedule.incident_type)
@@ -93,8 +87,7 @@ class PersonService {
     }
     check_people_status() {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.sql_pool
-                .request()
+            const result = yield new sql.Request(this.sql_pool)
                 .execute(`CheckPeopleStatus`);
             return result;
         });

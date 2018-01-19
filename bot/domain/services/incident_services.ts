@@ -8,8 +8,7 @@ export class IncidentService {
     }
 
     public async start_incident(incident) {
-        const result = await this.sql_pool
-                                .request()
+        const result = await new sql.Request(this.sql_pool)
                                 .input('incident', sql.Int, incident.id)                                
                                 .execute(`StartIncident`);
 
@@ -17,8 +16,7 @@ export class IncidentService {
     }
 
     public async cancel_start_incident(incident) {
-        const result = await this.sql_pool
-                                .request()
+        const result = await new sql.Request(this.sql_pool)
                                 .input('incident', sql.Int, incident.id)                                
                                 .execute(`CancelIncidentStart`);
 
@@ -26,8 +24,7 @@ export class IncidentService {
     }
     
     public async close_incident(incident) {
-        const result = await this.sql_pool
-                                .request()
+        const result = await new sql.Request(this.sql_pool)
                                 .input('id', sql.Int, incident.id)
                                 .input('close_description', sql.VarChar(sql.MAX), incident.closing_contact_text || "")                        
                                 .execute(`CloseIncident`);
@@ -36,10 +33,8 @@ export class IncidentService {
     }
 
     public async remove_incident(incident) {        
-        try {
-
-            const result = await this.sql_pool
-                                    .request()
+        try {            
+            const result = await new sql.Request(this.sql_pool)                                    
                                     .input('id', sql.Int, incident.id)        
                                     .execute(`RemoveIncident`);
 
@@ -60,8 +55,7 @@ export class IncidentService {
             console.log(incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(","));
             console.log(incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(","));
 
-            const result = await this.sql_pool
-            .request()
+            const result = await new sql.Request(this.sql_pool)
             .input('description', sql.VarChar(sql.MAX), incident.description)
             .input('people', sql.VarChar(sql.MAX), incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(","))
             .input('date', sql.VarChar(100), date)        
@@ -80,8 +74,7 @@ export class IncidentService {
     }
 
     public async reschedule_incident(incident, new_incident, contact) {
-        const result = await this.sql_pool
-        .request()
+        const result = await new sql.Request(this.sql_pool)
         .input('id', sql.Int, incident.id)
         .input('new_date', sql.VarChar(16), new_incident.date + ' ' + new_incident.start_hour)
         .input('contact', sql.VarChar(sql.MAX), contact)
@@ -89,8 +82,7 @@ export class IncidentService {
     }
     
     public async register_contact_for_incident(incident, text) {
-        const result = await this.sql_pool
-        .request()
+        const result = await new sql.Request(this.sql_pool)
         .input('id', sql.Int, incident.id)
         .input('contact', sql.VarChar(sql.MAX), text)
         .execute(`RegisterContactForIncident`);

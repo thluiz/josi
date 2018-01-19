@@ -42,7 +42,14 @@ function getParticipationList(people) {
 
 (async () => {
     try {    
-        const pool = await sql.connect(config);    
+        const pool = new sql.ConnectionPool(config);    
+
+        pool.on('error', err => {
+            console.log(err);
+        })
+
+        await pool.connect();
+
         const app = express();
         const bodyParser = require("body-parser");
         const cors = require("cors");
@@ -106,35 +113,35 @@ function getParticipationList(people) {
         });
 
         app.get("/api/people/members", async (request, response, next) => {                        
-            const result = await pool.request()            
+            const result = await new sql.Request(pool)            
             .execute(`GetMembersList`);                
 
             response.send(result.recordset[0]);
         });
 
         app.get("/api/branches", async (request, response, next) => {                        
-            const result = await pool.request()            
+            const result = await new sql.Request(pool)            
             .execute(`GetBranches`);                
 
             response.send(result.recordset[0]);
         });
 
         app.get("/api/incident_types", async (request, response, next) => {                        
-            const result = await pool.request()            
+            const result = await new sql.Request(pool)            
             .execute(`GetIncidentTypes`);                
 
             response.send(result.recordset[0]);
         });
 
         app.get("/api/people", async (request, response, next) => {                        
-            const result = await pool.request()            
+            const result = await new sql.Request(pool)            
             .execute(`GetPeopleList`);                
 
             response.send(result.recordset[0]);
         });
 
         app.get("/api/people/:id", async (request, response, next) => {                        
-            const result = await pool.request()
+            const result = await new sql.Request(pool)
             .input('id', sql.Int, request.params.id)
             .execute(`GetPersonData`);                
 
@@ -152,7 +159,7 @@ function getParticipationList(people) {
         });
 
         app.get("/api/people/search/:name?", async (request, response, next) => {                        
-            const result = await pool.request()
+            const result = await new sql.Request(pool)
             .input('names', sql.VarChar(sql.MAX), request.params.name)
             .execute(`GetPeopleByNameForTypeahead`);                
 
@@ -199,7 +206,7 @@ function getParticipationList(people) {
 
         app.get("/api/agenda/:branch?/:date?", async (request, response, next) => {            
             try {
-                let result = await pool.request()                
+                let result = await new sql.Request(pool)                             
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
                     .input('date', sql.VarChar(10), request.params.date || null)                    
                     .execute(`GetAgenda`);  
@@ -213,7 +220,7 @@ function getParticipationList(people) {
 
         app.get("/api/daily/:branch?/:display?/:display_modifier?", async (request, response, next) => {            
             try {
-                let result = await pool.request()                
+                let result = await new sql.Request(pool)                
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
                     .input('display_modifier', sql.Int, request.params.display_modifier  || 0)
                     .input('display', sql.Int, request.params.display || 0)
@@ -229,7 +236,7 @@ function getParticipationList(people) {
 
         app.get("/api/people_summary/:branch?/:week?", async (request, response, next) => {            
             try {
-                let result = await pool.request()                
+                let result = await new sql.Request(pool)                
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
                     .input('week_modifier', sql.Int, request.params.week || 0)
                     .input('date', sql.VarChar(10), request.params.date)
@@ -244,7 +251,7 @@ function getParticipationList(people) {
 
         app.get("/api/sumary/:branch?/:month?/:week?/:date?", async (request, response, next) => {
             try {
-                let result = await pool.request()                
+                let result = await new sql.Request(pool)                
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
                     .input('month_modifier', sql.Int, request.params.month || 0)
                     .input('week_modifier', sql.Int, request.params.week || 0)
@@ -363,7 +370,7 @@ function getParticipationList(people) {
                 try {
                     session.sendTyping();
 
-                    await pool.request()
+                    await new sql.Request(pool)
                                 .input('participants', sql.VarChar(sql.MAX), 
                                     moment.people.map(p => p.person_id).join(',')
                                 )
@@ -611,7 +618,7 @@ function getParticipationList(people) {
             if(names != null && names.length > 0) {
                 try {
                     session.sendTyping();
-                    const result = await pool.request()
+                    const result = await new sql.Request(pool)
                                     .input('names', sql.VarChar(sql.MAX), names)
                                     .execute(`GetPeopleByNameForBot`);                
                                         
