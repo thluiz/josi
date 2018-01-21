@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: 'app-full-layout-page',
   templateUrl: './management-panel-page.component.html',
   styleUrls: ['../people-customizations.scss'],
-  providers: [PersonService, DatePickerI18n,
+  providers: [DatePickerI18n,
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })

@@ -49,7 +49,7 @@
                                                                 class="form-control"                                                                 
                                                                 [(ngModel)]="person.branch_id">	
                                                                 <option></option>					
-                                                                <option *ngFor="let b of person.branches" [value]="b.id">{{ b.abrev }}</option>
+                                                                <option *ngFor="let b of branches" [value]="b.id">{{ b.abrev }}</option>
                                                             </select>																															                                                    
                                                         </div>
                                                     </div>
@@ -62,7 +62,7 @@
                                                                 class="form-control"                                                                 
                                                                 [(ngModel)]="person.family_id">		
                                                                 <option></option>									
-                                                                <option *ngFor="let f of person.possible_families" [value]="f.id">{{ f.name }}</option>
+                                                                <option *ngFor="let f of families" [value]="f.id">{{ f.name }}</option>
                                                             </select>																															                                                    
                                                         </div>
                                                     </div>
@@ -92,7 +92,7 @@
                                                                 (ngModelChange)="change_program($event)"                                                              
                                                                 [(ngModel)]="person.program_id">
                                                                 <option></option>						
-                                                                <option *ngFor="let p of person.programs" [value]="p.id">{{ p.name }}</option>
+                                                                <option *ngFor="let p of programs" [value]="p.id">{{ p.name }}</option>
                                                             </select>																															                                                    
                                                         </div>
                                                         <small class="form-text text-muted danger" 

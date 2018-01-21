@@ -34,12 +34,12 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/people/people.module#PeopleModule'
   },
   {
-    path: 'person/edit/:id',
-    loadChildren: './pages/people/edit/person-edit-page.module#PersonEditPageModule'
+    path: 'people/person/edit/:id',
+    loadChildren: './pages/people/people.module#PeopleModule'
   },
   {
-    path: 'person/:id',
-    loadChildren: './pages/people/person/person-page.module#PersonPageModule'
+    path: 'people/person/:id',
+    loadChildren: './pages/people/people.module#PeopleModule'
   },
   {
     path: 'under-construction',

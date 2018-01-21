@@ -1,7 +1,9 @@
-import { Observable } from 'rxjs/Observable';
+import { Component, TemplateRef, ViewChild, ViewEncapsulation, Input  } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+
 import { PersonService } from './../../../services/person-service';
-import {  Component, TemplateRef, ViewChild, ViewEncapsulation, Input  } from '@angular/core';
+import { ParameterService } from './../../../services/parameter-service';
 
 import { OnInit, OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
@@ -21,44 +23,71 @@ import { Subscription } from 'rxjs/Subscription';
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './person-page.component.html',
-  styleUrls: ['./person-page.component.scss'],  
-  providers: [PersonService, DatePickerI18n,
+  styleUrls: ['../people-customizations.scss'],  
+  providers: [ DatePickerI18n,
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
 export class PersonPageComponent implements OnInit, OnDestroy  {
   id: number;
-  person: any;    
+  person: any;   
+  current_roles: any[]; 
+  available_roles:any[];
+  current_scheduling: any[];
   new_role: any;
   new_schedule: any = {};
-  manual;
-  incident_types;
+  manual;  
   manual_incident_types;
+  recurrence_types;
+  branches = [];
 
-  private sub: Subscription;
-  private person_data_sub: Subscription;
+  private router_sub: Subscription;
 
   constructor(private personService: PersonService, 
+              private parameterService: ParameterService,
               private route: ActivatedRoute, 
               private modalService: NgbModal,
               private datePickerConfig: NgbDatepickerConfig) {      
   }  
 
   ngOnInit() {
-    this.sub = this.route.params.subscribe(params => {
+    this.router_sub = this.route.params.subscribe(params => {
       this.id = +params['id'];      
       
       this.load_person_data();      
+      this.load_person_roles();  
+      this.load_person_scheduling();  
     });
+ 
     this.reset_new_schedule();    
   }
   
   ngOnDestroy() {    
-    this.sub.unsubscribe();
-    this.person_data_sub.unsubscribe();    
+    this.router_sub.unsubscribe();    
   }
   
-  open(content, incident){        
+  open_schedule_modal(content) {    
+    Observable.zip(this.parameterService.getActiveBranches(), 
+                    this.parameterService.getIncidentTypes(),
+                    this.parameterService.getRecurrenceTypes(),
+      (branches, incident_types, recurrence_types) => {        
+        this.branches = branches.json();
+        this.manual_incident_types = incident_types.json().filter(f => !f.automatically_generated);        
+        this.recurrence_types = recurrence_types.json();
+      }).subscribe(() => {        
+        this.open(content);
+      });    
+  }
+
+  open_add_role(content){
+    this.parameterService.getRoles().subscribe((roles) => {
+      this.available_roles = roles.json().filter(r => !this.current_roles || this.current_roles.findIndex(cr => cr.id == r.id) < 0);
+
+      this.open(content);
+    });    
+  }
+
+  private open(content){                    
     this.modalService.open(content).result.then((result) => {                                  
         
     }, (reason) => {
@@ -67,43 +96,36 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
 
   }  
 
-  add_role() {
-    if(!this.new_role) {
-      return;
-    }
+  add_role() {        
     this.personService.addRole(this.id, this.new_role).toPromise().then(() => {
       this.load_person_data();
-    });
+      this.load_person_roles();
+    });    
   }
 
   remove_role(role_id) {
     this.personService.removeRole(this.id, role_id).toPromise().then(() => {
       this.load_person_data();
+      this.load_person_roles()
     });
   }
 
-  begin_remove_role(person_role) {
-    person_role.removing = true;
+  load_person_scheduling() {
+    this.personService.getPersonScheduling(this.id).subscribe((scheduling) => {
+      this.current_scheduling = scheduling.json();  
+    });
   }
 
-  cancel_remove_role(person_role) {
-    person_role.removing = false;
+  load_person_roles() {
+    this.personService.getPersonRoles(this.id).subscribe((roles) => {
+      this.current_roles = roles.json();  
+    });
   }
 
-  load_person_data() {
-    if(this.person_data_sub) {
-      this.person_data_sub.unsubscribe();
-    }
-
-    this.person_data_sub = this.personService.getAllData(this.id).subscribe(
-      data => {           
-        const result = data.json();    
-        this.person = result;
-        
-        this.incident_types = result.incident_types;
-        this.manual_incident_types = this.incident_types.filter(f => !f.automatically_generated);
-      }
-    );
+  load_person_data() {   
+    this.personService.getData(this.id).subscribe((data) => {
+      this.person = data.json();  
+    });
   }
 
   begin_remove_schedule(schedule) {
@@ -118,7 +140,7 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
     this.personService.remove_schedule(schedule)
     .toPromise()
     .then(() => {
-      this.load_person_data();
+      this.load_person_scheduling();
     });
   }
 
@@ -140,7 +162,7 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
     this.personService.save_schedule(this.new_schedule)
     .toPromise()
     .then(() => {
-      this.load_person_data();
+      this.load_person_scheduling();
       this.reset_new_schedule();
     });
   }
@@ -160,7 +182,7 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
   }
 
   change_new_schedule_type(tp) {    
-    const t = this.person.incident_types.filter(t => t.id == tp);
+    const t = this.manual_incident_types.filter(t => t.id == tp);
     if(t.length != 1) {
       return;
     } 

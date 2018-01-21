@@ -30,7 +30,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: 'app-full-layout-page',
   templateUrl: './weekly-page.component.html',
   styleUrls: ['../daily.component.scss'],
-  providers: [PersonService, IncidentService, DatePickerI18n,
+  providers: [DatePickerI18n,
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })

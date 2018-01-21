@@ -3,7 +3,7 @@
 		style="padding-right:0"
 		class="col-3 d-none d-xl-block text-right">
 		<img alt="{{ person.name }}"
-		[routerLink]="['/person', person.person_id]"
+		[routerLink]="['/people/person', person.id || person.person_id]"
 		class="img-border" 
 		src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
 		style="width:100%;cursor:pointer"																												
@@ -12,7 +12,7 @@
 		*ngIf="person.avatar_img && person.avatar_img.length > 0" />
 		
 		<img 
-		[routerLink]="['/person', person.id]"
+		[routerLink]="['/people/person', person.id || person.person_id]"
 		class="img-border" 
 		src="/assets/img/portrait/avatars/avatar-08.png" 											
 		style="width:100%;cursor:pointer"																												
@@ -24,13 +24,13 @@
 	class="col-9 col-md-12 col-lg-9">
 		<div class="row" 
 			style="cursor:pointer;"
-			[routerLink]="['/person', person.person_id]">
+			[routerLink]="['/people/person', person.id || person.person_id]">
 			<div class="col-12 d-block d-xl-none"
 			[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
 			>
 				<a
 				[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
-				[routerLink]="['/person', person.person_id]">
+				[routerLink]="['/people/person', person.id || person.person_id]">
 				{{ person.name }}														
 				</a>																
 			</div>													
@@ -39,7 +39,7 @@
 			>
 				<a
 				[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
-				[routerLink]="['/person', person.person_id]">
+				[routerLink]="['/people/person', person.id || person.person_id]">
 				{{ person.name }}														
 				</a>														
 				<div																						

@@ -1,0 +1,80 @@
+<div class="row" *ngIf="showHeader"
+    style="border-bottom: 1px solid black;" >
+    <div class="col-10">        
+        <h6 style="font-weight:bold;margin-bottom:0"> <i class="far fa-address-book"></i> Contatos </h6>
+    </div>
+    <div class="col-2 text-right">
+        <button type="button" class="btn btn-silver btn-sm" 
+            style="margin:0;padding:2px;line-height:10px"
+            (click)="open(new_contact_modal);">
+            <i class="ft-plus"></i>                                        
+            <i class="far fa-address-book"></i>
+        </button>
+    </div>
+</div>
+
+<div class="row" *ngIf="!contacts || contacts.length == 0">
+    <div class="col-12 text-center">
+        Nenhum contato encontrado
+    </div>
+</div>
+<div class="row" *ngFor="let ct of contacts">
+    <div class="col-1 text-center">        
+        <i class="{{ ct.icon }}"></i>
+    </div>
+    <div class="col-7">
+        {{ ct.contact }}
+    </div>
+    <div class="col-2 text-right">
+        <button type="button" class="btn btn-silver btn-sm" 
+            style="margin:0;padding:2px;line-height:10px"			                                        
+            *ngIf="!ct.remove_contact"
+            (click)="ct.remove_contact = true">
+            <i class="ft-trash-2"></i>                                        
+        </button>                                    
+        <button type="button" class="btn btn-danger btn-sm" 
+            *ngIf="ct.begin_remove"
+            style="margin:0;padding:2px;line-height:10px"			                                        
+            (click)="ct.remove_contact">
+            <i class="ft-trash-2"></i>                                        
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" 
+            *ngIf="ct.begin_remove"
+            style="margin:0;padding:2px;line-height:10px"			                                        
+            (click)="ct.remove_contact">
+            <i class="icon-action-undo"></i>                                        
+        </button>                                    
+    </div>
+</div>
+
+<ng-template #new_contact_modal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h5 class="modal-title" style="font-weight: bold">
+            Adicionar Contato
+        </h5>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">		
+        <select id="branch" 
+            [(ngModel)]="new_contact.contact_type" 
+            class="form-control"                        
+            >						
+            <option *ngFor="let c of contact_types" [value]="c.id">{{c.description}}</option>
+        </select>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-success" 
+            (click)="add_contact();d('add role!');"
+            *ngIf="new_role">
+            <i class="icon-check"></i>
+            Adicionar
+        </button>        
+        <button type="button" class="btn btn-silver" 			            
+            (click)="d('Cancelled')">
+            <i class="icon-action-undo"></i>
+            Cancelar
+        </button>        
+    </div>
+</ng-template>

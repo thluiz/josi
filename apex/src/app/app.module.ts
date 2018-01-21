@@ -1,4 +1,5 @@
-
+import { IncidentService } from 'app/services/incident-service';
+import { PersonService } from './services/person-service';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -15,6 +16,8 @@ import { AuthGuard } from './shared/auth/auth-guard.service';
 import { HttpModule } from '@angular/http';
 
 import * as $ from 'jquery';
+import { ParameterService } from './services/parameter-service';
+import { UtilsService } from 'app/services/utils-service';
 
 @NgModule({
     declarations: [
@@ -34,7 +37,11 @@ import * as $ from 'jquery';
     ],
     providers: [
         AuthService,
-        AuthGuard
+        AuthGuard,
+        ParameterService,
+        PersonService,
+        IncidentService,
+        UtilsService              
     ],
     bootstrap: [AppComponent]
 })

@@ -35,9 +35,38 @@ export class PersonService {
     return this.http.get(this.dataUrl + `/people`);    
   }
 
-  getAllData(id) {    
+  getPersonContacts(person_id) {
+    return this.http.get(this.dataUrl + `/person_contact/person/${person_id}`);    
+  }
+
+  savePersonContact(person_id, contact_type, contact, details) {
+    return this.http.post(this.dataUrl + `/person_contact`, {
+      person_id, 
+      contact_type, 
+      contact,
+      details
+    });    
+  }
+
+  removePersonContact(contact_id) {
+    return this.http.post(this.dataUrl + `/person_contact/remove`, {
+      contact_id
+    });    
+  }
+
+  getData(id) {    
     return this.http
         .get(this.dataUrl + `/people/${id}`);
+  }
+
+  getPersonRoles(id) {    
+    return this.http
+        .get(this.dataUrl + `/person_role/person/${id}`);
+  }
+
+  getPersonScheduling(id) {    
+    return this.http
+        .get(this.dataUrl + `/person_schedule/person/${id}`);
   }
 
   addRole(person_id, role_id) {
@@ -56,7 +85,7 @@ export class PersonService {
 
   savePersonData(person) {          
     return this.http
-        .post(this.dataUrl + `/people_updater`, {
+        .post(this.dataUrl + `/people`, {
           person
         });
   }

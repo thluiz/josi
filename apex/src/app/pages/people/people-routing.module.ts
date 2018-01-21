@@ -1,11 +1,15 @@
 import { MembersPanelPageComponent } from './members-panel/members-panel-page.component';
 import { ManagementPanelPageComponent } from './management-panel/management-panel-page.component';
+import { PersonPageComponent } from './person/person-page.component';
+import { PersonEditPageComponent } from './edit/person-edit-page.component';
+
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
+
 let routes: Routes = [
   {
-    path: '',
+    path: 'people',
     component: ManagementPanelPageComponent,
     data: {
       title: 'Painel de Gerência de Membros'
@@ -16,6 +20,20 @@ let routes: Routes = [
     component: MembersPanelPageComponent,
     data: {
       title: 'Painel de Membros'
+    },    
+  }, 
+  {
+    path: 'person/:id',
+    component: PersonPageComponent,
+    data: {
+      title: 'Detalhe da Pessoa'
+    },    
+  },
+  {
+    path: 'person/edit/:id',
+    component: PersonEditPageComponent,
+    data: {
+      title: 'Detalhe da Pessoa'
     },    
   }
 ];

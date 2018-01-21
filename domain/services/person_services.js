@@ -85,6 +85,23 @@ class PersonService {
                 .execute(`SavePersonScheduleAndGenerateIncidents`);
         });
     }
+    remove_contact(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield new sql.Request(this.sql_pool)
+                .input('contact_id', sql.Int, id)
+                .execute(`RemovePersonContact`);
+        });
+    }
+    save_contact(contact_data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield new sql.Request(this.sql_pool)
+                .input('person_id', sql.Int, contact_data.person_id)
+                .input('contact_type', sql.Int, contact_data.contact_type)
+                .input('contact', sql.VarChar(250), contact_data.contact)
+                .input('details', sql.VarChar(sql.MAX), contact_data.details)
+                .execute(`SavePersonContact`);
+        });
+    }
     check_people_status() {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield new sql.Request(this.sql_pool)

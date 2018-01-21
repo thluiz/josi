@@ -33,7 +33,7 @@ import { delay } from 'rxjs/operators';
   selector: 'app-full-layout-page',
   templateUrl: './agenda-page.component.html',
   styleUrls: ['../daily.component.scss'],
-  providers: [PersonService, IncidentService, ParameterService, DatePickerI18n,
+  providers: [DatePickerI18n,
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })

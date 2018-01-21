@@ -41,12 +41,12 @@ export class NewInicidentModalComponent implements OnInit {
   @Input() current_branch: any;
   @Input() d: any;
   @Input() branches: any;
-  @Input() incident_types:any;
-  @Input() personService: PersonService;
-  @Input() incidentService: IncidentService;
+  @Input() incident_types:any;  
 
   constructor(private datePickerConfig: NgbDatepickerConfig,     
-    private el: ElementRef) {
+    private el: ElementRef, 
+    private personService: PersonService, 
+    private incidentService: IncidentService) {
    
       datePickerConfig.firstDayOfWeek = 7
   }

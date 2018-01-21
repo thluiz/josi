@@ -1,8 +1,10 @@
 import * as sql from 'mssql';
 import * as builder from 'botbuilder';
-import { IncidentService } from './bot/domain/services/incident_services';
-import { PersonService } from './bot/domain/services/person_services';
-import { JobsService } from './bot/domain/services/jobs_services';
+import { JobsService } from './domain/services/jobs_services';
+
+import * as people_routes from "./api/routes/people-routes";
+import * as parameters_routes from "./api/routes/parameters-routes";
+import * as incidents_routes from "./api/routes/incidents-routes";
 
 const express = require('express');
 if (process.env.LOAD_ENV === 'true') {
@@ -53,155 +55,23 @@ function getParticipationList(people) {
         const app = express();
         const bodyParser = require("body-parser");
         const cors = require("cors");
-        const incident_service = new IncidentService(pool);
-        const jobs_service = new JobsService(pool);
-        const person_service = new PersonService(pool);
+        
+        const jobs_service = new JobsService(pool);        
 
         app.use(cors());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
 
+
+        app.post("/api/messages", connector.listen());        
+        people_routes.configure_routes(app, pool);      
+        parameters_routes.configure_routes(app, pool);
+        incidents_routes.configure_routes(app, pool);
+        
         app.get("/api/hourly-jobs", async (request, response, next) => {            
             await jobs_service.hourly_jobs();
 
             response.send("Ok");
-        });
-
-        app.post("/api/messages", connector.listen());
-
-        app.post("/api/incident/close", async (request, response, next) => {
-            let result = await incident_service.close_incident(request.body.incident);
-
-            response.send("Ok");
-        });
-
-        app.post("/api/incident/start", async (request, response, next) => {
-            let result = await incident_service.start_incident(request.body.incident);
-
-            response.send("Ok");
-        });
-
-        app.post("/api/incident/start/cancel", async (request, response, next) => {
-            let result = await incident_service.cancel_start_incident(request.body.incident);
-
-            response.send("Ok");
-        });
-
-        app.post("/api/incident/remove", async (request, response, next) => {            
-            let result = await incident_service.remove_incident(request.body.incident);            
-                        
-            response.send("Ok");
-        });
-
-        app.post("/api/incident/reschedule", async (request, response, next) => {            
-            let result = await incident_service.reschedule_incident(
-                request.body.incident, 
-                request.body.new_incident,
-                request.body.contact.contact_text
-            );            
-
-            response.send("Ok"); 
-        });
-
-        app.post("/api/incident/register_incident", async (request, response, next) => {      
-            console.log(request.body.incident);
-            let result = await incident_service.register_incident(
-                request.body.incident
-            );            
-
-            response.send("Ok");
-        });
-
-        app.get("/api/people/members", async (request, response, next) => {                        
-            const result = await new sql.Request(pool)            
-            .execute(`GetMembersList`);                
-
-            response.send(result.recordset[0]);
-        });
-
-        app.get("/api/branches", async (request, response, next) => {                        
-            const result = await new sql.Request(pool)            
-            .execute(`GetBranches`);                
-
-            response.send(result.recordset[0]);
-        });
-
-        app.get("/api/incident_types", async (request, response, next) => {                        
-            const result = await new sql.Request(pool)            
-            .execute(`GetIncidentTypes`);                
-
-            response.send(result.recordset[0]);
-        });
-
-        app.get("/api/people", async (request, response, next) => {                        
-            const result = await new sql.Request(pool)            
-            .execute(`GetPeopleList`);                
-
-            response.send(result.recordset[0]);
-        });
-
-        app.get("/api/people/:id", async (request, response, next) => {                        
-            const result = await new sql.Request(pool)
-            .input('id', sql.Int, request.params.id)
-            .execute(`GetPersonData`);                
-
-            response.send(result.recordset[0][0]);
-        });
-
-        app.post("/api/people_updater", async (request, response, next) => {                        
-            console.log(request.body.person);
-            
-            const result = await person_service.update_person_data(
-                request.body.person
-            );
-
-            response.send("Ok");
-        });
-
-        app.get("/api/people/search/:name?", async (request, response, next) => {                        
-            const result = await new sql.Request(pool)
-            .input('names', sql.VarChar(sql.MAX), request.params.name)
-            .execute(`GetPeopleByNameForTypeahead`);                
-
-            response.send(result.recordset[0]);
-        });
-
-        app.post("/api/incident/register_contact", async (request, response, next) => {            
-            let result = await incident_service.register_contact_for_incident(
-                request.body.incident, 
-                request.body.contact.contact_text
-            );            
-
-            response.send("Ok");            
-            
-        });
-
-        app.post("/api/person_role", async (request, response, next) => {            
-            let result = await person_service.add_role(
-                request.body.person_id, 
-                request.body.role_id
-            );            
-
-            response.send("Ok");                        
-        });
-
-        app.post("/api/people_alias/kf_name", async (request, response, next) => {            
-            let result = await person_service.change_kf_name(
-                request.body.person_id, 
-                request.body.kf_name,
-                request.body.ideograms
-            );            
-
-            response.send("Ok");                        
-        });
- 
-        app.post("/api/person_role/delete", async (request, response, next) => {            
-            let result = await person_service.remove_role(
-                request.body.person_id, 
-                request.body.role_id
-            );            
-
-            response.send("Ok");                        
         });
 
         app.get("/api/agenda/:branch?/:date?", async (request, response, next) => {            
@@ -258,29 +128,13 @@ function getParticipationList(people) {
                     .input('date', sql.VarChar(10), request.params.date)                    
                     .execute(`GetSumary`);                
 
-                response.send((result.recordset[0][0]));
+                response.send(result.recordset[0][0]);
             } catch (error) {                                
                 response.status(500);
                 response.json('error', { error: error });
             } 
         });
-
-        app.post("/api/person_schedule/delete", async (request, response, next) => { 
-            let result = await person_service.remove_schedule(
-                request.body.id
-            );            
-
-            response.send("Ok");             
-        });
-
-        app.post("/api/person_schedule", async (request, response, next) => { 
-            let result = await person_service.save_schedule(
-                request.body.schedule
-            );            
-
-            response.send("Ok");             
-        });
-        
+                
         app.get(/^((?!\.).)*$/, (req, res) => {
             var path = "index.html";
             res.sendfile(path, {root: "./apex/public"});

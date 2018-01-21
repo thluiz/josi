@@ -76,6 +76,21 @@ export class PersonService {
             .execute(`SavePersonScheduleAndGenerateIncidents`);
     }
 
+    async remove_contact(id) {
+        return await new sql.Request(this.sql_pool)
+                                .input('contact_id', sql.Int, id)
+                                .execute(`RemovePersonContact`);
+    }
+
+    async save_contact(contact_data) {
+        return await new sql.Request(this.sql_pool)
+            .input('person_id', sql.Int, contact_data.person_id)            
+            .input('contact_type', sql.Int, contact_data.contact_type)                        
+            .input('contact', sql.VarChar(250), contact_data.contact)            
+            .input('details', sql.VarChar(sql.MAX), contact_data.details)
+            .execute(`SavePersonContact`);
+    }
+
     async check_people_status() {        
         const result = await new sql.Request(this.sql_pool)                                
                                 .execute(`CheckPeopleStatus`);

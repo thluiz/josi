@@ -10,9 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
 const builder = require("botbuilder");
-const incident_services_1 = require("./bot/domain/services/incident_services");
-const person_services_1 = require("./bot/domain/services/person_services");
-const jobs_services_1 = require("./bot/domain/services/jobs_services");
+const jobs_services_1 = require("./domain/services/jobs_services");
+const people_routes = require("./api/routes/people-routes");
+const parameters_routes = require("./api/routes/parameters-routes");
+const incidents_routes = require("./api/routes/incidents-routes");
 const express = require('express');
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
@@ -53,93 +54,16 @@ function getParticipationList(people) {
         const app = express();
         const bodyParser = require("body-parser");
         const cors = require("cors");
-        const incident_service = new incident_services_1.IncidentService(pool);
         const jobs_service = new jobs_services_1.JobsService(pool);
-        const person_service = new person_services_1.PersonService(pool);
         app.use(cors());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
+        app.post("/api/messages", connector.listen());
+        people_routes.configure_routes(app, pool);
+        parameters_routes.configure_routes(app, pool);
+        incidents_routes.configure_routes(app, pool);
         app.get("/api/hourly-jobs", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             yield jobs_service.hourly_jobs();
-            response.send("Ok");
-        }));
-        app.post("/api/messages", connector.listen());
-        app.post("/api/incident/close", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield incident_service.close_incident(request.body.incident);
-            response.send("Ok");
-        }));
-        app.post("/api/incident/start", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield incident_service.start_incident(request.body.incident);
-            response.send("Ok");
-        }));
-        app.post("/api/incident/start/cancel", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield incident_service.cancel_start_incident(request.body.incident);
-            response.send("Ok");
-        }));
-        app.post("/api/incident/remove", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield incident_service.remove_incident(request.body.incident);
-            response.send("Ok");
-        }));
-        app.post("/api/incident/reschedule", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield incident_service.reschedule_incident(request.body.incident, request.body.new_incident, request.body.contact.contact_text);
-            response.send("Ok");
-        }));
-        app.post("/api/incident/register_incident", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            console.log(request.body.incident);
-            let result = yield incident_service.register_incident(request.body.incident);
-            response.send("Ok");
-        }));
-        app.get("/api/people/members", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield new sql.Request(pool)
-                .execute(`GetMembersList`);
-            response.send(result.recordset[0]);
-        }));
-        app.get("/api/branches", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield new sql.Request(pool)
-                .execute(`GetBranches`);
-            response.send(result.recordset[0]);
-        }));
-        app.get("/api/incident_types", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield new sql.Request(pool)
-                .execute(`GetIncidentTypes`);
-            response.send(result.recordset[0]);
-        }));
-        app.get("/api/people", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield new sql.Request(pool)
-                .execute(`GetPeopleList`);
-            response.send(result.recordset[0]);
-        }));
-        app.get("/api/people/:id", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield new sql.Request(pool)
-                .input('id', sql.Int, request.params.id)
-                .execute(`GetPersonData`);
-            response.send(result.recordset[0][0]);
-        }));
-        app.post("/api/people_updater", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            console.log(request.body.person);
-            const result = yield person_service.update_person_data(request.body.person);
-            response.send("Ok");
-        }));
-        app.get("/api/people/search/:name?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield new sql.Request(pool)
-                .input('names', sql.VarChar(sql.MAX), request.params.name)
-                .execute(`GetPeopleByNameForTypeahead`);
-            response.send(result.recordset[0]);
-        }));
-        app.post("/api/incident/register_contact", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield incident_service.register_contact_for_incident(request.body.incident, request.body.contact.contact_text);
-            response.send("Ok");
-        }));
-        app.post("/api/person_role", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield person_service.add_role(request.body.person_id, request.body.role_id);
-            response.send("Ok");
-        }));
-        app.post("/api/people_alias/kf_name", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield person_service.change_kf_name(request.body.person_id, request.body.kf_name, request.body.ideograms);
-            response.send("Ok");
-        }));
-        app.post("/api/person_role/delete", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield person_service.remove_role(request.body.person_id, request.body.role_id);
             response.send("Ok");
         }));
         app.get("/api/agenda/:branch?/:date?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
@@ -191,20 +115,12 @@ function getParticipationList(people) {
                     .input('week_modifier', sql.Int, request.params.week || 0)
                     .input('date', sql.VarChar(10), request.params.date)
                     .execute(`GetSumary`);
-                response.send((result.recordset[0][0]));
+                response.send(result.recordset[0][0]);
             }
             catch (error) {
                 response.status(500);
                 response.json('error', { error: error });
             }
-        }));
-        app.post("/api/person_schedule/delete", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield person_service.remove_schedule(request.body.id);
-            response.send("Ok");
-        }));
-        app.post("/api/person_schedule", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            let result = yield person_service.save_schedule(request.body.schedule);
-            response.send("Ok");
         }));
         app.get(/^((?!\.).)*$/, (req, res) => {
             var path = "index.html";

@@ -11,6 +11,7 @@
         "assets",
         "favicon-myvt.ico"
       ],
+      "serviceWorker": false,
       "index": "index.html",
       "main": "main.ts",
       "polyfills": "polyfills.ts",

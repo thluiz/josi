@@ -1,5 +1,7 @@
+import { ParameterService } from 'app/services/parameter-service';
+import { PersonService } from 'app/services/person-service';
+
 import { Router, ActivatedRoute } from '@angular/router';
-import { PersonService } from './../../../services/person-service';
 import {  Component, TemplateRef, ViewChild, ViewEncapsulation, Input  } from '@angular/core';
 
 import { OnInit, OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
@@ -22,7 +24,7 @@ import { DatePickerI18n, NgbDatePTParserFormatter,
   selector: 'app-full-layout-page',
   templateUrl: './person-edit-page.component.html',
   styleUrls: ['./person-edit-page.component.scss'],  
-  providers: [PersonService, DatePickerI18n,
+  providers: [DatePickerI18n,
       {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
       {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
@@ -31,10 +33,14 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
   person: any;    
   new_role: any;
   domains: any;
+  branches: any;
+  programs:any;
+  families: any;
 
   private sub: any;
 
-  constructor(private personService: PersonService, 
+  constructor(private personService: PersonService,
+              private parameterService: ParameterService, 
               private route: ActivatedRoute,
               private router: Router, 
               private modalService: NgbModal,
@@ -136,8 +142,8 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
     return `${date.year}-${date.month}-${date.day}`;
   }
 
-  load_person_data() {
-    this.personService.getAllData(this.id).subscribe(
+  load_person_data() {    
+    this.personService.getData(this.id).subscribe(
       data => {           
         const result = data.json();    
         this.person = result;  
@@ -145,11 +151,21 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
         this.person.admission_date = this.translate_date_to_view(this.person.admission_date);        
         this.person.baaisi_date = this.translate_date_to_view(this.person.baaisi_date);  
         
-        if(!this.person.programs || !this.person.program_id || this.person.program_id <= 0) {
+        
+        if(!(this.person.is_active_member 
+          || this.person.is_disciple 
+          || this.person.is_leaving 
+          || this.person.is_inactive_member))
           return;
-        }
 
-        this.domains = this.person.programs.filter(p => p.id == this.person.program_id)[0].domains;
+        this.parameterService.getActiveBranches().subscribe((data) => this.branches = data.json());
+
+        this.parameterService.getKungFuFamilies().subscribe((data) => this.families = data.json());
+        
+        this.parameterService.getPrograms().subscribe((data) => { 
+            this.programs = data.json();
+            this.domains = this.programs.filter(p => p.id == this.person.program_id)[0].domains;
+        });        
       }
     );
   }

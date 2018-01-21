@@ -16,14 +16,13 @@ import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig } from '
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
 
-export class IncidentTreatmentModalComponent implements OnInit {  
-  @Input() personService: PersonService;
-  @Input() incidentService: IncidentService;
+export class IncidentTreatmentModalComponent implements OnInit {    
   @Input("incident") current_incident : any;
   @Input() d:any;
 
   constructor(private datePickerConfig: NgbDatepickerConfig,     
-    private el: ElementRef) {
+    private incidentService: IncidentService, 
+    private personService: PersonService) {
    
       datePickerConfig.firstDayOfWeek = 7
   }

@@ -145,7 +145,7 @@
 										</tr>
 										<tr *ngFor="let person of d.daily, let k4 = index">
 											<td>												
-												<person-card [person]="person"></person-card>																				
+												<person-card [person]="person"></person-card>																		
 											</td>																			
 											<td valign="middle" align="center" 										
 												*ngFor="let item of person.dates, let k2 = index" 
@@ -303,17 +303,13 @@
 <ng-template #new_activity let-c="close" let-d="dismiss">
 	<new-incident-modal [d]="d" [branches]="branches"
 		[current_branch]="current_branch"		
-		[incident_types]="manual_incident_types"	
-		[personService]="personService"
-		[incidentService]="incidentService"		
+		[incident_types]="manual_incident_types"			
 	></new-incident-modal>
 </ng-template>
 
 <ng-template #content let-c="close" let-d="dismiss">
 	<incident-treatment-modal
 		[incident]="current_incident"
-		[personService]="personService"
-		[incidentService]="incidentService"
 		[d]="d"	
 	></incident-treatment-modal>
 </ng-template>
