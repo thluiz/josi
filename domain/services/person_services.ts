@@ -88,6 +88,7 @@ export class PersonService {
             .input('contact_type', sql.Int, contact_data.contact_type)                        
             .input('contact', sql.VarChar(250), contact_data.contact)            
             .input('details', sql.VarChar(sql.MAX), contact_data.details)
+            .input('principal', sql.Int, contact_data.principal)
             .execute(`SavePersonContact`);
     }
 

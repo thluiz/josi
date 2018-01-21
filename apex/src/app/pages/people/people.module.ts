@@ -38,7 +38,7 @@ import { MarkdownModule } from 'ngx-markdown';
         MarkdownModule.forRoot(),        
         PersonCardModule,
         PersonContactListModule,
-        PersonStatusLineModule      
+        PersonStatusLineModule             
     ],
     declarations: [       
         MembersPanelPageComponent,

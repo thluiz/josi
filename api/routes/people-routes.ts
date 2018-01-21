@@ -91,7 +91,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
         let response = result.recordset[0];
 
-        res.send(response.empty ? [] : response);
+        res.send(response[0].empty ? [] : response);
     });
 
     /**
@@ -120,23 +120,38 @@ export function configure_routes(app: any, connection_pool: any) {
         response.send("Ok");                        
     });
 
-    app.post("/api/person_contact", async (request, response, next) => {            
-        let result = await person_service.save_contact({ 
-                person_id: request.body.person_id,                
-                contact_type: request.body.contact_type,                  
-                contact: request.body.contact
-            }
-        );            
+    app.post("/api/person_contact", async (request, res, next) => {   
+        try {         
+            let result = await person_service.save_contact({ 
+                    person_id: request.body.person_id,                
+                    contact_type: request.body.contact_type,                  
+                    contact: request.body.contact,
+                    details: request.body.details,
+                    principal: request.body.principal
+                }
+            );            
 
-        response.send("Ok");                        
+            res.send("Ok");                        
+        } catch (error) {                                
+            res.status(500);
+            res.json('error', { error: error });
+        }
     });
 
-    app.get("/api/person_contact/person/:id", async (request, response, next) => {                        
-        const result = await new sql.Request(pool)
-        .input('person_id', sql.Int, request.params.id)
-        .execute(`GetPersonContacts`);                
-
-        response.send(result.recordset[0]);
+    app.get("/api/person_contact/person/:id/:only_principal?", async (request, res, next) => {  
+        try {                      
+            const result = await new sql.Request(pool)
+            .input('person_id', sql.Int, request.params.id)
+            .input('only_principal', sql.Int, request.params.only_principal || 0)
+            .execute(`GetPersonContacts`);                
+            
+            let response = result.recordset[0];
+            res.send(response[0].empty ? [] : response);   
+                     
+        } catch(error)  {   
+            console.log(error);
+            res.status(500).json(error);
+        }
     });
 
     /**
@@ -158,10 +173,9 @@ export function configure_routes(app: any, connection_pool: any) {
                 .execute(`GetPersonScheduling`);                
             
             let response = result.recordset[0];
-            res.send(response.empty ? [] : response);
+            res.send(response[0].empty ? [] : response);
         } catch (error) {                                
-            res.status(500);
-            res.json('error', { error: error });
+            res.status(500).json(error);
         }              
     });
 

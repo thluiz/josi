@@ -1,7 +1,9 @@
+import { IContact } from './person-service';
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
+import { Subject } from 'rxjs/Subject';
 
 export enum DailyMonitorDisplayType {
     Week = 0,
@@ -10,11 +12,22 @@ export enum DailyMonitorDisplayType {
     Agenda = 3
 }
 
+export interface IContact {
+  person_id: number;
+  contact_type :number;
+  contact :string;
+  details :string;
+}
+
 @Injectable()
 export class PersonService {  
- constructor(private http:Http) { }  
   private dataUrl = environment.api_url;    
 
+  private contact_changes = new Subject<IContact>();
+  contactChanges$ = this.contact_changes.asObservable();  
+
+  constructor(private http:Http) { }  
+  
   getDailyAgenda(branch, date: any) {
     return this.http.get(this.dataUrl + `/agenda/${branch || 0}/${date.year}-${date.month}-${date.day}`);    
   }
@@ -35,22 +48,29 @@ export class PersonService {
     return this.http.get(this.dataUrl + `/people`);    
   }
 
-  getPersonContacts(person_id) {
-    return this.http.get(this.dataUrl + `/person_contact/person/${person_id}`);    
+  getPersonContacts(person_id, only_principal = false) {
+    return this.http.get(this.dataUrl + `/person_contact/person/${person_id}/${only_principal ? 1 : 0}`);    
   }
 
-  savePersonContact(person_id, contact_type, contact, details) {
-    return this.http.post(this.dataUrl + `/person_contact`, {
+  savePersonContact(person_id, contact_type, contact, details, principal) {
+    const contact_data = {
       person_id, 
       contact_type, 
       contact,
-      details
+      details,
+      principal
+    };
+
+    return this.http.post(this.dataUrl + `/person_contact`, contact_data).do((d) => {
+      this.contact_changes.next(contact_data);
     });    
   }
 
-  removePersonContact(contact_id) {
+  removePersonContact(person_id, contact_id) {
     return this.http.post(this.dataUrl + `/person_contact/remove`, {
       contact_id
+    }).do((data) => {
+      this.contact_changes.next({ person_id } as IContact);
     });    
   }
 

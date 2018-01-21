@@ -168,6 +168,16 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     this.update_summary_timer = setTimeout(() => { this.getPeopleSummaryData() }, update_interval);  
   }
   
+  updateMonitorData() {
+    this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Week, this.current_week).subscribe(
+    data => {    
+      const result = data.json();        
+      for(var w = 0; w < result.domains.length; w++) {
+        
+      }
+    });
+  }
+
   getMonitorData() {
 
     if(!this.personService) {
@@ -264,7 +274,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     var d = new Date();
     var hours = d.getHours();
     
-    const update_interval = hours >= 22 || hours < 6 ? 600000 : 30000;
+    const update_interval = hours >= 22 || hours < 6 ? 600000 : 300000;
 
     if(this.update_members_timer) {
       clearTimeout(this.update_members_timer);

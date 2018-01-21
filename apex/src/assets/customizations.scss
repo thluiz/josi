@@ -36,3 +36,9 @@ label {
 .main-panel {
     overflow: visible !important;
 }
+
+form label {
+    text-transform: unset;
+    letter-spacing: 1px;
+    font-size: 10px;
+}

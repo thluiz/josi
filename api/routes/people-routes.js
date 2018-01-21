@@ -67,7 +67,7 @@ function configure_routes(app, connection_pool) {
             .input('person_id', sql.Int, request.params.id)
             .execute(`GetPersonRoles`);
         let response = result.recordset[0];
-        res.send(response.empty ? [] : response);
+        res.send(response[0].empty ? [] : response);
     }));
     /**
      * ALIAS
@@ -83,19 +83,35 @@ function configure_routes(app, connection_pool) {
         let result = yield person_service.remove_contact(request.body.contact_id);
         response.send("Ok");
     }));
-    app.post("/api/person_contact", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield person_service.save_contact({
-            person_id: request.body.person_id,
-            contact_type: request.body.contact_type,
-            contact: request.body.contact
-        });
-        response.send("Ok");
+    app.post("/api/person_contact", (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            let result = yield person_service.save_contact({
+                person_id: request.body.person_id,
+                contact_type: request.body.contact_type,
+                contact: request.body.contact,
+                details: request.body.details,
+                principal: request.body.principal
+            });
+            res.send("Ok");
+        }
+        catch (error) {
+            res.status(500);
+            res.json('error', { error: error });
+        }
     }));
-    app.get("/api/person_contact/person/:id", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield new sql.Request(pool)
-            .input('person_id', sql.Int, request.params.id)
-            .execute(`GetPersonContacts`);
-        response.send(result.recordset[0]);
+    app.get("/api/person_contact/person/:id/:only_principal?", (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = yield new sql.Request(pool)
+                .input('person_id', sql.Int, request.params.id)
+                .input('only_principal', sql.Int, request.params.only_principal || 0)
+                .execute(`GetPersonContacts`);
+            let response = result.recordset[0];
+            res.send(response[0].empty ? [] : response);
+        }
+        catch (error) {
+            console.log(error);
+            res.status(500).json(error);
+        }
     }));
     /**
      * SCHEDULING
@@ -110,11 +126,10 @@ function configure_routes(app, connection_pool) {
                 .input('person_id', sql.Int, request.params.id)
                 .execute(`GetPersonScheduling`);
             let response = result.recordset[0];
-            res.send(response.empty ? [] : response);
+            res.send(response[0].empty ? [] : response);
         }
         catch (error) {
-            res.status(500);
-            res.json('error', { error: error });
+            res.status(500).json(error);
         }
     }));
     app.post("/api/person_schedule", (request, response, next) => __awaiter(this, void 0, void 0, function* () {

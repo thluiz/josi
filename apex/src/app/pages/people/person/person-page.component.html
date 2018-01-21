@@ -129,6 +129,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12 col-sm-12 col-md-12 col-xl-6 pr-3"
+                        style="margin-bottom:20px"
                         *ngIf="person.is_active_member || person.is_disciple || person.is_leaving || person.is_inactive_member">
                             <div class="row">
                                 <div class="col-12">
@@ -207,7 +208,7 @@
                         </div>
                         <div class="col-12 col-sm-12 col-md-12 col-xl-6 pr-3">
                             <div class="row">
-                                <div class="col-12 col-xl-12 col-md-6 pr-md-3" style="margin-bottom:30px;">
+                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
                                     <person-contact-list                                    
                                     [person]="person">                                
                                     </person-contact-list>
