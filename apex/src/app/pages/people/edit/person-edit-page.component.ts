@@ -90,7 +90,7 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
         
     this.personService.savePersonData(p).toPromise().then(
       () => {
-        this.router.navigateByUrl(`person/${this.id}`);
+        this.router.navigateByUrl(`/people/person/${this.id}`);
       }
     )
   }

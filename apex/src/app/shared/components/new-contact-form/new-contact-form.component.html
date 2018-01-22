@@ -31,7 +31,8 @@
                     <input class="form-control text-center" style="width:100%" 
                         placeholder="{{ new_contact.contact_placeholder }}"
                         name="new_contact_text" 
-                        (ngModelChange) ="get_details_and_validate()"
+                        (ngModelChange)="get_details_and_validate()"
+                        (keyup)="get_details_and_validate()"
                         [(ngModel)]="new_contact.contact" />
                 </div>
             </div>

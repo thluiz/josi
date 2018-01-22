@@ -20,23 +20,7 @@
 </div>
 <div class="row" *ngFor="let ct of contacts">
     <div class="col-10" style="color:black">           
-        <span *ngIf="!ct.base_url">        
-            <i class="{{ ct.icon }}"
-            style="font-size:20px"
-            [style.color]="!showOnlyPrincipal && ct.principal ? 'green' : null"></i> 
-            {{ ct.contact }}
-        </span>    
-
-        <a href="{{ ct.base_url + ct.contact }}" target="_blank" *ngIf="ct.base_url"
-            [style.color]="!showOnlyPrincipal && ct.principal ? 'green' : 'black'">
-            <i class="{{ ct.icon }}"
-            style="font-size:20px"></i> 
-            {{ ct.contact }}
-        </a>            
-        <i *ngIf="ct.details"             
-            class="ft-info"
-            (click)="ct.show_details = !ct.show_details">                  
-        </i>
+        <contact-listitem [contact]="ct"></contact-listitem>        
     </div>
     <div class="col-2 text-right" *ngIf="showDelete">
         <button type="button" class="btn btn-silver btn-sm" 

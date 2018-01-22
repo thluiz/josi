@@ -26,6 +26,9 @@ export class PersonService {
   private contact_changes = new Subject<IContact>();
   contactChanges$ = this.contact_changes.asObservable();  
 
+  private person_changes = new Subject<any>();
+  personChanges$  = this.person_changes.asObservable();  
+
   constructor(private http:Http) { }  
   
   getDailyAgenda(branch, date: any) {
@@ -51,6 +54,9 @@ export class PersonService {
   getPersonContacts(person_id, only_principal = false) {
     return this.http.get(this.dataUrl + `/person_contact/person/${person_id}/${only_principal ? 1 : 0}`);    
   }
+  getPersonMissingData(person_id) {
+    return this.http.get(this.dataUrl + `/person/missing_data/${person_id}`);    
+  }
 
   savePersonContact(person_id, contact_type, contact, details, principal) {
     const contact_data = {
@@ -64,6 +70,16 @@ export class PersonService {
     return this.http.post(this.dataUrl + `/person_contact`, contact_data).do((d) => {
       this.contact_changes.next(contact_data);
     });    
+  }
+
+  savePersonData(person) {          
+    return this.http
+        .post(this.dataUrl + `/people`, {
+          person
+        }).do((data) => {
+          console.log('save post subscriber');
+          this.person_changes.next({ person_id: person.id })
+        });
   }
 
   removePersonContact(person_id, contact_id) {
@@ -100,13 +116,6 @@ export class PersonService {
     return this.http
         .post(this.dataUrl + `/person_role/delete`, {
           person_id, role_id
-        });
-  }
-
-  savePersonData(person) {          
-    return this.http
-        .post(this.dataUrl + `/people`, {
-          person
         });
   }
   

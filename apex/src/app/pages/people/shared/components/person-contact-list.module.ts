@@ -5,13 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { NewContactFormModule } from 'app/shared/components/new-contact-form/new-contact-form.module';
+import { ContactListitemModule } from 'app/shared/components/contact-listitem/contact-listitem.module';
 
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        NewContactFormModule
+        NewContactFormModule,
+        ContactListitemModule
     ],
     declarations: [       
         PersonContactListComponent

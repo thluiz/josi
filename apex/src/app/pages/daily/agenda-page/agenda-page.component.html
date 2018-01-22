@@ -67,8 +67,7 @@
 							<div class="col-9 col-xl-3 col-lg-3 col-md-6">
 								<div class="form-group">													
 									<div class="input-group">
-										<input class="form-control text-center" 
-										style="width:100%" 
+										<input class="form-control text-center" 										
 										placeholder="dd/mm/aaaa"
 										name="current_date" 
 										[(ngModel)]="current_date" 
@@ -97,7 +96,7 @@
 								*ngIf="current_branch <= 0 || incident.branch_id == current_branch"
 								[style.border-top]="k != 0 ? '0' : '1px solid silver'">
 								<div class="row">
-									<div class="col-9 pl-3 d-none d-md-block" 
+									<div class="col-8 pl-3 d-none d-md-block" 
 										[style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "
 										style="cursor:pointer;"
 										(click)="open(content, incident);">
@@ -159,10 +158,11 @@
 											<i class="fas fa-stop" style="color:white"></i>
 										</button>
 									</div>
-									<div class="col-2 d-none d-md-block">
+									<div class="col-3 d-none d-md-block">
 										<person-status-line	
 											*ngIf="incident.person_data"										
 											[person]="incident.person_data[0]"
+											(onBeginPersonDataTreatment)="begin_person_data_treatment(incident)"											
 										>
 										</person-status-line>
 									</div>	
@@ -210,6 +210,7 @@
 														<person-status-line	
 															*ngIf="incident.person_data"										
 															[person]="incident.person_data[0]"
+															(onBeginPersonDataTreatment)="begin_person_data_treatment(incident)"											
 														>
 														</person-status-line>
 													</div>
@@ -218,12 +219,10 @@
 										</div>										
 									</div>
 								</div>
-							</div>																			
-							
+							</div>																										
 						</div>					
 					</div>
-				</div>
-						
+				</div>						
 			</div>
 		</div>		
 	</div>
@@ -243,3 +242,6 @@
 		[d]="d"	
 	></incident-treatment-modal>
 </ng-template>
+
+<person-data-treatment-modal>
+</person-data-treatment-modal>

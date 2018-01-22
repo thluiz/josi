@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ViewChild, ViewEncapsulation, Input } from '@angular/core';
+import { Component, TemplateRef, ViewChild, ViewEncapsulation, Input, AfterViewInit } from '@angular/core';
 
 import { PersonService, DailyMonitorDisplayType } from 'app/services/person-service';
 import { ParameterService } from 'app/services/parameter-service';
@@ -28,6 +28,7 @@ import 'rxjs/add/operator/delay';
 
 import { debounceTime } from 'rxjs/operators';
 import { delay } from 'rxjs/operators';
+import { PersonDataTreatmentModalComponent } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.component';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -54,6 +55,8 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
   private update_agenda_timer;  
   private incident_changes_subscriber: Subscription;
   private incident_added_subscriber: Subscription;
+
+  @ViewChild(PersonDataTreatmentModalComponent) personDataTreatmentModal : PersonDataTreatmentModalComponent;
 
   constructor(public personService: PersonService, 
               public incidentService: IncidentService, 
@@ -82,7 +85,18 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
         this.getMonitorData();
       });
   }
+  
+  ngAfterViewInit() {
     
+  }
+
+  begin_person_data_treatment(incident) {        
+    this.personDataTreatmentModal.open({ 
+      name: incident.person,
+      id: incident.person_id
+    });
+  }
+  
   ngOnInit() {
     this.parameterService.getActiveBranches().subscribe(data => {    
       const result = data.json();   

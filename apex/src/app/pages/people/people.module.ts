@@ -25,6 +25,7 @@ import { NgbModal,
     NgbModule     
 } from '@ng-bootstrap/ng-bootstrap';
 import { MarkdownModule } from 'ngx-markdown';
+import { PersonDataTreatmentModalModule } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.module';
 
 @NgModule({
     imports: [
@@ -38,7 +39,8 @@ import { MarkdownModule } from 'ngx-markdown';
         MarkdownModule.forRoot(),        
         PersonCardModule,
         PersonContactListModule,
-        PersonStatusLineModule             
+        PersonStatusLineModule,
+        PersonDataTreatmentModalModule             
     ],
     declarations: [       
         MembersPanelPageComponent,

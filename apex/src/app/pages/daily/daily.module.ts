@@ -1,3 +1,4 @@
+import { PersonDataTreatmentModalModule } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.module';
 import { CompactIncidentListitemModule } from './../../shared/components/compact-incident-listitem/compact-incident-listitem.module';
 import { IncidentTreatmentModalModule } from './../../shared/components/incident-treatment-modal/incident-treatment-modal.module';
 import { NewIncidentModalModule } from './../../shared/components/new-incident-modal/new-incident-modal.module';
@@ -46,6 +47,7 @@ import { MarkdownModule } from 'ngx-markdown';
         IncidentTreatmentModalModule,
         CompactIncidentListitemModule,
         PersonStatusLineModule,
+        PersonDataTreatmentModalModule,
         MarkdownModule.forRoot()
     ],
     declarations: [       

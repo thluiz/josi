@@ -1,0 +1,174 @@
+
+
+<ng-template #data_treatment_modal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h5 class="modal-title" style="font-weight: bold">Tratamento de Dados: {{ person.name }}</h5>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">			
+        <div class="row" *ngIf="contacts && contacts.length > 0" style="margin-bottom:10px;">            
+            <div class="col-12" *ngIf="show_only_principal_contacts">                                
+                <div *ngFor="let ct of principal_contacts, let k = index" style="display:inline-block"> 
+                    <span *ngIf="k != 0">, </span>
+                    <contact-listitem [contact]="ct"></contact-listitem>
+                    <div *ngIf="ct.show_details" style="display:inline-block">({{ ct.details }})</div>
+                </div>
+                <a *ngIf="has_aditional_contacts" (click)="show_only_principal_contacts = false">
+                    <i class="ft-chevrons-right"></i>
+                </a>
+            </div>
+            <div class="col-12" *ngIf="!show_only_principal_contacts">                
+                <div *ngFor="let ct of contacts, let k = index" style="display:inline-block"> 
+                    <span *ngIf="k != 0">, </span>
+                    <contact-listitem [contact]="ct"></contact-listitem>
+                    <div *ngIf="ct.show_details" style="display:inline-block">({{ ct.details }})</div>
+                </div>
+                <a *ngIf="has_aditional_contacts" (click)="show_only_principal_contacts = true">
+                    <i class="ft-chevrons-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="row" *ngFor="let ms of missing_data">
+            <div class="col-12" *ngIf="ms.missing_code == 'NO_BIRTH_DATE'">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label for="person_birth_date">Nascimento</label>                                                									
+                            <div class="input-group">							
+                                <input class="form-control text-center" placeholder="dd/mm/aaaa" 
+                                [(ngModel)]="person.birth_date" id="person_birth_date"
+                                name="person_birth_date"
+                                ngbDatepicker #niBirthDate="ngbDatepicker" />
+                                <div class="input-group-addon" (click)="niBirthDate.toggle()">
+                                    <i class="ft-calendar" style="cursor: pointer;"></i>
+                                </div>
+                                
+                                <button type="button" class="btn btn-success" 
+                                    (click)="save_birth_date();">
+                                    <i class="icon-check"></i>
+                                    Salvar
+                                </button>	
+                            </div>
+                        </div>
+                    </div>
+                </div>                 
+            </div>
+            <div class="col-12" *ngIf="ms.missing_code == 'NO_ADMISSION_DATE'">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label for="person_admission_date">Admissão</label>                                                									
+                            <div class="input-group">							
+                                <input class="form-control text-center" placeholder="dd/mm/aaaa" 
+                                [(ngModel)]="person.admission_date" id="person_admission_date"
+                                name="person_admission_date"
+                                ngbDatepicker #niAdmissionDate="ngbDatepicker" />
+                                <div class="input-group-addon" (click)="niAdmissionDate.toggle()">
+                                    <i class="ft-calendar" style="cursor: pointer;"></i>
+                                </div>
+                                
+                                <button type="button" class="btn btn-success" 
+                                    (click)="save_admission_date();">
+                                    <i class="icon-check"></i>
+                                    Salvar
+                                </button>	
+                            </div>
+                        </div>
+                    </div>
+                </div>                 
+            </div>
+            <div class="col-12" *ngIf="ms.missing_code == 'NO_KF_NAME'">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label for="person_kf_name">Nome Kung Fu</label>                                                									
+                            <div class="input-group">							
+                                <input class="form-control text-center"
+                                [(ngModel)]="person.kf_name" id="person_kf_name"
+                                name="person_admission_date" />
+
+                                <button type="button" class="btn btn-success" 
+                                    (click)="save_kf_name()">
+                                    <i class="icon-check"></i>
+                                    Salvar
+                                </button>	
+                            </div>
+                        </div>
+                    </div>
+                </div>                 
+            </div>
+            <div class="col-12" *ngIf="ms.missing_code == 'NO_KF_NAME_IDEOGRAMS'">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label for="person_kf_name_ideograms">Ideogramas do nome Kung Fu</label>                                                									
+                            <div class="input-group">							
+                                <input class="form-control text-center"
+                                [(ngModel)]="person.kf_name_ideograms" id="person_kf_name_ideograms"
+                                name="person_kf_name_ideograms" />
+
+                                <button type="button" class="btn btn-success" 
+                                    (click)="save_kf_name()">
+                                    <i class="icon-check"></i>
+                                    Salvar
+                                </button>	
+                            </div>
+                        </div>
+                    </div>
+                </div>                 
+            </div>
+            <div class="col-12 text-center" 
+                *ngIf="ms.missing_code == 'NO_CONTACTS'">
+                <button class="btn btn-primary" (click)="open_new_contact(new_contact_modal)">
+                    Adicionar Contato
+                </button>                
+            </div>
+            <div class="col-12 text-center" 
+                *ngIf="ms.missing_code == 'NO_PRINCIPAL_CONTACT'">
+                <button class="btn btn-primary" 
+                    (click)="open_new_contact(new_contact_principal_modal)">
+                    Adicionar Contato Principal
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #new_contact_modal let-c="close" let-d2="dismiss">
+    <div class="modal-header">
+        <h5 class="modal-title" style="font-weight: bold">
+            Adicionar Contato: {{ person.name }}
+        </h5>
+        <button type="button" class="close" aria-label="Close" (click)="d2('Cross click')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">		
+        <new-contact-form
+            [person]="person"
+            [afterSave]="d2"
+            [cancelAction]="d2">
+            </new-contact-form>       
+    </div>
+</ng-template>
+
+<ng-template #new_contact_principal_modal let-c="close" let-d2="dismiss">
+    <div class="modal-header">
+        <h5 class="modal-title" style="font-weight: bold">
+            Contato Principal: {{ person.name }}
+        </h5>
+        <button type="button" class="close" aria-label="Close" (click)="d2('Cross click')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">		
+        <new-contact-form
+            [person]="person"
+            [defaultPrincipal]="true"
+            [afterSave]="d2"
+            [cancelAction]="d2">
+            </new-contact-form>       
+    </div>
+</ng-template>

@@ -154,6 +154,21 @@ export function configure_routes(app: any, connection_pool: any) {
         }
     });
 
+    app.get("/api/person/missing_data/:id", async (request, res, next) => {  
+        try {                      
+            const result = await new sql.Request(pool)
+            .input('person_id', sql.Int, request.params.id)            
+            .execute(`GetPersonMissingData`);                
+            
+            let response = result.recordset[0];
+            res.send(response[0].empty ? [] : response);   
+                     
+        } catch(error)  {   
+            console.log(error);
+            res.status(500).json(error);
+        }
+    });
+
     /**
      * SCHEDULING
      */

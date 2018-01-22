@@ -17,9 +17,10 @@ export class NewContactFormComponent implements OnInit {
   @Input("person") person : any;
   @Input() afterSave: () => void;
   @Input() cancelAction: () => void;
+  @Input() defaultPrincipal = false;
 
   constructor(private personService: PersonService, private parameterService: ParameterService) {
-         
+
   }
 
   ngOnInit() {
@@ -29,6 +30,7 @@ export class NewContactFormComponent implements OnInit {
     }, (reason) => {
         console.log(reason);
     });
+    this.new_contact.principal = this.defaultPrincipal ? 1 : 0;
   } 
   
   get_details_and_validate() {

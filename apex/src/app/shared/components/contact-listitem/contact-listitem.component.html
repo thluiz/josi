@@ -1,0 +1,17 @@
+<span *ngIf="!contact_data.base_url">        
+    <i class="{{ contact_data.icon }}"
+    style="font-size:20px"
+    [style.color]="!showOnlyPrincipal && contact_data.principal ? 'green' : null"></i> 
+    {{ contact_data.contact }}
+</span>    
+
+<a href="{{ contact_data.base_url + contact_data.contact }}" target="_blank" *ngIf="contact_data.base_url"
+    [style.color]="!showOnlyPrincipal && contact_data.principal ? 'green' : 'black'">
+    <i class="{{ contact_data.icon }}"
+    style="font-size:20px"></i> 
+    {{ contact_data.contact }}
+</a>            
+<i *ngIf="contact_data.details"             
+    class="icon-info"
+    (click)="contact_data.show_details = !contact_data.show_details">                  
+</i>

@@ -1,3 +1,4 @@
+import { PersonStatusLineModule } from './../person-status-line/person-status-line.module';
 import { RouterModule } from '@angular/router';
 import { PersonCardComponent } from './person-card.component';
 
@@ -9,7 +10,8 @@ import { CommonModule } from "@angular/common";
     imports: [
         CommonModule,
         FormsModule,
-        RouterModule          
+        RouterModule,
+        PersonStatusLineModule        
     ],
     declarations: [       
         PersonCardComponent

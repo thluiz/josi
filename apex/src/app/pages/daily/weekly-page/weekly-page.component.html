@@ -145,7 +145,10 @@
 										</tr>
 										<tr *ngFor="let person of d.daily, let k4 = index">
 											<td>												
-												<person-card [person]="person"></person-card>																		
+												<person-card 
+													[person]="person"
+													(onBeginPersonDataTreatment)="begin_person_data_treatment($event)">
+												</person-card>																		
 											</td>																			
 											<td valign="middle" align="center" 										
 												*ngFor="let item of person.dates, let k2 = index" 
@@ -195,32 +198,11 @@
 								</td>						
 							</tr>
 							<tr *ngFor="let visitant of external_people, let ke = index">					
-								<td>
-									<div class="row">
-										<div class="col-2" style="padding:0;padding-left:5px">
-											<img
-											class="rounded-circle img-border " 
-											src="https://myvtmiim.blob.core.windows.net/avatars/{{ visitant.avatar_img }}" 											
-											style="min-width:50px;width:100%;" 
-											*ngIf="visitant.avatar_img && visitant.avatar_img.length > 0">	
-										</div>								
-										<div class="col-10"  style="padding:0;padding-left:2px">
-											<div class="row">
-												<div class="col-12">											
-													<a 
-													style="color:black"
-													[routerLink]="['/person', visitant.person_id]">
-														{{ visitant.name }}														
-													</a>
-												</div>
-											</div>
-											<div class="row" style="font-size:10px;">
-												<div class="col-12">
-													{{ visitant.kf_name }}											
-												</div>
-											</div>
-										</div>	
-									</div>
+								<td>									
+									<person-card 
+										[person]="visitant" 
+										(onBeginPersonDataTreatment)="begin_person_data_treatment($event)">
+									</person-card>									
 								</td>
 								<td>
 									
@@ -313,3 +295,6 @@
 		[d]="d"	
 	></incident-treatment-modal>
 </ng-template>
+
+<person-data-treatment-modal>
+</person-data-treatment-modal>
