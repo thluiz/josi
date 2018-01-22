@@ -71,11 +71,11 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
   }  
 
   change_program(program) {   
-    if(!program || !this.person.programs) {
+    if(!program || !this.programs) {
       return;
     }
 
-    this.domains = this.person.programs.filter(p => p.id == program)[0].domains;
+    this.domains = this.programs.filter(p => p.id == program)[0].domains;
   }
 
   save_person_data() {
@@ -164,7 +164,9 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
         
         this.parameterService.getPrograms().subscribe((data) => { 
             this.programs = data.json();
-            this.domains = this.programs.filter(p => p.id == this.person.program_id)[0].domains;
+
+            if(this.person.program_id)
+              this.domains = this.programs.filter(p => p.id == this.person.program_id)[0].domains;
         });        
       }
     );

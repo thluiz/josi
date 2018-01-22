@@ -1,6 +1,5 @@
 import { NewContactFormModule } from 'app/shared/components/new-contact-form/new-contact-form.module';
 import { ContactListitemModule } from 'app/shared/components/contact-listitem/contact-listitem.module';
-import { PersonContactListModule } from 'app/pages/people/shared/components/person-contact-list.module';
 import { RouterModule } from '@angular/router';
 import { PersonDataTreatmentModalComponent } from './person-data-treatment-modal.component';
 

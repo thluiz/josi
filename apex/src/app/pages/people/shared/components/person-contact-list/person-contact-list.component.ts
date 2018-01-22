@@ -10,7 +10,7 @@ import { Subscription, Observable } from 'rxjs';
 @Component({
   selector: 'person-contact-list',
   templateUrl: './person-contact-list.component.html',
-  styleUrls: ['../../../../../assets/customizations.scss']
+  styleUrls: ['../../../../../../assets/customizations.scss']
 })
 export class PersonContactListComponent implements OnInit, OnDestroy { 
 

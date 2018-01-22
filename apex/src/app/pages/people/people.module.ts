@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { PersonCardModule } from './../../shared/components/person-card/person-card.module';
 import { PersonStatusLineModule } from 'app/shared/components/person-status-line/person-status-line.module';
-import { PersonContactListModule } from 'app/pages/people/shared/components/person-contact-list.module';
+import { PersonContactListModule } from 'app/pages/people/shared/components/person-contact-list/person-contact-list.module';
 
 import { ManagementPanelPageComponent } from './management-panel/management-panel-page.component';
 import { MembersPanelPageComponent } from './members-panel/members-panel-page.component';
