@@ -10,6 +10,10 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/full-layout-page/full-pages.module#FullPagesModule'
   },
   {
+    path: 'public',
+    loadChildren: './pages/daily/daily.module#DailyModule'
+  },
+  {
     path: 'daily',
     loadChildren: './pages/daily/daily.module#DailyModule'
   },
