@@ -1,6 +1,9 @@
+
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+
+import { ModalService, ModalType } from 'app/services/modal-service';
 
 @Component({
   selector: 'person-status-line',
@@ -9,12 +12,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 export class PersonStatusLineComponent implements OnInit {  
 
-  @Input() person: any;
-  @Output() onBeginPersonDataTreatment = new EventEmitter<any>();
+  @Input() person: any;  
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router) {
+    private router: Router, 
+    private modalService: ModalService) {
             
   }
 
@@ -22,7 +25,7 @@ export class PersonStatusLineComponent implements OnInit {
     
   }
 
-  begin_person_data_treatment() {
-    this.onBeginPersonDataTreatment.emit(this.person);
+  begin_person_data_treatment() {    
+    this.modalService.open(ModalType.PersonTreatment, this.person);    
   }
 }

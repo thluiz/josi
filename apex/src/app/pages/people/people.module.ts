@@ -10,6 +10,7 @@ import { ManagementPanelPageComponent } from './management-panel/management-pane
 import { MembersPanelPageComponent } from './members-panel/members-panel-page.component';
 import { PersonPageComponent } from 'app/pages/people/person/person-page.component';
 import { PersonEditPageComponent } from 'app/pages/people/edit/person-edit-page.component';
+import { PersonDataTreatmentModalModule } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.module';
 
 import { PeopleRoutingModule } from './people-routing.module';
 
@@ -25,7 +26,6 @@ import { NgbModal,
     NgbModule     
 } from '@ng-bootstrap/ng-bootstrap';
 import { MarkdownModule } from 'ngx-markdown';
-import { PersonDataTreatmentModalModule } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.module';
 
 @NgModule({
     imports: [

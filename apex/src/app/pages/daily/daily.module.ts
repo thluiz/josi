@@ -1,10 +1,10 @@
-import { PersonDataTreatmentModalModule } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.module';
 import { CompactIncidentListitemModule } from './../../shared/components/compact-incident-listitem/compact-incident-listitem.module';
-import { IncidentTreatmentModalModule } from './../../shared/components/incident-treatment-modal/incident-treatment-modal.module';
 import { NewIncidentModalModule } from './../../shared/components/new-incident-modal/new-incident-modal.module';
 import { PersonCardModule } from './../../shared/components/person-card/person-card.module';
 import { DailyChangeViewModule } from './shared/change-view/change-view.module';
 import { PersonStatusLineModule } from 'app/shared/components/person-status-line/person-status-line.module';
+import { CurrentActivitiesModule } from 'app/shared/components/current-activities/current-activities.module';
+import { IncidentAgendaListitemModule } from 'app/shared/components/incident-agenda-listitem/incident-agenda-listitem.module';
 
 import { DailyRoutingModule } from './daily-routing.module';
 
@@ -32,6 +32,7 @@ import { NgbModal,
 import { MarkdownModule } from 'ngx-markdown';
 
 
+
 @NgModule({
     imports: [
         CommonModule,
@@ -43,12 +44,12 @@ import { MarkdownModule } from 'ngx-markdown';
         NgbModule,        
         DailyChangeViewModule,
         PersonCardModule,
-        NewIncidentModalModule,
-        IncidentTreatmentModalModule,
+        NewIncidentModalModule,        
         CompactIncidentListitemModule,
+        CurrentActivitiesModule,
         PersonStatusLineModule,
-        PersonDataTreatmentModalModule,
-        MarkdownModule.forRoot()
+        IncidentAgendaListitemModule,
+        MarkdownModule.forRoot()        
     ],
     declarations: [       
         DailyPageComponent,

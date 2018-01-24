@@ -1,10 +1,9 @@
 import { Subscription } from 'rxjs/Subscription';
-import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { PersonService } from 'app/services/person-service';
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbModal, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PersonDataTreatmentModalComponent } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.component';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -14,15 +13,13 @@ import { PersonDataTreatmentModalComponent } from 'app/shared/components/person-
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
-export class MembersPanelPageComponent implements OnInit, OnDestroy, AfterViewInit {
+export class MembersPanelPageComponent implements OnInit, OnDestroy {
   
   programs: any;  
   private person_list_sub: Subscription;  
 
   private contact_changes_subscriber: Subscription;
-  private person_changes_subscriber: Subscription;
-  
-  @ViewChild(PersonDataTreatmentModalComponent) personDataTreatmentModal : PersonDataTreatmentModalComponent;
+  private person_changes_subscriber: Subscription;    
 
   constructor(private personService: PersonService, 
     private route: ActivatedRoute,
@@ -57,15 +54,7 @@ export class MembersPanelPageComponent implements OnInit, OnDestroy, AfterViewIn
     } else if (view == 1) {
       this.router.navigateByUrl(`people/members`);
     }
-  }
-
-  ngAfterViewInit() {
-    
-  }
-
-  begin_person_data_treatment(person) {    
-    this.personDataTreatmentModal.open(person);
-  }
+  }  
 
   load_members_list() {     
     if(this.person_list_sub) {

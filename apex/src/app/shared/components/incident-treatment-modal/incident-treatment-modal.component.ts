@@ -1,11 +1,10 @@
 import { Observable } from 'rxjs/Observable';
-import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
-import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { PersonService } from 'app/services/person-service';
 import { IncidentService } from 'app/services/incident-service';
-import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'incident-treatment-modal',
@@ -17,11 +16,13 @@ import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig } from '
 })
 
 export class IncidentTreatmentModalComponent implements OnInit {    
-  @Input("incident") current_incident : any;
-  @Input() d:any;
+  current_incident : any;  
+
+  @ViewChild('content') incident_treatment_modal: ElementRef;
 
   constructor(private datePickerConfig: NgbDatepickerConfig,     
     private incidentService: IncidentService, 
+    private ngbModalService: NgbModal,
     private personService: PersonService) {
    
       datePickerConfig.firstDayOfWeek = 7
@@ -30,6 +31,17 @@ export class IncidentTreatmentModalComponent implements OnInit {
   ngOnInit() {
          
   }
+
+  open(incident) {    
+    this.current_incident = incident;
+    this.ngbModalService.open(this.incident_treatment_modal).result.then((result) => {                                  
+      
+    }, (reason) => {        
+        console.log(reason);
+    });         
+  }
+
+  
 
   begin_remove_incident(incident) {
     incident.begin_remove = true;

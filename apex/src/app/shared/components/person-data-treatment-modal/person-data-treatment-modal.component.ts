@@ -54,7 +54,7 @@ export class PersonDataTreatmentModalComponent implements OnInit {
   constructor(private personService: PersonService, 
     private parameterService: ParameterService,
     private utilsService: UtilsService,    
-    private modalService: NgbModal,
+    private ngbModalService: NgbModal,
     private datePickerConfig: NgbDatepickerConfig) {
    
       datePickerConfig.firstDayOfWeek = 7
@@ -116,7 +116,7 @@ export class PersonDataTreatmentModalComponent implements OnInit {
   }
 
   private open_modal(content, on_close_action = false) {
-    this.modalService.open(content).result.then((result) => {                                  
+    this.ngbModalService.open(content).result.then((result) => {                                  
       
     }, (reason) => {        
         console.log(reason);

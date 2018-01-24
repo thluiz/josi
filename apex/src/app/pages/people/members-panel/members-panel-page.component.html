@@ -11,13 +11,9 @@
             <div *ngFor="let person of d.members"                        
                 class="text-left"
                 style="border:1px solid black;cursor:pointer;padding-bottom:5px;margin:10px;display:inline-block;width:310px">
-                <person-card 
-                    (onBeginPersonDataTreatment)="begin_person_data_treatment($event)"
+                <person-card                     
                     [person]="person"></person-card>
             </div>
         </div>        
     </div>
 </div>
-
-<person-data-treatment-modal>
-</person-data-treatment-modal>

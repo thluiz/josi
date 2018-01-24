@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ViewChild, ViewEncapsulation, Input, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { PersonService, DailyMonitorDisplayType } from 'app/services/person-service';
 import { IncidentService } from 'app/services/incident-service';
@@ -23,7 +23,6 @@ import { Observable } from 'rxjs/Observable';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PersonDataTreatmentModalComponent } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.component';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -64,8 +63,6 @@ export class DailyPageComponent implements OnInit, OnDestroy {
   private update_summary_timer;
   private incident_added_subscriber : Subscription;
   private incident_changes_subscriber: Subscription;
-  
-  @ViewChild(PersonDataTreatmentModalComponent) personDataTreatmentModal : PersonDataTreatmentModalComponent;
 
   constructor(public personService: PersonService, 
               public incidentService: IncidentService, 
@@ -97,14 +94,6 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     this.incident_changes_subscriber = incidentService.incidentsChanges$.subscribe((next) => {      
       this.getMonitorData();
     }); 
-  }
-
-  ngAfterViewInit() {
-    
-  }
-
-  begin_person_data_treatment(person) {    
-    this.personDataTreatmentModal.open(person);
   }
 
   ngOnInit() {

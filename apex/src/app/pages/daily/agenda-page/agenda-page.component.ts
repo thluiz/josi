@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ViewChild, ViewEncapsulation, Input, AfterViewInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { PersonService, DailyMonitorDisplayType } from 'app/services/person-service';
 import { ParameterService } from 'app/services/parameter-service';
@@ -28,7 +28,6 @@ import 'rxjs/add/operator/delay';
 
 import { debounceTime } from 'rxjs/operators';
 import { delay } from 'rxjs/operators';
-import { PersonDataTreatmentModalComponent } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.component';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -56,8 +55,6 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
   private incident_changes_subscriber: Subscription;
   private incident_added_subscriber: Subscription;
 
-  @ViewChild(PersonDataTreatmentModalComponent) personDataTreatmentModal : PersonDataTreatmentModalComponent;
-
   constructor(public personService: PersonService, 
               public incidentService: IncidentService, 
               private parameterService: ParameterService,
@@ -84,19 +81,8 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
       .subscribe((next) => {      
         this.getMonitorData();
       });
-  }
-  
-  ngAfterViewInit() {
-    
-  }
-
-  begin_person_data_treatment(incident) {        
-    this.personDataTreatmentModal.open({ 
-      name: incident.person,
-      id: incident.person_id
-    });
-  }
-  
+  }  
+ 
   ngOnInit() {
     this.parameterService.getActiveBranches().subscribe(data => {    
       const result = data.json();   
@@ -109,9 +95,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
       this.manual_incident_types = result.filter(i => !i.automatically_generated);
     },
     err => console.error(err));
-
     
-
     this.getMonitorData();   
   }
 
@@ -155,31 +139,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
         this.agenda[this.agenda.length] = schedule;
     });
   }
-
-  change_week(modifier) {
-    clearTimeout(this.update_agenda_timer);
-    this.update_agenda_timer = null;
-    this.current_week += modifier;
-    this.getMonitorData();
-  }  
-  start_incident(incident) {
-    let date = new Date();    
-    incident.started_on_hour = date.getHours() + ":" + date.getMinutes();
-
-    this.incidentService.start_incident(incident)
-    .toPromise()    
-    .catch((reason) => {
-      console.log(reason);
-    }); 
-  }
-
-  begin_treat_incident(content, incident) {    
-    let t =JSON.parse(JSON.stringify(incident))
-    t.in_treatment = true;
-
-    this.open(content, t);
-  }
-
+  
   open(content, incident) {
     this.current_incident = incident;            
     this.modalService.open(content).result.then((result) => {          
@@ -188,16 +148,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
         console.log(reason);
     });
   }
-
-  close_incident(incident) {
-    incident.closed = true;        
-
-    this.incidentService.close_incident(incident)
-    .toPromise().catch((reason) => {
-      console.log(reason);
-    }); 
-  }
-
+  
   getMonitorData() {
     if(!this.personService) {
       return;

@@ -95,8 +95,7 @@ function configure_routes(app, connection_pool) {
             res.send("Ok");
         }
         catch (error) {
-            res.status(500);
-            res.json('error', { error: error });
+            res.status(500).json(error);
         }
     }));
     app.get("/api/person_contact/person/:id/:only_principal?", (request, res, next) => __awaiter(this, void 0, void 0, function* () {

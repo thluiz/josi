@@ -1,21 +1,3 @@
-<style>
-	.current {
-		background-color: #eeeeee
-	}
-	.current2 {
-		background-color: #dddddd
-	}	
-	.incident_button {
-		text-align: left;
-		line-height: 12px;
-		padding-left:5px;
-	}
-	.btn-action {
-		margin:0;
-		padding: 0 8px;
-	}
-</style>
-				
 <div class="sticky-top" style="top:30px;z-index:10000">
 	<div style="position:absolute;float:right;right:10px;">
 		<button type="button" 
@@ -84,145 +66,38 @@
 				</div>
 			</div>
 			<div class="card-body">	
-				<div class="row" *ngFor="let schedule of agenda">					
-					<div class="col-12 col-sm-12 offset-md-1 col-md-10 offset-lg-3 col-lg-6" 
-					style="border:1px solid silver;margin-bottom:10px;border-bottom:0;" 
-					*ngIf="schedule.current_incidents && schedule.current_incidents.length > 0">	
-						<h4 *ngIf="schedule.schedule_group <= 0"></h4>																									
-						<h4 *ngIf="schedule.schedule_group > 0" style="margin-top:12px">{{ ('00' + schedule.schedule_group).slice(-2) }}:00</h4>																									
-						<div class="row" *ngFor="let incident of schedule.current_incidents, let k = index">
-							<div class="col-12" 
-								style="line-height:2em;border:1px solid silver;border-left:0;border-right:0"
-								*ngIf="current_branch <= 0 || incident.branch_id == current_branch"
-								[style.border-top]="k != 0 ? '0' : '1px solid silver'">
-								<div class="row">
-									<div class="col-8 pl-3 d-none d-md-block" 
-										[style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "
-										style="cursor:pointer;"
-										(click)="open(content, incident);">
-										<span *ngIf="current_branch <= 0" style="width:40px;display:inline-table;">{{ incident.branch_initials }}</span>
-										<span style="width:45px;display:inline-table;" *ngIf="incident.need_start_hour_minute">{{ incident.start_hour }}</span>
-										<span style="width:40px;display:inline-table;">{{ incident.abrev }}</span> 
-										{{ incident.person }}
-									</div>
-
-									<div class="col-8 d-block d-md-none" 
-										style="cursor:pointer;"
-										[style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "
-										(click)="open(content, incident);">
-										<div class="row">
-											<div class="col-12 p-0 pl-2">
-												<span *ngIf="current_branch <= 0" style="width:40px;display:inline-table;">
-													{{ incident.branch_initials }}
-												</span>
-												<span style="width:45px;display:inline-table;">{{ incident.start_hour }}</span>
-												<span style="width:40px;display:inline-table;">{{ incident.abrev }}</span>
-											</div>
-											<div class="col-12 p-0 pl-2">												
-												{{ incident.person }}
-											</div>
-										</div>										
-									</div>
-										
-									<div class="col-1 d-none d-md-block">
-										<button type="button" 
-										class="btn btn-info btn-sm btn-action" 										
-										title="Iniciar Atividade"									
-										*ngIf="!incident.in_treatment 
-											&& !incident.closed 
-											&& !incident.treated
-											&& incident.need_to_be_started 
-											&& !incident.started_on_hour"
-										(click)="start_incident(incident);">
-											<i class="fas fa-play" style="color:white"></i>
-										</button>
-										<button type="button" 
-										class="btn btn-success btn-sm btn-action" 
-										title="Confirmar Atividade"									
-										*ngIf="!incident.in_treatment 
-											&& !incident.closed 
-											&& !incident.treated
-											&& !incident.need_to_be_started"
-										(click)="close_incident(incident);">
-											<i class="fas fa-check"></i>
-										</button>
-										<button type="button" 
-										class="btn btn-info btn-sm btn-action" 
-										title="Finalizar Atividade"									
-										*ngIf="!incident.in_treatment 
-											&& !incident.closed 
-											&& !incident.treated
-											&& incident.need_to_be_started 
-											&& incident.started_on_hour"
-										(click)="close_incident(incident);">
-											<i class="fas fa-stop" style="color:white"></i>
-										</button>
-									</div>
-									<div class="col-3 d-none d-md-block">
-										<person-status-line	
-											*ngIf="incident.person_data"										
-											[person]="incident.person_data[0]"
-											(onBeginPersonDataTreatment)="begin_person_data_treatment(incident)"											
-										>
-										</person-status-line>
-									</div>	
-									<div class="col-4 d-block d-md-none">
-										<div class="row">
-											<div class="col-12">
-												<div class="row">
-													<div class="col-12">
-														<button type="button" 
-														class="btn btn-info btn-sm btn-action" 										
-														title="Iniciar Atividade"									
-														*ngIf="!incident.in_treatment 
-															&& !incident.closed 
-															&& !incident.treated
-															&& incident.need_to_be_started 
-															&& !incident.started_on_hour"
-														(click)="start_incident(incident);">
-															<i class="fas fa-play" style="color:white"></i>
-														</button>
-														<button type="button" 
-														class="btn btn-success btn-sm btn-action" 
-														title="Confirmar Atividade"									
-														*ngIf="!incident.in_treatment 
-															&& !incident.closed 
-															&& !incident.treated
-															&& !incident.need_to_be_started"
-														(click)="close_incident(incident);">
-															<i class="fas fa-check"></i>
-														</button>
-														<button type="button" 
-														class="btn btn-info btn-sm btn-action" 
-														title="Finalizar Atividade"									
-														*ngIf="!incident.in_treatment 
-															&& !incident.closed 
-															&& !incident.treated
-															&& incident.need_to_be_started 
-															&& incident.started_on_hour"
-														(click)="close_incident(incident);">
-															<i class="fas fa-stop" style="color:white"></i>
-														</button>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-12">
-														<person-status-line	
-															*ngIf="incident.person_data"										
-															[person]="incident.person_data[0]"
-															(onBeginPersonDataTreatment)="begin_person_data_treatment(incident)"											
-														>
-														</person-status-line>
-													</div>
-												</div>
-											</div>
-										</div>										
-									</div>
-								</div>
-							</div>																										
-						</div>					
+				<div class="row d-block d-lg-none">
+					<div class="col-12">
+						<current-activities></current-activities>
 					</div>
-				</div>						
+				</div>
+				<div class="row">
+					<div class="col-12 col-sm-12 col-lg-7 offset-lg-1">
+						<div class="row" *ngFor="let schedule of agenda">					
+							<div class="col-12" 
+							style="border:1px solid silver;margin-bottom:10px;border-bottom:0;" 
+							*ngIf="schedule.current_incidents && schedule.current_incidents.length > 0">	
+								<h4 *ngIf="schedule.schedule_group <= 0"></h4>																									
+								<h4 *ngIf="schedule.schedule_group > 0" style="margin-top:12px">{{ ('00' + schedule.schedule_group).slice(-2) }}:00</h4>																									
+								<div class="row" *ngFor="let incident of schedule.current_incidents, let k = index">
+									<div class="col-12" 
+										style="line-height:2em;border:1px solid silver;border-left:0;border-right:0"
+										*ngIf="current_branch <= 0 || incident.branch_id == current_branch"
+										[style.border-top]="k != 0 ? '0' : '1px solid silver'">
+
+										<incident-agenda-listitem [incident]="incident"></incident-agenda-listitem>
+										
+									</div>																										
+								</div>					
+							</div>							
+						</div>		
+					</div>	
+					<div class="col-4 col-lg-4 d-none d-lg-block">							
+						<current-activities
+						[branch]="current_branch"> 							
+						</current-activities>						
+					</div>
+				</div>			
 			</div>
 		</div>		
 	</div>
@@ -234,14 +109,4 @@
 		[current_branch]="current_branch"		
 		[incident_types]="manual_incident_types"
 	></new-incident-modal>
-</ng-template>
-
-<ng-template #content let-c="close" let-d="dismiss">
-	<incident-treatment-modal
-		[incident]="current_incident"		
-		[d]="d"	
-	></incident-treatment-modal>
-</ng-template>
-
-<person-data-treatment-modal>
-</person-data-treatment-modal>
+</ng-template>	

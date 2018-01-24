@@ -133,8 +133,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
             res.send("Ok");                        
         } catch (error) {                                
-            res.status(500);
-            res.json('error', { error: error });
+            res.status(500).json(error);
         }
     });
 

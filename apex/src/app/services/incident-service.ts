@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
-import {Observable} from 'rxjs/Rx';
+import {Observable, ReplaySubject} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
 import { Subject }    from 'rxjs/Subject';
 
@@ -13,10 +13,22 @@ export class IncidentService {
   incidentAdd$ = this.incident_added.asObservable();  
   incidentsChanges$ = this.incident_changes.asObservable();
 
+  private currentActivities$ = new ReplaySubject(1);
+  private lastCurrentActivitiesRequest = 0;
+
   constructor(private http:Http) { }  
 
   getSumary(branch, month, week, date) {
     return this.http.get(this.dataUrl + `/sumary/${branch}/${month}/${week}/${date}`);
+  }
+
+  getCurrentActivities(branch) {
+    let date = new Date();    
+
+    const forceRefresh = date.getTime() - this.lastCurrentActivitiesRequest > 5000;
+    this.lastCurrentActivitiesRequest = date.getTime();
+
+    return this.cache_results(this.currentActivities$, `/current_activities/${branch}`, forceRefresh);
   }
 
   close_incident(incident) {
@@ -74,5 +86,21 @@ export class IncidentService {
       this.incident_added.next(true);
     });    
   }
+
+  cache_results(observable : ReplaySubject<any>, endpoint:string, forceRefresh?: boolean) {
+    if (!observable.observers.length || forceRefresh) {        
+        this.http.get(this.dataUrl + endpoint)
+        .subscribe(
+            data => observable.next(data),
+            error => {
+                observable.error(error);
+                // Recreate the Observable as after Error we cannot emit data anymore
+                observable = new ReplaySubject(1);
+            }
+        );
+    }
+
+    return observable;
+}
 }
 

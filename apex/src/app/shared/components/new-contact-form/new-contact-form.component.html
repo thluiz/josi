@@ -33,6 +33,8 @@
                         name="new_contact_text" 
                         (ngModelChange)="get_details_and_validate()"
                         (keyup)="get_details_and_validate()"
+                        (keypress)="get_details_and_validate()"
+                        (keydown)="get_details_and_validate()"
                         [(ngModel)]="new_contact.contact" />
                 </div>
             </div>

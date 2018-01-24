@@ -79,6 +79,18 @@ function getParticipationList(people) {
                 response.json({ error: error });
             }
         }));
+        app.get("/api/current_activities/:branch?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                let result = yield new sql.Request(pool)
+                    .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
+                    .execute(`GetCurrentActivities`);
+                response.send((result.recordset[0]));
+            }
+            catch (error) {
+                response.status(500);
+                response.json({ error: error });
+            }
+        }));
         app.get("/api/daily/:branch?/:display?/:display_modifier?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 let result = yield new sql.Request(pool)

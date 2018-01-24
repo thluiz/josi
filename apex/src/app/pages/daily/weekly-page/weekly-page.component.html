@@ -156,8 +156,7 @@
 												[ngClass]=" selected_week.current && k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">																	
 												
 												<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-													<compact-incident-listitem
-														(incident_treatment_action)="open(content, $event)"
+													<compact-incident-listitem														
 														[incident]="i"
 													></compact-incident-listitem>																															
 												</ng-template>																																																											
@@ -213,8 +212,7 @@
 									[ngClass]=" selected_week.current && k2 == current_week_day ? (ke % 2 == 0 ? 'current2' : 'current') : '' ">
 									
 									<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-										<compact-incident-listitem
-											(incident_treatment_action)="open(content, $event)"
+										<compact-incident-listitem											
 											[incident]="i"
 										></compact-incident-listitem>																															
 									</ng-template>																																								
@@ -275,6 +273,10 @@
 								</tr>
 							</table>
 						</div>
+
+						<current-activities
+						[branch]="current_branch"> 							
+						</current-activities>
 					</div>
 				</div>
 			</div>
@@ -288,13 +290,3 @@
 		[incident_types]="manual_incident_types"			
 	></new-incident-modal>
 </ng-template>
-
-<ng-template #content let-c="close" let-d="dismiss">
-	<incident-treatment-modal
-		[incident]="current_incident"
-		[d]="d"	
-	></incident-treatment-modal>
-</ng-template>
-
-<person-data-treatment-modal>
-</person-data-treatment-modal>
