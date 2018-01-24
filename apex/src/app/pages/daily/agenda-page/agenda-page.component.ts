@@ -54,6 +54,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
   private update_agenda_timer;  
   private incident_changes_subscriber: Subscription;
   private incident_added_subscriber: Subscription;
+  private person_changes_subscriber: Subscription;  
 
   constructor(public personService: PersonService, 
               public incidentService: IncidentService, 
@@ -69,18 +70,6 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
       month: date.getMonth() + 1,
       year: date.getFullYear()
     }
-
-    this.incident_changes_subscriber = incidentService.incidentsChanges$
-      .debounceTime(1000)
-      .delay(1000)            
-      .subscribe((next) => {      
-        this.getMonitorData();
-      });
-
-    this.incident_added_subscriber = incidentService.incidentAdd$        
-      .subscribe((next) => {      
-        this.getMonitorData();
-      });
   }  
  
   ngOnInit() {
@@ -95,26 +84,40 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
       this.manual_incident_types = result.filter(i => !i.automatically_generated);
     },
     err => console.error(err));
+
     
-    this.getMonitorData();   
+    this.incident_changes_subscriber = this.incidentService.incidentsChanges$
+      .debounceTime(1000)
+      .delay(1000)            
+      .subscribe((next) => {      
+        this.getAgendaData();
+      });
+
+    this.incident_added_subscriber = this.incidentService.incidentAdd$        
+      .subscribe((next) => {      
+        this.getAgendaData();
+      });
+    
+    this.person_changes_subscriber = this.personService.personChanges$        
+      .subscribe((next) => {      
+        this.getAgendaData();
+      });
+
+    this.getAgendaData();   
   }
 
   ngOnDestroy() {    
     if(this.update_agenda_timer) {    
       clearTimeout(this.update_agenda_timer);
     }    
-
-    if(this.incident_added_subscriber) {
-      this.incident_added_subscriber.unsubscribe();
-    }
-
-    if(this.incident_changes_subscriber) {
-      this.incident_changes_subscriber.unsubscribe();
-    }
+    
+    this.incident_added_subscriber.unsubscribe();        
+    this.incident_changes_subscriber.unsubscribe();    
+    this.person_changes_subscriber.unsubscribe();
   }
 
   change_current_date(date) {
-    this.getMonitorData();
+    this.getAgendaData();
   }
 
   branchSelected(id) {    
@@ -149,7 +152,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
     });
   }
   
-  getMonitorData() {
+  getAgendaData() {
     if(!this.personService) {
       return;
     }
@@ -171,7 +174,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
       clearTimeout(this.update_agenda_timer);
     }
 
-    this.update_agenda_timer = setTimeout(() => { this.getMonitorData() }, update_interval);
+    this.update_agenda_timer = setTimeout(() => { this.getAgendaData() }, update_interval);
   }
    
 }

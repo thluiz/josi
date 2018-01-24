@@ -12,6 +12,7 @@ export class IncidentAgendaListitemComponent {
     
     @Input() incident : any; 
     @Input("branch") current_branch = 0;    
+    @Input() forceCompact = false;
 
     constructor(private incidentService: IncidentService,
               private modalService: ModalService) {
@@ -19,7 +20,8 @@ export class IncidentAgendaListitemComponent {
     }  
 
     show_incident_details(incident) {
-        this.modalService.open(ModalType.IncidentTreatment, incident);
+      console.log("aqui");
+      this.modalService.open(ModalType.IncidentTreatment, incident);
     }
 
     start_incident(incident) {

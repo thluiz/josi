@@ -1,9 +1,10 @@
 
-import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ModalService, ModalType } from 'app/services/modal-service';
+import { Subscription } from 'rxjs';
+import { PersonService } from 'app/services/person-service';
 
 @Component({
   selector: 'person-status-line',
@@ -14,15 +15,26 @@ export class PersonStatusLineComponent implements OnInit {
 
   @Input() person: any;  
 
+  private person_changes_subscriber: Subscription;  
+
   constructor(
     private route: ActivatedRoute,
     private router: Router, 
-    private modalService: ModalService) {
+    private modalService: ModalService,
+    private personService: PersonService) {
             
   }
 
   ngOnInit() {
-    
+    this.person_changes_subscriber = this.personService.personChanges$
+      .filter((p) => p.id == this.person.id)
+      .subscribe((next) => {      
+        
+      });
+  }
+
+  ngOnDestroy() {
+    this.person_changes_subscriber.unsubscribe();
   }
 
   begin_person_data_treatment() {    

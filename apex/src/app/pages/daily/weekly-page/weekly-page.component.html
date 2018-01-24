@@ -199,8 +199,7 @@
 							<tr *ngFor="let visitant of external_people, let ke = index">					
 								<td>									
 									<person-card 
-										[person]="visitant" 
-										(onBeginPersonDataTreatment)="begin_person_data_treatment($event)">
+										[person]="visitant">
 									</person-card>									
 								</td>
 								<td>
@@ -222,7 +221,7 @@
 					</div>
 					<div class="col-12 col-md-12 col-lg-3 col-sm-12">
 						
-						<div class="sticky-top" style="top:60px; padding-right:10px">
+						<div class="sticky-top" style="top:60px; padding-right:10px;background-color:white">
 								<table class="table-sm table-striped table-bordered"															
 								style="margin-bottom:50px;width:100%">								
 								<tr>						
@@ -274,9 +273,7 @@
 							</table>
 						</div>
 
-						<current-activities
-						[branch]="current_branch"> 							
-						</current-activities>
+						<current-activities [branch]="current_branch"> </current-activities>
 					</div>
 				</div>
 			</div>

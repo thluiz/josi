@@ -76,9 +76,8 @@ export class PersonService {
     return this.http
         .post(this.dataUrl + `/people`, {
           person
-        }).do((data) => {
-          console.log('save post subscriber');
-          this.person_changes.next({ person_id: person.id })
+        }).do((data) => {          
+          this.person_changes.next({ person_id: person.id, id: person.id })
         });
   }
 

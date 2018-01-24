@@ -1,6 +1,6 @@
-<div class="row">
+<div class="row">    
     <div class="col-8 pl-3 d-none d-md-block" 
-        [style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "
+        [style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "        
         style="cursor:pointer;"
         (click)="show_incident_details(incident);">
         <span *ngIf="current_branch <= 0" style="width:40px;display:inline-table;">{{ incident.branch_initials }}</span>
@@ -9,7 +9,7 @@
         {{ incident.person }}
     </div>
 
-    <div class="col-8 d-block d-md-none" 
+    <div class="col-8 d-block d-md-none"         
         style="cursor:pointer;"
         [style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "
         (click)="show_incident_details(incident);">
