@@ -15,6 +15,7 @@ const people_routes = require("./api/routes/people-routes");
 const parameters_routes = require("./api/routes/parameters-routes");
 const incidents_routes = require("./api/routes/incidents-routes");
 const express = require('express');
+var helmet = require('helmet');
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
 }
@@ -55,6 +56,7 @@ function getParticipationList(people) {
         const bodyParser = require("body-parser");
         const cors = require("cors");
         const jobs_service = new jobs_services_1.JobsService(pool);
+        app.use(helmet());
         app.use(cors());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());

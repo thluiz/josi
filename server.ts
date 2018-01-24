@@ -7,6 +7,8 @@ import * as parameters_routes from "./api/routes/parameters-routes";
 import * as incidents_routes from "./api/routes/incidents-routes";
 
 const express = require('express');
+var helmet = require('helmet');
+
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
 }
@@ -56,8 +58,8 @@ function getParticipationList(people) {
         const bodyParser = require("body-parser");
         const cors = require("cors");
         
-        const jobs_service = new JobsService(pool);        
-
+        const jobs_service = new JobsService(pool);                
+        app.use(helmet());
         app.use(cors());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
