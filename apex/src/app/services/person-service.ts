@@ -77,7 +77,7 @@ export class PersonService {
         .post(this.dataUrl + `/people`, {
           person
         }).do((data) => {          
-          this.person_changes.next({ person_id: person.id, id: person.id })
+          this.person_changes.next(data.json())
         });
   }
 

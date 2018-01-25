@@ -61,13 +61,18 @@ export class PersonDataTreatmentModalComponent implements OnInit {
   }
 
   private person_id() {
+    if(!this.person) {
+      console.log("person nd");
+      return 0;
+    }
+      
     return this.person.id || this.person.person_id
   }
 
   ngOnInit() {    
     this.person_changes_subscriber = this.personService.personChanges$
-    .filter((data) => data != null && data.person_id == this.person_id())
-    .subscribe((data) => {                 
+    .filter((data) => data != null && data.id == this.person_id())
+    .subscribe((data) => {                       
       this.personService.getPersonMissingData(this.person_id()).subscribe((missing_data) => {
         this.missing_data = missing_data.json();        
       });
@@ -94,8 +99,8 @@ export class PersonDataTreatmentModalComponent implements OnInit {
   open(person) {    
     this.person = person;
     Observable.zip(
-      this.personService.getPersonMissingData(this.person_id() || this.person.person_id),
-      this.personService.getPersonContacts(this.person_id() || this.person.person_id),
+      this.personService.getPersonMissingData(this.person_id()),
+      this.personService.getPersonContacts(this.person_id()),
       (missing_data, contacts) => {
         this.missing_data = missing_data.json();
         this.load_contacts(contacts.json());

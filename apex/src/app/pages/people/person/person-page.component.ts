@@ -42,6 +42,7 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
   branches = [];
 
   private router_sub: Subscription;
+  private person_changes_subscriber: Subscription;
 
   constructor(private personService: PersonService, 
               private parameterService: ParameterService,
@@ -57,6 +58,12 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
       this.load_person_data();      
       this.load_person_roles();  
       this.load_person_scheduling();  
+    });
+
+    this.person_changes_subscriber = this.personService.personChanges$
+    .filter((data) => data != null && data.id == this.id)
+    .subscribe((data) => {                       
+      this.person = data;
     });
  
     this.reset_new_schedule();    

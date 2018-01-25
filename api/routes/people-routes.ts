@@ -36,14 +36,16 @@ export function configure_routes(app: any, connection_pool: any) {
         response.send(result.recordset[0]);
     });
     
-    app.post("/api/people", async (request, response, next) => {                        
-        console.log(request.body.person);
-        
-        const result = await person_service.update_person_data(
-            request.body.person
-        );
+    app.post("/api/people", async (request, res, next) => {                        
+        try {        
+            const result = await person_service.update_person_data(
+                request.body.person
+            );
 
-        response.send("Ok");
+            res.send(result.recordset[0][0]);
+        } catch(error) {
+            res.status(500).json(error);
+        }
     });
 
     app.get("/api/people/:id", async (request, response, next) => {                        

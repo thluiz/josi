@@ -28,10 +28,9 @@ export class PersonStatusLineComponent implements OnInit {
   ngOnInit() {
     this.person_changes_subscriber = this.personService.personChanges$
       .filter((p) => p.id == this.person.id)
-      .subscribe((next) => {      
-        //this.personService.getData(this.person.id).subscribe((data) => {
-        //  this.person = data.json();
-        //})
+      .subscribe((person) => {  
+        console.log(person);         
+        this.person = person;        
       });
   }
 
