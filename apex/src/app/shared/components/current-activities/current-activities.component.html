@@ -48,7 +48,7 @@
                 *ngIf="!act.next_incident[0].in_treatment 
                     && !act.next_incident[0].closed 
                     && !act.next_incident[0].treated
-                    && act.next_incident[0].need_to_be_started 
+                    && act.next_incident[0].need_to_be_started                     
                     && act.next_incident[0].started_on_hour"
                 (click)="close_incident(act.next_incident[0]);">
                     <i class="fas fa-stop"></i>

@@ -55,7 +55,8 @@
         *ngIf="!incident.in_treatment 
             && !incident.closed 
             && !incident.treated
-            && incident.need_to_be_started 
+            && incident.need_to_be_started
+            && !incident.need_description_for_closing 
             && incident.started_on_hour"
         (click)="close_incident(incident);">
             <i class="fas fa-stop"></i>
@@ -101,6 +102,7 @@
                             && !incident.closed 
                             && !incident.treated
                             && incident.need_to_be_started 
+                            && !incident.need_description_for_closing 
                             && incident.started_on_hour"
                         (click)="close_incident(incident);">
                             <i class="fas fa-stop"></i>

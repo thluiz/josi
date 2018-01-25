@@ -76,9 +76,17 @@
                             <fieldset class="form-group">					
                                 <textarea class="form-control" 
                                     name="closing_contact_text"
-                                    [(ngModel)]="current_incident.closing_contact_text"				
+                                    [(ngModel)]="current_incident.closing_contact_text"	
+                                    (ngModelChange)="validate_for_closing(current_incident)"			
                                     rows="3" placeholder="Como foi?"></textarea>
-                            </fieldset>		
+                            </fieldset>	
+                            <span 
+                                style="font-style: italic;color:red"
+                                *ngIf="current_incident.valid_for_closing != null 
+                                            && current_incident.valid_for_closing != undefined
+                                            && !current_incident.valid_for_closing">
+                                * Informe como foi a atividade para poder finaliza-la
+                            </span>	
                         </div>
                     </div>
                 </div>
@@ -102,7 +110,12 @@
                                             || current_incident.started_on_hour)">
                     <h6 style="font-weight: bold" *ngIf="! current_incident.started_on_hour">Realizado?</h6>				
                     <h6 style="font-weight: bold" *ngIf="current_incident.started_on_hour">Finalizar?</h6>				
-                    <button type="button" class="btn btn-success" (click)="close_incident(current_incident);d('close!');">
+                    <button type="button" class="btn" 
+                        [ngClass]="current_incident.valid_for_closing != null 
+                                            && current_incident.valid_for_closing != undefined
+                                            && !current_incident.valid_for_closing ? 
+                                            'btn-secondary' : 'btn-success'"
+                        (click)="close_incident(current_incident, d);">
                         <i class="icon-check"></i> Sim
                     </button>
                     <button type="button" class="btn btn-primary" (click)="begin_treat_incident(current_incident)">
@@ -132,7 +145,7 @@
                             <h6 style="font-weight: bold">Reagendamento</h6>									
                             <div class="form-group">
                                 <div class="input-group">
-                                    <input class="form-control text-center" style="width:100%" placeholder="dd/mm/aaaa"
+                                    <input class="form-control text-center" placeholder="dd/mm/aaaa"
                                     name="new_date" 
                                     [(ngModel)]="current_incident.new_date" 
                                     ngbDatepicker #dpReschedule="ngbDatepicker" />

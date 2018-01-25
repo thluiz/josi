@@ -82,13 +82,35 @@ export class IncidentTreatmentModalComponent implements OnInit {
     }       
   }
 
-  close_incident(incident) {
+  validate_for_closing(incident) {
+    if(incident.need_description_for_closing
+      && (!incident.closing_contact_text
+      || incident.closing_contact_text.length < 5)) {
+        incident.valid_for_closing = false;
+        return;
+      }
+
+      incident.valid_for_closing = true;
+  }
+
+  close_incident(incident, close_action) {
+    this.validate_for_closing(incident);
+
+    if(!incident.valid_for_closing) {
+      return;
+    }
+
     incident.closed = true;        
 
     this.incidentService.close_incident(incident)
-    .toPromise().catch((reason) => {
-      console.log(reason);
+    .toPromise()
+    .catch((reason) => {      
+      console.log(reason);      
     });      
+
+    if(close_action) {
+      close_action();
+    }
   }
 
   remove_incident(incident) {
