@@ -29,6 +29,9 @@ export class PersonService {
   private person_changes = new Subject<any>();
   personChanges$  = this.person_changes.asObservable();  
 
+  private comment_changes = new Subject<any>();
+  commentChanges$  = this.comment_changes.asObservable();  
+
   constructor(private http:Http) { }  
   
   getDailyAgenda(branch, date: any) {
@@ -127,9 +130,9 @@ export class PersonService {
         });
   }
 
-  search(term) {    
+  search(name) {    
     return this.http
-        .get(this.dataUrl + `/people/search/${term}`);
+        .get(this.dataUrl + `/people/search/${name}`);
   }
 
   remove_schedule(schedule) {
@@ -143,6 +146,27 @@ export class PersonService {
     return this.http
         .post(this.dataUrl + `/person_schedule`, {
           schedule
+        });
+  }
+
+  getCommentsAboutPerson(person_id) {
+    return this.http.get(this.dataUrl + `/people_comments/about/${person_id}`); 
+  }
+
+  archiveComment(comment) {
+    return this.http
+        .post(this.dataUrl + `/people_comments/archive`, {
+          id: comment.id
+        });
+  }
+
+  saveCommentAboutPerson(person, comment) {    
+    return this.http
+        .post(this.dataUrl + `/people_comments/about`, {
+          person_id: person.id,
+          comment
+        }).do((data) => {          
+          this.comment_changes.next({ person });
         });
   }
 }

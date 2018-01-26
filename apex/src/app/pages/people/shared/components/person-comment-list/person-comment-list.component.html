@@ -1,0 +1,58 @@
+<div class="row" 
+    style="border-bottom: 1px solid black;" >
+    <div class="col-10">        
+        <h6 style="font-weight:bold;margin-bottom:0"> <i class="far fa-sticky-note"></i> Comentários </h6>
+    </div>
+    <div class="col-2 text-right">
+        <button type="button" class="btn btn-silver btn-sm" 
+            style="margin:0;padding:2px;line-height:10px"
+            (click)="add_comment();">
+            <i class="ft-plus"></i>                                        
+            <i class="far fa-sticky-note"></i>
+        </button>
+    </div>
+</div>
+
+<div class="row" *ngIf="!comments || comments.length == 0">
+    <div class="col-12 text-center">
+        Nenhum comentário encontrado
+    </div>
+</div>
+<div class="row" *ngFor="let cm of comments">
+    <div class="col-12 pl-3">
+        <div class="row" style="border:1px solid silver;border-top:0">
+            <div class="col-10" style="color:black;">     
+                <div class="row">
+                    <div class="col-12">
+                        <markdown [data]="cm.comment" style="margin-bottom:0 !important"></markdown>			
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-right pr-0" style="font-style: italic;line-height:10px;font-size:10px">
+                        {{ cm.created_date_br }} {{ cm.created_hour_br  }}
+                    </div>
+                </div>                              
+            </div>
+            <div class="col-2 text-right pl-0">
+                <button type="button" class="btn btn-silver btn-sm" 
+                    style="margin: 0; padding:2px; line-height:10px"			                                        
+                    *ngIf="!cm.archive"
+                    (click)="cm.archive = true">
+                    <i class="fas fa-archive"></i>                                        
+                </button>                                    
+                <button type="button" class="btn btn-danger btn-sm" 
+                    *ngIf="cm.archive"
+                    style="margin:0;padding:2px;line-height:10px"			                                        
+                    (click)="archive_comment(cm)">
+                    <i class="fas fa-archive"></i>                                        
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" 
+                    *ngIf="cm.archive"
+                    style="margin:0;padding:2px;line-height:10px"			                                        
+                    (click)="cm.archive = false">
+                    <i class="icon-action-undo"></i>                                        
+                </button>                                    
+            </div>
+        </div>        
+    </div>    
+</div>

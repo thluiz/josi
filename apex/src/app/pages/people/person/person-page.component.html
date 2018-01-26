@@ -247,7 +247,7 @@
                                                 - {{ ps.value }}
                                             </span>
                                         </div>
-                                        <div class="col-4  d-none d-lg-block">
+                                        <div class="col-3  d-none d-lg-block">
                                             {{ ps.type_description }}
                                         </div>
                                         <div class="col-6 d-none d-lg-block">
@@ -288,6 +288,11 @@
                         </div>
                     </div>
                     <div class="row" style="padding-top:10px">
+                        <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
+                            <person-comment-list                                    
+                            [person]="person">                                
+                            </person-comment-list>
+                        </div>
                         <div class="col-5 offset-2" *ngIf="person.last_activities && person.last_activities.length > 0">
                             <h5 style="border-bottom: 1px solid black"><i class="fa fa-tasks"></i> Atividades </h5>
                             <div class="row" *ngFor="let a of person.last_activities">

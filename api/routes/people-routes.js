@@ -152,6 +152,27 @@ function configure_routes(app, connection_pool) {
         let result = yield person_service.save_schedule(request.body.schedule);
         response.send("Ok");
     }));
+    /**
+     * COMMENTS
+     */
+    app.get("/api/people_comments/about/:id/:show_archived?", (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = yield new sql.Request(pool)
+                .input('person_id', sql.Int, request.params.id)
+                .input('show_archived', sql.Int, request.params.show_archived || 0)
+                .execute(`GetCommentsAboutPerson`);
+            let response = result.recordset[0];
+            res.send(response[0].empty ? [] : response);
+        }
+        catch (error) {
+            console.log(error);
+            res.status(500).json(error);
+        }
+    }));
+    app.post("/api/people_comments/about", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield person_service.save_comment_about(request.body.person_id, request.body.comment);
+        response.send("Ok");
+    }));
 }
 exports.configure_routes = configure_routes;
 //# sourceMappingURL=people-routes.js.map

@@ -98,4 +98,13 @@ export class PersonService {
 
         return result;  
     }
+
+    async save_comment_about(person_id, comment) {
+        const result = await new sql.Request(this.sql_pool) 
+                                .input('person_id', sql.Int, person_id)
+                                .input('comment', sql.NVarChar(sql.MAX), comment)                               
+                                .execute(`SavePersonComment`);
+
+        return result;  
+    }
 }

@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { ModalService, ModalType } from 'app/services/modal-service';
 import { PersonDataTreatmentModalComponent } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.component';
 import { IncidentTreatmentModalComponent } from 'app/shared/components/incident-treatment-modal/incident-treatment-modal.component';
+import { AddCommentModalComponent, CommentType } from 'app/shared/components/add-comment-modal/add-comment-modal.component';
 
 @Component({
     selector: 'app-root',
@@ -15,6 +16,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     @ViewChild(PersonDataTreatmentModalComponent) personDataTreatmentModal : PersonDataTreatmentModalComponent;
     @ViewChild(IncidentTreatmentModalComponent) incidentTreatmentModal : IncidentTreatmentModalComponent;
+    @ViewChild(AddCommentModalComponent) addCommentModal : AddCommentModalComponent;
 
     constructor(private modalService: ModalService) {
 
@@ -33,6 +35,12 @@ export class AppComponent implements OnInit, OnDestroy {
                         break;
                     case ModalType.IncidentTreatment:
                         this.incidentTreatmentModal.open(data.parameters);
+                        break;
+                    case ModalType.AddPersonComment:
+                        this.addCommentModal.open(data.parameters, CommentType.Person);
+                        break;
+                    case ModalType.AddIncidentComment:
+                        this.addCommentModal.open(data.parameters, CommentType.Incident);
                         break;
                 }
             });

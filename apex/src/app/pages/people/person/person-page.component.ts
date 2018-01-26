@@ -34,6 +34,7 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
   current_roles: any[]; 
   available_roles:any[];
   current_scheduling: any[];
+  comments: any[];
   new_role: any;
   new_schedule: any = {};
   manual;  
@@ -58,6 +59,7 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
       this.load_person_data();      
       this.load_person_roles();  
       this.load_person_scheduling();  
+      this.load_comments_about_person();
     });
 
     this.person_changes_subscriber = this.personService.personChanges$
@@ -249,7 +251,14 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
     this.validate_new_schedule();
   }
 
-  showPage(str) {
+  /**
+   * COMMENTS
+   */
+  load_comments_about_person() {
+    this.personService.getPersonContacts(this.id).subscribe((comments) => {
+      this.comments = comments.json();  
+    });
+  }
 
-  }  
+  
 }

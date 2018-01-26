@@ -203,4 +203,34 @@ export function configure_routes(app: any, connection_pool: any) {
 
         response.send("Ok");             
     });
+
+    /**
+     * COMMENTS    
+     */
+
+    app.get("/api/people_comments/about/:id/:show_archived?", async (request, res, next) => {  
+        try {                      
+            const result = await new sql.Request(pool)
+            .input('person_id', sql.Int, request.params.id)
+            .input('show_archived', sql.Int, request.params.show_archived || 0)
+            .execute(`GetCommentsAboutPerson`);                
+            
+            let response = result.recordset[0];
+            res.send(response[0].empty ? [] : response);   
+                     
+        } catch(error)  {   
+            console.log(error);
+            res.status(500).json(error);
+        }
+    });
+
+    app.post("/api/people_comments/about", async (request, response, next) => { 
+        let result = await person_service.save_comment_about(
+            request.body.person_id,
+            request.body.comment
+        );            
+
+        response.send("Ok");             
+    });
+    
 }

@@ -110,6 +110,15 @@ class PersonService {
             return result;
         });
     }
+    save_comment_about(person_id, comment) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield new sql.Request(this.sql_pool)
+                .input('person_id', sql.Int, person_id)
+                .input('comment', sql.NVarChar(sql.MAX), comment)
+                .execute(`SavePersonComment`);
+            return result;
+        });
+    }
 }
 exports.PersonService = PersonService;
 //# sourceMappingURL=person_services.js.map

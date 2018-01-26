@@ -4,7 +4,9 @@ import { Subject }    from 'rxjs/Subject';
 
 export enum ModalType{
     PersonTreatment,
-    IncidentTreatment
+    IncidentTreatment,
+    AddPersonComment,
+    AddIncidentComment
 }
 
 export interface IModalOpening {

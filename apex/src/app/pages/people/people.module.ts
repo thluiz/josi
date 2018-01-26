@@ -28,6 +28,7 @@ import { NgbModal,
 import { MarkdownModule } from 'ngx-markdown';
 import { PeopleHeaderModule } from 'app/pages/people/shared/components/people-header/people-header.module';
 import { ChangeMembersViewModule } from 'app/pages/people/shared/components/change-members-view/change-members-view.module';
+import { PersonCommentListModule } from 'app/pages/people/shared/components/person-comment-list/person-comment-list.module';
 
 @NgModule({
     imports: [
@@ -43,6 +44,7 @@ import { ChangeMembersViewModule } from 'app/pages/people/shared/components/chan
         PersonContactListModule,
         PersonStatusLineModule,
         PersonDataTreatmentModalModule,
+        PersonCommentListModule,
         PeopleHeaderModule,
         ChangeMembersViewModule             
     ],

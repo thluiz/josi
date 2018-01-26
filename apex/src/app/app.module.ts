@@ -23,6 +23,7 @@ import { ModalService } from 'app/services/modal-service';
 
 import { PersonDataTreatmentModalModule } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.module';
 import { IncidentTreatmentModalModule } from 'app/shared/components/incident-treatment-modal/incident-treatment-modal.module';
+import { AddCommentModalModule } from 'app/shared/components/add-comment-modal/add-comment-modal.module';
 
 @NgModule({
     declarations: [
@@ -36,6 +37,7 @@ import { IncidentTreatmentModalModule } from 'app/shared/components/incident-tre
         SharedModule,
         PersonDataTreatmentModalModule,
         IncidentTreatmentModalModule,
+        AddCommentModalModule,
         NgbModule.forRoot(),                
         HttpModule,
         //BrowserModule,
