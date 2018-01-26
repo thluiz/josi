@@ -30,7 +30,10 @@ export class PersonCommentListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.comment_changes_subscriber = this.personService.commentChanges$
-      .filter((data) => data != null && data.person.id == this.person.id)
+      .filter((data) => { 
+        console.log(data); 
+        return data != null && data.person.id == this.person.id
+      })
       .subscribe((data) => {            
         this.load_comments();      
       });
@@ -57,6 +60,6 @@ export class PersonCommentListComponent implements OnInit, OnDestroy {
   } 
 
   archive_comment(comment) {    
-    this.personService.archiveComment(comment).subscribe();
+    this.personService.archiveComment(comment, this.person).subscribe();
   }
 }

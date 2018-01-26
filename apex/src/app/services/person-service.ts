@@ -153,10 +153,12 @@ export class PersonService {
     return this.http.get(this.dataUrl + `/people_comments/about/${person_id}`); 
   }
 
-  archiveComment(comment) {
+  archiveComment(comment, person) {
     return this.http
         .post(this.dataUrl + `/people_comments/archive`, {
           id: comment.id
+        }).do((data) => {          
+          this.comment_changes.next({ person });
         });
   }
 

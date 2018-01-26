@@ -107,4 +107,13 @@ export class PersonService {
 
         return result;  
     }
+
+    async archive_comment(comment_id) {
+        console.log(comment_id);
+        const result = await new sql.Request(this.sql_pool) 
+                                .input('comment_id', sql.Int, comment_id)                                
+                                .execute(`ToglePersonCommentArchived`);
+
+        return result;
+    }
 }

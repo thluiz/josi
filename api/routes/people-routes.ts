@@ -232,5 +232,13 @@ export function configure_routes(app: any, connection_pool: any) {
 
         response.send("Ok");             
     });
+
+    app.post("/api/people_comments/archive", async (request, response, next) => { 
+        let result = await person_service.archive_comment(
+            request.body.id
+        );            
+
+        response.send("Ok");             
+    });
     
 }

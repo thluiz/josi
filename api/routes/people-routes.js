@@ -173,6 +173,10 @@ function configure_routes(app, connection_pool) {
         let result = yield person_service.save_comment_about(request.body.person_id, request.body.comment);
         response.send("Ok");
     }));
+    app.post("/api/people_comments/archive", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield person_service.archive_comment(request.body.id);
+        response.send("Ok");
+    }));
 }
 exports.configure_routes = configure_routes;
 //# sourceMappingURL=people-routes.js.map

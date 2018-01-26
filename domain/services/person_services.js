@@ -119,6 +119,15 @@ class PersonService {
             return result;
         });
     }
+    archive_comment(comment_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(comment_id);
+            const result = yield new sql.Request(this.sql_pool)
+                .input('comment_id', sql.Int, comment_id)
+                .execute(`ToglePersonCommentArchived`);
+            return result;
+        });
+    }
 }
 exports.PersonService = PersonService;
 //# sourceMappingURL=person_services.js.map
