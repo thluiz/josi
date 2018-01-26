@@ -26,6 +26,8 @@ import { NgbModal,
     NgbModule     
 } from '@ng-bootstrap/ng-bootstrap';
 import { MarkdownModule } from 'ngx-markdown';
+import { PeopleHeaderModule } from 'app/pages/people/shared/components/people-header/people-header.module';
+import { ChangeMembersViewModule } from 'app/pages/people/shared/components/change-members-view/change-members-view.module';
 
 @NgModule({
     imports: [
@@ -40,7 +42,9 @@ import { MarkdownModule } from 'ngx-markdown';
         PersonCardModule,
         PersonContactListModule,
         PersonStatusLineModule,
-        PersonDataTreatmentModalModule             
+        PersonDataTreatmentModalModule,
+        PeopleHeaderModule,
+        ChangeMembersViewModule             
     ],
     declarations: [       
         MembersPanelPageComponent,

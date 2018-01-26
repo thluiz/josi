@@ -56,8 +56,8 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
   private incident_added_subscriber: Subscription;
   private person_changes_subscriber: Subscription;  
 
-  constructor(public personService: PersonService, 
-              public incidentService: IncidentService, 
+  constructor(private personService: PersonService, 
+              private incidentService: IncidentService, 
               private parameterService: ParameterService,
               private modalService: NgbModal, 
               private datePickerConfig: NgbDatepickerConfig) {
@@ -84,7 +84,6 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
       this.manual_incident_types = result.filter(i => !i.automatically_generated);
     },
     err => console.error(err));
-
     
     this.incident_changes_subscriber = this.incidentService.incidentsChanges$
       .debounceTime(1000)
@@ -94,11 +93,6 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
       });
 
     this.incident_added_subscriber = this.incidentService.incidentAdd$        
-      .subscribe((next) => {      
-        this.getAgendaData();
-      });
-    
-    this.person_changes_subscriber = this.personService.personChanges$        
       .subscribe((next) => {      
         this.getAgendaData();
       });
@@ -112,8 +106,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
     }    
     
     this.incident_added_subscriber.unsubscribe();        
-    this.incident_changes_subscriber.unsubscribe();    
-    this.person_changes_subscriber.unsubscribe();
+    this.incident_changes_subscriber.unsubscribe();        
   }
 
   change_current_date(date) {
@@ -168,7 +161,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
     var d = new Date();
     var hours = d.getHours();
     
-    const update_interval = hours >= 22 || hours < 6 ? 600000 : 30000;
+    const update_interval = hours >= 22 || hours < 6 ? 1800000 : 120000;
 
     if(this.update_agenda_timer) {
       clearTimeout(this.update_agenda_timer);

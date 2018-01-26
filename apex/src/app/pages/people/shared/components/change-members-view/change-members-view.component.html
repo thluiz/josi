@@ -1,0 +1,25 @@
+<style>
+	label {
+		margin:0;
+		font-size:12px;
+		font-weight: bold;
+		display: block;
+		line-height: 12px;
+		color:grey;
+	}
+</style>
+<div class="form-group pt-2 pl-3 pb-0">
+	<label for="change_members_view">Visualização</label>
+	<div class="input-group">									
+		<select 	
+			name="change_members_view" id="change_members_view"
+			[(ngModel)]="display"								
+			(ngModelChange)="change_view($event)"																		
+			class="form-control form-control-sm"
+			style="width:100%"	
+			>			
+			<option value="0">Domínios e Níveis</option>			
+			<option value="1">Gerenciamento</option>	
+		</select>
+	</div>
+</div>

@@ -9,7 +9,14 @@ import { Routes, RouterModule } from '@angular/router';
 
 let routes: Routes = [
   {
-    path: 'people',
+    path: 'members/management/:branch/:filter',
+    component: ManagementPanelPageComponent,
+    data: {
+      title: 'Painel de Gerência de Membros'
+    },    
+  },
+  {
+    path: 'members/management',
     component: ManagementPanelPageComponent,
     data: {
       title: 'Painel de Gerência de Membros'

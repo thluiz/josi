@@ -183,12 +183,13 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/person_schedule/person/:id", async (request, res, next) => { 
-        try {
+        try {                     
             let result = await new sql.Request(pool)                
                 .input('person_id', sql.Int, request.params.id)
                 .execute(`GetPersonScheduling`);                
-            
+                            
             let response = result.recordset[0];
+            
             res.send(response[0].empty ? [] : response);
         } catch (error) {                                
             res.status(500).json(error);

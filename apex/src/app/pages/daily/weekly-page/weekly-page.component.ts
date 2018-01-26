@@ -274,7 +274,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     var d = new Date();
     var hours = d.getHours();
     
-    const update_interval = hours >= 22 || hours < 6 ? 600000 : 300000;
+    const update_interval = hours >= 22 || hours < 6 ? 1800000 : 120000;
 
     if(this.update_members_timer) {
       clearTimeout(this.update_members_timer);

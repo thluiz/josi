@@ -1,35 +1,13 @@
 
 
 <div class="card">
-    <div class="sticky-top" style="background-color:white;width:100%;padding:10px;z-index:10000">
-        <div class="row">
-            <div class="col-12">
-                <div class="row">
-                    <div class="col-12">
-                        <form class="form form-horizontal" novalidate="">
-                            <div class="form-group row">                                                            
-                                <div class="col-md-12 col-sm-12">
-                                    <select id="view" 
-                                        [(ngModel)]="current_view" 
-                                        (ngModelChange)="change_view($event)"									                            
-                                        [ngModelOptions]="{standalone: true}"
-                                        class="form-control form-control-lg"
-                                        style="border:0;border-bottom:1px solid silver;font-weight:bold"
-                                        >			
-                                        <option value="0" selected>Painel de Praticantes</option>			
-                                        <option value="1">Painel de Membros</option>                                                        
-                                    </select>
-                                </div>
-                            </div>
-                        </form>                                            
-                    </div>                    
-                </div>                
-            </div>					
-        </div>
-    </div>
-    <div class="card-body" style="padding-left:2%">
+    <people-header panel="members"></people-header>
+    <div class="card-body">
         <div class="row">
             <div class="col-2">
+                <people-change-members-view display="management"></people-change-members-view>
+            </div>
+            <div class="col-2 pt-2 pl-3 pb-0">
                 <div class="form-body">
                     <div class="form-group">
                         <label for="branch">Núcleo</label>
@@ -48,18 +26,23 @@
                     </div>                            
                 </div>                                                                  
             </div>
-            <div class="col-3">
+            <div class="col-3 pt-2 pl-3 pb-0">
                 <div class="form-body">
                     <div class="form-group">
-                        <label for="branch">Status</label>
-                        <select id="branch" 
-                            [(ngModel)]="only_people_with_issues" 
+                        <label for="filters">Filtros</label>
+                        <select id="filters" 
+                            [(ngModel)]="filters" 
                             (ngModelChange)="filter_people()"									                            
                             class="form-control form-control-sm"
                             [ngModelOptions]="{standalone: true}"
                             >			
-                            <option value="false">Todos</option>			
-                            <option value="true">Apenas praticantes com pendências</option>
+                            <option value="0">Todos</option>			
+                            <option value="1">Qualquer pendência</option>
+                            <option value="2">Pendências cadastrais</option>
+                            <option value="3">Pendências financeiras</option>
+                            <option value="4">Pendências de agendamento</option>                            
+                            <option value="5">Pendências de comunicação</option>
+                            <option value="6">Aniversariantes do Mês</option>
                         </select>
                     </div>                            
                 </div>                                                                  

@@ -17,12 +17,13 @@ export class ManagementPanelPageComponent implements OnInit, OnDestroy {
   people: any;    
   all_people: any;
   current_view = 0;
-  only_people_with_issues = "true";
+  filters = "1";
   current_branch = 0; 
   branches: any;
 
 
   private person_list_sub: Subscription;  
+  private router_sub : any;
 
   constructor(private personService: PersonService, 
     private route: ActivatedRoute,
@@ -32,28 +33,70 @@ export class ManagementPanelPageComponent implements OnInit, OnDestroy {
   
   }  
 
-  ngOnInit() {
-    this.load_members_list(); 
+  ngOnInit() {    
+    this.router_sub = this.route.params.subscribe(params => {      
+      this.current_branch = params['branch'] || 0;            
+      this.filters = params['filter'] || 1;            
+
+      this.load_members_list();
+    });    
   }
   
   ngOnDestroy() {
     this.person_list_sub.unsubscribe();
+    this.router_sub.unsubscribe();
   }
 
-  change_view(view) {
-    if(view == 0) {
-      this.router.navigateByUrl(`people`);
-    } else if (view == 1) {
-      this.router.navigateByUrl(`people/members`);
+  apply_filters() {  
+    let people = this.all_people;
+    
+    switch(this.filters) {      
+      case "1":
+        people = people.filter((p : any) => {
+          return p.comunication_status 
+                || p.financial_status != 0
+                || p.scheduling_status != 0
+                || p.data_status != 0;
+        });
+      break;
+      case "2":
+        people = people.filter((p : any) => {
+          return p.data_status != 0;
+        });
+      break;
+      case "3":
+        people = people.filter((p : any) => {
+          return p.financial_status != 0;
+        });
+      break;
+      case "4":
+        people = people.filter((p : any) => {
+          return p.scheduling_status != 0;
+        });
+      break;
+      case "5":
+        people = people.filter((p : any) => {          
+          return p.comunication_status;
+        });
+      break;
+      case "6":
+        people = people.filter((p : any) => {
+          return p.has_birthday_this_month;
+        });
+      break;
     }
+
+    if(this.current_branch > 0) {
+      people = people.filter((p : any) => {
+        return p.branch_id == this.current_branch;
+      });
+    }
+
+    this.people = people;
   }
 
-  filter_people() {      
-    this.people = this.all_people.filter( (p :any) => {
-      return this.only_people_with_issues === "false" || p.issues_level > 0;
-    }).filter( (p :any) => {
-      return  this.current_branch == 0 || p.branch_id == this.current_branch;
-    });
+  filter_people() {
+    this.router.navigateByUrl(`people/members/management/${this.current_branch}/${this.filters}`);
   }
 
   load_members_list() {    
@@ -66,7 +109,7 @@ export class ManagementPanelPageComponent implements OnInit, OnDestroy {
         const result = data.json();   
         this.all_people = result;
 
-        this.filter_people();
+        this.apply_filters();
       }
     );  
   }

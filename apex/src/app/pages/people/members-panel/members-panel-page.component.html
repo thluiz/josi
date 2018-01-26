@@ -1,19 +1,27 @@
 <div class="card text-center">
-    <div class="row" *ngFor="let p of programs">
-        <div class="col-12 text-left" *ngFor="let d of p.domains">
-            <div
-                style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center"
-                [ngStyle]="{ 'background-color': d.program_id == 3 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)') }">
+    <people-header panel="members"></people-header>    
+    <div class="row text-left">
+        <div class="col-2">
+            <people-change-members-view display="members"></people-change-members-view>
+        </div>
+    </div>    
+    <div class="card-body">
+        <div class="row" *ngFor="let p of programs">
+            <div class="col-12 text-left" *ngFor="let d of p.domains">
+                <div
+                    style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center"
+                    [ngStyle]="{ 'background-color': d.program_id == 3 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)') }">
 
-                {{ p.long_name }} - {{ d.long_name }}
+                    {{ p.long_name }} - {{ d.long_name }}
 
-            </div>
-            <div *ngFor="let person of d.members"                        
-                class="text-left"
-                style="border:1px solid black;cursor:pointer;padding-bottom:5px;margin:10px;display:inline-block;width:310px">
-                <person-card                     
-                    [person]="person"></person-card>
-            </div>
-        </div>        
+                </div>
+                <div *ngFor="let person of d.members"                        
+                    class="text-left"
+                    style="border:1px solid black;cursor:pointer;padding-bottom:5px;margin:10px;display:inline-block;width:310px">
+                    <person-card                     
+                        [person]="person"></person-card>
+                </div>
+            </div>        
+        </div>
     </div>
 </div>
