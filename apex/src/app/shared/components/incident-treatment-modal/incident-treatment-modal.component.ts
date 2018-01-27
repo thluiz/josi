@@ -1,3 +1,4 @@
+import { ModalService, ModalType } from 'app/services/modal-service';
 import { Observable } from 'rxjs/Observable';
 import { Component, Input, OnInit, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 
@@ -5,6 +6,7 @@ import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from '
 import { PersonService } from 'app/services/person-service';
 import { IncidentService } from 'app/services/incident-service';
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'incident-treatment-modal',
@@ -20,16 +22,29 @@ export class IncidentTreatmentModalComponent implements OnInit {
 
   @ViewChild('content') incident_treatment_modal: ElementRef;
 
+  private comment_changes_subscriber: Subscription;  
+
   constructor(private datePickerConfig: NgbDatepickerConfig,     
     private incidentService: IncidentService, 
     private ngbModalService: NgbModal,
+    private modalService: ModalService,
     private personService: PersonService) {
    
       datePickerConfig.firstDayOfWeek = 7
   }
 
   ngOnInit() {
-         
+    this.comment_changes_subscriber = this.incidentService.commentChanges$
+      .filter((i) => i != null 
+                  && this.current_incident != null 
+                  && i.id == this.current_incident.id)
+      .subscribe((data) => {                   
+        this.current_incident = data;        
+      });
+  }
+
+  ngOnDestroy() {
+    this.comment_changes_subscriber.unsubscribe();
   }
 
   open(incident) {    
@@ -39,9 +54,7 @@ export class IncidentTreatmentModalComponent implements OnInit {
     }, (reason) => {        
         console.log(reason);
     });         
-  }
-
-  
+  }  
 
   begin_remove_incident(incident) {
     incident.begin_remove = true;
@@ -194,6 +207,14 @@ export class IncidentTreatmentModalComponent implements OnInit {
       contact_text: incident.contact_text 
     }).toPromise().then((value) => close_modal_action()).catch((reason) => {
       console.log(reason);
-    });     
+    });            
   }  
+
+  add_comment() {
+    this.modalService.open(ModalType.AddIncidentComment, this.current_incident);
+  }
+
+  show_comments() {
+    this.modalService.open(ModalType.IncidentCommentList, this.current_incident);
+  }
 }

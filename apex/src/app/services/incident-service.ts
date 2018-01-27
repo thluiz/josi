@@ -17,6 +17,9 @@ export class IncidentService {
   private currentActivities$ = new ReplaySubject(1);
   private lastCurrentActivitiesRequest = 0;
 
+  private comment_changes = new Subject<any>();
+  commentChanges$  = this.comment_changes.asObservable();  
+
   constructor(private http:Http, private utilsService: UtilsService) { }  
 
   getSumary(branch, month, week, date) {
@@ -94,6 +97,30 @@ export class IncidentService {
     }).do((next) => {            
       this.incident_added.next(true);
     });    
-  }  
+  }
+  
+  getComments(incident_id) {
+    return this.http.get(this.dataUrl + `/incident_comments/incident/${incident_id}`); 
+  }
+
+  archiveComment(comment, incident) {
+    return this.http
+        .post(this.dataUrl + `/incident_comments/archive`, {
+          id: comment.id
+        }).map((data) => {          
+          this.comment_changes.next(data.json());
+        });
+  }
+
+  saveComment(incident, comment) {    
+    return this.http
+        .post(this.dataUrl + `/incident_comments`, {
+          incident_id: incident.id,
+          comment
+        }).map((data) => {          
+          console.log(data);
+          this.comment_changes.next(data.json());
+        });
+  }
 }
 

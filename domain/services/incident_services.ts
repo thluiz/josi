@@ -95,4 +95,21 @@ export class IncidentService {
         .input('contact', sql.VarChar(sql.MAX), text)
         .execute(`RegisterContactForIncident`);
     }
+
+    async save_comment(incident_id, comment) {
+        const result = await new sql.Request(this.sql_pool) 
+                                .input('incident_id', sql.Int, incident_id)
+                                .input('comment', sql.NVarChar(sql.MAX), comment)                               
+                                .execute(`SaveIncidentComment`);
+
+        return result;  
+    }
+
+    async archive_comment(comment_id) {        
+        const result = await new sql.Request(this.sql_pool) 
+                                .input('comment_id', sql.Int, comment_id)                                
+                                .execute(`TogleIncidentCommentArchived`);
+
+        return result;
+    }
 }

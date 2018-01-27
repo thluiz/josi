@@ -1,3 +1,4 @@
+import { IncidentService } from 'app/services/incident-service';
 import { Observable } from 'rxjs/Observable';
 import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 
@@ -23,7 +24,9 @@ export class AddCommentModalComponent implements OnInit {
 
   @ViewChild('add_comment_modal') add_comment_modal: ElementRef;
   
-  constructor(private personService: PersonService, private ngbModalService: NgbModal) {   
+  constructor(private personService: PersonService, 
+    private ngbModalService: NgbModal,
+    private incidentService: IncidentService) {   
   }
 
   private person_id() {
@@ -43,8 +46,13 @@ export class AddCommentModalComponent implements OnInit {
     
   }
 
-  open(person, type: CommentType) {    
-    this.person = person;
+  open(parameter, type: CommentType) {    
+    if(type == CommentType.Person) {
+      this.person = parameter;
+    }
+    if(type == CommentType.Incident) {
+      this.incident = parameter;
+    }
     this.type = type;
     this.open_modal(this.add_comment_modal, true);        
   }
@@ -58,7 +66,8 @@ export class AddCommentModalComponent implements OnInit {
   }   
 
   save_person_comment(close_action) {
-    this.personService.saveCommentAboutPerson(this.person, this.comment).subscribe((data) => {
+    this.personService.saveCommentAboutPerson(this.person, this.comment).subscribe(
+    (data) => {
       this.comment = "";
       this.person = null;
       
@@ -68,7 +77,18 @@ export class AddCommentModalComponent implements OnInit {
     });
   }
 
-  save_incident_comment(comment) {
-    //this.personService.saveCommentAboutPerson(this.person, comment).subscribe();
+  save_incident_comment(close_action) {
+    this.incidentService.saveComment(this.incident, this.comment).subscribe(
+    (data) => {
+      this.comment = "";
+      this.incident = null;
+
+      console.log("aa");
+      console.log(close_action);
+
+      if(close_action) {
+        close_action();
+      }
+    });
   }
 }

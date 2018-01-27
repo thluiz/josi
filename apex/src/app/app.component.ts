@@ -1,4 +1,3 @@
-
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 
@@ -6,6 +5,7 @@ import { ModalService, ModalType } from 'app/services/modal-service';
 import { PersonDataTreatmentModalComponent } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.component';
 import { IncidentTreatmentModalComponent } from 'app/shared/components/incident-treatment-modal/incident-treatment-modal.component';
 import { AddCommentModalComponent, CommentType } from 'app/shared/components/add-comment-modal/add-comment-modal.component';
+import { IncidentCommentsListModalComponent } from 'app/shared/components/incident-comments-list-modal/incident-comments-list-modal.component';
 
 @Component({
     selector: 'app-root',
@@ -17,6 +17,7 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild(PersonDataTreatmentModalComponent) personDataTreatmentModal : PersonDataTreatmentModalComponent;
     @ViewChild(IncidentTreatmentModalComponent) incidentTreatmentModal : IncidentTreatmentModalComponent;
     @ViewChild(AddCommentModalComponent) addCommentModal : AddCommentModalComponent;
+    @ViewChild(IncidentCommentsListModalComponent) incidentCommentsList : IncidentCommentsListModalComponent;
 
     constructor(private modalService: ModalService) {
 
@@ -42,6 +43,9 @@ export class AppComponent implements OnInit, OnDestroy {
                     case ModalType.AddIncidentComment:
                         this.addCommentModal.open(data.parameters, CommentType.Incident);
                         break;
+                    case ModalType.IncidentCommentList:
+                        this.incidentCommentsList.open(data.parameters);
+                        break;                        
                 }
             });
     }

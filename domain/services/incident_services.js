@@ -101,6 +101,23 @@ class IncidentService {
                 .execute(`RegisterContactForIncident`);
         });
     }
+    save_comment(incident_id, comment) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield new sql.Request(this.sql_pool)
+                .input('incident_id', sql.Int, incident_id)
+                .input('comment', sql.NVarChar(sql.MAX), comment)
+                .execute(`SaveIncidentComment`);
+            return result;
+        });
+    }
+    archive_comment(comment_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield new sql.Request(this.sql_pool)
+                .input('comment_id', sql.Int, comment_id)
+                .execute(`TogleIncidentCommentArchived`);
+            return result;
+        });
+    }
 }
 exports.IncidentService = IncidentService;
 //# sourceMappingURL=incident_services.js.map

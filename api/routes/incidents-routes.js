@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const sql = require("mssql");
 const incident_services_1 = require("../../domain/services/incident_services");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
@@ -44,6 +45,31 @@ function configure_routes(app, connection_pool) {
     app.post("/api/incident/register_contact", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield incident_service.register_contact_for_incident(request.body.incident, request.body.contact.contact_text);
         response.send("Ok");
+    }));
+    /**
+     * COMMENTS
+     */
+    app.get("/api/incident_comments/incident/:id/:show_archived?", (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = yield new sql.Request(pool)
+                .input('incident_id', sql.Int, request.params.id)
+                .input('show_archived', sql.Int, request.params.show_archived || 0)
+                .execute(`GetIncidentComments`);
+            let response = result.recordset[0];
+            res.send(response[0].empty ? [] : response);
+        }
+        catch (error) {
+            console.log(error);
+            res.status(500).json(error);
+        }
+    }));
+    app.post("/api/incident_comments", (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield incident_service.save_comment(request.body.incident_id, request.body.comment);
+        res.send(result.recordset[0][0]);
+    }));
+    app.post("/api/incident_comments/archive", (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield incident_service.archive_comment(request.body.id);
+        res.send(result.recordset[0][0]);
     }));
 }
 exports.configure_routes = configure_routes;
