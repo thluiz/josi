@@ -50,14 +50,6 @@
 										<option value="0">Todos os Núcleos</option>			
 										<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
 									</select>	
-									<!-- span *ngIf="show_change_branch"
-										style="cursor:pointer" 
-										class="input-group-btn"
-										(click)="show_change_branch = !show_change_branch">
-										<button class="btn btn-silver" type="button">
-											<i class="icon-action-undo"></i>
-										</button>
-									</span -->
 								</div>
 							</div>	
 							<div class="col-12 col-xl-2 col-lg-2 col-md-4 col-sm-12">
@@ -222,55 +214,10 @@
 					<div class="col-12 col-md-12 col-lg-3 col-sm-12">
 						
 						<div class="sticky-top" style="top:60px; padding-right:10px;background-color:white">
-								<table class="table-sm table-striped table-bordered"															
-								style="margin-bottom:50px;width:100%">								
-								<tr>						
-									<td *ngFor="let c of people_summary_cols, let k3 = index" 
-										align="center" 									
-										[ngStyle]="{ 'width': c.width, 'color': 'white',
-													'background-color': '#AAA' }"
-										[colSpan]="c.colspan || 1"
-									>
-									<div>										
-										<i  												
-											[ngClass]="c.icon"
-											*ngIf="c.icon != null"
-											[title]="c.description">
-										</i>
-										<b>{{ c.name }}</b>
-									</div>
-									</td>
-								</tr>
-								<tr *ngFor="let s of people_summary, let si = index" >
-									<td>
-										{{ s.program }}
-									</td>
-									<td>
-										{{ ('00' + s.people ).slice(-2)  }}
-									</td>
-									<td>
-										<span 									
-										[style.font-weight]="s.scheduling > 0 ? 'bold' : 'normal'"
-										[style.color]="s.scheduling > 0 ? 'red' : ''">
-											{{ ('00' + s.scheduling ).slice(-2)  }} 											
-										</span>
-									</td>
-									<td>
-										<span 									
-										[style.font-weight]="s.financial > 0 ? 'bold' : 'normal'"
-										[style.color]="s.financial > 0 ? 'red' : ''">
-											{{ ('00' + s.financial ).slice(-2)  }} 											
-										</span>
-									</td>
-									<td>
-										<span 									
-										[style.font-weight]="s.comunications > 0 ? 'bold' : 'normal'"
-										[style.color]="s.comunications > 0 ? 'red' : ''">
-											{{ ('00' + s.comunications ).slice(-2)  }} 											
-										</span>
-									</td>
-								</tr>
-							</table>
+							<lateral-summary 
+								[branch]="current_branch"
+								[week]="current_week">
+							</lateral-summary>								
 						</div>
 
 						<current-activities [branch]="current_branch"> </current-activities>

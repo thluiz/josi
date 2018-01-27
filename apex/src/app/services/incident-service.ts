@@ -64,6 +64,14 @@ export class IncidentService {
     });
   }
 
+  reopen_incident(incident) {
+    return this.http.post(this.dataUrl + '/incident/reopen', { 
+      incident
+    }).do((next) => {            
+      this.incident_changes.next(true);
+    });
+  }
+
   cancel_start_incident(incident) {
     return this.http.post(this.dataUrl + '/incident/start/cancel', { 
       incident

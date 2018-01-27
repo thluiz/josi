@@ -21,6 +21,14 @@ class IncidentService {
             return result;
         });
     }
+    reopen_incident(incident) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield new sql.Request(this.sql_pool)
+                .input('id', sql.Int, incident.id)
+                .execute(`ReopenIncident`);
+            return result;
+        });
+    }
     cancel_start_incident(incident) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield new sql.Request(this.sql_pool)

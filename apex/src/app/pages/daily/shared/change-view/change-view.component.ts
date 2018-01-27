@@ -8,7 +8,6 @@ import { DailyMonitorDisplayType } from 'app/services/person-service';
   selector: 'daily-change-view',
   templateUrl: './change-view.component.html'
 })
-
 export class DailyChangeViewComponent implements OnInit {  
 
   @Input() initial_display: string;
@@ -27,6 +26,8 @@ export class DailyChangeViewComponent implements OnInit {
       this.display = DailyMonitorDisplayType.Week;
     } else if(this.initial_display == "agenda") {        
       this.display = DailyMonitorDisplayType.Agenda;
+    } else if(this.initial_display == "current") {        
+      this.display = DailyMonitorDisplayType.Current;
     }
   }
 
@@ -37,6 +38,8 @@ export class DailyChangeViewComponent implements OnInit {
       this.router.navigateByUrl(`daily/day`);
     } else if(display == DailyMonitorDisplayType.Agenda) {
       this.router.navigateByUrl(`daily/agenda`);
+    } else if(display == DailyMonitorDisplayType.Current) {
+      this.router.navigateByUrl(`daily/current_activities`);
     }
   }
 }

@@ -18,6 +18,12 @@ export function configure_routes(app: any, connection_pool: any) {
         response.send("Ok");
     });
 
+    app.post("/api/incident/reopen", async (request, response, next) => {
+        let result = await incident_service.reopen_incident(request.body.incident);
+
+        response.send("Ok");
+    });
+
     app.post("/api/incident/start/cancel", async (request, response, next) => {
         let result = await incident_service.cancel_start_incident(request.body.incident);
 

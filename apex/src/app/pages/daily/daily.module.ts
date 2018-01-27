@@ -5,6 +5,7 @@ import { DailyChangeViewModule } from './shared/change-view/change-view.module';
 import { PersonStatusLineModule } from 'app/shared/components/person-status-line/person-status-line.module';
 import { CurrentActivitiesModule } from 'app/shared/components/current-activities/current-activities.module';
 import { IncidentAgendaListitemModule } from 'app/shared/components/incident-agenda-listitem/incident-agenda-listitem.module';
+import { LateralSummaryModule } from 'app/shared/components/lateral-summary/lateral-summary.module';
 
 import { DailyRoutingModule } from './daily-routing.module';
 
@@ -12,6 +13,7 @@ import { AgendaPageComponent } from './agenda-page/agenda-page.component';
 import { DailyPageComponent } from './daily-page/daily-page.component';
 import { WeeklyPageComponent } from './weekly-page/weekly-page.component';
 import { SumaryPageComponent } from './sumary-page/sumary-page.component';
+import { CurrentActivitiesPageComponent } from './current-activities-page/current-activities-page.component';
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
@@ -31,8 +33,6 @@ import { NgbModal,
   } from '@ng-bootstrap/ng-bootstrap';
 import { MarkdownModule } from 'ngx-markdown';
 
-
-
 @NgModule({
     imports: [
         CommonModule,
@@ -49,13 +49,15 @@ import { MarkdownModule } from 'ngx-markdown';
         CurrentActivitiesModule,
         PersonStatusLineModule,
         IncidentAgendaListitemModule,
+        LateralSummaryModule,
         MarkdownModule.forRoot()        
     ],
     declarations: [       
         DailyPageComponent,
         WeeklyPageComponent,
         AgendaPageComponent,
-        SumaryPageComponent
+        SumaryPageComponent,
+        CurrentActivitiesPageComponent
     ]
 })
 export class DailyModule { }

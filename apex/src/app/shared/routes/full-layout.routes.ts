@@ -30,6 +30,10 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/daily/daily.module#DailyModule'
   },
   {
+    path: 'daily/current_activities',
+    loadChildren: './pages/daily/daily.module#DailyModule'
+  },
+  {
     path: 'people',
     loadChildren: './pages/people/people.module#PeopleModule'
   },

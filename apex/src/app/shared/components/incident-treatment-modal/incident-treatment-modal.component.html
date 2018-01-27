@@ -60,8 +60,27 @@
                 <div class="col-1" *ngIf="current_incident.started_on_hour && current_incident.closed_on_hour">
                     <b>Fim: </b>
                 </div>
-                <div class="col-2 pl-3" *ngIf="current_incident.started_on_hour && current_incident.closed_on_hour">
+                <div class="col-3 pl-3" *ngIf="current_incident.started_on_hour && current_incident.closed_on_hour">
                     {{ current_incident.closed_on_hour }}
+
+                    <i class="ft-trash-2" 
+                        (click)="current_incident.reopen = true"
+                        title="Reabrir atividade"
+                        *ngIf="current_incident.closed_on_hour && !current_incident.reopen"
+                        style="cursor: pointer;">
+                    </i>
+                    <i class="ft-rotate-ccw"                     
+                        title="Manter atividade fechada"
+                        *ngIf="current_incident.reopen"
+                        (click)="current_incident.reopen = false"
+                        style="cursor: pointer;">
+                    </i>
+                    <i class="ft-trash-2"                              
+                        title="Confirmar reabertura de atividade"
+                        *ngIf="current_incident.reopen"
+                        (click)="reopen_incident(current_incident, d);"
+                        style="cursor: pointer;color:red">
+                    </i>
                 </div>
             </div>
             <div class="row">            

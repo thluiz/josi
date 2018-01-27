@@ -20,6 +20,10 @@ function configure_routes(app, connection_pool) {
         let result = yield incident_service.start_incident(request.body.incident);
         response.send("Ok");
     }));
+    app.post("/api/incident/reopen", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield incident_service.reopen_incident(request.body.incident);
+        response.send("Ok");
+    }));
     app.post("/api/incident/start/cancel", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield incident_service.cancel_start_incident(request.body.incident);
         response.send("Ok");

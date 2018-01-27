@@ -9,7 +9,8 @@ export enum DailyMonitorDisplayType {
     Week = 0,
     Day = 1,
     Month = 2,
-    Agenda = 3
+    Agenda = 3,
+    Current = 4
 }
 
 export interface IContact {

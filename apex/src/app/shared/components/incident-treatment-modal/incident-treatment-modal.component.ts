@@ -164,6 +164,15 @@ export class IncidentTreatmentModalComponent implements OnInit {
       }); 
   }
 
+  reopen_incident(incident, close_modal_action) {
+    this.incidentService.reopen_incident(incident)
+      .toPromise()
+      .then((value) => close_modal_action())
+      .catch((reason) => {
+        console.log(reason);
+      }); 
+  }  
+
   cancel_start_incident(incident, close_modal_action) {
     this.incidentService.cancel_start_incident(incident)
       .toPromise()

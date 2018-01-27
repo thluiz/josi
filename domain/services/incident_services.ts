@@ -15,6 +15,14 @@ export class IncidentService {
         return result;                        
     }
 
+    public async reopen_incident(incident) {
+        const result = await new sql.Request(this.sql_pool)
+                                .input('id', sql.Int, incident.id)                                
+                                .execute(`ReopenIncident`);
+
+        return result;                        
+    }
+
     public async cancel_start_incident(incident) {
         const result = await new sql.Request(this.sql_pool)
                                 .input('incident', sql.Int, incident.id)                                

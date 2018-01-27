@@ -1,0 +1,49 @@
+<table class="table-sm table-striped table-bordered"															
+    style="margin-bottom:50px;width:100%">								
+    <tr>						
+        <td *ngFor="let c of people_summary_cols, let k3 = index" 
+            align="center" 									
+            [ngStyle]="{ 'width': c.width, 'color': 'white',
+                        'background-color': '#AAA' }"
+            [colSpan]="c.colspan || 1"
+        >
+        <div>										
+            <i  												
+                [ngClass]="c.icon"
+                *ngIf="c.icon != null"
+                [title]="c.description">
+            </i>
+            <b>{{ c.name }}</b>
+        </div>
+        </td>
+    </tr>
+    <tr *ngFor="let s of people_summary, let si = index" >
+        <td>
+            {{ s.program }}
+        </td>
+        <td>
+            {{ ('00' + s.people ).slice(-2)  }}
+        </td>
+        <td>
+            <span 									
+            [style.font-weight]="s.scheduling > 0 ? 'bold' : 'normal'"
+            [style.color]="s.scheduling > 0 ? 'red' : ''">
+                {{ ('00' + s.scheduling ).slice(-2)  }} 											
+            </span>
+        </td>
+        <td>
+            <span 									
+            [style.font-weight]="s.financial > 0 ? 'bold' : 'normal'"
+            [style.color]="s.financial > 0 ? 'red' : ''">
+                {{ ('00' + s.financial ).slice(-2)  }} 											
+            </span>
+        </td>
+        <td>
+            <span 									
+            [style.font-weight]="s.comunications > 0 ? 'bold' : 'normal'"
+            [style.color]="s.comunications > 0 ? 'red' : ''">
+                {{ ('00' + s.comunications ).slice(-2)  }} 											
+            </span>
+        </td>
+    </tr>
+</table>

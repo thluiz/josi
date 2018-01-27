@@ -36,7 +36,6 @@ export class DailyPageComponent implements OnInit, OnDestroy {
   daily: Observable<any[]>;
   cols;
   
-  people_summary_cols = [];
   people_summary : Observable<any[]>;
 
   current_display = 1;
@@ -78,15 +77,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     if(this.current_week_day < 0) {
       this.current_week_day = 6;
     }
-
-    this.people_summary_cols = [                    
-      { width: "88%", name: "Panorama" },
-      { width: "3%", icon: "fa fa-user", description: "Membros" },
-      { width: "3", icon: "ft-calendar", description: "Agendamento" },
-      { width: "3%", icon: "icon-wallet", description: "Financeiro" },
-      { width: "3%", icon: "far fa-envelope", description: "Comunicados" }
-    ];  
-    
+        
     this.incident_added_subscriber = incidentService.incidentAdd$.subscribe((next) => {      
       this.getMonitorData();
     });  
@@ -98,7 +89,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getMonitorData();  
-    this.getPeopleSummaryData();        
+           
   }
 
   ngOnDestroy() {    
@@ -122,8 +113,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     clearTimeout(this.update_members_timer);
     this.update_members_timer = null;        
     this.current_branch = id;
-    this.getMonitorData();
-    this.getPeopleSummaryData();
+    this.getMonitorData();    
     this.show_change_branch = false;
   }
 
@@ -132,7 +122,6 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     this.update_members_timer = null;
     this.current_week += modifier;
     this.getMonitorData();
-    this.getPeopleSummaryData();
   }
     
   open(content, incident){
@@ -144,36 +133,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
           console.log(reason);
       });
   }
-
-  getPeopleSummaryData() {
-    let current_date = { 
-      year: new Date().getFullYear(),
-      month: new Date().getMonth() + 1,
-      day: new Date().getDate()          
-    };
-
-    this.personService.getPeopleSummary(this.current_branch, this.current_week || 0)
-    .subscribe(
-      data => {                  
-      const result = data.json();
-      
-      this.people_summary = result.people_summary;
-    },
-    err => console.error(err)      
-    );
-
-    var d = new Date();
-    var hours = d.getHours();
     
-    const update_interval = hours >= 22 || hours < 6 ? 600000 : 300000;
-
-    if(this.update_summary_timer) {
-      clearTimeout(this.update_summary_timer);
-    }
-
-    this.update_summary_timer = setTimeout(() => { this.getPeopleSummaryData() }, update_interval);  
-  }
-  
   getMonitorData() {
 
     if(!this.personService) {

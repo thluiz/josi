@@ -1,7 +1,7 @@
 <div class="row">
 	<div 
 		style="padding-right:0"
-		class="col-3 d-none d-xl-block text-right">
+		class="col-3 d-none d-md-block text-right">
 		<img alt="{{ person.name }}"
 		[routerLink]="['/people/person', person.id || person.person_id]"
 		class="img-border" 
@@ -21,7 +21,7 @@
 		*ngIf="!person.avatar_img || person.avatar_img.length <= 0" /> 
 	</div>								
 	<div 
-	class="col-9 col-md-12 col-lg-9">
+	class="col-12 col-md-9">
 		<div class="row" 
 			style="cursor:pointer;"
 			[routerLink]="['/people/person', person.id || person.person_id]">

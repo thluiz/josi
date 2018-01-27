@@ -1,9 +1,11 @@
 import { AgendaPageComponent } from './agenda-page/agenda-page.component';
 import { WeeklyPageComponent } from './weekly-page/weekly-page.component';
 import { DailyPageComponent } from './daily-page/daily-page.component';
+import { CurrentActivitiesPageComponent } from 'app/pages/daily/current-activities-page/current-activities-page.component';
 
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
 
 const routes: Routes = [
   {
@@ -21,6 +23,10 @@ const routes: Routes = [
   {
     path: 'agenda',
     component: AgendaPageComponent,    
+  },
+  {
+    path: 'current_activities',
+    component: CurrentActivitiesPageComponent,    
   }
 ];
 
