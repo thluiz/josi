@@ -121,7 +121,7 @@ export class PersonDataTreatmentModalComponent implements OnInit {
   }
 
   private open_modal(content, on_close_action = false) {
-    this.ngbModalService.open(content).result.then((result) => {                                  
+    this.ngbModalService.open(content, { windowClass: 'custom-modal' }).result.then((result) => {                                  
       
     }, (reason) => {        
         console.log(reason);

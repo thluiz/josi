@@ -9,7 +9,8 @@ import { IncidentCommentsListModalComponent } from 'app/shared/components/incide
 
 @Component({
     selector: 'app-root',
-    templateUrl: './app.component.html'
+    templateUrl: './app.component.html',
+    styleUrls: ['../assets/customizations.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
     private modal_subscriber: Subscription;

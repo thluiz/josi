@@ -1,5 +1,5 @@
 <div class="row">    
-    <div class="col-8 pl-3 d-none d-md-block" 
+    <div class="col-8 d-none d-md-block" 
         [style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "        
         style="cursor:pointer;"
         (click)="show_incident_details(incident);">
@@ -62,7 +62,7 @@
             <i class="fas fa-stop"></i>
         </button>
     </div>
-    <div class="col-3 d-none d-md-block">
+    <div class="col-3 d-none d-md-block">        
         <person-status-line	
             *ngIf="incident.person_data"										
             [person]="incident.person_data[0]"            
@@ -110,7 +110,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-12">                        
                         <person-status-line	
                             *ngIf="incident.person_data"										
                             [person]="incident.person_data[0]"
