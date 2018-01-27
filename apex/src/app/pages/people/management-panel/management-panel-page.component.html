@@ -4,10 +4,10 @@
     <people-header panel="members"></people-header>
     <div class="card-body">
         <div class="row">
-            <div class="col-4">
+            <div class="col-12 col-md-4 pt-2 pb-0">
                 <people-change-members-view display="management"></people-change-members-view>
             </div>
-            <div class="col-2 pt-2 pl-3 pb-0">
+            <div class="col-5 col-md-2 pt-2 pb-0">
                 <div class="form-body">
                     <div class="form-group">
                         <label for="branch">Núcleo</label>
@@ -17,16 +17,16 @@
                             class="form-control form-control-sm"
                             [ngModelOptions]="{standalone: true}"                            
                             >			
-                            <option value="0">Todos os Núcleos</option>			
-                            <option value="1">Núcleo Barra</option>
-                            <option value="2">Núcleo Méier</option>
-                            <option value="3">Núcleo Ipanema</option>
+                            <option value="0">Todos</option>			
+                            <option value="1">Barra</option>
+                            <option value="2">Méier</option>
+                            <option value="3">Ipanema</option>
                             <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
                         </select>
                     </div>                            
                 </div>                                                                  
             </div>
-            <div class="col-5 pt-2 pl-3 pb-0">
+            <div class="col-7 col-md-5 pt-2 pb-0">
                 <div class="form-body">
                     <div class="form-group">
                         <label for="filters">Filtros</label>
