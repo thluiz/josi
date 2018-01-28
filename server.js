@@ -76,7 +76,7 @@ function getParticipationList(people) {
             secret: process.env.EXPRESS_SESSION_KEY,
             resave: false,
             saveUninitialized: true,
-            cookie: { secure: process.env.SECURE_COOKIE === "true" }
+            cookie: { secure: false }
         }));
         app.use(passport.initialize());
         app.use(passport.session());
