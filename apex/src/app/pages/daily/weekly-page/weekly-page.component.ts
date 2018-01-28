@@ -125,7 +125,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   updateMonitorData() {
     this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Week, this.current_week).subscribe(
     data => {    
-      const result = data.json();        
+      const result = data as any;        
       for(var w = 0; w < result.domains.length; w++) {
         
       }
@@ -139,9 +139,9 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     }
     this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Week, this.current_week).subscribe(
       data => {    
-        const result = data.json();        
+        const result = data as any;        
         
-        this.branches = result.branches;
+        this.branches = result.branches as any;
         this.current_branch_name = (this.current_branch > 0 ? 
                             this.branches.filter(b => b.id == this.current_branch)[0].name
                             : "Todos os Núcleos");

@@ -46,7 +46,7 @@ export class PersonContactListComponent implements OnInit, OnDestroy {
 
   load_contacts() {
     this.personService.getPersonContacts(this.person.id, this.showOnlyPrincipal)
-    .subscribe((data) => this.contacts = data.json());
+    .subscribe((data : any) => this.contacts = data);
   }
        
   open(content){        

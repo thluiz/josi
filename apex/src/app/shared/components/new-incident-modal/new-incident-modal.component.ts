@@ -124,7 +124,7 @@ export class NewInicidentModalComponent implements OnInit {
       .switchMap(term =>
         this.personService.search(term)
           .map(response =>  {             
-            return <string[]>response.json(); 
+            return <string[]>response; 
           })
           .do(() => this.search_failed = false)
           .catch(() => {

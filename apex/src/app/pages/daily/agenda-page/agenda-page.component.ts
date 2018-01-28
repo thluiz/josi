@@ -39,7 +39,7 @@ import { delay } from 'rxjs/operators';
 })
 export class AgendaPageComponent implements OnInit, OnDestroy {
   agenda;
-  original_agenda: Observable<any[]>;
+  original_agenda: any[];
   show_change_branch;
   current_week = 0;
   current_incident;
@@ -74,13 +74,13 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
  
   ngOnInit() {
     this.parameterService.getActiveBranches().subscribe(data => {    
-      const result = data.json();   
+      const result = data;   
       this.branches = result;
     },
     err => console.error(err));
 
     this.parameterService.getIncidentTypes().subscribe(data => {    
-      const result = data.json();   
+      const result = data;   
       this.manual_incident_types = result.filter(i => !i.automatically_generated);
     },
     err => console.error(err));
@@ -151,11 +151,10 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
     }
     this.personService.getDailyAgenda(this.current_branch, this.current_date).subscribe(
       data => {    
-        const result = data.json();   
+        const result = data as any;           
         this.original_agenda = result;
         this.filter_incidents();
-      },
-      err => console.error(err)      
+      } 
     );
 
     var d = new Date();

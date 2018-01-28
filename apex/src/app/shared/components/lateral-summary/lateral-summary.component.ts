@@ -51,7 +51,7 @@ export class LateralSummaryComponent implements OnInit, OnDestroy {
       this.personService.getPeopleSummary(this.branch, this.week || 0)
       .subscribe(
         data => {                  
-        const result = data.json();
+        const result = data as any;
         
         this.people_summary = result.people_summary;
       },

@@ -24,7 +24,7 @@ export class CurrentActivitiesPageComponent implements OnInit, OnDestroy {
  
   ngOnInit() {
     this.parameterService.getActiveBranches().subscribe((data) => {
-      this.branches = data.json();
+      this.branches = data;
     });
   }
 

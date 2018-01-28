@@ -62,7 +62,7 @@ export class CurrentActivitiesComponent implements OnInit, OnDestroy {
 
     private getCurrentActivities() {
       this.incidentService.getCurrentActivities(this.branch || 0).subscribe((data) => {
-        this.activities = data.json();
+        this.activities = data;
       });
 
       if(this.update_activities_timer) {

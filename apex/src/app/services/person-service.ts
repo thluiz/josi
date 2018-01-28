@@ -1,6 +1,6 @@
 import { IContact } from './person-service';
 import {Injectable} from '@angular/core';
-import {Http, Response} from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
 import { Subject } from 'rxjs/Subject';
@@ -33,7 +33,7 @@ export class PersonService {
   private comment_changes = new Subject<any>();
   commentChanges$  = this.comment_changes.asObservable();  
 
-  constructor(private http:Http) { }  
+  constructor(private http:HttpClient) { }  
   
   getDailyAgenda(branch, date: any) {
     return this.http.get(this.dataUrl + `/agenda/${branch || 0}/${date.year}-${date.month}-${date.day}`);    
@@ -81,7 +81,7 @@ export class PersonService {
         .post(this.dataUrl + `/people`, {
           person
         }).do((data) => {          
-          this.person_changes.next(data.json())
+          this.person_changes.next(data)
         });
   }
 

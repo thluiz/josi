@@ -74,7 +74,7 @@ export class PersonDataTreatmentModalComponent implements OnInit {
     .filter((data) => data != null && data.id == this.person_id())
     .subscribe((data) => {                       
       this.personService.getPersonMissingData(this.person_id()).subscribe((missing_data) => {
-        this.missing_data = missing_data.json();        
+        this.missing_data = missing_data as any;      
       });
     });
 
@@ -82,10 +82,10 @@ export class PersonDataTreatmentModalComponent implements OnInit {
     .filter((data) => data != null && data.person_id == this.person_id())
     .subscribe((data) => {            
       this.personService.getPersonContacts(this.person_id()).subscribe((data) => {
-        this.load_contacts(data.json())
+        this.load_contacts(data)
 
         this.personService.getPersonMissingData(this.person_id()).subscribe((missing_data) => {
-          this.missing_data = missing_data.json();        
+          this.missing_data = missing_data as any;        
         });
       });
     });
@@ -102,8 +102,8 @@ export class PersonDataTreatmentModalComponent implements OnInit {
       this.personService.getPersonMissingData(this.person_id()),
       this.personService.getPersonContacts(this.person_id()),
       (missing_data, contacts) => {
-        this.missing_data = missing_data.json();
-        this.load_contacts(contacts.json());
+        this.missing_data = missing_data as any;
+        this.load_contacts(contacts);
 
         if(this.contacts.length > 0 && this.principal_contacts.length == 0) {
           this.show_only_principal_contacts = false;
@@ -130,7 +130,7 @@ export class PersonDataTreatmentModalComponent implements OnInit {
 
   save_birth_date() {
     this.personService.getData(this.person_id()).subscribe((data) => {
-        let person_data = data.json();
+        let person_data = data as any;
         person_data.birth_date = this.utilsService.translate_date_to_server(this.person.birth_date);
         this.personService.savePersonData(person_data).subscribe((data) => {          
           console.log(data);
@@ -140,7 +140,7 @@ export class PersonDataTreatmentModalComponent implements OnInit {
 
   save_admission_date() {
     this.personService.getData(this.person_id()).subscribe((data) => {
-        let person_data = data.json();
+        let person_data = data as any;
         person_data.admission_date = this.utilsService.translate_date_to_server(this.person.admission_date);
         this.personService.savePersonData(person_data).subscribe();
     });
@@ -148,7 +148,7 @@ export class PersonDataTreatmentModalComponent implements OnInit {
 
   save_kf_name() {
     this.personService.getData(this.person_id()).subscribe((data) => {
-        let person_data = data.json();
+        let person_data = data  as any;
         person_data.kf_name = this.person.kf_name;
         this.personService.savePersonData(person_data).subscribe();
     });
@@ -156,7 +156,7 @@ export class PersonDataTreatmentModalComponent implements OnInit {
 
   save_kf_name_ideograms() {
     this.personService.getData(this.person_id()).subscribe((data) => {
-        let person_data = data.json();
+        let person_data = data as any;
         person_data.kf_name_ideograms = this.person.kf_name_ideograms;
         this.personService.savePersonData(person_data).subscribe();
     });

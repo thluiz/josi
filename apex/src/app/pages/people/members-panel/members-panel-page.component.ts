@@ -63,7 +63,7 @@ export class MembersPanelPageComponent implements OnInit, OnDestroy {
 
     this.person_list_sub = this.personService.getMembersList().subscribe(
       data => {           
-        const result = data.json();    
+        const result = data;    
         console.log(result);
         this.programs = result;
       }

@@ -1,3 +1,4 @@
+import { SecurityService } from './domain/services/security_services';
 import * as sql from 'mssql';
 import * as builder from 'botbuilder';
 import { JobsService } from './domain/services/jobs_services';
@@ -8,10 +9,35 @@ import * as incidents_routes from "./api/routes/incidents-routes";
 
 const express = require('express');
 var helmet = require('helmet');
+var session = require('express-session');
+var passport = require('passport');
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
 }
+
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL
+  },
+  async (accessToken, refreshToken, profile, cb) => {        
+    SecurityService.findUser(profile.emails[0].value, cb);
+  }
+));
+
+passport.serializeUser(function(user, done) {
+    done(null, user.token);
+});
+
+passport.deserializeUser(async function(token, done) {
+    SecurityService.findUserByToken(token, function(err, user) {
+        done(err, user);
+    });
+});
+
+
 
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
@@ -46,24 +72,51 @@ function getParticipationList(people) {
 
 (async () => {
     try {    
-        const pool = new sql.ConnectionPool(config);    
-
-        pool.on('error', err => {
-            console.log(err);
-        })
-
-        await pool.connect();
+        const pool = await SecurityService.create_pool();
 
         const app = express();
         const bodyParser = require("body-parser");
         const cors = require("cors");
-        
-        const jobs_service = new JobsService(pool);                
+
+        app.use(session({
+            secret: process.env.EXPRESS_SESSION_KEY,
+            resave: false,
+            saveUninitialized: true,
+            cookie: { secure: process.env.SECURE_COOKIE === "true" }
+        }));
+        app.use(passport.initialize());
+        app.use(passport.session());
+                
         app.use(helmet());
         app.use(cors());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
+        
+        app.get('/auth/google',
+            passport.authenticate('google', { scope: ['profile', 'email'] }));
 
+        app.get('/auth/google/callback', 
+            passport.authenticate('google', { failureRedirect: '/login_error' }),
+            function(req, res) {
+              // Successful authentication, redirect home.
+              res.redirect('http://localhost:4200');
+            });            
+
+        app.get('/oauth/google/callback', 
+            passport.authenticate('google', { failureRedirect: '/login_error' }),
+            function(req, res) {
+              // Successful authentication, redirect home.
+              res.redirect('http://localhost:4200');
+            });     
+
+        app.get('/login_error', (req, res, next) => {
+            res.send("ops... login_error")
+        });
+
+        app.get('/logout', function(req, res){
+            req.logout();
+            res.redirect('/');
+        });
 
         app.post("/api/messages", connector.listen());        
         people_routes.configure_routes(app, pool);      
@@ -71,12 +124,16 @@ function getParticipationList(people) {
         incidents_routes.configure_routes(app, pool);
         
         app.get("/api/hourly-jobs", async (request, response, next) => {            
+            const jobs_service = new JobsService(pool);                
             await jobs_service.hourly_jobs();
 
             response.send("Ok");
         });
 
-        app.get("/api/agenda/:branch?/:date?", async (request, response, next) => {            
+        app.get("/api/agenda/:branch?/:date?", 
+        SecurityService.ensureLoggedIn(),
+        async (request, response, next) => {            
+            console.log(request.isAuthenticated());
             try {
                 let result = await new sql.Request(pool)                             
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Response} from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import {Observable, ReplaySubject} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
 import { Subject }    from 'rxjs/Subject';
@@ -19,7 +19,7 @@ export class ParameterService {
     private domains$ = new ReplaySubject(1);
     
 
-    constructor(private http:Http) { }  
+    constructor(private http:HttpClient) { }  
 
     getDomains(forceRefresh?: boolean) {
         return this.cache_results(this.domains$, `/domains`, forceRefresh);                      

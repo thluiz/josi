@@ -56,5 +56,9 @@ export const Full_ROUTES: Routes = [
   {
     path: 'under-construction',
     loadChildren: './pages/under-construction/under-construction.module#UnderConstructionModule'
+  },
+  {
+    path: 'login',
+    loadChildren: './pages/under-construction/under-construction.module#UnderConstructionModule'
   }
 ];

@@ -26,7 +26,7 @@ export class NewContactFormComponent implements OnInit {
   ngOnInit() {
     this.parameterService.getContactTypes().subscribe(
     (data) => {
-      this.contact_types = data.json();
+      this.contact_types = data;
     }, (reason) => {
         console.log(reason);
     });

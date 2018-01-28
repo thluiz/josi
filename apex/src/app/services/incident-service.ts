@@ -1,6 +1,6 @@
 import { UtilsService } from './utils-service';
 import {Injectable} from '@angular/core';
-import {Http, Response} from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import {Observable, ReplaySubject} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
 import { Subject }    from 'rxjs/Subject';
@@ -20,7 +20,7 @@ export class IncidentService {
   private comment_changes = new Subject<any>();
   commentChanges$  = this.comment_changes.asObservable();  
 
-  constructor(private http:Http, private utilsService: UtilsService) { }  
+  constructor(private http: HttpClient, private utilsService: UtilsService) { }  
 
   getSumary(branch, month, week, date) {
     return this.http.get(this.dataUrl + `/sumary/${branch}/${month}/${week}/${date}`);
@@ -107,8 +107,9 @@ export class IncidentService {
     return this.http
         .post(this.dataUrl + `/incident_comments/archive`, {
           id: comment.id
-        }).map((data) => {          
-          this.comment_changes.next(data.json());
+        }).map((data : any) => {
+          console.log(data);          
+          this.comment_changes.next(data);
         });
   }
 
@@ -117,9 +118,9 @@ export class IncidentService {
         .post(this.dataUrl + `/incident_comments`, {
           incident_id: incident.id,
           comment
-        }).map((data) => {          
+        }).map((data : any) => {          
           console.log(data);
-          this.comment_changes.next(data.json());
+          this.comment_changes.next(data);
         });
   }
 }

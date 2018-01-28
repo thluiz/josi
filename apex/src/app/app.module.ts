@@ -26,6 +26,9 @@ import { IncidentTreatmentModalModule } from 'app/shared/components/incident-tre
 import { AddCommentModalModule } from 'app/shared/components/add-comment-modal/add-comment-modal.module';
 import { IncidentCommentsListModalModule } from 'app/shared/components/incident-comments-list-modal/incident-comments-list-modal.module';
 
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { SecurityHttpInterceptor } from './httpinterceptor'
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -40,20 +43,25 @@ import { IncidentCommentsListModalModule } from 'app/shared/components/incident-
         IncidentTreatmentModalModule,
         AddCommentModalModule,
         IncidentCommentsListModalModule,
-        NgbModule.forRoot(),                
-        HttpModule,
+        NgbModule.forRoot(),                        
+        HttpClientModule,
         //BrowserModule,
         //FormsModule, 
         //JsonpModule
     ],
     providers: [
+        { 
+            provide: HTTP_INTERCEPTORS, 
+            useClass: SecurityHttpInterceptor, 
+            multi: true 
+        },
         AuthService,
         AuthGuard,
         ParameterService,
         PersonService,
         IncidentService,
         UtilsService,
-        ModalService              
+        ModalService                    
     ],
     bootstrap: [AppComponent]
 })

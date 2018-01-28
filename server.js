@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const security_services_1 = require("./domain/services/security_services");
 const sql = require("mssql");
 const builder = require("botbuilder");
 const jobs_services_1 = require("./domain/services/jobs_services");
@@ -16,9 +17,29 @@ const parameters_routes = require("./api/routes/parameters-routes");
 const incidents_routes = require("./api/routes/incidents-routes");
 const express = require('express');
 var helmet = require('helmet');
+var session = require('express-session');
+var passport = require('passport');
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
 }
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL
+}, (accessToken, refreshToken, profile, cb) => __awaiter(this, void 0, void 0, function* () {
+    security_services_1.SecurityService.findUser(profile.emails[0].value, cb);
+})));
+passport.serializeUser(function (user, done) {
+    done(null, user.token);
+});
+passport.deserializeUser(function (token, done) {
+    return __awaiter(this, void 0, void 0, function* () {
+        security_services_1.SecurityService.findUserByToken(token, function (err, user) {
+            done(err, user);
+        });
+    });
+});
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
     appId: process.env.MICROSOFT_APP_ID,
@@ -47,28 +68,49 @@ function getParticipationList(people) {
 }
 (() => __awaiter(this, void 0, void 0, function* () {
     try {
-        const pool = new sql.ConnectionPool(config);
-        pool.on('error', err => {
-            console.log(err);
-        });
-        yield pool.connect();
+        const pool = yield security_services_1.SecurityService.create_pool();
         const app = express();
         const bodyParser = require("body-parser");
         const cors = require("cors");
-        const jobs_service = new jobs_services_1.JobsService(pool);
+        app.use(session({
+            secret: process.env.EXPRESS_SESSION_KEY,
+            resave: false,
+            saveUninitialized: true,
+            cookie: { secure: process.env.SECURE_COOKIE === "true" }
+        }));
+        app.use(passport.initialize());
+        app.use(passport.session());
         app.use(helmet());
         app.use(cors());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
+        app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+        app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login_error' }), function (req, res) {
+            // Successful authentication, redirect home.
+            res.redirect('http://localhost:4200');
+        });
+        app.get('/oauth/google/callback', passport.authenticate('google', { failureRedirect: '/login_error' }), function (req, res) {
+            // Successful authentication, redirect home.
+            res.redirect('http://localhost:4200');
+        });
+        app.get('/login_error', (req, res, next) => {
+            res.send("ops... login_error");
+        });
+        app.get('/logout', function (req, res) {
+            req.logout();
+            res.redirect('/');
+        });
         app.post("/api/messages", connector.listen());
         people_routes.configure_routes(app, pool);
         parameters_routes.configure_routes(app, pool);
         incidents_routes.configure_routes(app, pool);
         app.get("/api/hourly-jobs", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            const jobs_service = new jobs_services_1.JobsService(pool);
             yield jobs_service.hourly_jobs();
             response.send("Ok");
         }));
-        app.get("/api/agenda/:branch?/:date?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+        app.get("/api/agenda/:branch?/:date?", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            console.log(request.isAuthenticated());
             try {
                 let result = yield new sql.Request(pool)
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)

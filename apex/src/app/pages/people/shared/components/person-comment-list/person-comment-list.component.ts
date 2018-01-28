@@ -52,7 +52,7 @@ export class PersonCommentListComponent implements OnInit, OnDestroy {
 
   load_comments() {
     this.personService.getCommentsAboutPerson(this.person.id)
-    .subscribe((data) => this.comments = data.json());
+    .subscribe((data) => this.comments = data);
   }
        
   add_comment(){             

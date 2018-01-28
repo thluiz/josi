@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import { ReplaySubject } from 'rxjs';
-import {Http, Response} from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 @Injectable()
 export class UtilsService {
     private dataUrl = environment.api_url;    
 
-    constructor(private sanitizer: DomSanitizer, private http: Http) { }
+    constructor(private sanitizer: DomSanitizer, private http: HttpClient) { }
 
     translate_date_to_server(date) {
         if(!date || !date.year)

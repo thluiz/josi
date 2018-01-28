@@ -106,7 +106,7 @@ export class ManagementPanelPageComponent implements OnInit, OnDestroy {
 
     this.person_list_sub = this.personService.getPeopleList().subscribe(
       data => {           
-        const result = data.json();   
+        const result = data;   
         this.all_people = result;
 
         this.apply_filters();

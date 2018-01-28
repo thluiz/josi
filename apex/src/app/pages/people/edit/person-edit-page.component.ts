@@ -145,7 +145,7 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
   load_person_data() {    
     this.personService.getData(this.id).subscribe(
       data => {           
-        const result = data.json();    
+        const result = data;    
         this.person = result;  
         this.person.birth_date = this.translate_date_to_view(this.person.birth_date);        
         this.person.admission_date = this.translate_date_to_view(this.person.admission_date);        
@@ -158,12 +158,12 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
           || this.person.is_inactive_member))
           return;
 
-        this.parameterService.getActiveBranches().subscribe((data) => this.branches = data.json());
+        this.parameterService.getActiveBranches().subscribe((data) => this.branches = data);
 
-        this.parameterService.getKungFuFamilies().subscribe((data) => this.families = data.json());
+        this.parameterService.getKungFuFamilies().subscribe((data) => this.families = data);
         
         this.parameterService.getPrograms().subscribe((data) => { 
-            this.programs = data.json();
+            this.programs = data;
 
             if(this.person.program_id)
               this.domains = this.programs.filter(p => p.id == this.person.program_id)[0].domains;

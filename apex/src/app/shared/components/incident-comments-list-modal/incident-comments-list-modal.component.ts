@@ -60,8 +60,9 @@ export class IncidentCommentsListModalComponent implements OnInit, OnDestroy {
   open(incident) {    
     this.incident = incident;
     this.incidentService.getComments(this.incident.id)
-    .subscribe((data) => { 
-      this.comments = data.json();
+    .subscribe((data:any) => { 
+      console.log(data);
+      this.comments = data;
 
       this.ngbModalService.open(this.modal).result.then((result) => {                                  
         
@@ -73,7 +74,7 @@ export class IncidentCommentsListModalComponent implements OnInit, OnDestroy {
 
   load_comments() {
     this.incidentService.getComments(this.incident.id)
-    .subscribe((data) => this.comments = data.json());
+    .subscribe((data) => this.comments = data);
   }
        
   add_comment(){             

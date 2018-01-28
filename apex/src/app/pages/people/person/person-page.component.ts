@@ -31,9 +31,9 @@ import { Subscription } from 'rxjs/Subscription';
 export class PersonPageComponent implements OnInit, OnDestroy  {
   id: number;
   person: any;   
-  current_roles: any[]; 
-  available_roles:any[];
-  current_scheduling: any[];
+  current_roles; 
+  available_roles;
+  current_scheduling;
   comments: any[];
   new_role: any;
   new_schedule: any = {};
@@ -80,9 +80,9 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
                     this.parameterService.getIncidentTypes(),
                     this.parameterService.getRecurrenceTypes(),
       (branches, incident_types, recurrence_types) => {        
-        this.branches = branches.json();
-        this.manual_incident_types = incident_types.json().filter(f => !f.automatically_generated);        
-        this.recurrence_types = recurrence_types.json();
+        this.branches = branches;
+        this.manual_incident_types = incident_types.filter(f => !f.automatically_generated);        
+        this.recurrence_types = recurrence_types;
       }).subscribe(() => {        
         this.open(content);
       });    
@@ -90,7 +90,7 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
 
   open_add_role(content){
     this.parameterService.getRoles().subscribe((roles) => {
-      this.available_roles = roles.json().filter(r => !this.current_roles || this.current_roles.findIndex(cr => cr.id == r.id) < 0);
+      this.available_roles = roles.filter(r => !this.current_roles || this.current_roles.findIndex(cr => cr.id == r.id) < 0);
 
       this.open(content);
     });    
@@ -121,19 +121,19 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
 
   load_person_scheduling() {
     this.personService.getPersonScheduling(this.id).subscribe((scheduling) => {
-      this.current_scheduling = scheduling.json();  
+      this.current_scheduling = scheduling;  
     });
   }
 
   load_person_roles() {
     this.personService.getPersonRoles(this.id).subscribe((roles) => {
-      this.current_roles = roles.json();  
+      this.current_roles = roles;  
     });
   }
 
   load_person_data() {   
     this.personService.getData(this.id).subscribe((data) => {
-      this.person = data.json();  
+      this.person = data;  
     });
   }
 
@@ -256,7 +256,7 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
    */
   load_comments_about_person() {
     this.personService.getPersonContacts(this.id).subscribe((comments) => {
-      this.comments = comments.json();  
+      this.comments = comments as any;  
     });
   }
 
