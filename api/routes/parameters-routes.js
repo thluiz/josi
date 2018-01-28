@@ -9,44 +9,45 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
+const security_services_1 = require("../../domain/services/security_services");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
-    app.get("/api/branches", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/branches", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetBranches`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/domains", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/domains", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetDomains`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/programs", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/programs", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetPrograms`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/kf_families", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/kf_families", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetKungFuFamilies`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/recurrence_types", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/recurrence_types", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetRecurrenceTypes`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/incident_types", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/incident_types", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetIncidentTypes`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/contact_types", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/contact_types", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetContactTypes`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/roles", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/roles", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetRoles`);
         response.send(result.recordset[0]);

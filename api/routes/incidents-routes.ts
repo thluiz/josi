@@ -1,42 +1,55 @@
 import * as sql from 'mssql';
 import { IncidentService } from '../../domain/services/incident_services';
+import { SecurityService } from '../../domain/services/security_services';
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
     const incident_service = new IncidentService(pool);
 
     
-    app.post("/api/incident/close", async (request, response, next) => {
+    app.post("/api/incident/close", 
+    SecurityService.ensureLoggedIn(),
+    async (request, response, next) => {
         let result = await incident_service.close_incident(request.body.incident);
 
         response.send("Ok");
     });
 
-    app.post("/api/incident/start", async (request, response, next) => {
+    app.post("/api/incident/start", 
+    SecurityService.ensureLoggedIn(),
+    async (request, response, next) => {
         let result = await incident_service.start_incident(request.body.incident);
 
         response.send("Ok");
     });
 
-    app.post("/api/incident/reopen", async (request, response, next) => {
+    app.post("/api/incident/reopen", 
+    SecurityService.ensureLoggedIn(),
+    async (request, response, next) => {
         let result = await incident_service.reopen_incident(request.body.incident);
 
         response.send("Ok");
     });
 
-    app.post("/api/incident/start/cancel", async (request, response, next) => {
+    app.post("/api/incident/start/cancel", 
+    SecurityService.ensureLoggedIn(),
+    async (request, response, next) => {
         let result = await incident_service.cancel_start_incident(request.body.incident);
 
         response.send("Ok");
     });
 
-    app.post("/api/incident/remove", async (request, response, next) => {            
+    app.post("/api/incident/remove", 
+    SecurityService.ensureLoggedIn(),
+    async (request, response, next) => {            
         let result = await incident_service.remove_incident(request.body.incident);            
                     
         response.send("Ok");
     });
 
-    app.post("/api/incident/reschedule", async (request, response, next) => {            
+    app.post("/api/incident/reschedule", 
+    SecurityService.ensureLoggedIn(),
+    async (request, response, next) => {            
         let result = await incident_service.reschedule_incident(
             request.body.incident, 
             request.body.new_incident,
@@ -46,7 +59,9 @@ export function configure_routes(app: any, connection_pool: any) {
         response.send("Ok"); 
     });
 
-    app.post("/api/incident/register_incident", async (request, response, next) => {      
+    app.post("/api/incident/register_incident", 
+    SecurityService.ensureLoggedIn(),
+    async (request, response, next) => {      
         console.log(request.body.incident);
         let result = await incident_service.register_incident(
             request.body.incident
@@ -55,7 +70,9 @@ export function configure_routes(app: any, connection_pool: any) {
         response.send("Ok");
     });
 
-    app.post("/api/incident/register_contact", async (request, response, next) => {            
+    app.post("/api/incident/register_contact", 
+    SecurityService.ensureLoggedIn(),
+    async (request, response, next) => {            
         let result = await incident_service.register_contact_for_incident(
             request.body.incident, 
             request.body.contact.contact_text
@@ -68,7 +85,9 @@ export function configure_routes(app: any, connection_pool: any) {
      * COMMENTS    
      */
 
-    app.get("/api/incident_comments/incident/:id/:show_archived?", async (request, res, next) => {  
+    app.get("/api/incident_comments/incident/:id/:show_archived?", 
+    SecurityService.ensureLoggedIn(),
+    async (request, res, next) => {  
         try {                      
             const result = await new sql.Request(pool)
             .input('incident_id', sql.Int, request.params.id)
@@ -84,7 +103,9 @@ export function configure_routes(app: any, connection_pool: any) {
         }
     });
 
-    app.post("/api/incident_comments", async (request, res, next) => { 
+    app.post("/api/incident_comments", 
+    SecurityService.ensureLoggedIn(),
+    async (request, res, next) => { 
         let result = await incident_service.save_comment(
             request.body.incident_id,
             request.body.comment
@@ -93,7 +114,9 @@ export function configure_routes(app: any, connection_pool: any) {
         res.send(result.recordset[0][0]);        
     });
 
-    app.post("/api/incident_comments/archive", async (request, res, next) => { 
+    app.post("/api/incident_comments/archive", 
+    SecurityService.ensureLoggedIn(),
+    async (request, res, next) => { 
         let result = await incident_service.archive_comment(
             request.body.id
         );            

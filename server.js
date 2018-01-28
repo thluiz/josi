@@ -123,7 +123,7 @@ function getParticipationList(people) {
                 response.json({ error: error });
             }
         }));
-        app.get("/api/current_activities/:branch?", (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        app.get("/api/current_activities/:branch?", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 let result = yield new sql.Request(pool)
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
@@ -136,7 +136,7 @@ function getParticipationList(people) {
                     .json({ error: error });
             }
         }));
-        app.get("/api/daily/:branch?/:display?/:display_modifier?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+        app.get("/api/daily/:branch?/:display?/:display_modifier?", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 let result = yield new sql.Request(pool)
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
@@ -150,7 +150,7 @@ function getParticipationList(people) {
                 response.json({ error: error });
             }
         }));
-        app.get("/api/people_summary/:branch?/:week?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+        app.get("/api/people_summary/:branch?/:week?", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 let result = yield new sql.Request(pool)
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
@@ -164,7 +164,7 @@ function getParticipationList(people) {
                 response.json({ error: error });
             }
         }));
-        app.get("/api/sumary/:branch?/:month?/:week?/:date?", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+        app.get("/api/sumary/:branch?/:month?/:week?/:date?", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 let result = yield new sql.Request(pool)
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)

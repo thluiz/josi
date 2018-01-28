@@ -147,7 +147,9 @@ function getParticipationList(people) {
             } 
         });
 
-        app.get("/api/current_activities/:branch?", async (request, res, next) => {            
+        app.get("/api/current_activities/:branch?",        
+        SecurityService.ensureLoggedIn(), 
+        async (request, res, next) => {            
             try {
                 let result = await new sql.Request(pool)                             
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)                                        
@@ -162,7 +164,9 @@ function getParticipationList(people) {
             } 
         });
 
-        app.get("/api/daily/:branch?/:display?/:display_modifier?", async (request, response, next) => {            
+        app.get("/api/daily/:branch?/:display?/:display_modifier?", 
+        SecurityService.ensureLoggedIn(),
+        async (request, response, next) => {            
             try {
                 let result = await new sql.Request(pool)                
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
@@ -178,7 +182,9 @@ function getParticipationList(people) {
             } 
         });   
 
-        app.get("/api/people_summary/:branch?/:week?", async (request, response, next) => {            
+        app.get("/api/people_summary/:branch?/:week?", 
+        SecurityService.ensureLoggedIn(),
+        async (request, response, next) => {            
             try {
                 let result = await new sql.Request(pool)                
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
@@ -193,7 +199,9 @@ function getParticipationList(people) {
             } 
         });
 
-        app.get("/api/sumary/:branch?/:month?/:week?/:date?", async (request, response, next) => {
+        app.get("/api/sumary/:branch?/:month?/:week?/:date?", 
+        SecurityService.ensureLoggedIn(),
+        async (request, response, next) => {
             try {
                 let result = await new sql.Request(pool)                
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
