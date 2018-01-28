@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/observable/throw'
 import 'rxjs/add/operator/catch';
 import { Router } from '@angular/router';
-
+import { environment } from '../environments/environment';
 
 @Injectable()
 export class SecurityHttpInterceptor implements HttpInterceptor {
@@ -24,7 +24,7 @@ export class SecurityHttpInterceptor implements HttpInterceptor {
           }, (err: any) => {            
             if (err instanceof HttpErrorResponse) {
               if (err.status === 401) {                                                
-                window.location.href="http://localhost:3979/auth/google";
+                window.location.href=environment.login_url;
               }
             }
         });                 

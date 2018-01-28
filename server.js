@@ -87,11 +87,11 @@ function getParticipationList(people) {
         app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
         app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login_error' }), function (req, res) {
             // Successful authentication, redirect home.
-            res.redirect('http://localhost:4200');
+            res.redirect(process.env.SITE_URL);
         });
         app.get('/oauth/google/callback', passport.authenticate('google', { failureRedirect: '/login_error' }), function (req, res) {
             // Successful authentication, redirect home.
-            res.redirect('http://localhost:4200');
+            res.redirect(process.env.SITE_URL);
         });
         app.get('/login_error', (req, res, next) => {
             res.send("ops... login_error");

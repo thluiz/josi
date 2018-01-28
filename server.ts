@@ -99,14 +99,14 @@ function getParticipationList(people) {
             passport.authenticate('google', { failureRedirect: '/login_error' }),
             function(req, res) {
               // Successful authentication, redirect home.
-              res.redirect('http://localhost:4200');
+              res.redirect(process.env.SITE_URL);
             });            
 
         app.get('/oauth/google/callback', 
             passport.authenticate('google', { failureRedirect: '/login_error' }),
             function(req, res) {
               // Successful authentication, redirect home.
-              res.redirect('http://localhost:4200');
+              res.redirect(process.env.SITE_URL);
             });     
 
         app.get('/login_error', (req, res, next) => {
