@@ -4,7 +4,7 @@
         style="cursor:pointer;"
         (click)="show_incident_details(incident);">
         <span *ngIf="current_branch <= 0" style="width:40px;display:inline-table;">{{ incident.branch_initials }}</span>
-        <span style="width:45px;display:inline-table;" *ngIf="incident.need_start_hour_minute">{{ incident.start_hour }}</span>
+        <span style="width:45px;display:inline-table;" *ngIf="incident.need_start_hour_minute">{{ incident.started_on_hour || incident.start_hour }}</span>
         <span style="width:40px;display:inline-table;">{{ incident.abrev }}</span> 
         {{ incident.person }}
     </div>
@@ -18,7 +18,7 @@
                 <span *ngIf="current_branch <= 0" style="width:40px;display:inline-table;">
                     {{ incident.branch_initials }}
                 </span>
-                <span style="width:45px;display:inline-table;">{{ incident.start_hour }}</span>
+                <span style="width:45px;display:inline-table;">{{ incident.started_on_hour || incident.start_hour }}</span>
                 <span style="width:40px;display:inline-table;">{{ incident.abrev }}</span>
             </div>
             <div class="col-12 p-0 pl-2">												
