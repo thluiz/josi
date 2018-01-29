@@ -128,6 +128,10 @@ function getParticipationList(people) {
             response.send({ sucess: true});
         });
 
+        app.get("/api/user/current", async (request, response, next) => {                        
+            response.send(SecurityService.getUserFromRequest(request));
+        });
+
         app.get("/api/agenda/:branch?/:date?", 
         SecurityService.ensureLoggedIn(),
         async (request, response, next) => {            

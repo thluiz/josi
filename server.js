@@ -107,6 +107,9 @@ function getParticipationList(people) {
             yield jobs_service.hourly_jobs();
             response.send({ sucess: true });
         }));
+        app.get("/api/user/current", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+            response.send(security_services_1.SecurityService.getUserFromRequest(request));
+        }));
         app.get("/api/agenda/:branch?/:date?", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             console.log(request.isAuthenticated());
             try {

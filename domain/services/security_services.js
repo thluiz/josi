@@ -83,6 +83,9 @@ class SecurityService {
             }
         };
     }
+    static getUserFromRequest(req) {
+        return req.user;
+    }
 }
 exports.SecurityService = SecurityService;
 //# sourceMappingURL=security_services.js.map

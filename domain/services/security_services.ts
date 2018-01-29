@@ -82,4 +82,8 @@ export class SecurityService {
             }
         }
     }
+
+    static getUserFromRequest(req) {
+        return req.user;
+    }
 }

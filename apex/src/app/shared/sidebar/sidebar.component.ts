@@ -1,3 +1,4 @@
+import { SecurityService } from './../../services/security-service';
 import { Component, OnInit } from '@angular/core';
 import { ROUTES } from './sidebar-routes.config';
 import { RouteInfo } from "./sidebar.metadata";
@@ -14,7 +15,9 @@ export class SidebarComponent implements OnInit {
     public menuItems: any[];
 
     constructor(private router: Router,
-        private route: ActivatedRoute) {
+        private route: ActivatedRoute, 
+        private securityService: SecurityService
+        ) {
     }
 
     ngOnInit() {        
