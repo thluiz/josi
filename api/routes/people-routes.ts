@@ -81,7 +81,7 @@ export function configure_routes(app: any, connection_pool: any) {
             request.body.role_id
         );            
 
-        response.send("Ok");                        
+        response.send({ sucess: true});                        
     });
 
     app.get("/api/person_role", 
@@ -102,7 +102,7 @@ export function configure_routes(app: any, connection_pool: any) {
             request.body.role_id
         );            
 
-        response.send("Ok");                        
+        response.send({ sucess: true});                        
     });
 
     app.get("/api/person_role/person/:id", 
@@ -130,7 +130,7 @@ export function configure_routes(app: any, connection_pool: any) {
             request.body.ideograms
         );            
 
-        response.send("Ok");                        
+        response.send({ sucess: true});                        
     });
 
     /** 
@@ -144,7 +144,7 @@ export function configure_routes(app: any, connection_pool: any) {
             request.body.contact_id,                 
         );            
 
-        response.send("Ok");                        
+        response.send({ sucess: true});                        
     });
 
     app.post("/api/person_contact", 
@@ -160,7 +160,7 @@ export function configure_routes(app: any, connection_pool: any) {
                 }
             );            
 
-            res.send("Ok");                        
+            res.send({ sucess: true});                        
         } catch (error) {                                
             res.status(500).json(error);
         }
@@ -212,7 +212,7 @@ export function configure_routes(app: any, connection_pool: any) {
             request.body.id
         );            
 
-        response.send("Ok");             
+        response.send({ sucess: true});             
     });
 
     app.get("/api/person_schedule/person/:id", 
@@ -238,7 +238,7 @@ export function configure_routes(app: any, connection_pool: any) {
             request.body.schedule
         );            
 
-        response.send("Ok");             
+        response.send({ sucess: true});             
     });
 
     /**
@@ -271,7 +271,7 @@ export function configure_routes(app: any, connection_pool: any) {
             request.body.comment
         );            
 
-        response.send("Ok");             
+        response.send({ sucess: true});             
     });
 
     app.post("/api/people_comments/archive", 
@@ -281,7 +281,7 @@ export function configure_routes(app: any, connection_pool: any) {
             request.body.id
         );            
 
-        response.send("Ok");             
+        response.send({ sucess: true});             
     });
     
 }

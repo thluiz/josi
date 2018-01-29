@@ -97,15 +97,13 @@ function getParticipationList(people) {
 
         app.get('/auth/google/callback', 
             passport.authenticate('google', { failureRedirect: '/login_error' }),
-            function(req, res) {
-              // Successful authentication, redirect home.
+            function(req, res) {              
               res.redirect(process.env.SITE_URL);
             });            
 
         app.get('/oauth/google/callback', 
             passport.authenticate('google', { failureRedirect: '/login_error' }),
-            function(req, res) {
-              // Successful authentication, redirect home.
+            function(req, res) {              
               res.redirect(process.env.SITE_URL);
             });     
 
@@ -127,7 +125,7 @@ function getParticipationList(people) {
             const jobs_service = new JobsService(pool);                
             await jobs_service.hourly_jobs();
 
-            response.send("Ok");
+            response.send({ sucess: true});
         });
 
         app.get("/api/agenda/:branch?/:date?", 

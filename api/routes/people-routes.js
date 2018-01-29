@@ -56,7 +56,7 @@ function configure_routes(app, connection_pool) {
      */
     app.post("/api/person_role/delete", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.remove_role(request.body.person_id, request.body.role_id);
-        response.send("Ok");
+        response.send({ sucess: true });
     }));
     app.get("/api/person_role", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
@@ -65,7 +65,7 @@ function configure_routes(app, connection_pool) {
     }));
     app.post("/api/person_role", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.add_role(request.body.person_id, request.body.role_id);
-        response.send("Ok");
+        response.send({ sucess: true });
     }));
     app.get("/api/person_role/person/:id", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
@@ -79,14 +79,14 @@ function configure_routes(app, connection_pool) {
      */
     app.post("/api/people_alias/kf_name", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.change_kf_name(request.body.person_id, request.body.kf_name, request.body.ideograms);
-        response.send("Ok");
+        response.send({ sucess: true });
     }));
     /**
      * CONTACTS
     */
     app.post("/api/person_contact/remove", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.remove_contact(request.body.contact_id);
-        response.send("Ok");
+        response.send({ sucess: true });
     }));
     app.post("/api/person_contact", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
@@ -97,7 +97,7 @@ function configure_routes(app, connection_pool) {
                 details: request.body.details,
                 principal: request.body.principal
             });
-            res.send("Ok");
+            res.send({ sucess: true });
         }
         catch (error) {
             res.status(500).json(error);
@@ -135,7 +135,7 @@ function configure_routes(app, connection_pool) {
      */
     app.post("/api/person_schedule/delete", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.remove_schedule(request.body.id);
-        response.send("Ok");
+        response.send({ sucess: true });
     }));
     app.get("/api/person_schedule/person/:id", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
@@ -151,7 +151,7 @@ function configure_routes(app, connection_pool) {
     }));
     app.post("/api/person_schedule", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.save_schedule(request.body.schedule);
-        response.send("Ok");
+        response.send({ sucess: true });
     }));
     /**
      * COMMENTS
@@ -172,11 +172,11 @@ function configure_routes(app, connection_pool) {
     }));
     app.post("/api/people_comments/about", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.save_comment_about(request.body.person_id, request.body.comment);
-        response.send("Ok");
+        response.send({ sucess: true });
     }));
     app.post("/api/people_comments/archive", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.archive_comment(request.body.id);
-        response.send("Ok");
+        response.send({ sucess: true });
     }));
 }
 exports.configure_routes = configure_routes;

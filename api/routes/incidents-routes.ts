@@ -12,7 +12,7 @@ export function configure_routes(app: any, connection_pool: any) {
     async (request, response, next) => {
         let result = await incident_service.close_incident(request.body.incident);
 
-        response.send("Ok");
+        response.send({ sucess: true});
     });
 
     app.post("/api/incident/start", 
@@ -20,7 +20,7 @@ export function configure_routes(app: any, connection_pool: any) {
     async (request, response, next) => {
         let result = await incident_service.start_incident(request.body.incident);
 
-        response.send("Ok");
+        response.send({ sucess: true});
     });
 
     app.post("/api/incident/reopen", 
@@ -28,7 +28,7 @@ export function configure_routes(app: any, connection_pool: any) {
     async (request, response, next) => {
         let result = await incident_service.reopen_incident(request.body.incident);
 
-        response.send("Ok");
+        response.send({ sucess: true});
     });
 
     app.post("/api/incident/start/cancel", 
@@ -36,7 +36,7 @@ export function configure_routes(app: any, connection_pool: any) {
     async (request, response, next) => {
         let result = await incident_service.cancel_start_incident(request.body.incident);
 
-        response.send("Ok");
+        response.send({ sucess: true});
     });
 
     app.post("/api/incident/remove", 
@@ -44,7 +44,7 @@ export function configure_routes(app: any, connection_pool: any) {
     async (request, response, next) => {            
         let result = await incident_service.remove_incident(request.body.incident);            
                     
-        response.send("Ok");
+        response.send({ sucess: true});
     });
 
     app.post("/api/incident/reschedule", 
@@ -56,7 +56,7 @@ export function configure_routes(app: any, connection_pool: any) {
             request.body.contact.contact_text
         );            
 
-        response.send("Ok"); 
+        response.send({ sucess: true}); 
     });
 
     app.post("/api/incident/register_incident", 
@@ -67,7 +67,7 @@ export function configure_routes(app: any, connection_pool: any) {
             request.body.incident
         );            
 
-        response.send("Ok");
+        response.send({ sucess: true});
     });
 
     app.post("/api/incident/register_contact", 
@@ -78,7 +78,7 @@ export function configure_routes(app: any, connection_pool: any) {
             request.body.contact.contact_text
         );            
 
-        response.send("Ok");                        
+        response.send({ sucess: true});                        
     });
 
     /**

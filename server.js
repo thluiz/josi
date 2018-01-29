@@ -86,11 +86,9 @@ function getParticipationList(people) {
         app.use(bodyParser.json());
         app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
         app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login_error' }), function (req, res) {
-            // Successful authentication, redirect home.
             res.redirect(process.env.SITE_URL);
         });
         app.get('/oauth/google/callback', passport.authenticate('google', { failureRedirect: '/login_error' }), function (req, res) {
-            // Successful authentication, redirect home.
             res.redirect(process.env.SITE_URL);
         });
         app.get('/login_error', (req, res, next) => {
@@ -107,7 +105,7 @@ function getParticipationList(people) {
         app.get("/api/hourly-jobs", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             const jobs_service = new jobs_services_1.JobsService(pool);
             yield jobs_service.hourly_jobs();
-            response.send("Ok");
+            response.send({ sucess: true });
         }));
         app.get("/api/agenda/:branch?/:date?", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             console.log(request.isAuthenticated());
