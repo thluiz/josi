@@ -60,6 +60,11 @@ export class CurrentActivitiesComponent implements OnInit, OnDestroy {
         this.modalService.open(ModalType.IncidentTreatment, incident);
     }
 
+    filter_activities(branch) {
+      this.branch = branch;
+      this.getCurrentActivities();
+    }
+
     private getCurrentActivities() {
       this.incidentService.getCurrentActivities(this.branch || 0).subscribe((data) => {
         this.activities = data;

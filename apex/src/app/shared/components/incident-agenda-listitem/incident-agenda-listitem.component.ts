@@ -19,8 +19,7 @@ export class IncidentAgendaListitemComponent {
             
     }  
 
-    show_incident_details(incident) {
-      console.log("aqui");
+    show_incident_details(incident) {      
       this.modalService.open(ModalType.IncidentTreatment, incident);
     }
 

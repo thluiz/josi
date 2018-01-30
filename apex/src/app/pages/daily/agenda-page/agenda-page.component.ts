@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit } from '@angular/core';
 
 import { PersonService, DailyMonitorDisplayType } from 'app/services/person-service';
 import { ParameterService } from 'app/services/parameter-service';
@@ -28,6 +28,7 @@ import 'rxjs/add/operator/delay';
 
 import { debounceTime } from 'rxjs/operators';
 import { delay } from 'rxjs/operators';
+import { CurrentActivitiesComponent } from 'app/shared/components/current-activities/current-activities.component';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -37,7 +38,8 @@ import { delay } from 'rxjs/operators';
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
-export class AgendaPageComponent implements OnInit, OnDestroy {
+export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
+  
   agenda;
   original_agenda: any[];
   show_change_branch;
@@ -50,6 +52,9 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
   branches;
   current_date;
   manual_incident_types;
+
+  @ViewChild(CurrentActivitiesComponent) 
+  private current_activities : CurrentActivitiesComponent; 
 
   private update_agenda_timer;  
   private incident_changes_subscriber: Subscription;
@@ -72,6 +77,10 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
     }
   }  
  
+  ngAfterViewInit(): void {
+    
+  }
+
   ngOnInit() {
     this.parameterService.getActiveBranches().subscribe(data => {    
       const result = data;   
@@ -116,14 +125,16 @@ export class AgendaPageComponent implements OnInit, OnDestroy {
   branchSelected(id) {    
     this.filter_incidents();
     this.show_change_branch = false;
+     
+    this.current_activities.filter_activities(this.current_branch);
 
     if(this.current_branch == 0) {
       this.current_branch_name = "Todos os Núcleos";
       return;
     }
 
-    const current = this.branches.find((b) => b.id == this.current_branch);
-    this.current_branch_name = current.name;    
+    const current = this.branches.find((b) => b.id == this.current_branch);    
+    this.current_branch_name = current.name;   
   }
 
   filter_incidents() {  

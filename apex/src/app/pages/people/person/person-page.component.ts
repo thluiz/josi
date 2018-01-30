@@ -221,8 +221,6 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
     this.new_schedule.correct = false;
     let schedule = this.new_schedule;
 
-    console.log(this.new_schedule.time);
-
     if(parseInt(schedule.person_id, 10) > 0
       && parseInt(schedule.branch_id, 10) > 0
       && schedule.type != null

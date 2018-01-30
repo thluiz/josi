@@ -107,8 +107,7 @@ export class IncidentService {
     return this.http
         .post(this.dataUrl + `/incident_comments/archive`, {
           id: comment.id
-        }).map((data : any) => {
-          console.log(data);          
+        }).map((data : any) => {          
           this.comment_changes.next(data);
         });
   }
@@ -118,8 +117,7 @@ export class IncidentService {
         .post(this.dataUrl + `/incident_comments`, {
           incident_id: incident.id,
           comment
-        }).map((data : any) => {          
-          console.log(data);
+        }).map((data : any) => {                    
           this.comment_changes.next(data);
         });
   }

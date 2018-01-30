@@ -135,8 +135,7 @@ function getParticipationList(people) {
 
         app.get("/api/agenda/:branch?/:date?", 
         SecurityService.ensureLoggedIn(),
-        async (request, response, next) => {            
-            console.log(request.isAuthenticated());
+        async (request, response, next) => {                        
             try {
                 let result = await new sql.Request(pool)                             
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
