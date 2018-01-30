@@ -82,8 +82,7 @@ export class AddCommentModalComponent implements OnInit {
     (data) => {
       this.comment = "";
       this.incident = null;
-
-      console.log("aa");
+      
       console.log(close_action);
 
       if(close_action) {

@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ROUTES } from './sidebar-routes.config';
 import { RouteInfo } from "./sidebar.metadata";
 import { Router, ActivatedRoute } from "@angular/router";
+import { environment } from '../../../environments/environment';
 
 declare var $: any;
 @Component({
@@ -14,6 +15,7 @@ declare var $: any;
 export class SidebarComponent implements OnInit {
     menuItems: any[];
     current_user;
+    logout_url = environment.logout_url;
 
     constructor(private router: Router,
         private route: ActivatedRoute, 
@@ -25,7 +27,6 @@ export class SidebarComponent implements OnInit {
         $.getScript('./assets/js/app-sidebar.js');
         this.menuItems = ROUTES;
 
-        console.log("aqui");
         this.securityService.getCurrentUserData().subscribe((data) => {            
             this.current_user = data;
         });

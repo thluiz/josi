@@ -75,11 +75,14 @@
                         {{ current_user.name }}
                     </span>
                 </a>
-                <ul class="menu-content">
-                    <li>
-                        <a href="/logout">Sair</a>
-                    </li>
-                </ul>
+            </li>
+            <li *ngIf="current_user">                                
+                <a [href]="logout_url">                    
+                    <i class="icon-logout"></i>                        
+                    <span class="menu-title"> 
+                        Sair
+                    </span>
+                </a>                
             </li>
         </ul>
     </div>

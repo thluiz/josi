@@ -96,7 +96,7 @@ function getParticipationList(people) {
         });
         app.get('/logout', function (req, res) {
             req.logout();
-            res.redirect('/');
+            res.send("Sessão encerrada");
         });
         app.post("/api/messages", connector.listen());
         people_routes.configure_routes(app, pool);
