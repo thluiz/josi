@@ -10,7 +10,7 @@ export class SecurityService {
 
     }
     
-    getCurrentUserData(user_id) {        
+    getCurrentUserData() {        
         return this.http.get(this.dataUrl + `/users/current`);            
     }
 }

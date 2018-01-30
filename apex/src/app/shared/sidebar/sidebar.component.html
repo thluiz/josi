@@ -6,10 +6,7 @@
                 <img src="assets/img/logo.png" class="img-fluid" />
             </div>
             <span class="text align-middle"></span>
-        </a>
-        <a class="nav-toggle hidden-sm hidden-xs" href="javascript:;">
-            <i class="ft-toggle-right toggle-icon" data-toggle="expanded"></i>
-        </a>
+        </a>        
     </div>
 </div>
 <!-- Sidebar Header Ends -->
@@ -68,6 +65,21 @@
                         </ul>
                     </li>
                 </ul>                
+            </li>
+            <li *ngIf="current_user">
+                <a [routerLink]="['/']" class="logo-text">
+                    <div class="logo-img">
+                        <img src="https://myvtmiim.blob.core.windows.net/avatars/{{ current_user.avatar_img }}" class="img-fluid" />
+                    </div>
+                    <span class="text align-middle"> 
+                        {{ current_user.name }}
+                    </span>
+                </a>
+                <ul class="menu-content">
+                    <li>
+                        <a href="/logout">Sair</a>
+                    </li>
+                </ul>
             </li>
         </ul>
     </div>

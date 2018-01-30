@@ -12,7 +12,8 @@ declare var $: any;
 })
 
 export class SidebarComponent implements OnInit {
-    public menuItems: any[];
+    menuItems: any[];
+    current_user;
 
     constructor(private router: Router,
         private route: ActivatedRoute, 
@@ -23,6 +24,11 @@ export class SidebarComponent implements OnInit {
     ngOnInit() {        
         $.getScript('./assets/js/app-sidebar.js');
         this.menuItems = ROUTES;
+
+        console.log("aqui");
+        this.securityService.getCurrentUserData().subscribe((data) => {            
+            this.current_user = data;
+        });
     }
 
 }

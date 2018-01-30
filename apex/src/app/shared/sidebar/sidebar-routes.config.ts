@@ -7,7 +7,7 @@ export const ROUTES: RouteInfo[] = [
         icon: 'ft-monitor',
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,
-        submenu: [ ]
+        submenu: []
     },
     {
         path: '/people/members', title: 'Painéis',

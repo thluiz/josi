@@ -11,11 +11,10 @@ import { environment } from '../environments/environment';
 export class SecurityHttpInterceptor implements HttpInterceptor {
     constructor(private router: Router) { }
     
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        console.log("Intercepting...");      
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {           
         // Clone the request to add the new header.
-        //const authReq = req.clone({ headers: req.headers.set("headerName", "headerValue")});        
-        //console.log("Sending request with new header now ...");
+        // const authReq = req.clone({ headers: req.headers.set("headerName", "headerValue")});        
+        // console.log("Sending request with new header now ...");
         
         return next.handle(req).do((event: HttpEvent<any>) => {
             if (event instanceof HttpResponse) {

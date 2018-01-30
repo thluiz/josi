@@ -48,20 +48,27 @@ export class SecurityService {
         callback(null, user);
     }
 
-    static async findUserByToken(token, callback) {
+    static async findUserByToken(token, callback?) {
         let pool = await this.create_pool();
         let result = await new sql.Request(pool)
                             .input("token", sql.UniqueIdentifier, token)
-                            .query("select * from [user] where token = @token");
+                            .query("select * from [vwUser] where token = @token");
 
         if(result.rowsAffected != 1) {
-            callback("user not fount", false);
+            console.log("user not found");
+            
+            if(callback)
+                callback("user not fount", false);
+
             return;
         } 
 
         const user = result.recordset[0];
 
-        callback(null, user);
+        if(callback)
+            callback(null, user);
+            
+        return user;
     }
 
     static ensureLoggedIn() {
@@ -83,7 +90,12 @@ export class SecurityService {
         }
     }
 
-    static getUserFromRequest(req) {
+    static async getUserFromRequest(req) {
+        if(process.env.LOAD_ENV === 'true') {                        
+            let user = this.findUserByToken(process.env.TOKEN_USER_DEV, () => {});
+            return user;
+        }
+
         return req.user;
     }
 }
