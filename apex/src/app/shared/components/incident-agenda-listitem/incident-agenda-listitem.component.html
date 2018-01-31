@@ -2,6 +2,7 @@
     <div class="col-8 d-none d-md-block" 
         [style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "        
         style="cursor:pointer;"
+        [style.font-weight]="incident.type == 26 ? 'bold' : 'normal'"
         (click)="show_incident_details(incident);">
         <span *ngIf="current_branch <= 0" style="width:40px;display:inline-table;">{{ incident.branch_initials }}</span>
         <span style="width:45px;display:inline-table;" *ngIf="incident.need_start_hour_minute">{{ incident.started_on_hour || incident.start_hour }}</span>
@@ -11,6 +12,7 @@
 
     <div class="col-8 d-block d-md-none"         
         style="cursor:pointer;"
+        [style.font-weight]="incident.type == 26 ? 'bold' : 'normal'"
         [style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "
         (click)="show_incident_details(incident);">
         <div class="row">

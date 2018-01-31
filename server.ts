@@ -107,8 +107,9 @@ function getParticipationList(people) {
               res.redirect(process.env.SITE_URL);
             });     
 
-        app.get('/login_error', (req, res, next) => {
-            res.send("ops... login_error")
+        app.get('/relogin', (req, res, next) => {
+            req.logout();
+            res.redirect(process.env.SITE_URL);
         });
 
         app.get('/logout', function(req, res){
