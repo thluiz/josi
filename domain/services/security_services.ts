@@ -1,5 +1,11 @@
 const sql = require('mssql')
 
+export enum Permissions {
+    Operator,
+    Manager,
+    Director
+}
+
 export class SecurityService {    
     private static get_config () {
         if (process.env.LOAD_ENV === 'true') {
@@ -87,6 +93,48 @@ export class SecurityService {
             } else {
                 next();
             }
+        }
+    }
+
+    static ensureHasPermission(permission: Permissions) {
+        return function (req, res, next) {
+            const userReq = SecurityService.getUserFromRequest(req);
+
+            userReq.then((user) => {                
+                let has_permission = false;
+
+                if(user) {
+                    switch(permission) {
+                        case(Permissions.Operator):
+                            has_permission = user.is_operator || user.is_director || user.id_manager;
+                            break;
+                        case(Permissions.Manager):
+                            has_permission = user.is_director || user.id_manager;
+                            break;
+                        case(Permissions.Director):
+                            has_permission = user.is_director;
+                            break;
+                    }
+                }
+    
+                if(!has_permission) {
+                    res.status(403).json({
+                        success: false,
+                        message: 'You don´t have the necessary permitions for this action!'
+                    });            
+                    return;
+                }     
+
+                next();
+
+            }).catch((error) => {
+                console.log(error);
+                res.status(503).json({
+                    success: false,
+                    message: 'sorry! something went wrong...'
+                });            
+                return;
+            });            
         }
     }
 

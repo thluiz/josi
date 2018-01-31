@@ -9,6 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require('mssql');
+var Permissions;
+(function (Permissions) {
+    Permissions[Permissions["Operator"] = 0] = "Operator";
+    Permissions[Permissions["Manager"] = 1] = "Manager";
+    Permissions[Permissions["Director"] = 2] = "Director";
+})(Permissions = exports.Permissions || (exports.Permissions = {}));
 class SecurityService {
     static get_config() {
         if (process.env.LOAD_ENV === 'true') {
@@ -85,6 +91,42 @@ class SecurityService {
             else {
                 next();
             }
+        };
+    }
+    static ensureHasPermission(permission) {
+        return function (req, res, next) {
+            const userReq = SecurityService.getUserFromRequest(req);
+            userReq.then((user) => {
+                let has_permission = false;
+                if (user) {
+                    switch (permission) {
+                        case (Permissions.Operator):
+                            has_permission = user.is_operator || user.is_director || user.id_manager;
+                            break;
+                        case (Permissions.Manager):
+                            has_permission = user.is_director || user.id_manager;
+                            break;
+                        case (Permissions.Director):
+                            has_permission = user.is_director;
+                            break;
+                    }
+                }
+                if (!has_permission) {
+                    res.status(403).json({
+                        success: false,
+                        message: 'You don´t have the necessary permitions for this action!'
+                    });
+                    return;
+                }
+                next();
+            }).catch((error) => {
+                console.log(error);
+                res.status(503).json({
+                    success: false,
+                    message: 'sorry! something went wrong...'
+                });
+                return;
+            });
         };
     }
     static getUserFromRequest(req) {

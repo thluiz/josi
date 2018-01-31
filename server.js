@@ -125,7 +125,7 @@ function getParticipationList(people) {
                 response.json({ error: error });
             }
         }));
-        app.get("/api/current_activities/:branch?", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        app.get("/api/current_activities/:branch?", security_services_1.SecurityService.ensureLoggedIn(), security_services_1.SecurityService.ensureHasPermission(security_services_1.Permissions.Operator), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 let result = yield new sql.Request(pool)
                     .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)

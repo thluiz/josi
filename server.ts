@@ -1,4 +1,4 @@
-import { SecurityService } from './domain/services/security_services';
+import { SecurityService, Permissions } from './domain/services/security_services';
 import * as sql from 'mssql';
 import * as builder from 'botbuilder';
 import { JobsService } from './domain/services/jobs_services';
@@ -152,6 +152,7 @@ function getParticipationList(people) {
 
         app.get("/api/current_activities/:branch?",        
         SecurityService.ensureLoggedIn(), 
+        SecurityService.ensureHasPermission(Permissions.Operator),
         async (request, res, next) => {            
             try {
                 let result = await new sql.Request(pool)                             

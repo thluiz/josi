@@ -128,8 +128,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 col-sm-12 col-md-12 col-xl-6 pr-3"
-                        style="margin-bottom:20px"
+                        <div class="col-12 col-sm-12 col-md-12 col-xl-6 pr-3"                        
                         *ngIf="person.is_active_member || person.is_disciple || person.is_leaving || person.is_inactive_member">
                             <div class="row">
                                 <div class="col-12">
@@ -205,6 +204,14 @@
                                     </div>                                    
                                 </div>
                             </div>
+                            <div class="row">    
+                                <div class="col-12" 
+                                style="margin-top:30px;margin-bottom:30px">
+                                    <person-comment-list                                    
+                                    [person]="person">                                
+                                    </person-comment-list>
+                                </div>                                                            
+                            </div>
                         </div>
                         <div class="col-12 col-sm-12 col-md-12 col-xl-6 pr-3">
                             <div class="row">
@@ -212,7 +219,7 @@
                                     <person-contact-list                                    
                                     [person]="person">                                
                                     </person-contact-list>
-                                </div>
+                                </div>                     
                                 <div class="col-12 col-xl-12 col-md-6">
                                     <div class="row" style="border-bottom: 1px solid black">
                                         <div class="col-10 col-xl-10 col-sm-9">
@@ -283,26 +290,10 @@
                                             </button>                                    
                                         </div>
                                     </div>
-                                </div>
+                                </div>                                                                       
                             </div>
                         </div>
-                    </div>
-                    <div class="row" style="padding-top:10px">
-                        <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
-                            <person-comment-list                                    
-                            [person]="person">                                
-                            </person-comment-list>
-                        </div>
-                        <div class="col-5 offset-2" *ngIf="person.last_activities && person.last_activities.length > 0">
-                            <h5 style="border-bottom: 1px solid black"><i class="fa fa-tasks"></i> Atividades </h5>
-                            <div class="row" *ngFor="let a of person.last_activities">
-                                <div class="col-3">
-                                
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
+                    </div>                    
                 </div>
             </div>
         </div>
