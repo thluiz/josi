@@ -64,8 +64,8 @@
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-6 col-sm-6">
-                                    <label for="admission_date">Nascimento</label> 
-                                    <span id="admission_date" 
+                                    <label for="birth_date">Nascimento</label> 
+                                    <span id="birth_date" 
                                         [ngStyle]="{ 'color': !person.birth_date ? 'red' : null }">
                                         {{ person.birth_date_br || 'Não definido'  }}                                    
                                     </span>
@@ -177,7 +177,9 @@
                                                 [ngStyle]="{ 'color': !person.domain_name ? 'red' : null }">
                                                 {{ person.domain_name || 'Não definido'  }}                                    
                                             </span>
-                                        </div>                                       
+                                        </div>
+                                    </div>                                      
+                                    <div class="row" *ngIf="person.family_name && person.family_name.length > 0 ">
                                         <div class="col-6 col-sm-3">
                                             <label for="family" class="label-member-data">Família</label> 
                                             <span id="family" *ngIf="person.family_name && person.family_name.length > 0 ">
@@ -194,6 +196,26 @@
                                                 {{ person.admission_date_br || 'Não definida'  }}                                    
                                             </span>
                                         </div>
+                                    </div>
+                                    <div class="row" *ngIf="!person.family_name || person.family_name.length == 0 ">
+                                        <div class="col-6 col-sm-3">
+                                            <label for="family" class="label-member-data">Família de Destino</label> 
+                                            <span id="family" *ngIf="person.destiny_family_name && person.destiny_family_name.length > 0 ">
+                                                {{ person.destiny_family_name }}                                    
+                                            </span>       
+                                            <span id="family" style="color:red" *ngIf="!person.destiny_family_name || person.destiny_family_name.length <=0 ">
+                                                Não definida
+                                            </span>                                    
+                                        </div>  
+                                        <div class="col-6 col-sm-3">
+                                            <label for="enrollment_date" class="label-member-data">Matrícula</label> 
+                                            <span id="enrollment_date"
+                                                [ngStyle]="{ 'color': !person.enrollment_date_br ? 'red' : null }">
+                                                {{ person.enrollment_date_br || 'Não definida'  }}                                    
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-5" *ngIf="person.is_disciple">
                                             <label for="baaisi_date" class="label-member-data">Baai Si</label> 
                                             <span id="baaisi_date" 

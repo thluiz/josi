@@ -49,6 +49,7 @@ class PersonService {
                 .input('name', sql.VarChar(200), person.name)
                 .input('birth_date', sql.VarChar(10), person.birth_date)
                 .input('admission_date', sql.VarChar(10), person.admission_date)
+                .input('enrollment_date', sql.VarChar(10), person.enrollment_date)
                 .input('baaisi_date', sql.VarChar(10), person.baaisi_date)
                 .input('kf_name', sql.VarChar(200), person.kf_name)
                 .input('kf_name_ideograms', sql.NVarChar(200), person.kf_name_ideograms)

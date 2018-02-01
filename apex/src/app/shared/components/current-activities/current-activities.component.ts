@@ -5,6 +5,7 @@ import { IncidentService } from 'app/services/incident-service';
 import { PersonService } from 'app/services/person-service';
 
 import { Subscription } from 'rxjs';
+import { SecurityService } from 'app/services/security-service';
 
 @Component({
   selector: 'current-activities',
@@ -21,12 +22,16 @@ export class CurrentActivitiesComponent implements OnInit, OnDestroy {
 
     constructor(private incidentService: IncidentService, 
       private modalService: ModalService, 
-      private personService: PersonService) {
+      private personService: PersonService,
+      private securityService: SecurityService) {
 
     }  
 
     ngOnInit() {
-      this.getCurrentActivities();
+      this.securityService.getCurrentUserData().subscribe((user) => {
+        this.branch = user.default_branch_id || 0;
+        this.getCurrentActivities();
+      });      
 
       this.incident_changes_subscriber = this.incidentService.incidentsChanges$
       .delay(1000)
@@ -65,7 +70,7 @@ export class CurrentActivitiesComponent implements OnInit, OnDestroy {
       this.getCurrentActivities();
     }
 
-    private getCurrentActivities() {
+    private getCurrentActivities() {      
       this.incidentService.getCurrentActivities(this.branch || 0).subscribe((data) => {
         this.activities = data;
       });

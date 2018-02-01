@@ -1,4 +1,5 @@
-import { Component, Input, ViewChild, AfterViewInit } from '@angular/core';
+import { SecurityService } from 'app/services/security-service';
+import { Component, Input, ViewChild, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
 
 import { PersonService, DailyMonitorDisplayType } from 'app/services/person-service';
 import { ParameterService } from 'app/services/parameter-service';
@@ -17,7 +18,6 @@ import { NgbModal,
   NgbDatepickerConfig,
   NgbDateParserFormatter
 } from '@ng-bootstrap/ng-bootstrap';
-import { OnInit, OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
@@ -65,7 +65,8 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
               private incidentService: IncidentService, 
               private parameterService: ParameterService,
               private modalService: NgbModal, 
-              private datePickerConfig: NgbDatepickerConfig) {
+              private datePickerConfig: NgbDatepickerConfig,
+              private securityService: SecurityService) {
 
     datePickerConfig.firstDayOfWeek = 7
     const date = new Date();
@@ -77,11 +78,10 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }  
  
-  ngAfterViewInit(): void {
-    
+  ngAfterViewInit(): void {    
   }
 
-  ngOnInit() {
+  ngOnInit() {    
     this.parameterService.getActiveBranches().subscribe(data => {    
       const result = data;   
       this.branches = result;
@@ -104,9 +104,13 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.incident_added_subscriber = this.incidentService.incidentAdd$        
       .subscribe((next) => {      
         this.getAgendaData();
-      });
-
-    this.getAgendaData();   
+      });   
+          
+      
+    this.securityService.getCurrentUserData().subscribe((user) => {
+      this.current_branch = user.default_branch_id || 0;      
+      this.getAgendaData();
+    }); 
   }
 
   ngOnDestroy() {    
@@ -122,7 +126,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getAgendaData();
   }
 
-  branchSelected(id) {    
+  branchSelected(id) {        
     this.filter_incidents();
     this.show_change_branch = false;
      
@@ -156,15 +160,13 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
   
-  getAgendaData() {
-    if(!this.personService) {
-      return;
-    }
-    this.personService.getDailyAgenda(this.current_branch, this.current_date).subscribe(
+  getAgendaData() {    
+    this.personService.getDailyAgenda(0, this.current_date).subscribe(
       data => {    
         const result = data as any;           
         this.original_agenda = result;
-        this.filter_incidents();
+        
+        this.branchSelected(this.current_branch);        
       } 
     );
 

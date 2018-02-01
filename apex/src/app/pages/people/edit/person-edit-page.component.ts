@@ -87,6 +87,7 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
     p.birth_date = this.translate_date_to_server(this.person.birth_date);        
     p.admission_date = this.translate_date_to_server(this.person.admission_date);        
     p.baaisi_date = this.translate_date_to_server(this.person.baaisi_date);  
+    p.enrollment_date = this.translate_date_to_server(this.person.enrollment_date);  
         
     this.personService.savePersonData(p).toPromise().then(
       () => {
@@ -149,8 +150,8 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
         this.person = result;  
         this.person.birth_date = this.translate_date_to_view(this.person.birth_date);        
         this.person.admission_date = this.translate_date_to_view(this.person.admission_date);        
-        this.person.baaisi_date = this.translate_date_to_view(this.person.baaisi_date);  
-        
+        this.person.baaisi_date = this.translate_date_to_view(this.person.baaisi_date);          
+        this.person.enrollment_date = this.translate_date_to_view(this.person.enrollment_date);          
         
         if(!(this.person.is_active_member 
           || this.person.is_disciple 

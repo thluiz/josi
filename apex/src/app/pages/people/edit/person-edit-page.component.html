@@ -54,6 +54,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="row">
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="person_family">Família</label>                                                									
@@ -76,6 +78,35 @@
                                                             name="person_admission_date"
                                                             ngbDatepicker #niRescheduleAdmission="ngbDatepicker" />
                                                             <div class="input-group-addon" (click)="niRescheduleAdmission.toggle()">
+                                                                <i class="ft-calendar" style="cursor: pointer;"></i>
+                                                            </div>																																                                                    
+                                                        </div>
+                                                    </div>
+                                                </div>                                                
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="person_family">Família de Destino</label>                                                									
+                                                        <div class="input-group">							
+                                                            <select id="person_destiny_family" name="person_destiny_family" 
+                                                                class="form-control"                                                                 
+                                                                [(ngModel)]="person.destiny_family_id">		
+                                                                <option></option>									
+                                                                <option *ngFor="let f of families" [value]="f.id">{{ f.name }}</option>
+                                                            </select>																															                                                    
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="person_enrollment_date">Matrícula</label>                                                									
+                                                        <div class="input-group">							
+                                                            <input class="form-control text-center" placeholder="dd/mm/aaaa" 
+                                                            [(ngModel)]="person.enrollment_date" id="person_enrollment_date"
+                                                            name="person_enrollment_date"
+                                                            ngbDatepicker #niEnrollment="ngbDatepicker" />
+                                                            <div class="input-group-addon" (click)="niEnrollment.toggle()">
                                                                 <i class="ft-calendar" style="cursor: pointer;"></i>
                                                             </div>																																                                                    
                                                         </div>

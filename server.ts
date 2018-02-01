@@ -136,17 +136,19 @@ function getParticipationList(people) {
 
         app.get("/api/agenda/:branch?/:date?", 
         SecurityService.ensureLoggedIn(),
-        async (request, response, next) => {                        
+        async (req, res, next) => {                        
             try {
                 let result = await new sql.Request(pool)                             
-                    .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
-                    .input('date', sql.VarChar(10), request.params.date || null)                    
+                    .input('branch', sql.Int, req.params.branch > 0 ? req.params.branch : null)
+                    .input('date', sql.VarChar(10), req.params.date || null)                    
                     .execute(`GetAgenda`);  
                     
-                response.send((result.recordset[0]));
+                let response = result.recordset[0];                                    
+                res.send(response[0].empty ? [] : response);
+                
             } catch (error) {                                
-                response.status(500);
-                response.json({ error: error });
+                res.status(500);
+                res.json({ error: error });
             } 
         });
 

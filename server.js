@@ -112,17 +112,18 @@ function getParticipationList(people) {
             let user = yield security_services_1.SecurityService.getUserFromRequest(request);
             response.send(user);
         }));
-        app.get("/api/agenda/:branch?/:date?", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+        app.get("/api/agenda/:branch?/:date?", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 let result = yield new sql.Request(pool)
-                    .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
-                    .input('date', sql.VarChar(10), request.params.date || null)
+                    .input('branch', sql.Int, req.params.branch > 0 ? req.params.branch : null)
+                    .input('date', sql.VarChar(10), req.params.date || null)
                     .execute(`GetAgenda`);
-                response.send((result.recordset[0]));
+                let response = result.recordset[0];
+                res.send(response[0].empty ? [] : response);
             }
             catch (error) {
-                response.status(500);
-                response.json({ error: error });
+                res.status(500);
+                res.json({ error: error });
             }
         }));
         app.get("/api/current_activities/:branch?", security_services_1.SecurityService.ensureLoggedIn(), security_services_1.SecurityService.ensureHasPermission(security_services_1.Permissions.Operator), (request, res, next) => __awaiter(this, void 0, void 0, function* () {

@@ -79,6 +79,30 @@
                     </div>
                 </div>                 
             </div>
+            <div class="col-12" *ngIf="ms.missing_code == 'NO_ENROLLMENT_DATE'">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label for="person_enrollment_date">Matrícula</label>                                                									
+                            <div class="input-group">							
+                                <input class="form-control text-center" placeholder="dd/mm/aaaa" 
+                                [(ngModel)]="person.enrollment_date" id="person_enrollment_date"
+                                name="person_enrollment_date"
+                                ngbDatepicker #niEnrollmentDate="ngbDatepicker" />
+                                <div class="input-group-addon" (click)="niEnrollmentDate.toggle()">
+                                    <i class="ft-calendar" style="cursor: pointer;"></i>
+                                </div>
+                                
+                                <button type="button" class="btn btn-success" 
+                                    (click)="save_enrollment_date();">
+                                    <i class="icon-check"></i>
+                                    Salvar
+                                </button>	
+                            </div>
+                        </div>
+                    </div>
+                </div>                 
+            </div>
             <div class="col-12" *ngIf="ms.missing_code == 'NO_KF_NAME'">
                 <div class="row">
                     <div class="col-10">

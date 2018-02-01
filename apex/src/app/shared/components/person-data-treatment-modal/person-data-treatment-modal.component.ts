@@ -138,6 +138,16 @@ export class PersonDataTreatmentModalComponent implements OnInit {
     });
   }
 
+  save_enrollment_date() {
+    this.personService.getData(this.person_id()).subscribe((data) => {
+        let person_data = data as any;
+        person_data.enrollment_date = this.utilsService.translate_date_to_server(this.person.enrollment_date);
+        this.personService.savePersonData(person_data).subscribe((data) => {          
+          console.log(data);
+        });
+    });
+  }
+
   save_admission_date() {
     this.personService.getData(this.person_id()).subscribe((data) => {
         let person_data = data as any;
