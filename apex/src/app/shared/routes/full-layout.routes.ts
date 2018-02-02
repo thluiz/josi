@@ -11,27 +11,27 @@ export const Full_ROUTES: Routes = [
   },
   {
     path: 'public',
-    loadChildren: './pages/daily/daily.module#DailyModule'
+    loadChildren: './pages/diary/diary.module#DiaryModule'
   },
   {
-    path: 'daily',
-    loadChildren: './pages/daily/daily.module#DailyModule'
+    path: 'diary',
+    loadChildren: './pages/diary/diary.module#DiaryModule'
   },
   {
-    path: 'daily/day',
-    loadChildren: './pages/daily/daily.module#DailyModule'
+    path: 'diary/day',
+    loadChildren: './pages/diary/diary.module#DiaryModule'
   },
   {
-    path: 'daily/week',
-    loadChildren: './pages/daily/daily.module#DailyModule'
+    path: 'diary/week',
+    loadChildren: './pages/diary/diary.module#DiaryModule'
   },
   {
-    path: 'daily/agenda',
-    loadChildren: './pages/daily/daily.module#DailyModule'
+    path: 'diary/agenda',
+    loadChildren: './pages/diary/diary.module#DiaryModule'
   },
   {
-    path: 'daily/current_activities',
-    loadChildren: './pages/daily/daily.module#DailyModule'
+    path: 'diary/current_activities',
+    loadChildren: './pages/diary/diary.module#DiaryModule'
   },
   {
     path: 'people',

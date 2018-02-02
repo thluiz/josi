@@ -18,6 +18,8 @@ import { NgbModal,
 } from '@ng-bootstrap/ng-bootstrap';
 import { OnInit, OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
+import { IntervalObservable } from "rxjs/observable/IntervalObservable";
+
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 
@@ -26,20 +28,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-full-layout-page',
-  templateUrl: './daily-page.component.html',
-  styleUrls: ['../daily.component.scss'],
-  providers: [PersonService, IncidentService, DatePickerI18n,
+  templateUrl: './weekly-page.component.html',
+  styleUrls: ['../diary.component.scss'],
+  providers: [DatePickerI18n,
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
-export class DailyPageComponent implements OnInit, OnDestroy {
+export class WeeklyPageComponent implements OnInit, OnDestroy {
   daily: Observable<any[]>;
   cols;
-  
-  people_summary : Observable<any[]>;
 
-  current_display = 1;
   selected_week;
+  current_display:any = 0;
   current_week_range;
   current_week_day;  
   current_week = 0;
@@ -53,13 +53,13 @@ export class DailyPageComponent implements OnInit, OnDestroy {
   current_incident;
   new_incident : any = {};  
   show_change_branch = false;  
-  closeResult: string;    
+  closeResult: string;  
+  newIncidentForm: FormGroup;
   week_days;
   branch_cols;
   external_people;  
 
-  private update_members_timer;
-  private update_summary_timer;
+  private update_members_timer;  
   private incident_added_subscriber : Subscription;
   private incident_changes_subscriber: Subscription;
 
@@ -77,7 +77,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     if(this.current_week_day < 0) {
       this.current_week_day = 6;
     }
-        
+
     this.incident_added_subscriber = incidentService.incidentAdd$.subscribe((next) => {      
       this.getMonitorData();
     });  
@@ -86,29 +86,17 @@ export class DailyPageComponent implements OnInit, OnDestroy {
       this.getMonitorData();
     }); 
   }
-
+  
   ngOnInit() {
-    this.getMonitorData();  
-           
+    this.getMonitorData();       
   }
 
   ngOnDestroy() {    
     if(this.update_members_timer) {    
       clearTimeout(this.update_members_timer);
     }    
-
-    if(this.update_summary_timer) {    
-      clearTimeout(this.update_summary_timer);
-    }
-    if(this.incident_added_subscriber) {
-      this.incident_added_subscriber.unsubscribe();
-    }
-
-    if(this.incident_changes_subscriber) {
-      this.incident_changes_subscriber.unsubscribe();
-    }
   }
-    
+
   branchSelected(id) {
     clearTimeout(this.update_members_timer);
     this.update_members_timer = null;        
@@ -121,11 +109,11 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     clearTimeout(this.update_members_timer);
     this.update_members_timer = null;
     this.current_week += modifier;
-    this.getMonitorData();
+    this.getMonitorData();    
   }
-    
+
   open(content, incident){
-      this.current_incident = incident;            
+      this.current_incident = incident;      
       this.modalService.open(content).result.then((result) => {          
           this.current_incident = null;                      
           this.closeResult = `Closed with: ${result}`;
@@ -134,16 +122,26 @@ export class DailyPageComponent implements OnInit, OnDestroy {
       });
   }
     
+  updateMonitorData() {
+    this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Week, this.current_week).subscribe(
+    data => {    
+      const result = data as any;        
+      for(var w = 0; w < result.domains.length; w++) {
+        
+      }
+    });
+  }
+
   getMonitorData() {
 
     if(!this.personService) {
       return;
     }
-    this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Day, this.current_week).subscribe(
+    this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Week, this.current_week).subscribe(
       data => {    
         const result = data as any;        
         
-        this.branches = result.branches;
+        this.branches = result.branches as any;
         this.current_branch_name = (this.current_branch > 0 ? 
                             this.branches.filter(b => b.id == this.current_branch)[0].name
                             : "Todos os Núcleos");
@@ -155,7 +153,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
         this.selected_week = result.selected_week[0];
 
         this.cols = [                    
-          { width: "20%" }
+          { width: "24.5%" }          
         ];
                 
         for(var i = 0; i< this.week_days.length; i++) {
@@ -164,7 +162,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
             prop: 'incidents' + c.date,
             name: c.name,
             current: c.current,
-            width: '60%'
+            width: '9.5%'
           };
         }
 
@@ -230,7 +228,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     var d = new Date();
     var hours = d.getHours();
     
-    const update_interval = hours >= 22 || hours < 6 ? 600000 : 120000;
+    const update_interval = hours >= 22 || hours < 6 ? 1800000 : 120000;
 
     if(this.update_members_timer) {
       clearTimeout(this.update_members_timer);
@@ -240,5 +238,3 @@ export class DailyPageComponent implements OnInit, OnDestroy {
   }
    
 }
-
-

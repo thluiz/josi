@@ -3,7 +3,7 @@ import { RouteInfo } from './sidebar.metadata';
 export const ROUTES: RouteInfo[] = [
 
     {
-        path: '/daily', title: 'Diário',
+        path: '/diary', title: 'Diário',
         icon: 'ft-monitor',
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,

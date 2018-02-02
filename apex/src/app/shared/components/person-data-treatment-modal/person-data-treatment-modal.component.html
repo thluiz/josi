@@ -103,6 +103,66 @@
                     </div>
                 </div>                 
             </div>
+            <div class="col-12" *ngIf="ms.missing_code == 'NO_IDENTIFICATION'">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label for="person_identification">Identidade</label>                                                									
+                            <div class="input-group">							
+                                <input class="form-control text-center"
+                                [(ngModel)]="person.identification" id="person_identification"
+                                name="person_identification" />
+
+                                <button type="button" class="btn btn-success" 
+                                    (click)="save_identification()">
+                                    <i class="icon-check"></i>
+                                    Salvar
+                                </button>	
+                            </div>
+                        </div>
+                    </div>
+                </div>                 
+            </div>
+            <div class="col-12" *ngIf="ms.missing_code == 'NO_IDENTIFICATION2'">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label for="person_identification2">CPF</label>                                                									
+                            <div class="input-group">							
+                                <input class="form-control text-center"
+                                [(ngModel)]="person.identification2" id="person_identification2"
+                                name="person_identification2" />
+
+                                <button type="button" class="btn btn-success" 
+                                    (click)="save_identification2()">
+                                    <i class="icon-check"></i>
+                                    Salvar
+                                </button>	
+                            </div>
+                        </div>
+                    </div>
+                </div>                 
+            </div>
+            <div class="col-12" *ngIf="ms.missing_code == 'NO_OCCUPATION'">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label for="person_occupation">Profissão</label>                                                									
+                            <div class="input-group">							
+                                <input class="form-control text-center"
+                                [(ngModel)]="person.occupation" id="person_occupation"
+                                name="person_occupation" />
+
+                                <button type="button" class="btn btn-success" 
+                                    (click)="save_occupation()">
+                                    <i class="icon-check"></i>
+                                    Salvar
+                                </button>	
+                            </div>
+                        </div>
+                    </div>
+                </div>                 
+            </div>
             <div class="col-12" *ngIf="ms.missing_code == 'NO_KF_NAME'">
                 <div class="row">
                     <div class="col-10">

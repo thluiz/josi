@@ -164,6 +164,30 @@ export class PersonDataTreatmentModalComponent implements OnInit {
     });
   }
 
+  save_identification2() {
+    this.personService.getData(this.person_id()).subscribe((data) => {
+        let person_data = data  as any;
+        person_data.identification2 = this.person.identification2;
+        this.personService.savePersonData(person_data).subscribe();
+    });
+  }
+
+  save_identification() {
+    this.personService.getData(this.person_id()).subscribe((data) => {
+        let person_data = data  as any;
+        person_data.identification = this.person.identification;
+        this.personService.savePersonData(person_data).subscribe();
+    });
+  }
+
+  save_occupation() {
+    this.personService.getData(this.person_id()).subscribe((data) => {
+        let person_data = data  as any;
+        person_data.occupation = this.person.occupation;
+        this.personService.savePersonData(person_data).subscribe();
+    });
+  }
+
   save_kf_name_ideograms() {
     this.personService.getData(this.person_id()).subscribe((data) => {
         let person_data = data as any;

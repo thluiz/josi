@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
-import { DailyChangeViewComponent } from './change-view.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
+import { DiaryHeaderComponent } from './diary-header.component';
 
 @NgModule({
     imports: [
@@ -9,9 +9,9 @@ import { CommonModule } from "@angular/common";
         FormsModule          
     ],
     declarations: [       
-        DailyChangeViewComponent
+        DiaryHeaderComponent
     ], exports: [
-        DailyChangeViewComponent
+        DiaryHeaderComponent
     ]
 })
-export class DailyChangeViewModule { }
+export class DiaryHeaderModule { }

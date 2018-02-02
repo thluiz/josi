@@ -14,17 +14,12 @@
 	<div class="col-12">		
 		<div class="card">
 			<div class="card-header" style="background-color:white;width:100%;padding:10px">
+				<diary-header panel="members"></diary-header>
+				
 				<div class="row">
 					<div class="col-12">
 						<div class="row">
-							<div class="col-12 col-xl-6 col-lg-6 col-md-12">
-								<h4 class="card-title d-none d-md-block">
-									Diário de Atividades - Praticantes 																																
-								</h4>
-								<h4 class="card-title d-block d-md-none" style="font-size:14px">
-									Diário de Atividades
-									<br /> Praticantes 																																
-								</h4>
+							<div class="col-12 col-xl-6 col-lg-6 col-md-12">								
 								<h6 style="margin:0;margin-top:5px;margin-bottom:5px;font-weight:bold;color:black;cursor:pointer;border-bottom:1px dotted silver;" 
 								*ngIf="!show_change_branch"
 								(click)="show_change_branch = !show_change_branch">									
@@ -44,7 +39,7 @@
 								</div>
 							</div>	
 							<div class="col-12 col-xl-2 col-lg-2 col-md-4 col-sm-12">
-								<daily-change-view initial_display="current"></daily-change-view>	
+								<diary-change-view initial_display="current"></diary-change-view>	
 							</div>																				
 						</div>						
 					</div>					

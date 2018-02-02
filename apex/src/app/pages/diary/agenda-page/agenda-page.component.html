@@ -1,4 +1,4 @@
-<div class="sticky-top" style="top:30px;z-index:10000">
+<div class="sticky-top" style="top:80px;z-index:10000">
 	<div style="position:absolute;float:right;right:10px;">
 		<button type="button" 
 			(click)="open(new_activity, null)"
@@ -14,37 +14,18 @@
 	<div class="col-12">		
 		<div class="card">
 			<div class="card-header" style="background-color:white;width:100%;padding:10px">
+				<diary-header panel="members"></diary-header>
 				<div class="row">
-					<div class="col-12">
+					<div class="col-12">						
 						<div class="row">
 							<div class="col-12 col-xl-6 col-lg-6 col-md-12">
-								<h4 class="card-title d-none d-md-block">
-									Diário de Atividades - Praticantes 																																
-								</h4>
-								<h4 class="card-title d-block d-md-none" style="font-size:14px">
-									Diário de Atividades
-									<br /> Praticantes 																																
-								</h4>
-								<h6 style="margin:0;margin-top:5px;margin-bottom:5px;font-weight:bold;color:black;cursor:pointer;border-bottom:1px dotted silver;" 
-								*ngIf="!show_change_branch"
-								(click)="show_change_branch = !show_change_branch">									
-									{{ current_branch_name }}
-								</h6>
-								<div class="form-group">
-									<select id="branch" 
-										[(ngModel)]="current_branch" 
-										(ngModelChange)="branchSelected($event)"									
-										*ngIf="show_change_branch"
-										class="form-control"
-										style="width:100%"
-										>			
-										<option value="0">Todos os Núcleos</option>			
-										<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
-									</select>
-								</div>
+								<diary-change-branch
+								[branch]="current_branch"
+								(onChangeBranch)="branchSelected($event)"
+								></diary-change-branch>
 							</div>	
 							<div class="col-12 col-xl-2 col-lg-2 col-md-4 col-sm-12">
-								<daily-change-view initial_display="agenda"></daily-change-view>	
+								<diary-change-view initial_display="agenda"></diary-change-view>	
 							</div>
 							<div class="col-9 col-xl-3 col-lg-3 col-md-6">
 								<div class="form-group">													

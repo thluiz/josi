@@ -5,10 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DailyMonitorDisplayType } from 'app/services/person-service';
 
 @Component({
-  selector: 'daily-change-view',
+  selector: 'diary-change-view',
   templateUrl: './change-view.component.html'
 })
-export class DailyChangeViewComponent implements OnInit {  
+export class DiaryChangeViewComponent implements OnInit {  
 
   @Input() initial_display: string;
   display;   
@@ -33,13 +33,13 @@ export class DailyChangeViewComponent implements OnInit {
 
   change_display(display) {
     if(display == DailyMonitorDisplayType.Week) {
-      this.router.navigateByUrl(`daily/week`);
+      this.router.navigateByUrl(`diary/week`);
     } else if(display == DailyMonitorDisplayType.Day) {
-      this.router.navigateByUrl(`daily/day`);
+      this.router.navigateByUrl(`diary/day`);
     } else if(display == DailyMonitorDisplayType.Agenda) {
-      this.router.navigateByUrl(`daily/agenda`);
+      this.router.navigateByUrl(`diary/agenda`);
     } else if(display == DailyMonitorDisplayType.Current) {
-      this.router.navigateByUrl(`daily/current_activities`);
+      this.router.navigateByUrl(`diary/current_activities`);
     }
   }
 }

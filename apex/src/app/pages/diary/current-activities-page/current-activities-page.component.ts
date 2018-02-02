@@ -8,7 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './current-activities-page.component.html',
-  styleUrls: ['../daily.component.scss']
+  styleUrls: ['../diary.component.scss']
 })
 export class CurrentActivitiesPageComponent implements OnInit, OnDestroy {  
   show_change_branch;  

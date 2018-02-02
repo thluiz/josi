@@ -4,15 +4,10 @@
 	}
 	.current2 {
 		background-color: #dddddd
-	}	
-	.incident_button {
-		text-align: left;
-		line-height: 12px;
-		padding-left:5px;
-	}
+	}		
 </style>
-				
-<div class="sticky-top" style="bottom:10px;z-index:100000">
+			
+<div class="sticky-top" style="bottom:10px;z-index:10000">
 	<div style="position:absolute;float:right;right:10px;" class="d-block d-md-none">
 		<button type="button" 
 			(click)="open(new_activity, null)"
@@ -22,40 +17,26 @@
 			>																
 		</button>
 	</div>
-</div>
+</div>			
 <div class="row">
-	<div class="col-12">		
-		<div class="card">
-			<div class="sticky-top" style="background-color:white;width:100%;padding:10px;z-index:10000">
+	<div class="col-12">						
+		<div class="card">			
+			<div style="background-color:white;width:100%;padding:10px">
 				<div class="row">
 					<div class="col-12">
-						<div class="row">
-							<div class="col-12 col-xl-6 col-lg-6 col-md-12">
-								<h4 class="card-title">
-									Diário de Atividades - Praticantes 																																
-								</h4>
-								<h6 style="margin:0;margin-top:5px;margin-bottom:5px;font-weight:bold;color:black;cursor:pointer;border-bottom:1px dotted silver;" 
-								*ngIf="!show_change_branch"
-								(click)="show_change_branch = !show_change_branch">									
-									{{ current_branch_name }}
-								</h6>
-								<div class="form-group">
-									<select id="branch" 
-										[(ngModel)]="current_branch" 
-										(ngModelChange)="branchSelected($event)"									
-										*ngIf="show_change_branch"
-										class="form-control"
-										style="width:100%"
-										>			
-										<option value="0">Todos os Núcleos</option>			
-										<option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
-									</select>	
-								</div>
-							</div>	
-							<div class="col-12 col-xl-2 col-lg-2 col-md-4 col-sm-12">
-								<daily-change-view initial_display="week"></daily-change-view>	
+						<diary-header panel="members"></diary-header>
+						
+						<div class="row">							
+							<div class="col-12 col-xl-6 col-lg-6 col-md-12">								
+								<diary-change-branch
+								[branch]="current_branch"
+								(onChangeBranch)="branchSelected($event)"
+								></diary-change-branch>
 							</div>
-							<div class="col-9 col-xl-3 col-lg-3 col-md-6">
+							<div class="col-12 col-xl-2 col-lg-2 col-md-4">
+								<diary-change-view initial_display="day"></diary-change-view>	
+							</div>
+							<div class="col-12 col-xl-3 col-lg-3 col-md-6">
 								<span class="input-group">
 									<span class="input-group-btn">
 										<button type="button" 
@@ -76,7 +57,7 @@
 									</span>
 								</span>			
 							</div>
-							<div class="col-1" style="padding-left:0">
+							<div class="col-1" class="d-none d-md-block">
 								<button type="button" 
 									(click)="open(new_activity, null)"
 									class="btn btn-silver ft-plus"
@@ -84,14 +65,24 @@
 									style="margin-left:10px"
 									>																
 								</button>
-							</div>														
+							</div>																			
 						</div>						
 					</div>					
 				</div>
 			</div>
 			<div class="card-body">	
+				<div class="row  d-block d-lg-none">					
+					<div class="col-12">							
+						<lateral-summary 
+							[branch]="current_branch"
+							[week]="current_week">
+						</lateral-summary>
+
+						<current-activities [branch]="current_branch"></current-activities>
+					</div>
+				</div>
 				<div class="row">					
-					<div class="col-9 col-md-12 col-lg-9 d-none d-md-block" style="border-right:1px solid #ddd;padding-right:1%">
+					<div class="col-12 col-lg-9" style="border-right:1px solid #ddd;padding-right:1%">
 						<table style="width:100%;">
 							<tr *ngFor="let d of domains, let k5 = index">
 								<td>																																		
@@ -108,7 +99,7 @@
 											<td *ngFor="let c of cols, let k3 = index" 
 												align="center" 
 												[ngStyle]="{ 'width': c.width, 
-															'background-color': selected_week.current && k3 == current_week_day + 1 ? 
+															'background-color': selected_week.current && k3 == current_week_day + 4 ? 
 																d.program_id == 3 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)')
 																: d.program_id == 3 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : 'rgb(8, 82, 1)'), 
 															'color': 'white' }"
@@ -125,33 +116,35 @@
 														[ngClass]="c.icon"
 														*ngIf="c.icon != null"
 														[title]="c.description">
-													</i>
-													<span class="d-none d-xl-block">
+													</i>													
+													<span class="d-none d-md-block">
 														{{ c.name }} 
 													</span>	
-													<span class="d-none d-md-block d-xl-none" *ngIf="c.name">
+													<span class="d-block d-md-none" *ngIf="c.name">
 														{{ c.name.substring(0,5) }} 
-													</span>													
+													</span>
 												</div>									
 											</td>
 										</tr>
 										<tr *ngFor="let person of d.daily, let k4 = index">
-											<td>												
+											<td>
 												<person-card 
-													[person]="person"
+													[person]="person" 
 													(onBeginPersonDataTreatment)="begin_person_data_treatment($event)">
-												</person-card>																		
-											</td>																			
+												</person-card>																																												
+											</td>	
 											<td valign="middle" align="center" 										
 												*ngFor="let item of person.dates, let k2 = index" 
 												style="border-right:1px solid grey"
 												[ngClass]=" selected_week.current && k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">																	
-												
+
 												<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-													<compact-incident-listitem														
+													<compact-incident-listitem
+														(incident_treatment_action)="open(content, $event)"
 														[incident]="i"
 													></compact-incident-listitem>																															
-												</ng-template>																																																											
+												</ng-template>																	
+
 											</td>																		
 										</tr>
 									</table>	
@@ -191,8 +184,9 @@
 							<tr *ngFor="let visitant of external_people, let ke = index">					
 								<td>									
 									<person-card 
-										[person]="visitant">
-									</person-card>									
+										[person]="visitant" 
+										(onBeginPersonDataTreatment)="begin_person_data_treatment($event)">
+									</person-card>																				
 								</td>
 								<td>
 									
@@ -201,28 +195,27 @@
 									*ngFor="let item of visitant.dates, let k2 = index" 
 									style="border-right:1px solid grey"
 									[ngClass]=" selected_week.current && k2 == current_week_day ? (ke % 2 == 0 ? 'current2' : 'current') : '' ">
-									
+
 									<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-										<compact-incident-listitem											
-											[incident]="i"
-										></compact-incident-listitem>																															
-									</ng-template>																																								
+										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
+											<compact-incident-listitem
+												(incident_treatment_action)="open(content, $event)"
+												[incident]="i"
+											></compact-incident-listitem>																															
+										</ng-template>																															
+									</ng-template>
+
 								</td>
 							</tr>
 						</table>
-					</div>
-					<div class="col-12 col-md-12 col-lg-3 col-sm-12">
-						
-						<div class="sticky-top" style="top:60px; padding-right:10px;background-color:white">
-							<lateral-summary 
-								[branch]="current_branch"
-								[week]="current_week">
-							</lateral-summary>								
-						</div>
-
-						<current-activities [branch]="current_branch"> </current-activities>
-					</div>
-				</div>
+					</div>										
+					<div class="col-3 d-none d-lg-block">													
+						<lateral-summary 
+							[branch]="current_branch"
+							[week]="current_week">
+						</lateral-summary>
+					</div>						
+				</div>				
 			</div>
 		</div>		
 	</div>
@@ -231,6 +224,6 @@
 <ng-template #new_activity let-c="close" let-d="dismiss">
 	<new-incident-modal [d]="d" [branches]="branches"
 		[current_branch]="current_branch"		
-		[incident_types]="manual_incident_types"			
+		[incident_types]="manual_incident_types"
 	></new-incident-modal>
 </ng-template>

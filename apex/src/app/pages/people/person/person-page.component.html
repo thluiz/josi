@@ -63,13 +63,49 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-12 col-md-6 col-sm-6">
+                                <div class="col-12 col-sm-6 col-md-3">
                                     <label for="birth_date">Nascimento</label> 
                                     <span id="birth_date" 
                                         [ngStyle]="{ 'color': !person.birth_date ? 'red' : null }">
                                         {{ person.birth_date_br || 'Não definido'  }}                                    
+                                        <span *ngIf="person.age">({{ person.age }})</span>
                                     </span>
-                                </div>                                                                                                                                                                                 
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-3">
+                                    <label for="identification">Identidade</label> 
+                                    <span id="identification" 
+                                        [ngStyle]="{ 'color': !person.identification ? 'red' : null }">
+                                        {{ person.identification || 'Não definido'  }}                                                                            
+                                    </span>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-3">
+                                    <label for="identification2">CPF</label> 
+                                    <span id="identification2" 
+                                        [ngStyle]="{ 'color': !person.identification2 ? 'red' : null }">
+                                        {{ person.identification2 || 'Não definido'  }}                                                                            
+                                    </span>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-3">
+                                    <label for="identification2">Profissão</label> 
+                                    <span id="identification2" 
+                                        [ngStyle]="{ 'color': !person.occupation ? 'red' : null }">
+                                        {{ person.occupation || 'Não definido'  }}                                                                            
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="person.passport">
+                                <div class="col-12 col-sm-6 col-md-3 pt-2">
+                                    <label for="passport">Passaporte</label> 
+                                    <span id="passport">
+                                        {{ person.passport  }}                                                                            
+                                    </span>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-3 pt-2">
+                                    <label for="passport_expiration_date">Validade</label> 
+                                    <span id="passport_expiration_date">
+                                        {{ person.passport_expiration_date_br  }}                                                                            
+                                    </span>
+                                </div>
                             </div>                           
                         </div>
                         <div class="col-3 d-none d-sm-block">

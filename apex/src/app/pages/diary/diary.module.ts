@@ -6,14 +6,15 @@ import { PersonStatusLineModule } from 'app/shared/components/person-status-line
 import { CurrentActivitiesModule } from 'app/shared/components/current-activities/current-activities.module';
 import { IncidentAgendaListitemModule } from 'app/shared/components/incident-agenda-listitem/incident-agenda-listitem.module';
 import { LateralSummaryModule } from 'app/shared/components/lateral-summary/lateral-summary.module';
-
-import { DailyRoutingModule } from './daily-routing.module';
+import { DiaryChangeBranchModule } from 'app/pages/diary/shared/change-branch/change-branch.module';
+import { DiaryRoutingModule } from './diary-routing.module';
 
 import { AgendaPageComponent } from './agenda-page/agenda-page.component';
 import { DailyPageComponent } from './daily-page/daily-page.component';
 import { WeeklyPageComponent } from './weekly-page/weekly-page.component';
 import { SumaryPageComponent } from './sumary-page/sumary-page.component';
 import { CurrentActivitiesPageComponent } from './current-activities-page/current-activities-page.component';
+import { DiaryHeaderModule } from 'app/pages/diary/shared/diary-header/diary-header.module';
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
@@ -33,10 +34,11 @@ import { NgbModal,
   } from '@ng-bootstrap/ng-bootstrap';
 import { MarkdownModule } from 'ngx-markdown';
 
+
 @NgModule({
     imports: [
         CommonModule,
-        DailyRoutingModule,                
+        DiaryRoutingModule,                
         FormsModule, 
         ReactiveFormsModule,                        
         NgbDatepickerModule.forRoot(),
@@ -50,6 +52,8 @@ import { MarkdownModule } from 'ngx-markdown';
         PersonStatusLineModule,
         IncidentAgendaListitemModule,
         LateralSummaryModule,
+        DiaryHeaderModule,
+        DiaryChangeBranchModule,
         MarkdownModule.forRoot()        
     ],
     declarations: [       
@@ -60,4 +64,4 @@ import { MarkdownModule } from 'ngx-markdown';
         CurrentActivitiesPageComponent
     ]
 })
-export class DailyModule { }
+export class DiaryModule { }

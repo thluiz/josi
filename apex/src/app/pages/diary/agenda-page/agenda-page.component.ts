@@ -33,7 +33,7 @@ import { CurrentActivitiesComponent } from 'app/shared/components/current-activi
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './agenda-page.component.html',
-  styleUrls: ['../daily.component.scss'],
+  styleUrls: ['../diary.component.scss'],
   providers: [DatePickerI18n,
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
@@ -126,7 +126,8 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getAgendaData();
   }
 
-  branchSelected(id) {        
+  branchSelected(id) {      
+    this.current_branch = id;  
     this.filter_incidents();
     this.show_change_branch = false;
      
