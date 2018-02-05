@@ -34,7 +34,7 @@ export class DiaryHeaderComponent implements OnInit {
   change_display(panel : Panels) {    
     switch(panel.toString()) {
       case Panels.Members.toString(): 
-        this.router.navigateByUrl(`diary/members`);
+        this.router.navigateByUrl(`diary`);
         break;
       case Panels.Managers.toString():         
         this.router.navigateByUrl(`organizations`);
