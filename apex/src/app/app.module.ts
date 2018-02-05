@@ -21,6 +21,7 @@ import { ParameterService } from 'app/services/parameter-service';
 import { UtilsService } from 'app/services/utils-service';
 import { ModalService } from 'app/services/modal-service';
 import { SecurityService } from 'app/services/security-service';
+import { CardService } from 'app/services/card-service';
 
 import { PersonDataTreatmentModalModule } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.module';
 import { IncidentTreatmentModalModule } from 'app/shared/components/incident-treatment-modal/incident-treatment-modal.module';
@@ -29,7 +30,6 @@ import { IncidentCommentsListModalModule } from 'app/shared/components/incident-
 
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SecurityHttpInterceptor } from './httpinterceptor'
-
 
 @NgModule({
     declarations: [
@@ -64,7 +64,8 @@ import { SecurityHttpInterceptor } from './httpinterceptor'
         IncidentService,
         UtilsService,
         ModalService,
-        SecurityService                  
+        SecurityService,
+        CardService                  
     ],
     bootstrap: [AppComponent]
 })

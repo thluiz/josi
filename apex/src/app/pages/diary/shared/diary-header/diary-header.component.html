@@ -8,11 +8,12 @@
 							<select id="view" 
 								[(ngModel)]="current_panel" 																		                            
 								[ngModelOptions]="{standalone: true}"
+								(ngModelChange)="change_display($event)"
 								class="form-control form-control-lg"
 								style="border:0;border-bottom:1px solid silver;font-weight:bold"
 								>			
-								<option value="0" selected>DIÁRIO DE ATIVIDADES - PRATICANTES</option>			
-								<option value="1" selected>DIÁRIO DE ATIVIDADES - Gestores</option>											
+								<option [value]="panels.Members">DIÁRIO DE ATIVIDADES - PRATICANTES</option>			
+								<option [value]="panels.Managers">DIÁRIO DE ATIVIDADES - GESTORES</option>											
 							</select>
 						</div>
 					</div>

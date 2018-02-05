@@ -6,6 +6,7 @@ import { JobsService } from './domain/services/jobs_services';
 import * as people_routes from "./api/routes/people-routes";
 import * as parameters_routes from "./api/routes/parameters-routes";
 import * as incidents_routes from "./api/routes/incidents-routes";
+import * as cards_routes from "./api/routes/cards-routes";
 
 const express = require('express');
 var helmet = require('helmet');
@@ -121,6 +122,7 @@ function getParticipationList(people) {
         people_routes.configure_routes(app, pool);      
         parameters_routes.configure_routes(app, pool);
         incidents_routes.configure_routes(app, pool);
+        cards_routes.configure_routes(app, pool);
         
         app.get("/api/hourly-jobs", async (request, response, next) => {            
             const jobs_service = new JobsService(pool);                

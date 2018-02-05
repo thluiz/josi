@@ -1,0 +1,32 @@
+<style>
+.organization {
+    margin-bottom: 10px;
+}
+
+.organization .header {
+    text-align: center;
+    background-color: grey;
+    font-weight: bold;
+    color: white;
+}
+
+.header .header-controls {
+    float:right;
+    margin-right:10px;
+}
+
+</style>
+<div class="card text-center">    
+    <diary-header panel="managers"></diary-header>    
+
+    <div class="card-body">
+        <div class="row text-left">
+            <div class="col-8">
+                <organization-card                                                         
+                [organization]="organization">
+                </organization-card>
+            </div>
+            <div class="col-4"></div>
+        </div>            
+    </div>
+</div>

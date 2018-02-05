@@ -14,7 +14,8 @@ enum Panels {
 export class DiaryHeaderComponent implements OnInit {  
   
   @Input("panel") initial_panel: string;
-  current_panel;   
+  current_panel;
+  panels = Panels;   
 
   constructor(
     private route: ActivatedRoute,
@@ -30,13 +31,13 @@ export class DiaryHeaderComponent implements OnInit {
     } 
   }
 
-  change_display(panel : Panels) {
-    switch(panel) {
-      case Panels.Members: 
+  change_display(panel : Panels) {    
+    switch(panel.toString()) {
+      case Panels.Members.toString(): 
         this.router.navigateByUrl(`diary/members`);
         break;
-      case Panels.Managers: 
-        this.router.navigateByUrl(`diary/managers`);
+      case Panels.Managers.toString():         
+        this.router.navigateByUrl(`organizations`);
         break;
     }
   }

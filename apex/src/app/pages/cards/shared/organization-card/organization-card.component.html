@@ -1,0 +1,66 @@
+<style>
+	.organization {
+		margin-bottom: 10px;
+	}
+	
+	.organization .header {
+		text-align: center;
+		background-color: grey;
+		font-weight: bold;
+		color: white;
+	}
+	
+	.header .header-controls {
+		float:right;
+	}
+	
+	.header .header-controls a {    
+		margin-right:10px;
+	}
+
+	.organization .body {
+		border:1px solid silver
+	}
+	
+</style>
+
+<div class="organization" *ngIf="organization">
+	<div class="header">
+		{{ organization.title }}
+
+		<div class="header-controls">
+			<a (onclick)="add_task()"
+			class="white"
+			title="Adicionar Tarefa">
+			<i class="fas fa-tasks"></i>
+			</a>
+
+			<a (onclick)="add_project()"
+				class="white"
+				title="Adicionar Projeto">
+				<i class="fas fa-columns"></i>
+			</a>
+
+			<a [routerLink]="['/organizations/detail', organization.id]"
+				class="white"
+				*ngIf="compactView"
+				title="Configurações">
+				<i class="fas fa-cog"></i>
+			</a>                            
+		</div>
+
+	</div>  
+	<div class="body">
+		<div class="row" *ngFor="let p of organization.people">
+			<div class="col-3"
+				style="border-bottom: 1px solid silver"
+				[ngClass]="p.position == 2 ? 'pl-3' : null">
+				<person-card [person]="p"></person-card>
+			</div>
+			<div class="col-9"
+			style="border-bottom: 1px solid silver">
+				
+			</div>
+		</div>
+	</div>                  
+</div>
