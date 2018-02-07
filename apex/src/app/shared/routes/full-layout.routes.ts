@@ -54,6 +54,10 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/people/people.module#PeopleModule'
   },
   {
+    path: 'interested',
+    loadChildren: './pages/people/people.module#PeopleModule'
+  },
+  {
     path: 'under-construction',
     loadChildren: './pages/under-construction/under-construction.module#UnderConstructionModule'
   },
@@ -67,6 +71,10 @@ export const Full_ROUTES: Routes = [
   },
   {
     path: 'organizations/detail/:id',
+    loadChildren: './pages/cards/cards.module#CardsModule'
+  },
+  {
+    path: 'organizations/config/:id',
     loadChildren: './pages/cards/cards.module#CardsModule'
   }
 ];

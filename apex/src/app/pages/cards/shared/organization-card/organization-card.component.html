@@ -1,32 +1,10 @@
-<style>
-	.organization {
-		margin-bottom: 10px;
-	}
-	
-	.organization .header {
-		text-align: center;
-		background-color: grey;
-		font-weight: bold;
-		color: white;
-	}
-	
-	.header .header-controls {
-		float:right;
-	}
-	
-	.header .header-controls a {    
-		margin-right:10px;
-	}
-
-	.organization .body {
-		border:1px solid silver
-	}
-	
-</style>
-
 <div class="organization" *ngIf="organization">
 	<div class="header">
-		{{ organization.title }}
+		<a
+		class="title white"
+		[routerLink]="['/organizations/detail', organization.id]">
+			{{ organization.title }}
+		</a>
 
 		<div class="header-controls">
 			<a (onclick)="add_task()"
@@ -41,7 +19,7 @@
 				<i class="fas fa-columns"></i>
 			</a>
 
-			<a [routerLink]="['/organizations/detail', organization.id]"
+			<a [routerLink]="['/organizations/config', organization.id]"
 				class="white"
 				*ngIf="compactView"
 				title="Configurações">
@@ -51,16 +29,26 @@
 
 	</div>  
 	<div class="body">
-		<div class="row" *ngFor="let p of organization.people">
-			<div class="col-3"
-				style="border-bottom: 1px solid silver"
-				[ngClass]="p.position == 2 ? 'pl-3' : null">
-				<person-card [person]="p"></person-card>
+		<div class="row">
+			<div class="col-12">
+				<table class="table table-striped table-sm">					
+					<colgroup>
+						<col style="width:25%;"/>
+						<col style="width:75%;border-left:1px solid silver"/>
+					</colgroup>
+					<tbody>
+						<tr *ngFor="let p of organization.people">
+							<td							
+							[style.padding-left]="((p.position - 1)*7) + 'px'">
+								<operator-card [person]="p"></operator-card>
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
-			<div class="col-9"
-			style="border-bottom: 1px solid silver">
-				
-			</div>
-		</div>
+		</div>		
 	</div>                  
 </div>

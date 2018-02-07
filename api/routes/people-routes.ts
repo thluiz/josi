@@ -59,6 +59,19 @@ export function configure_routes(app: any, connection_pool: any) {
         }
     });
 
+    app.get("/api/interested/:branch?", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {                               
+        const result = await new sql.Request(pool)        
+        .input('branch', sql.Int, req.params.branch > 0 ? req.params.branch : null)
+        .input('name', sql.VarChar(150), req.query.name)
+        .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)        
+        .input('page', sql.Int, req.query.page > 1 ? req.query.page : 1)
+        .execute(`GetPeopleInterested`);                
+
+        res.send(result.recordset[0]);
+    });
+
     app.get("/api/people/:id", 
     SecurityService.ensureLoggedIn(),
     async (request, response, next) => {                        
@@ -68,7 +81,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
         response.send(result.recordset[0][0]);
     });
-
+    
     /**
      * ROLES
      */

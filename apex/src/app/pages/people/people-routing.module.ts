@@ -2,6 +2,7 @@ import { MembersPanelPageComponent } from './members-panel/members-panel-page.co
 import { ManagementPanelPageComponent } from './management-panel/management-panel-page.component';
 import { PersonPageComponent } from './person/person-page.component';
 import { PersonEditPageComponent } from './edit/person-edit-page.component';
+import { InterestedPanelPageComponent } from 'app/pages/people/interested/interested-panel-page.component';
 
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -42,6 +43,11 @@ let routes: Routes = [
     data: {
       title: 'Detalhe da Pessoa'
     },    
+  },
+  {
+    path: 'interested',
+    component: InterestedPanelPageComponent,
+    data: { },    
   }
 ];
 

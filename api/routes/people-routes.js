@@ -45,6 +45,15 @@ function configure_routes(app, connection_pool) {
             res.status(500).json(error);
         }
     }));
+    app.get("/api/interested/:branch?", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input('branch', sql.Int, req.params.branch > 0 ? req.params.branch : null)
+            .input('name', sql.VarChar(150), req.query.name)
+            .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)
+            .input('page', sql.Int, req.query.page > 1 ? req.query.page : 1)
+            .execute(`GetPeopleInterested`);
+        res.send(result.recordset[0]);
+    }));
     app.get("/api/people/:id", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('id', sql.Int, request.params.id)

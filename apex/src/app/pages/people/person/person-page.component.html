@@ -164,10 +164,11 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 col-sm-12 col-md-12 col-xl-6 pr-3"                        
-                        *ngIf="person.is_active_member || person.is_disciple || person.is_leaving || person.is_inactive_member">
+                        <div class="col-12 col-sm-12 col-md-12 col-xl-6 pr-3">
                             <div class="row">
-                                <div class="col-12">
+                                <div class="col-12"
+                                style="margin-bottom:30px"
+                                *ngIf="person.is_active_member || person.is_disciple || person.is_leaving || person.is_inactive_member">
                                     <div class="row" style="border-bottom: 1px solid black;">
                                         <div class="col-12">
                                             <h6 style="font-weight:bold;margin-bottom:6px"> Membro </h6>
@@ -264,7 +265,7 @@
                             </div>
                             <div class="row">    
                                 <div class="col-12" 
-                                style="margin-top:30px;margin-bottom:30px">
+                                style="margin-bottom:30px">
                                     <person-comment-list                                    
                                     [person]="person">                                
                                     </person-comment-list>

@@ -1,16 +1,16 @@
+import { CommonModule } from "@angular/common";
 import { FormsModule } from '@angular/forms';
 import { OrganizationCardComponent } from './organization-card.component';
 import { NgModule } from '@angular/core';
-import { CommonModule } from "@angular/common";
 import { RouterModule } from '@angular/router';
-import { PersonCardModule } from 'app/shared/components/person-card/person-card.module';
+import { OperatorCardModule } from 'app/shared/components/operator-card/operator-card.module';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         RouterModule,
-        PersonCardModule        
+        OperatorCardModule        
     ],
     declarations: [       
         OrganizationCardComponent

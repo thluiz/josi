@@ -8,12 +8,13 @@
 							<select id="view" 
 								[(ngModel)]="current_panel" 																		                            
 								[ngModelOptions]="{standalone: true}"
+								(ngModelChange)="change_display($event)"
 								class="form-control form-control-lg"
 								style="border:0;border-bottom:1px solid silver;font-weight:bold"
 								>			
-								<option value="0" selected>Painel de Praticantes</option>			
-								<!-- option value="1">Painel de Interessados</option>                                                        
-								<option value="2">Painel de Afastados</option -->                                                        
+								<option value="0">Painel de Praticantes</option>											
+								<option value="1">Painel de Interessados</option>                                                        
+								<!-- option value="2">Painel de Afastados</option -->
 							</select>
 						</div>
 					</div>

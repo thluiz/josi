@@ -7,7 +7,8 @@ import { DailyMonitorDisplayType } from 'app/services/person-service';
 
 @Component({
   selector: 'organization-card',
-  templateUrl: './organization-card.component.html'
+  templateUrl: './organization-card.component.html',
+  styleUrls: ['./organization-card.scss']
 })
 export class OrganizationCardComponent implements OnInit {  
 

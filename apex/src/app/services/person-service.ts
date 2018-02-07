@@ -51,6 +51,10 @@ export class PersonService {
     return this.http.get(this.dataUrl + `/people/members`);    
   }
 
+  getInterestedList(branch, name) {
+    return this.http.get(this.dataUrl + `/interested?branch=${branch}&name=${name}`);    
+  }
+
   getPeopleList() {
     return this.http.get(this.dataUrl + `/people`);    
   }

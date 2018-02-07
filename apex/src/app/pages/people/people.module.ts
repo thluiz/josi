@@ -11,6 +11,7 @@ import { MembersPanelPageComponent } from './members-panel/members-panel-page.co
 import { PersonPageComponent } from 'app/pages/people/person/person-page.component';
 import { PersonEditPageComponent } from 'app/pages/people/edit/person-edit-page.component';
 import { PersonDataTreatmentModalModule } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.module';
+import { InterestedPanelPageComponent } from 'app/pages/people/interested/interested-panel-page.component';
 
 import { PeopleRoutingModule } from './people-routing.module';
 
@@ -29,6 +30,8 @@ import { MarkdownModule } from 'ngx-markdown';
 import { PeopleHeaderModule } from 'app/pages/people/shared/components/people-header/people-header.module';
 import { ChangeMembersViewModule } from 'app/pages/people/shared/components/change-members-view/change-members-view.module';
 import { PersonCommentListModule } from 'app/pages/people/shared/components/person-comment-list/person-comment-list.module';
+import { ContactListitemModule } from 'app/shared/components/contact-listitem/contact-listitem.module';
+
 
 @NgModule({
     imports: [
@@ -46,13 +49,15 @@ import { PersonCommentListModule } from 'app/pages/people/shared/components/pers
         PersonDataTreatmentModalModule,
         PersonCommentListModule,
         PeopleHeaderModule,
-        ChangeMembersViewModule             
+        ChangeMembersViewModule,
+        ContactListitemModule             
     ],
     declarations: [       
         MembersPanelPageComponent,
         ManagementPanelPageComponent,
         PersonPageComponent,
-        PersonEditPageComponent
+        PersonEditPageComponent,
+        InterestedPanelPageComponent
     ]
 })
 export class PeopleModule { }

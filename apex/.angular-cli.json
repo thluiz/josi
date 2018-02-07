@@ -23,7 +23,8 @@
         "assets/css/demo.css",
         "assets/sass/app.scss",
         "styles.css",
-        "../node_modules/prismjs/themes/prism-okaidia.css"
+        "../node_modules/prismjs/themes/prism-okaidia.css",
+        "../node_modules/dragula/dist/dragula.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",

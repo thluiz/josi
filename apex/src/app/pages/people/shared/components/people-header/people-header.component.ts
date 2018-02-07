@@ -34,14 +34,14 @@ export class PeopleHeaderComponent implements OnInit {
   }
 
   change_display(panel : Panels) {
-    switch(panel) {
-      case Panels.Members: 
+    switch(panel.toString()) {
+      case Panels.Members.toString(): 
         this.router.navigateByUrl(`people/members`);
         break;
-      case Panels.Away: 
+      case Panels.Away.toString(): 
         this.router.navigateByUrl(`people/away`);
         break;
-      case Panels.Interested: 
+      case Panels.Interested.toString(): 
         this.router.navigateByUrl(`people/interested`);
         break;
     }
