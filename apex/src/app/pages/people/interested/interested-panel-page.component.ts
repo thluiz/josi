@@ -33,8 +33,8 @@ export class InterestedPanelPageComponent implements OnInit, OnDestroy {
   }  
 
   ngOnInit() {        
-    this.current_branch = this.activatedRoute.snapshot.queryParams["branch"];
-    this.search_name = this.activatedRoute.snapshot.queryParams["name"];
+    this.current_branch = this.activatedRoute.snapshot.queryParams["branch"] || 0;
+    this.search_name = this.activatedRoute.snapshot.queryParams["name"] || "";
 
     this.load_interested_list();
   }
@@ -77,8 +77,6 @@ export class InterestedPanelPageComponent implements OnInit, OnDestroy {
     this.person_list_sub = this.personService.getInterestedList(this.current_branch, this.search_name).subscribe(
       data => {                   
         this.all_people = data;
-
-        console.log(this.all_people);
 
         this.apply_filters();
       }

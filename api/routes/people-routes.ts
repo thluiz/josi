@@ -69,7 +69,9 @@ export function configure_routes(app: any, connection_pool: any) {
         .input('page', sql.Int, req.query.page > 1 ? req.query.page : 1)
         .execute(`GetPeopleInterested`);                
 
-        res.send(result.recordset[0]);
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response);
     });
 
     app.get("/api/people/:id", 
