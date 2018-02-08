@@ -40,6 +40,7 @@ import { Subscription } from 'rxjs';
 
 export class PersonDataTreatmentModalComponent implements OnInit {  
   person;
+  branches = [];
   missing_data = [];
   contacts = [];
   principal_contacts = [];
@@ -101,9 +102,11 @@ export class PersonDataTreatmentModalComponent implements OnInit {
     Observable.zip(
       this.personService.getPersonMissingData(this.person_id()),
       this.personService.getPersonContacts(this.person_id()),
-      (missing_data, contacts) => {
+      this.parameterService.getActiveBranches(),
+      (missing_data, contacts, branches) => {
         this.missing_data = missing_data as any;
         this.load_contacts(contacts);
+        this.branches = branches;
 
         if(this.contacts.length > 0 && this.principal_contacts.length == 0) {
           this.show_only_principal_contacts = false;
@@ -184,6 +187,14 @@ export class PersonDataTreatmentModalComponent implements OnInit {
     this.personService.getData(this.person_id()).subscribe((data) => {
         let person_data = data  as any;
         person_data.occupation = this.person.occupation;
+        this.personService.savePersonData(person_data).subscribe();
+    });
+  }
+
+  save_branch() {
+    this.personService.getData(this.person_id()).subscribe((data) => {
+        let person_data = data  as any;
+        person_data.branch_id = this.person.branch_id;        
         this.personService.savePersonData(person_data).subscribe();
     });
   }

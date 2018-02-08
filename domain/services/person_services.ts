@@ -36,9 +36,9 @@ export class PersonService {
         return result;    
     }
 
-    public async update_person_data(person) {          
+    public async update_person_data(person) {                  
         return await new sql.Request(this.sql_pool)
-                                .input('id', sql.Int, person.id)                                                                
+                                .input('id', sql.Int, person.id)                                                                                                             
                                 .input('name', sql.VarChar(200), person.name)
                                 .input('birth_date', sql.VarChar(10), person.birth_date)
                                 .input('admission_date', sql.VarChar(10), person.admission_date)

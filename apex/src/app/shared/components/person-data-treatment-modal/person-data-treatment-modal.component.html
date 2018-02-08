@@ -31,6 +31,30 @@
             </div>
         </div>
         <div class="row" *ngFor="let ms of missing_data">
+            <div class="col-12" *ngIf="ms.missing_code == 'NO_BRANCH_DEFINED'">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <label for="person_birth_date">Núcleo</label>                                                									
+                            <div class="input-group">							
+                                <select id="branch" 
+                                    [(ngModel)]="person.branch_id"                                     
+                                    class="form-control"
+                                    [ngModelOptions]="{standalone: true}"                            
+                                    >			                                    
+                                    <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
+                                </select>
+                                
+                                <button type="button" class="btn btn-success" 
+                                    (click)="save_branch();">
+                                    <i class="icon-check"></i>
+                                    Salvar
+                                </button>	
+                            </div>
+                        </div>
+                    </div>
+                </div>                 
+            </div>
             <div class="col-12" *ngIf="ms.missing_code == 'NO_BIRTH_DATE'">
                 <div class="row">
                     <div class="col-10">
