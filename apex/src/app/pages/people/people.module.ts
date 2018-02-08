@@ -3,15 +3,13 @@ import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { PersonCardModule } from './../../shared/components/person-card/person-card.module';
-import { PersonStatusLineModule } from 'app/shared/components/person-status-line/person-status-line.module';
-import { PersonContactListModule } from 'app/pages/people/shared/components/person-contact-list/person-contact-list.module';
-
+import { PeopleServiceProviderPageComponent } from './people-service-provider/people-service-provider-page.component';
+import { InterestedPanelPageComponent } from './interested/interested-panel-page.component';
+import { PersonEditPageComponent } from './edit/person-edit-page.component';
+import { PersonPageComponent } from './person/person-page.component';
+import { PeopleAwayPageComponent } from './people-away/people-away-panel-page.component';
 import { ManagementPanelPageComponent } from './management-panel/management-panel-page.component';
 import { MembersPanelPageComponent } from './members-panel/members-panel-page.component';
-import { PersonPageComponent } from 'app/pages/people/person/person-page.component';
-import { PersonEditPageComponent } from 'app/pages/people/edit/person-edit-page.component';
-import { PersonDataTreatmentModalModule } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.module';
-import { InterestedPanelPageComponent } from 'app/pages/people/interested/interested-panel-page.component';
 
 import { PeopleRoutingModule } from './people-routing.module';
 
@@ -31,6 +29,9 @@ import { PeopleHeaderModule } from 'app/pages/people/shared/components/people-he
 import { ChangeMembersViewModule } from 'app/pages/people/shared/components/change-members-view/change-members-view.module';
 import { PersonCommentListModule } from 'app/pages/people/shared/components/person-comment-list/person-comment-list.module';
 import { ContactListitemModule } from 'app/shared/components/contact-listitem/contact-listitem.module';
+import { PersonDataTreatmentModalModule } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.module';
+import { PersonStatusLineModule } from 'app/shared/components/person-status-line/person-status-line.module';
+import { PersonContactListModule } from 'app/pages/people/shared/components/person-contact-list/person-contact-list.module';
 
 
 @NgModule({
@@ -57,7 +58,9 @@ import { ContactListitemModule } from 'app/shared/components/contact-listitem/co
         ManagementPanelPageComponent,
         PersonPageComponent,
         PersonEditPageComponent,
-        InterestedPanelPageComponent
+        InterestedPanelPageComponent,
+        PeopleAwayPageComponent,
+        PeopleServiceProviderPageComponent
     ]
 })
 export class PeopleModule { }

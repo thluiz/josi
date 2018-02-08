@@ -59,15 +59,45 @@ export function configure_routes(app: any, connection_pool: any) {
         }
     });
 
-    app.get("/api/interested/:branch?", 
+    app.get("/api/interested", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {                               
         const result = await new sql.Request(pool)        
-        .input('branch', sql.Int, req.params.branch > 0 ? req.params.branch : null)
+        .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
         .input('name', sql.VarChar(150), req.query.name)
         .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)        
         .input('page', sql.Int, req.query.page > 1 ? req.query.page : 1)
         .execute(`GetPeopleInterested`);                
+
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response);
+    });
+
+    app.get("/api/people-away", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {                               
+        const result = await new sql.Request(pool)        
+        .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
+        .input('name', sql.VarChar(150), req.query.name)
+        .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)        
+        .input('page', sql.Int, req.query.page > 1 ? req.query.page : 1)
+        .execute(`GetPeopleAway`);                
+
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response);
+    });
+
+    app.get("/api/service-providers", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {                               
+        const result = await new sql.Request(pool)        
+        .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
+        .input('name', sql.VarChar(150), req.query.name)
+        .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)        
+        .input('page', sql.Int, req.query.page > 1 ? req.query.page : 1)
+        .execute(`GetPeopleServiceProvider`);                
 
         let response = result.recordset[0];
 

@@ -55,6 +55,14 @@ export class PersonService {
     return this.http.get(this.dataUrl + `/interested?branch=${branch || 0}&name=${name || ""}`);    
   }
 
+  getPeopleAwayList(branch, name) {    
+    return this.http.get(this.dataUrl + `/people-away?branch=${branch || 0}&name=${name || ""}`);    
+  }
+
+  getServiceProvidersList(branch, name) {    
+    return this.http.get(this.dataUrl + `/service-providers?branch=${branch || 0}&name=${name || ""}`);    
+  }
+
   getPeopleList() {
     return this.http.get(this.dataUrl + `/people`);    
   }

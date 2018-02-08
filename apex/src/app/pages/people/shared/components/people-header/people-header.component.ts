@@ -5,7 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 enum Panels {
   Members = 0,
   Interested = 1,
-  Away = 2   
+  Away = 2,
+  ServiceProvider = 3   
 }
 
 @Component({
@@ -30,7 +31,10 @@ export class PeopleHeaderComponent implements OnInit {
       this.current_panel = Panels.Away;
     } else if(this.initial_panel == "interested") {        
       this.current_panel = Panels.Interested;
+    } else if(this.initial_panel == "service_providers") {        
+      this.current_panel = Panels.ServiceProvider;
     }
+    
   }
 
   change_display(panel : Panels) {
@@ -43,6 +47,9 @@ export class PeopleHeaderComponent implements OnInit {
         break;
       case Panels.Interested.toString(): 
         this.router.navigateByUrl(`people/interested`);
+        break;
+      case Panels.ServiceProvider.toString(): 
+        this.router.navigateByUrl(`people/service_provider`);
         break;
     }
   }

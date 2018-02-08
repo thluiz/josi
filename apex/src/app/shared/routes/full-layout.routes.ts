@@ -54,7 +54,15 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/people/people.module#PeopleModule'
   },
   {
-    path: 'interested',
+    path: 'people/interested',
+    loadChildren: './pages/people/people.module#PeopleModule'
+  },  
+  {
+    path: 'people/away',
+    loadChildren: './pages/people/people.module#PeopleModule'
+  },
+  {
+    path: 'people/service-provider',
     loadChildren: './pages/people/people.module#PeopleModule'
   },
   {
