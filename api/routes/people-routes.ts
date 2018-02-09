@@ -59,6 +59,20 @@ export function configure_routes(app: any, connection_pool: any) {
         }
     });
 
+    app.post("/api/person", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {                        
+        try {        
+            const result = await person_service.register_new_person(
+                req.body.person, SecurityService.getUserFromRequest(req)
+            );
+
+            res.send(result.recordset[0][0]);
+        } catch(error) {
+            res.status(500).json(error);
+        }
+    });
+
     app.get("/api/interested", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {                               

@@ -1,17 +1,14 @@
+import { ModalService, ModalType } from 'app/services/modal-service';
 import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PersonService } from 'app/services/person-service';
-import { NgbDateParserFormatter, NgbDatepickerI18n, NgbModal, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './interested-panel-page.component.html',
-  styleUrls: ['../people-customizations.scss'],
-  providers: [DatePickerI18n,
-    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
-    {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
+  styleUrls: ['../people-customizations.scss']  
 })
 export class InterestedPanelPageComponent implements OnInit, OnDestroy {
   people: any;    
@@ -27,8 +24,7 @@ export class InterestedPanelPageComponent implements OnInit, OnDestroy {
   constructor(private personService: PersonService, 
     private activatedRoute: ActivatedRoute,
     private router: Router, 
-    private modalService: NgbModal,
-    private datePickerConfig: NgbDatepickerConfig) {      
+    private modalService: ModalService) {      
   
   }  
 
@@ -67,6 +63,10 @@ export class InterestedPanelPageComponent implements OnInit, OnDestroy {
     if(event.keyCode == 13) {
       this.filter_people();
     }
+  }
+
+  open_new_person_modal() {
+    this.modalService.open(ModalType.AddPerson, null);
   }
 
   load_interested_list() {    

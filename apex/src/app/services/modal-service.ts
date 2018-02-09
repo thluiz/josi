@@ -7,7 +7,8 @@ export enum ModalType{
     IncidentTreatment,
     AddPersonComment,
     AddIncidentComment,
-    IncidentCommentList
+    IncidentCommentList,
+    AddPerson
 }
 
 export interface IModalOpening {

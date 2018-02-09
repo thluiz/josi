@@ -1,3 +1,4 @@
+import { NewPersonModalComponent } from './shared/components/new-person-modal/new-person-modal.component';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 
@@ -19,6 +20,7 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild(IncidentTreatmentModalComponent) incidentTreatmentModal : IncidentTreatmentModalComponent;
     @ViewChild(AddCommentModalComponent) addCommentModal : AddCommentModalComponent;
     @ViewChild(IncidentCommentsListModalComponent) incidentCommentsList : IncidentCommentsListModalComponent;
+    @ViewChild(NewPersonModalComponent) newPersonModal : NewPersonModalComponent;
 
     constructor(private modalService: ModalService) {
 
@@ -46,7 +48,9 @@ export class AppComponent implements OnInit, OnDestroy {
                         break;
                     case ModalType.IncidentCommentList:
                         this.incidentCommentsList.open(data.parameters);
-                        break;                        
+                        break;  
+                    case ModalType.AddPerson:
+                        this.newPersonModal.open();
                 }
             });
     }

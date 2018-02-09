@@ -30,6 +30,7 @@ import { IncidentCommentsListModalModule } from 'app/shared/components/incident-
 
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SecurityHttpInterceptor } from './httpinterceptor'
+import { NewPersonModalModule } from 'app/shared/components/new-person-modal/new-person-modal.module';
 
 @NgModule({
     declarations: [
@@ -41,12 +42,13 @@ import { SecurityHttpInterceptor } from './httpinterceptor'
         BrowserAnimationsModule,
         AppRoutingModule,
         SharedModule,
+        NgbModule.forRoot(),                        
+        HttpClientModule,
         PersonDataTreatmentModalModule,
         IncidentTreatmentModalModule,
         AddCommentModalModule,
         IncidentCommentsListModalModule,
-        NgbModule.forRoot(),                        
-        HttpClientModule,
+        NewPersonModalModule,                
         //BrowserModule,
         //FormsModule, 
         //JsonpModule

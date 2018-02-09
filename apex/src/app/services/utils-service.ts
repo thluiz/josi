@@ -17,6 +17,13 @@ export class UtilsService {
         return `${date.year}-${date.month}-${date.day}`;
     }
 
+    translate_date_time_to_server(date, time) {        
+        if(!date || !date.year || !time)
+            return null;
+
+        return `${date.year}-${date.month}-${date.day} ${time.hour}:${time.minute}`;
+    }
+
     sanitize(url:string){
         return this.sanitizer.bypassSecurityTrustUrl(url);
     }    

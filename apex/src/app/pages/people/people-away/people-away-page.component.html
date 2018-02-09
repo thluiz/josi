@@ -1,9 +1,27 @@
-
-
+<float-action-center></float-action-center>
 <div class="card">
     <people-header panel="away"></people-header>
     <div class="card-body">
-        <div class="row">                        
+        <div class="row">
+            <div class="col-5 col-md-2 pt-2 pb-0">
+                <div class="form-body">
+                    <div class="form-group">
+                        <label for="branch">Núcleo</label>
+                        <select id="branch" 
+                            [(ngModel)]="current_branch" 
+                            (ngModelChange)="filter_people()"									                            
+                            class="form-control form-control-sm"
+                            [ngModelOptions]="{standalone: true}"                            
+                            >			
+                            <option value="0">Todos</option>			
+                            <option value="1">Barra</option>
+                            <option value="2">Méier</option>
+                            <option value="3">Ipanema</option>
+                            <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
+                        </select>
+                    </div>                            
+                </div>                                                                  
+            </div>                        
             <div class="col-7 col-md-3 pt-2 pb-0">
                 <div class="form-body">
                     <label for="search_name">Nome</label>
@@ -63,7 +81,7 @@
                             </td>
                             <td>
                                 <ng-template ngFor let-pc [ngForOf]="p.commentaries" let-k=index let-m=first>                                    
-                                    <p>{{ pc.comment }}</p>																												
+                                    <p style="margin-bottom:0">{{ pc.comment }}</p>																												
                                 </ng-template>   
                             </td>
 						</tr>

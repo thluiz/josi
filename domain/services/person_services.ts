@@ -35,7 +35,7 @@ export class PersonService {
 
         return result;    
     }
-
+    
     public async update_person_data(person) {                  
         return await new sql.Request(this.sql_pool)
                                 .input('id', sql.Int, person.id)                                                                                                             
@@ -56,6 +56,29 @@ export class PersonService {
                                 .input('domain_id', sql.Int, person.domain_id > 0 ? person.domain_id : null )
                                 .input('program_id', sql.Int, person.program_id > 0 ? person.program_id : null )
                                 .execute(`UpdatePersonData`);
+    }
+
+    public async register_new_person(person, user) {                  
+        return await new sql.Request(this.sql_pool)                                                                                                                                         
+                                .input('role_id', sql.Int, person.role_id > 0 ? person.role_id : null )                        
+                                .input('name', sql.VarChar(200), person.name)
+                                .input('branch_id', sql.Int, person.branch_id > 0 ? person.branch_id : null )
+                                
+                                .input('birth_date', sql.VarChar(10), person.birth_date)                                                                                                
+                                .input('identification', sql.VarChar(50), person.identification)
+                                .input('identification2', sql.VarChar(50), person.identification2)                                
+                                .input('occupation', sql.VarChar(100), person.occupation)                                                                                                                                
+
+                                .input('next_incident_type', sql.Int, person.next_incident_type > 0 ? person.next_incident_type : null )
+                                .input('next_incident_date', sql.VarChar(10), person.next_incident_date && person.next_incident_date.length > 10 ? person.next_incident_date : null)                                                                                                
+                                .input('next_incident_description', sql.NVarChar(sql.MAX), person.next_incident_description)
+
+                                .input('initial_contact', sql.NVarChar(sql.MAX), person.initial_contact)
+                                .input('comment', sql.NVarChar(sql.MAX), person.comment)
+
+                                .input('user_id', sql.Int, user.id )
+
+                                .execute(`RegisterNewPerson`);
     }
 
     async remove_schedule(id) {

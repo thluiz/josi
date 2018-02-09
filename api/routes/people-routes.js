@@ -45,6 +45,15 @@ function configure_routes(app, connection_pool) {
             res.status(500).json(error);
         }
     }));
+    app.post("/api/person", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = yield person_service.register_new_person(req.body.person, security_services_1.SecurityService.getUserFromRequest(req));
+            res.send(result.recordset[0][0]);
+        }
+        catch (error) {
+            res.status(500).json(error);
+        }
+    }));
     app.get("/api/interested", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)

@@ -32,6 +32,7 @@ import { ContactListitemModule } from 'app/shared/components/contact-listitem/co
 import { PersonDataTreatmentModalModule } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.module';
 import { PersonStatusLineModule } from 'app/shared/components/person-status-line/person-status-line.module';
 import { PersonContactListModule } from 'app/pages/people/shared/components/person-contact-list/person-contact-list.module';
+import { FloatActionCenterModule } from 'app/shared/components/float-action-center/float-action-center.module';
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import { PersonContactListModule } from 'app/pages/people/shared/components/pers
         PersonCommentListModule,
         PeopleHeaderModule,
         ChangeMembersViewModule,
-        ContactListitemModule             
+        ContactListitemModule,
+        FloatActionCenterModule           
     ],
     declarations: [       
         MembersPanelPageComponent,

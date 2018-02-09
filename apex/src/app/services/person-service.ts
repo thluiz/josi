@@ -20,6 +20,15 @@ export interface IContact {
   details :string;
 }
 
+export enum PersonEventType {
+  person_added
+}
+
+export interface IPersonEvent {
+  type: PersonEventType,
+  data: any
+}
+
 @Injectable()
 export class PersonService {  
   private dataUrl = environment.api_url;    
@@ -32,6 +41,9 @@ export class PersonService {
 
   private comment_changes = new Subject<any>();
   commentChanges$  = this.comment_changes.asObservable();  
+
+  private person_events = new Subject<IPersonEvent>();
+  personEvents$  = this.person_events.asObservable();
 
   constructor(private http:HttpClient) { }  
   
@@ -94,6 +106,18 @@ export class PersonService {
           person
         }).do((data) => {          
           this.person_changes.next(data)
+        });
+  }
+
+  registerPerson(person) {          
+    return this.http
+        .post(this.dataUrl + `/person`, {
+          person
+        }).do((data) => {          
+          this.person_events.next({ 
+            type: PersonEventType.person_added,
+            data
+          })
         });
   }
 

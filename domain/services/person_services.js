@@ -65,6 +65,25 @@ class PersonService {
                 .execute(`UpdatePersonData`);
         });
     }
+    register_new_person(person, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield new sql.Request(this.sql_pool)
+                .input('role_id', sql.Int, person.role_id > 0 ? person.role_id : null)
+                .input('name', sql.VarChar(200), person.name)
+                .input('branch_id', sql.Int, person.branch_id > 0 ? person.branch_id : null)
+                .input('birth_date', sql.VarChar(10), person.birth_date)
+                .input('identification', sql.VarChar(50), person.identification)
+                .input('identification2', sql.VarChar(50), person.identification2)
+                .input('occupation', sql.VarChar(100), person.occupation)
+                .input('next_incident_type', sql.Int, person.next_incident_type > 0 ? person.next_incident_type : null)
+                .input('next_incident_date', sql.VarChar(10), person.next_incident_date && person.next_incident_date.length > 10 ? person.next_incident_date : null)
+                .input('next_incident_description', sql.NVarChar(sql.MAX), person.next_incident_description)
+                .input('initial_contact', sql.NVarChar(sql.MAX), person.initial_contact)
+                .input('comment', sql.NVarChar(sql.MAX), person.comment)
+                .input('user_id', sql.Int, user.id)
+                .execute(`RegisterNewPerson`);
+        });
+    }
     remove_schedule(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield new sql.Request(this.sql_pool)
