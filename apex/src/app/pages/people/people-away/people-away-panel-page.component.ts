@@ -1,9 +1,13 @@
-import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+
 import { PersonService } from 'app/services/person-service';
+import { ParameterService } from 'app/services/parameter-service';
+
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbModal, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
-import { ActivatedRoute, Router } from '@angular/router';
+
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -28,6 +32,7 @@ export class PeopleAwayPageComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private router: Router, 
     private modalService: NgbModal,
+    private parameterService: ParameterService,
     private datePickerConfig: NgbDatepickerConfig) {      
   
   }  
@@ -35,6 +40,10 @@ export class PeopleAwayPageComponent implements OnInit, OnDestroy {
   ngOnInit() {        
     this.current_branch = this.activatedRoute.snapshot.queryParams["branch"] || 0;
     this.search_name = this.activatedRoute.snapshot.queryParams["name"] || "";
+    
+    this.parameterService.getActiveBranches().subscribe((branches) => {
+      this.branches = branches;
+    });
 
     this.load_people_away_list();
   }

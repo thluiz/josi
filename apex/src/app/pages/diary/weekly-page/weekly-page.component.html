@@ -12,21 +12,12 @@
 	}
 </style>
 				
-<div class="sticky-top" style="bottom:10px;z-index:100000">
-	<div style="position:absolute;float:right;right:10px;" class="d-block d-md-none">
-		<button type="button" 
-			(click)="open(new_activity, null)"
-			class="btn btn-silver ft-plus"
-			title="Registrar Atividade"
-			style="margin-left:10px"
-			>																
-		</button>
-	</div>
-</div>
+<float-action-center></float-action-center>
+
 <div class="row">
 	<div class="col-12">		
 		<div class="card">
-			<div class="sticky-top" style="background-color:white;width:100%;padding:10px;z-index:10000">
+			<div style="background-color:white;width:100%;padding:10px;">
 				<div class="row">
 					<div class="col-12">
 						<diary-header panel="members"></diary-header>
@@ -61,15 +52,6 @@
 										</button>
 									</span>
 								</span>			
-							</div>
-							<div class="col-1" style="padding-left:0">
-								<button type="button" 
-									(click)="open(new_activity, null)"
-									class="btn btn-silver ft-plus"
-									title="Registrar Atividade"
-									style="margin-left:10px"
-									>																
-								</button>
 							</div>														
 						</div>						
 					</div>					
@@ -123,9 +105,7 @@
 										</tr>
 										<tr *ngFor="let person of d.daily, let k4 = index">
 											<td>												
-												<person-card 
-													[person]="person">
-												</person-card>																		
+												<person-card [person]="person"></person-card>																		
 											</td>																			
 											<td valign="middle" align="center" 										
 												*ngFor="let item of person.dates, let k2 = index" 
@@ -133,9 +113,7 @@
 												[ngClass]=" selected_week.current && k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">																	
 												
 												<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-													<compact-incident-listitem														
-														[incident]="i"
-													></compact-incident-listitem>																															
+													<compact-incident-listitem [incident]="i" ></compact-incident-listitem>																															
 												</ng-template>																																																											
 											</td>																		
 										</tr>
@@ -175,9 +153,7 @@
 							</tr>
 							<tr *ngFor="let visitant of external_people, let ke = index">					
 								<td>									
-									<person-card 
-										[person]="visitant">
-									</person-card>									
+									<person-card [person]="visitant"></person-card>									
 								</td>
 								<td>
 									
@@ -188,9 +164,7 @@
 									[ngClass]=" selected_week.current && k2 == current_week_day ? (ke % 2 == 0 ? 'current2' : 'current') : '' ">
 									
 									<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-										<compact-incident-listitem											
-											[incident]="i"
-										></compact-incident-listitem>																															
+										<compact-incident-listitem [incident]="i" ></compact-incident-listitem>																															
 									</ng-template>																																								
 								</td>
 							</tr>
@@ -198,7 +172,7 @@
 					</div>
 					<div class="col-12 col-md-12 col-lg-3 col-sm-12">
 						
-						<div class="sticky-top" style="top:60px; padding-right:10px;background-color:white">
+						<div class="sticky-top" style="top:120px; padding-right:10px;background-color:white">
 							<lateral-summary 
 								[branch]="current_branch"
 								[week]="current_week">
@@ -212,10 +186,3 @@
 		</div>		
 	</div>
 </div>
-
-<ng-template #new_activity let-c="close" let-d="dismiss">
-	<new-incident-modal [d]="d" [branches]="branches"
-		[current_branch]="current_branch"		
-		[incident_types]="manual_incident_types"			
-	></new-incident-modal>
-</ng-template>

@@ -1,14 +1,4 @@
-<div class="sticky-top" style="top:30px;z-index:10000">
-	<div style="position:absolute;float:right;right:10px;">
-		<button type="button" 
-			(click)="open(new_activity, null)"
-			class="btn btn-silver ft-plus"
-			title="Registrar Atividade"
-			style="margin-left:10px"
-			>																
-		</button>
-	</div>
-</div>	
+<float-action-center></float-action-center>
 
 <div class="row">
 	<div class="col-12">		
@@ -55,11 +45,3 @@
 		</div>		
 	</div>
 </div>
-
-
-<ng-template #new_activity let-c="close" let-d="dismiss">
-	<new-incident-modal [d]="d" [branches]="branches"
-		[current_branch]="current_branch"		
-		[incident_types]="manual_incident_types"
-	></new-incident-modal>
-</ng-template>	

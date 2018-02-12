@@ -1,4 +1,4 @@
-<div class="text-left incident_button">																											
+<div class="text-left incident_button" *ngIf="incident">																											
     <a (click)="begin_incident_treatment(incident)"         														
         style="color:rgb(182, 221, 202)"
         [style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "

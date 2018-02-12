@@ -1,3 +1,4 @@
+import { ParameterService } from './../../../services/parameter-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -24,6 +25,7 @@ export class InterestedPanelPageComponent implements OnInit, OnDestroy {
   constructor(private personService: PersonService, 
     private activatedRoute: ActivatedRoute,
     private router: Router, 
+    private parameterService: ParameterService,
     private modalService: ModalService) {      
   
   }  
@@ -31,6 +33,9 @@ export class InterestedPanelPageComponent implements OnInit, OnDestroy {
   ngOnInit() {        
     this.current_branch = this.activatedRoute.snapshot.queryParams["branch"] || 0;
     this.search_name = this.activatedRoute.snapshot.queryParams["name"] || "";
+    this.parameterService.getActiveBranches().subscribe((branches) => {
+      this.branches = branches;
+    });
 
     this.load_interested_list();
   }

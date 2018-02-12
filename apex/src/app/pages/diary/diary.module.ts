@@ -7,14 +7,16 @@ import { CurrentActivitiesModule } from 'app/shared/components/current-activitie
 import { IncidentAgendaListitemModule } from 'app/shared/components/incident-agenda-listitem/incident-agenda-listitem.module';
 import { LateralSummaryModule } from 'app/shared/components/lateral-summary/lateral-summary.module';
 import { DiaryChangeBranchModule } from 'app/pages/diary/shared/change-branch/change-branch.module';
-import { DiaryRoutingModule } from './diary-routing.module';
+import { FloatActionCenterModule } from 'app/shared/components/float-action-center/float-action-center.module';
+import { DiaryHeaderModule } from 'app/pages/diary/shared/diary-header/diary-header.module';
 
 import { AgendaPageComponent } from './agenda-page/agenda-page.component';
 import { DailyPageComponent } from './daily-page/daily-page.component';
 import { WeeklyPageComponent } from './weekly-page/weekly-page.component';
 import { SumaryPageComponent } from './sumary-page/sumary-page.component';
 import { CurrentActivitiesPageComponent } from './current-activities-page/current-activities-page.component';
-import { DiaryHeaderModule } from 'app/pages/diary/shared/diary-header/diary-header.module';
+
+import { DiaryRoutingModule } from './diary-routing.module';
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
@@ -54,7 +56,8 @@ import { MarkdownModule } from 'ngx-markdown';
         LateralSummaryModule,
         DiaryHeaderModule,
         DiaryChangeBranchModule,
-        MarkdownModule.forRoot()        
+        MarkdownModule.forRoot(),   
+        FloatActionCenterModule
     ],
     declarations: [       
         DailyPageComponent,

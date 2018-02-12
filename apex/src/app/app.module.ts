@@ -1,3 +1,4 @@
+import { NewIncidentModalModule } from './shared/components/new-incident-modal/new-incident-modal.module';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -48,7 +49,8 @@ import { NewPersonModalModule } from 'app/shared/components/new-person-modal/new
         IncidentTreatmentModalModule,
         AddCommentModalModule,
         IncidentCommentsListModalModule,
-        NewPersonModalModule,                
+        NewPersonModalModule,
+        NewIncidentModalModule                
         //BrowserModule,
         //FormsModule, 
         //JsonpModule

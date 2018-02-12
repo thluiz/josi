@@ -32,4 +32,8 @@ export class FloatActionCenterComponent implements OnInit {
   open_new_person_modal() {
     this.modalService.open(ModalType.AddPerson, null);
   }
+
+  open_new_activity_modal() {
+    this.modalService.open(ModalType.AddIncident, null);
+  }
 }

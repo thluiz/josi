@@ -4,6 +4,7 @@ import { PersonService } from 'app/services/person-service';
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbModal, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ParameterService } from 'app/services/parameter-service';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -28,6 +29,7 @@ export class PeopleServiceProviderPageComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private router: Router, 
     private modalService: NgbModal,
+    private parameterService: ParameterService,
     private datePickerConfig: NgbDatepickerConfig) {      
   
   }  
@@ -35,6 +37,10 @@ export class PeopleServiceProviderPageComponent implements OnInit, OnDestroy {
   ngOnInit() {        
     this.current_branch = this.activatedRoute.snapshot.queryParams["branch"] || 0;
     this.search_name = this.activatedRoute.snapshot.queryParams["name"] || "";
+
+    this.parameterService.getActiveBranches().subscribe((branches) => {
+      this.branches = branches;
+    });
 
     this.load_service_provider_list();
   }

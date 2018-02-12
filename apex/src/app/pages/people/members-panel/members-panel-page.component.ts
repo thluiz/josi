@@ -4,6 +4,7 @@ import { PersonService } from 'app/services/person-service';
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbModal, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ParameterService } from 'app/services/parameter-service';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -16,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class MembersPanelPageComponent implements OnInit, OnDestroy {
   
   programs: any;  
+  branches: any;
   private person_list_sub: Subscription;  
 
   private contact_changes_subscriber: Subscription;
@@ -25,6 +27,7 @@ export class MembersPanelPageComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router, 
     private modalService: NgbModal,
+    private parameterService: ParameterService,
     private datePickerConfig: NgbDatepickerConfig) {      
   
   }  
@@ -38,6 +41,10 @@ export class MembersPanelPageComponent implements OnInit, OnDestroy {
     this.contact_changes_subscriber = this.personService.contactChanges$    
     .subscribe((data) => {            
       this.load_members_list();
+    });
+
+    this.parameterService.getActiveBranches().subscribe((branches) => {
+      this.branches = branches;
     });
 
     this.load_members_list(); 

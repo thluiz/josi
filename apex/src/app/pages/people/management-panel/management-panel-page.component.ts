@@ -1,3 +1,4 @@
+import { ParameterService } from 'app/services/parameter-service';
 import { Subscription } from 'rxjs/Subscription';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PersonService } from 'app/services/person-service';
@@ -29,6 +30,7 @@ export class ManagementPanelPageComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router, 
     private modalService: NgbModal,
+    private parameterService: ParameterService,
     private datePickerConfig: NgbDatepickerConfig) {      
   
   }  
@@ -36,7 +38,15 @@ export class ManagementPanelPageComponent implements OnInit, OnDestroy {
   ngOnInit() {    
     this.router_sub = this.route.params.subscribe(params => {      
       this.current_branch = params['branch'] || 0;            
-      this.filters = params['filter'] || 1;            
+      this.filters = params['filter'] || 1;           
+      
+      this.parameterService.getActiveBranches().subscribe((branches) => {
+        this.branches = branches;
+      });
+
+      this.parameterService.getActiveBranches().subscribe((branches) => {
+        this.branches = branches;
+      });
 
       this.load_members_list();
     });    

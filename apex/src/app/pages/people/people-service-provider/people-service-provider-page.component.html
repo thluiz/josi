@@ -14,10 +14,7 @@
                             class="form-control form-control-sm"
                             [ngModelOptions]="{standalone: true}"                            
                             >			
-                            <option value="0">Todos</option>			
-                            <option value="1">Barra</option>
-                            <option value="2">Méier</option>
-                            <option value="3">Ipanema</option>
+                            <option value="0">Todos</option>
                             <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
                         </select>
                     </div>                            

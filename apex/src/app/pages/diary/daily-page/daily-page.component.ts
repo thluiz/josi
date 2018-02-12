@@ -123,17 +123,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     this.current_week += modifier;
     this.getMonitorData();
   }
-    
-  open(content, incident){
-      this.current_incident = incident;            
-      this.modalService.open(content).result.then((result) => {          
-          this.current_incident = null;                      
-          this.closeResult = `Closed with: ${result}`;
-      }, (reason) => {
-          console.log(reason);
-      });
-  }
-    
+        
   getMonitorData() {
 
     if(!this.personService) {

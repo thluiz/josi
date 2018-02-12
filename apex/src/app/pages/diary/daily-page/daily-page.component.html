@@ -7,17 +7,7 @@
 	}		
 </style>
 			
-<div class="sticky-top" style="bottom:10px;z-index:10000">
-	<div style="position:absolute;float:right;right:10px;" class="d-block d-md-none">
-		<button type="button" 
-			(click)="open(new_activity, null)"
-			class="btn btn-silver ft-plus"
-			title="Registrar Atividade"
-			style="margin-left:10px"
-			>																
-		</button>
-	</div>
-</div>			
+<float-action-center></float-action-center>			
 <div class="row">
 	<div class="col-12">						
 		<div class="card">			
@@ -56,15 +46,6 @@
 										</button>
 									</span>
 								</span>			
-							</div>
-							<div class="col-1" class="d-none d-md-block">
-								<button type="button" 
-									(click)="open(new_activity, null)"
-									class="btn btn-silver ft-plus"
-									title="Registrar Atividade"
-									style="margin-left:10px"
-									>																
-								</button>
 							</div>																			
 						</div>						
 					</div>					
@@ -128,10 +109,7 @@
 										</tr>
 										<tr *ngFor="let person of d.daily, let k4 = index">
 											<td>
-												<person-card 
-													[person]="person" 
-													(onBeginPersonDataTreatment)="begin_person_data_treatment($event)">
-												</person-card>																																												
+												<person-card [person]="person"></person-card>																																												
 											</td>	
 											<td valign="middle" align="center" 										
 												*ngFor="let item of person.dates, let k2 = index" 
@@ -139,10 +117,7 @@
 												[ngClass]=" selected_week.current && k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">																	
 
 												<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-													<compact-incident-listitem
-														(incident_treatment_action)="open(content, $event)"
-														[incident]="i"
-													></compact-incident-listitem>																															
+													<compact-incident-listitem [incident]="i"></compact-incident-listitem>																															
 												</ng-template>																	
 
 											</td>																		
@@ -183,10 +158,7 @@
 							</tr>
 							<tr *ngFor="let visitant of external_people, let ke = index">					
 								<td>									
-									<person-card 
-										[person]="visitant" 
-										(onBeginPersonDataTreatment)="begin_person_data_treatment($event)">
-									</person-card>																				
+									<person-card [person]="visitant"></person-card>																				
 								</td>
 								<td>
 									
@@ -198,10 +170,7 @@
 
 									<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
 										<ng-template ngFor let-i [ngForOf]="item" let-k=index let-m=first>																
-											<compact-incident-listitem
-												(incident_treatment_action)="open(content, $event)"
-												[incident]="i"
-											></compact-incident-listitem>																															
+											<compact-incident-listitem [incident]="i"></compact-incident-listitem>																															
 										</ng-template>																															
 									</ng-template>
 
@@ -220,10 +189,3 @@
 		</div>		
 	</div>
 </div>
-
-<ng-template #new_activity let-c="close" let-d="dismiss">
-	<new-incident-modal [d]="d" [branches]="branches"
-		[current_branch]="current_branch"		
-		[incident_types]="manual_incident_types"
-	></new-incident-modal>
-</ng-template>

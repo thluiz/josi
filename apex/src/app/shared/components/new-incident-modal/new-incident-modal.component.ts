@@ -1,11 +1,12 @@
+import { ParameterService } from 'app/services/parameter-service';
 import { Observable } from 'rxjs/Observable';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
-import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { PersonService } from 'app/services/person-service';
 import { IncidentService } from 'app/services/incident-service';
-import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/delay';
@@ -36,17 +37,20 @@ import { switchMap } from 'rxjs/operators';
 
 export class NewInicidentModalComponent implements OnInit {  
 
-  new_incident: any;
-
   @Input() current_branch: any;
-  @Input() d: any;
-  @Input() branches: any;
-  @Input() incident_types:any;  
 
-  constructor(private datePickerConfig: NgbDatepickerConfig,     
-    private el: ElementRef, 
+  new_incident: any;
+  modalRef;
+  branches: any;
+  incident_types:any;  
+
+  @ViewChild('add_incident_modal') add_incident_modal: ElementRef;  
+  
+  constructor(private datePickerConfig: NgbDatepickerConfig,         
+    private ngbModalService: NgbModal, 
     private personService: PersonService, 
-    private incidentService: IncidentService) {
+    private incidentService: IncidentService, 
+    private parameterService: ParameterService) {
    
       datePickerConfig.firstDayOfWeek = 7
   }
@@ -61,6 +65,29 @@ export class NewInicidentModalComponent implements OnInit {
     this.new_incident.tmp_combo_type = null;
     this.new_incident.children_type = null;
     this.validate_new_event();
+  }
+
+  open() {          
+    Observable.zip(
+      this.parameterService.getActiveBranches(),            
+      this.parameterService.getIncidentTypes(),     
+      (branches, incident_types : any[]) => {
+        this.branches = branches;        
+        this.incident_types = incident_types.filter(i => !i.automatically_generated);
+
+        this.open_modal(this.add_incident_modal, true);        
+      }
+    ).subscribe();                   
+  }
+
+  private open_modal(content, on_close_action = false) {
+    this.modalRef = this.ngbModalService.open(content);
+
+    this.modalRef.result.then((result) => {                                  
+      
+    }, (reason) => {        
+        console.log(reason);
+    });
   }
 
   searching_people;

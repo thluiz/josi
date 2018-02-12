@@ -7,6 +7,7 @@ import { PersonDataTreatmentModalComponent } from 'app/shared/components/person-
 import { IncidentTreatmentModalComponent } from 'app/shared/components/incident-treatment-modal/incident-treatment-modal.component';
 import { AddCommentModalComponent, CommentType } from 'app/shared/components/add-comment-modal/add-comment-modal.component';
 import { IncidentCommentsListModalComponent } from 'app/shared/components/incident-comments-list-modal/incident-comments-list-modal.component';
+import { NewInicidentModalComponent } from 'app/shared/components/new-incident-modal/new-incident-modal.component';
 
 @Component({
     selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild(AddCommentModalComponent) addCommentModal : AddCommentModalComponent;
     @ViewChild(IncidentCommentsListModalComponent) incidentCommentsList : IncidentCommentsListModalComponent;
     @ViewChild(NewPersonModalComponent) newPersonModal : NewPersonModalComponent;
+    @ViewChild(NewInicidentModalComponent) newIncidentModal : NewInicidentModalComponent;
 
     constructor(private modalService: ModalService) {
 
@@ -51,6 +53,9 @@ export class AppComponent implements OnInit, OnDestroy {
                         break;  
                     case ModalType.AddPerson:
                         this.newPersonModal.open();
+                        break;
+                    case ModalType.AddIncident:
+                        this.newIncidentModal.open();
                 }
             });
     }
