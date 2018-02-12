@@ -102,9 +102,9 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
       });
 
     this.incident_added_subscriber = this.incidentService.incidentAdd$        
-      .subscribe((next) => {      
-        this.getAgendaData();
-      });   
+    .subscribe((next) => {      
+      this.getAgendaData();
+    });   
           
       
     this.securityService.getCurrentUserData().subscribe((user) => {
