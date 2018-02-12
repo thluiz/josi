@@ -25,6 +25,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SecurityService } from 'app/services/security-service';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -63,8 +64,9 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   private incident_added_subscriber : Subscription;
   private incident_changes_subscriber: Subscription;
 
-  constructor(public personService: PersonService, 
-              public incidentService: IncidentService, 
+  constructor(private personService: PersonService, 
+              private incidentService: IncidentService, 
+              private securityService: SecurityService,
               private modalService: NgbModal, 
               private datePickerConfig: NgbDatepickerConfig,
               private route: ActivatedRoute,
@@ -87,8 +89,11 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     }); 
   }
   
-  ngOnInit() {
-    this.getMonitorData();       
+  ngOnInit() {    
+    this.securityService.getCurrentUserData().subscribe((user) => {
+      this.current_branch = user.default_branch_id || 0;      
+      this.getMonitorData();  
+    });   
   }
 
   ngOnDestroy() {    

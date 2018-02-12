@@ -8,6 +8,7 @@ import { NgbDateParserFormatter, NgbDatepickerI18n, NgbModal, NgbDatepickerConfi
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 
 import { Subscription } from 'rxjs/Subscription';
+import { SecurityService } from 'app/services/security-service';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -28,7 +29,9 @@ export class PeopleAwayPageComponent implements OnInit, OnDestroy {
 
   private person_list_sub: Subscription;  
 
-  constructor(private personService: PersonService, 
+  constructor(
+    private personService: PersonService, 
+    private securityService: SecurityService,
     private activatedRoute: ActivatedRoute,
     private router: Router, 
     private modalService: NgbModal,
@@ -45,7 +48,10 @@ export class PeopleAwayPageComponent implements OnInit, OnDestroy {
       this.branches = branches;
     });
 
-    this.load_people_away_list();
+    this.securityService.getCurrentUserData().subscribe((user) => {      
+      this.current_branch = this.activatedRoute.snapshot.queryParams["branch"] || user.default_branch_id || 0;
+      this.load_people_away_list();
+    });     
   }
   
   ngOnDestroy() {

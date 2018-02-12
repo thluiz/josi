@@ -9,19 +9,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class PersonCardComponent implements OnInit {  
 
   @Input() person: any;
-  @Output() onBeginPersonDataTreatment = new EventEmitter<any>();
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router) {
+  constructor() {
             
   }
 
   ngOnInit() {
     
-  }
-
-  begin_person_data_treatment() {
-    this.onBeginPersonDataTreatment.emit(this.person);
   }
 }

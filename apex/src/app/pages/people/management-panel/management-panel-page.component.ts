@@ -5,6 +5,7 @@ import { PersonService } from 'app/services/person-service';
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbModal, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SecurityService } from 'app/services/security-service';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -26,7 +27,9 @@ export class ManagementPanelPageComponent implements OnInit, OnDestroy {
   private person_list_sub: Subscription;  
   private router_sub : any;
 
-  constructor(private personService: PersonService, 
+  constructor(
+    private personService: PersonService, 
+    private securityService: SecurityService, 
     private route: ActivatedRoute,
     private router: Router, 
     private modalService: NgbModal,
@@ -48,7 +51,10 @@ export class ManagementPanelPageComponent implements OnInit, OnDestroy {
         this.branches = branches;
       });
 
-      this.load_members_list();
+      this.securityService.getCurrentUserData().subscribe((user) => {      
+        this.current_branch = params['branch'] || user.default_branch_id || 0;
+        this.load_members_list();
+      });       
     });    
   }
   

@@ -10,5 +10,9 @@ export const CONTENT_ROUTES: Routes = [
     {
         path: 'login_error',
         loadChildren: './pages/login_error/login-error.module#LoginErrorModule'
-    } 
+    },
+    {
+        path: 'default_route',
+        loadChildren: './pages/default-route/default-route.module#DefaultRouteModule'
+    }
 ];
