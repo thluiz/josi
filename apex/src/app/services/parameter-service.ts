@@ -18,6 +18,7 @@ export class ParameterService {
     private programs$ = new ReplaySubject(1);
     private domains$ = new ReplaySubject(1);
     
+    private personCardPositions$ = new ReplaySubject(1);
 
     constructor(private http:HttpClient) { }  
 
@@ -51,6 +52,10 @@ export class ParameterService {
 
     getContactTypes(forceRefresh?: boolean) {        
         return this.cache_results(this.contact_types$, `/contact_types`, forceRefresh);
+    }
+
+    getPersonCardPositions(forceRefresh?: boolean) {
+        return this.cache_results(this.personCardPositions$, `/person_card_positions`, forceRefresh);                      
     }
 
     private cache_results(observable : ReplaySubject<any>, endpoint:string, forceRefresh?: boolean) {

@@ -21,5 +21,25 @@ export class CardService {
   getOrganization(id) {
     return this.http.get(this.dataUrl + `/organizations/${id}`);
   }
+
+  saveOrganizationChart(id, chart: [{person_id: number, position: number, position_description: string}]) {
+    let requests = [];
+    for(var i = 0; i < chart.length; i++) {
+      let current_person = chart[i];
+      let person_card = { person_card : {
+          card_id: id,
+          person_id: current_person.person_id,
+          position_id: current_person.position,
+          position_description: current_person.position_description,
+          order: i
+        }
+      }
+
+      requests[requests.length] = this.http.post(this.dataUrl + `/person_cards/`, person_card);
+    }
+
+    return Observable.forkJoin(requests);
+  }
+
 }
 

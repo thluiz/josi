@@ -5,7 +5,7 @@ import { CardService } from '../../domain/services/card_services';
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
 
-    const person_service = new CardService(pool);    
+    const card_service = new CardService(pool);    
 
     app.get("/api/organizations", 
     SecurityService.ensureLoggedIn(),
@@ -13,6 +13,19 @@ export function configure_routes(app: any, connection_pool: any) {
 
         const result = await new sql.Request(pool)            
         .execute(`GetOrganizations`);                
+        
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response);
+
+    });
+
+    app.get("/api/person_card_positions", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+
+        const result = await new sql.Request(pool)            
+        .query(`select * from person_card_position where active = 1 for json path`);                
         
         let response = result.recordset[0];
 
@@ -32,6 +45,15 @@ export function configure_routes(app: any, connection_pool: any) {
 
         res.send(response);
 
+    });
+
+    app.post("/api/person_cards", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+
+        let result = await card_service.save_person_card(req.body.person_card);
+
+        res.send({ sucess: true});
     });
 
 }

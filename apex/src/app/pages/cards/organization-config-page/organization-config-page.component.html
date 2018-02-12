@@ -17,108 +17,126 @@
                 </h3>
 
                 <div class="row">
-                    <div class="col-4 text-center" >
-                        <div class='drag-drop-container text-left' [dragula]='"third-bag"' [dragulaOptions]="dragulaOptions">
-                            <div *ngFor="let p of organization.people">
-                                <div class="row">
-                                    <div 
-                                        style="padding-right:0"
-                                        class="col-3 d-none d-lg-block text-right">
-                                        <img alt="{{ p.name }}"                                        
-                                        class="img-border" 
-                                        src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_img }}" 											
-                                        style="width:100%;cursor:pointer"																												
-                                        [style.border-color]="p.is_leaving || p.is_inactive_member ? 'orange' : null " 
-                                        [style.opacity]="p.is_leaving || p.is_inactive_member ? '0.5' : null " 
-                                        *ngIf="p.avatar_img && p.avatar_img.length > 0" />
-                                        
-                                        <img                                         
-                                        class="img-border" 
-                                        src="/assets/img/portrait/avatars/avatar-08.png" 											
-                                        style="width:100%;cursor:pointer"																												
-                                        [style.border-color]="p.is_leaving || p.is_inactive_member ? 'orange' : null " 
-                                        [style.opacity]="p.is_leaving || p.is_inactive_member ? '0.5' : null " 
-                                        *ngIf="!p.avatar_img || p.avatar_img.length <= 0" /> 
-                                    </div>								
-                                    <div 
-                                    class="col-12 col-lg-9">
-                                        <div class="row" 
-                                            style="cursor:pointer;">
-                                            <div class="col-12 d-block d-xl-none"
-                                            [style.color]="p.is_leaving || p.is_inactive_member ? 'grey' : 'black'">
-                                                <a
-                                                [style.color]="p.is_leaving || p.is_inactive_member ? 'grey' : 'black'"                                                
-                                                >
-                                                {{ p.name }}														                                                
-                                                </a>			
-                                                <button type="button" class="btn btn-silver btn-sm" 
-                                                    style="margin: 0; padding:2px; line-height:10px"			                                        
-                                                    *ngIf="!p.archive"
-                                                    (click)="p.archive = true">
-                                                    <i class="fas fa-times"></i>                                        
-                                                </button>                                    
-                                                <button type="button" class="btn btn-danger btn-sm" 
-                                                    *ngIf="p.archive"
-                                                    style="margin:0;padding:2px;line-height:10px"			                                        
-                                                    (click)="remove_person(p)">
-                                                    <i class="fas fa-times"></i>                                        
-                                                </button>
-                                                <button type="button" class="btn btn-secondary btn-sm" 
-                                                    *ngIf="p.archive"
-                                                    style="margin:0;padding:2px;line-height:10px"			                                        
-                                                    (click)="p.archive = false">
-                                                    <i class="icon-action-undo"></i>                                        
-                                                </button>												
-                                        </div>													
-                                        <div class="col-12 d-none d-xl-block pl-1"
-                                        [style.color]="p.is_leaving || p.is_inactive_member ? 'grey' : 'black'">
-                                            <a
-                                            [style.color]="p.is_leaving || p.is_inactive_member ? 'grey' : 'black'">
-                                            {{ p.name }}                                                                                        
-                                            </a>		
-                                            
-                                            <button type="button" class="btn btn-silver btn-sm" 
-                                                style="margin: 0; padding:2px; line-height:10px"			                                        
-                                                *ngIf="!p.archive"
-                                                (click)="p.archive = true">
-                                                <i class="fas fa-times"></i>                                        
-                                            </button>                                    
-                                            <button type="button" class="btn btn-danger btn-sm" 
-                                                *ngIf="p.archive"
-                                                style="margin:0;padding:2px;line-height:10px"			                                        
-                                                (click)="remove_person(p)">
-                                                <i class="fas fa-times"></i>                                        
-                                            </button>
-                                            <button type="button" class="btn btn-secondary btn-sm" 
-                                                *ngIf="p.archive"
-                                                style="margin:0;padding:2px;line-height:10px"			                                        
-                                                (click)="p.archive = false">
-                                                <i class="icon-action-undo"></i>                                        
-                                            </button>
-                                        </div>													
-                                    </div>												
-                                    <div class="row" style="font-size:12px;">	
-                                        <div class="col-10 pl-1">                                                
-                                            <div class="input-group">                                                
-                                                <input class="form-control"
-                                                    placeholder="cargo"
-                                                    name="person_position_description"                                                     
-                                                    [(ngModel)]="p.position_description" />
-                                                <button type="button" 
-                                                    class="input-group-addon"
-                                                    class="btn btn-silver btn-sm" 
-                                                    style="margin:0;"
-                                                    (click)="save_person_position(p);">                                                                                       
-                                                    <i class="fas fa-save"></i>
-                                                </button>
-                                            </div>                                                                                                
-                                        </div>
-                                    </div>
-                                </div>	
-                            </div>                            
-                        </div>
+                    <div class="col-6" >   
+                        <div class="row">
+                            <div class="col-12">
+                                <div class='drag-drop-container text-left' 
+                                    [dragula]='"third-bag"' 
+                                    [dragulaOptions]="dragulaOptions"
+                                    [dragulaModel]="organization.people">
+                                    <div *ngFor="let p of organization.people">
+                                        <div class="row" style="margin-bottom:10px">
+                                            <div 
+                                                style="padding-right:0"
+                                                class="col-3 d-none d-lg-block text-right">
+                                                <img alt="{{ p.name }}"                                        
+                                                class="img-border" 
+                                                src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_img }}" 											
+                                                style="width:100%;cursor:pointer"																												
+                                                [style.border-color]="p.is_leaving || p.is_inactive_member ? 'orange' : null " 
+                                                [style.opacity]="p.is_leaving || p.is_inactive_member ? '0.5' : null " 
+                                                *ngIf="p.avatar_img && p.avatar_img.length > 0" />
+                                                
+                                                <img                                         
+                                                class="img-border" 
+                                                src="/assets/img/portrait/avatars/avatar-08.png" 											
+                                                style="width:100%;cursor:pointer"																												
+                                                [style.border-color]="p.is_leaving || p.is_inactive_member ? 'orange' : null " 
+                                                [style.opacity]="p.is_leaving || p.is_inactive_member ? '0.5' : null " 
+                                                *ngIf="!p.avatar_img || p.avatar_img.length <= 0" /> 
+                                            </div>								
+                                            <div 
+                                            class="col-12 col-lg-9">
+                                                <div class="row" 
+                                                    style="cursor:pointer;">
+                                                    <div class="col-12 d-block d-xl-none"
+                                                    [style.color]="p.is_leaving || p.is_inactive_member ? 'grey' : 'black'">
+                                                        <a
+                                                        [style.color]="p.is_leaving || p.is_inactive_member ? 'grey' : 'black'"                                                
+                                                        >
+                                                        {{ p.name }}														                                                
+                                                        </a>
+        
+                                                        <!--button type="button" class="btn btn-silver btn-sm" 
+                                                            style="margin: 0; padding:2px; line-height:10px"			                                        
+                                                            *ngIf="!p.archive"
+                                                            (click)="p.archive = true">
+                                                            <i class="fas fa-times"></i>                                        
+                                                        </button>                                    
+                                                        <button type="button" class="btn btn-danger btn-sm" 
+                                                            *ngIf="p.archive"
+                                                            style="margin:0;padding:2px;line-height:10px"			                                        
+                                                            (click)="remove_person(p)">
+                                                            <i class="fas fa-times"></i>                                        
+                                                        </button>
+                                                        <button type="button" class="btn btn-secondary btn-sm" 
+                                                            *ngIf="p.archive"
+                                                            style="margin:0;padding:2px;line-height:10px"			                                        
+                                                            (click)="p.archive = false">
+                                                            <i class="icon-action-undo"></i>                                        
+                                                        </button -->												
+                                                    </div>													
+                                                    <div class="col-12 d-none d-xl-block pl-1"
+                                                    [style.color]="p.is_leaving || p.is_inactive_member ? 'grey' : 'black'">
+                                                        <a
+                                                        [style.color]="p.is_leaving || p.is_inactive_member ? 'grey' : 'black'">
+                                                        {{ p.name }}                                                                                        
+                                                        </a>		
+                                                        
+                                                        <!-- button type="button" class="btn btn-silver btn-sm" 
+                                                            style="margin: 0; padding:2px; line-height:10px"			                                        
+                                                            *ngIf="!p.archive"
+                                                            (click)="p.archive = true">
+                                                            <i class="fas fa-times"></i>                                        
+                                                        </button>                                    
+                                                        <button type="button" class="btn btn-danger btn-sm" 
+                                                            *ngIf="p.archive"
+                                                            style="margin:0;padding:2px;line-height:10px"			                                        
+                                                            (click)="remove_person(p)">
+                                                            <i class="fas fa-times"></i>                                        
+                                                        </button>
+                                                        <button type="button" class="btn btn-secondary btn-sm" 
+                                                            *ngIf="p.archive"
+                                                            style="margin:0;padding:2px;line-height:10px"			                                        
+                                                            (click)="p.archive = false">
+                                                            <i class="icon-action-undo"></i>                                        
+                                                        </button -->
+                                                    </div>	
+                                                </div>												                                            
+                                                <div class="row">	
+                                                    <div class="col-12 pl-1">                                                                                                                                                                                                                                                
+                                                        <select [(ngModel)]="p.position" 								                            
+                                                            class="form-control form-control-sm"
+                                                            [ngModelOptions]="{standalone: true}">			                                                        			                            
+                                                            <option *ngFor="let cp of card_positions" [value]="cp.id">{{cp.name}}</option>
+                                                        </select>                                                                                                                             
+                                                    </div>
+                                                </div>												
+                                                <div class="row">	
+                                                    <div class="col-12 pl-1">                                                                                                                             
+                                                        <input class="form-control form-control-sm"
+                                                            placeholder="Descrição da Posição"
+                                                            name="person_position_description"                                                     
+                                                            [(ngModel)]="p.position_description" />                                                                             
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>	
+                                    </div>                            
+                                </div>  
+                            </div>
+                        </div>                     
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <button type="button" class="btn btn-success" 
+                                    (click)="save_organization_chart()"
+                                    style="margin-right:10px">
+                                        <i class="icon-check"></i> Salvar Organograma
+                                </button>              
+                            </div>
+                        </div>                        
                     </div>
-                </div>  
+                </div>
             </div>
             <div class="col-4">
 

@@ -6,4 +6,14 @@ export class CardService {
     constructor(sql_pool) {
         this.sql_pool = sql_pool;
     }
+
+    async save_person_card(person_card) {
+        return await new sql.Request(this.sql_pool)
+            .input('card_id', sql.Int, person_card.card_id)
+            .input('person_id', sql.Int, person_card.person_id)
+            .input('position_id', sql.Int, person_card.position_id)            
+            .input('position_description', sql.VarChar(100), person_card.position_description)            
+            .input('order', sql.Int, person_card.order)
+            .execute(`SavePersonCard`);
+    }
 }

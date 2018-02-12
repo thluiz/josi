@@ -1,3 +1,4 @@
+import { ParameterService } from 'app/services/parameter-service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CardService } from 'app/services/card-service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,20 +14,23 @@ export class OrganizationConfigPageComponent implements OnInit, OnDestroy {
   private id;
   private sub;
   organization;
+  card_positions;
   
   constructor(private cardService: CardService, 
+              private parameterService: ParameterService,
               private route: ActivatedRoute,
               private router: Router,
               private dragulaService: DragulaService) {       
                 
     dragulaService.drop.subscribe((value) => {
-      console.log(`drop: ${value[0]}`);
+      console.log(value);
       this.onDrop(value.slice(1));
     });                
   }  
   
   private onDrop(args: any): void {
     let [e] = args;    
+    console.log(e);
   }
 
   public dragulaOptions: any = {
@@ -40,9 +44,11 @@ export class OrganizationConfigPageComponent implements OnInit, OnDestroy {
       this.cardService.getOrganization(this.id).subscribe((data : any) => {
         this.organization = data;
       });
-    });   
-    
-    
+
+      this.parameterService.getPersonCardPositions().subscribe((data : any) => {
+        this.card_positions = data.filter(p => !p.hierarquical);
+      });
+    });           
   }
   
   ngOnDestroy() {
@@ -53,8 +59,11 @@ export class OrganizationConfigPageComponent implements OnInit, OnDestroy {
 
   }
 
-  save_person_position(person_card) {
-
+  save_organization_chart() {    
+    this.cardService.saveOrganizationChart(this.id, this.organization.people).subscribe((data) => {
+      console.log(data);
+      console.log("ok!");
+    });    
   }
 
   remove_person(person_card) {
