@@ -67,7 +67,8 @@ export class NewInicidentModalComponent implements OnInit {
     this.validate_new_event();
   }
 
-  open() {          
+  open(initial_state = {}) {      
+    this.reset_new_incident(initial_state);    
     Observable.zip(
       this.parameterService.getActiveBranches(),            
       this.parameterService.getIncidentTypes(),     
@@ -195,11 +196,15 @@ export class NewInicidentModalComponent implements OnInit {
     .subscribe();        
   } 
 
-  reset_new_incident() {    
+  reset_new_incident(initial_state?) {    
+    if(!initial_state) {
+      initial_state = {}
+    }
+
     let date = new Date();
 
     this.new_incident = {
-      branch_id: this.current_branch,
+      branch_id: initial_state.branch_id,
       contact_text: "",
       date: {
         year: date.getFullYear(),

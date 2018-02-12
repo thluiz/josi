@@ -22,6 +22,7 @@ export class InterestedPanelPageComponent implements OnInit, OnDestroy {
   search_name = "";
 
   private person_list_sub: Subscription;  
+  private interested_added_subscriber: Subscription;
 
   constructor(private personService: PersonService,
     private securityService: SecurityService, 
@@ -44,6 +45,12 @@ export class InterestedPanelPageComponent implements OnInit, OnDestroy {
       
       this.load_interested_list();
     });     
+
+    this.interested_added_subscriber = this.personService.personActions$     
+    .filter((p) => p.data != null && p.data.is_interested && (!this.current_branch || p.data.branch_id == this.current_branch))   
+    .subscribe((next) => {      
+      this.load_interested_list();
+    });
   }
   
   ngOnDestroy() {

@@ -20,12 +20,12 @@ export interface IContact {
   details :string;
 }
 
-export enum PersonEventType {
-  person_added
+export enum PersonActions {
+  ADD
 }
 
 export interface IPersonEvent {
-  type: PersonEventType,
+  type: PersonActions,
   data: any
 }
 
@@ -42,8 +42,8 @@ export class PersonService {
   private comment_changes = new Subject<any>();
   commentChanges$  = this.comment_changes.asObservable();  
 
-  private person_events = new Subject<IPersonEvent>();
-  personEvents$  = this.person_events.asObservable();
+  private person_actions = new Subject<IPersonEvent>();
+  personActions$  = this.person_actions.asObservable();
 
   constructor(private http:HttpClient) { }  
   
@@ -105,7 +105,7 @@ export class PersonService {
         .post(this.dataUrl + `/people`, {
           person
         }).do((data) => {          
-          this.person_changes.next(data)
+          this.person_changes.next(data);
         });
   }
 
@@ -114,10 +114,10 @@ export class PersonService {
         .post(this.dataUrl + `/person`, {
           person
         }).do((data) => {          
-          this.person_events.next({ 
-            type: PersonEventType.person_added,
+          this.person_actions.next({ 
+            type: PersonActions.ADD,
             data
-          })
+          });
         });
   }
 

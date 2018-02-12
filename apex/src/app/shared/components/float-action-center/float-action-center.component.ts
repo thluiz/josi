@@ -17,6 +17,7 @@ export enum CommentType {
   styleUrls: ['../../../../assets/customizations.scss'],  
 })
 export class FloatActionCenterComponent implements OnInit {  
+  @Input() branch;
   
   constructor(private modalService: ModalService) {   
   }
@@ -30,10 +31,10 @@ export class FloatActionCenterComponent implements OnInit {
   }
   
   open_new_person_modal() {
-    this.modalService.open(ModalType.AddPerson, null);
+    this.modalService.open(ModalType.AddPerson, {branch_id: this.branch});
   }
 
   open_new_activity_modal() {
-    this.modalService.open(ModalType.AddIncident, null);
+    this.modalService.open(ModalType.AddIncident, {branch_id: this.branch});
   }
 }

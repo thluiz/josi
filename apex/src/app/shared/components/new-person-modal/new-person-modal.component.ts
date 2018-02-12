@@ -45,14 +45,13 @@ export class NewPersonModalComponent implements OnInit {
   branches = [];
   incident_types = [];  
   roles = [];
-  person : any = {};
+  person : any = {};  
   modalRef : NgbModalRef;
 
   @ViewChild('add_person_modal') add_person_modal: ElementRef;
 
   constructor(
-    private datePickerConfig: NgbDatepickerConfig,     
-    private el: ElementRef, 
+    private datePickerConfig: NgbDatepickerConfig,          
     private ngbModalService: NgbModal,
     private personService: PersonService, 
     private incidentService: IncidentService,
@@ -65,11 +64,11 @@ export class NewPersonModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.reset_person();        
+    this.reset_person({});        
   }  
 
-  open() {      
-    this.reset_person();
+  open(initial_state = {}) {      
+    this.reset_person(initial_state);
     Observable.zip(
       this.parameterService.getActiveBranches(),      
       this.parameterService.getRoles(), 
@@ -138,9 +137,10 @@ export class NewPersonModalComponent implements OnInit {
     });
   }
 
-  private reset_person(){
+  private reset_person(initial_state :any = {}){
     let date = new Date();
     this.person = {
+      branch_id: initial_state.branch_id,
       next_incident_dt: {
         day: date.getDate(),
         month: date.getMonth() + 1,

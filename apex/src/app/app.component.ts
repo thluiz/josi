@@ -52,10 +52,10 @@ export class AppComponent implements OnInit, OnDestroy {
                         this.incidentCommentsList.open(data.parameters);
                         break;  
                     case ModalType.AddPerson:
-                        this.newPersonModal.open();
+                        this.newPersonModal.open(data.parameters);
                         break;
                     case ModalType.AddIncident:
-                        this.newIncidentModal.open();
+                        this.newIncidentModal.open(data.parameters);
                 }
             });
     }
