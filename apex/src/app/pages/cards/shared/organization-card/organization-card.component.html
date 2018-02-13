@@ -10,18 +10,19 @@
 			<a (onclick)="add_task()"
 			class="white"
 			title="Adicionar Tarefa">
+			<i class="ft-plus"></i>
 			<i class="fas fa-tasks"></i>
 			</a>
 
 			<a (onclick)="add_project()"
 				class="white"
 				title="Adicionar Projeto">
+				<i class="ft-plus"></i>
 				<i class="fas fa-columns"></i>
 			</a>
 
 			<a [routerLink]="['/organizations/config', organization.id]"
-				class="white"
-				*ngIf="compactView"
+				class="white"				
 				title="Configurações">
 				<i class="fas fa-cog"></i>
 			</a>                            
@@ -39,7 +40,7 @@
 					<tbody>
 						<tr *ngFor="let p of organization.people">
 							<td							
-							[style.padding-left]="((p.position - 1)*7) + 'px'">
+							[style.padding-left]="((p.position - 1)*15) + 'px'">
 								<operator-card [person]="p"></operator-card>
 							</td>
 							<td>

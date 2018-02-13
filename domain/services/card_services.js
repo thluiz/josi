@@ -18,10 +18,18 @@ class CardService {
             return yield new sql.Request(this.sql_pool)
                 .input('card_id', sql.Int, person_card.card_id)
                 .input('person_id', sql.Int, person_card.person_id)
-                .input('position_id', sql.Int, person_card.position_id)
-                .input('position_description', sql.VarChar(100), person_card.position_description)
-                .input('order', sql.Int, person_card.order)
+                .input('position_id', sql.Int, person_card.position_id || 4)
+                .input('position_description', sql.VarChar(100), person_card.position_description || null)
+                .input('order', sql.Int, person_card.order || -1)
                 .execute(`SavePersonCard`);
+        });
+    }
+    remove_person_card(person_card) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield new sql.Request(this.sql_pool)
+                .input('card_id', sql.Int, person_card.card_id)
+                .input('person_id', sql.Int, person_card.person_id)
+                .execute(`RemovePersonCard`);
         });
     }
 }

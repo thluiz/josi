@@ -59,10 +59,7 @@ export class IncidentService {
             date += ` ${incident.time.hour}:${incident.time.minute}`;
         }        
 
-        try {
-            console.log(incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(","));
-            console.log(incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(","));
-
+        try {            
             const result = await new sql.Request(this.sql_pool)
             .input('description', sql.VarChar(sql.MAX), incident.description)
             .input('people', sql.VarChar(sql.MAX), incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(","))
@@ -72,9 +69,7 @@ export class IncidentService {
             .input('value', sql.Decimal(12,2), incident.value)
             .input('new_people', sql.VarChar(sql.MAX), incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(","))
             .execute(`RegisterNewIncident`);
-
-
-
+            
             return result;
         } catch(ex) {
             console.log(ex);

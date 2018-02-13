@@ -30,8 +30,7 @@ export class PersonCommentListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.comment_changes_subscriber = this.personService.commentChanges$
-      .filter((data) => { 
-        console.log(data); 
+      .filter((data) => {         
         return data != null && data.person.id == this.person.id
       })
       .subscribe((data) => {            

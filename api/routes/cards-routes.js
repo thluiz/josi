@@ -26,6 +26,15 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
+    app.get("/api/operators", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .query(`select * 
+                from vwPerson v 
+                where is_operator = 1 or is_director = 1 or is_manager = 1 
+                order by name for json path`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
     app.get("/api/organizations/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input("organization_id", sql.Int, req.params.id)
@@ -35,6 +44,10 @@ function configure_routes(app, connection_pool) {
     }));
     app.post("/api/person_cards", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield card_service.save_person_card(req.body.person_card);
+        res.send({ sucess: true });
+    }));
+    app.post("/api/person_cards/delete", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield card_service.remove_person_card(req.body.person_card);
         res.send({ sucess: true });
     }));
 }

@@ -28,8 +28,7 @@ export class PersonStatusLineComponent implements OnInit {
   ngOnInit() {
     this.person_changes_subscriber = this.personService.personChanges$
       .filter((p) => p.id == this.person.id)
-      .subscribe((person) => {  
-        console.log(person);         
+      .subscribe((person) => {               
         this.person = person;        
       });
   }

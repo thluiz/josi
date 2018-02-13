@@ -33,6 +33,22 @@ export function configure_routes(app: any, connection_pool: any) {
 
     });
 
+    app.get("/api/operators", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+
+        const result = await new sql.Request(pool)            
+        .query(`select * 
+                from vwPerson v 
+                where is_operator = 1 or is_director = 1 or is_manager = 1 
+                order by name for json path`);                
+        
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response);
+
+    });
+    
     app.get("/api/organizations/:id", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {  
@@ -52,6 +68,15 @@ export function configure_routes(app: any, connection_pool: any) {
     async (req, res, next) => {  
 
         let result = await card_service.save_person_card(req.body.person_card);
+
+        res.send({ sucess: true});
+    });
+
+    app.post("/api/person_cards/delete", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+
+        let result = await card_service.remove_person_card(req.body.person_card);
 
         res.send({ sucess: true});
     });

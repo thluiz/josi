@@ -66,8 +66,6 @@ class IncidentService {
                 date += ` ${incident.time.hour}:${incident.time.minute}`;
             }
             try {
-                console.log(incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(","));
-                console.log(incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(","));
                 const result = yield new sql.Request(this.sql_pool)
                     .input('description', sql.VarChar(sql.MAX), incident.description)
                     .input('people', sql.VarChar(sql.MAX), incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(","))

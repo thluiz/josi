@@ -10,7 +10,7 @@
                     Organograma
                     <button type="button" class="btn btn-silver btn-sm" 
                         style="margin:0;padding:2px;line-height:10px"
-                        (click)="add_person();">
+                        (click)="add_new_operator(new_operator);">
                         <i class="ft-plus"></i>                                        
                         <i class="fas fa-user"></i>
                     </button>
@@ -27,7 +27,7 @@
                                     <div *ngFor="let p of organization.people">
                                         <div class="row" style="margin-bottom:10px">
                                             <div 
-                                                style="padding-right:0"
+                                                style="padding-right:0;max-width:120px"
                                                 class="col-3 d-none d-lg-block text-right">
                                                 <img alt="{{ p.name }}"                                        
                                                 class="img-border" 
@@ -56,25 +56,27 @@
                                                         >
                                                         {{ p.name }}														                                                
                                                         </a>
-        
-                                                        <!--button type="button" class="btn btn-silver btn-sm" 
-                                                            style="margin: 0; padding:2px; line-height:10px"			                                        
-                                                            *ngIf="!p.archive"
-                                                            (click)="p.archive = true">
-                                                            <i class="fas fa-times"></i>                                        
-                                                        </button>                                    
-                                                        <button type="button" class="btn btn-danger btn-sm" 
-                                                            *ngIf="p.archive"
-                                                            style="margin:0;padding:2px;line-height:10px"			                                        
-                                                            (click)="remove_person(p)">
-                                                            <i class="fas fa-times"></i>                                        
-                                                        </button>
-                                                        <button type="button" class="btn btn-secondary btn-sm" 
-                                                            *ngIf="p.archive"
-                                                            style="margin:0;padding:2px;line-height:10px"			                                        
-                                                            (click)="p.archive = false">
-                                                            <i class="icon-action-undo"></i>                                        
-                                                        </button -->												
+                                                        
+                                                        <div style="float:right" *ngIf="!p.has_tasks">
+                                                            <button type="button" class="btn btn-silver btn-sm" 
+                                                                style="margin: 0; padding:2px; line-height:10px"			                                        
+                                                                *ngIf="!p.archive"
+                                                                (click)="p.archive = true">
+                                                                <i class="fas fa-times"></i>                                        
+                                                            </button>                                    
+                                                            <button type="button" class="btn btn-danger btn-sm" 
+                                                                *ngIf="p.archive"
+                                                                style="margin:0;padding:2px;line-height:10px"			                                        
+                                                                (click)="remove_person(p)">
+                                                                <i class="fas fa-times"></i>                                        
+                                                            </button>
+                                                            <button type="button" class="btn btn-secondary btn-sm" 
+                                                                *ngIf="p.archive"
+                                                                style="margin:0;padding:2px;line-height:10px"			                                        
+                                                                (click)="p.archive = false">
+                                                                <i class="icon-action-undo"></i>                                        
+                                                            </button>						
+                                                        </div>						
                                                     </div>													
                                                     <div class="col-12 d-none d-xl-block pl-1"
                                                     [style.color]="p.is_leaving || p.is_inactive_member ? 'grey' : 'black'">
@@ -82,25 +84,27 @@
                                                         [style.color]="p.is_leaving || p.is_inactive_member ? 'grey' : 'black'">
                                                         {{ p.name }}                                                                                        
                                                         </a>		
-                                                        
-                                                        <!-- button type="button" class="btn btn-silver btn-sm" 
-                                                            style="margin: 0; padding:2px; line-height:10px"			                                        
-                                                            *ngIf="!p.archive"
-                                                            (click)="p.archive = true">
-                                                            <i class="fas fa-times"></i>                                        
-                                                        </button>                                    
-                                                        <button type="button" class="btn btn-danger btn-sm" 
-                                                            *ngIf="p.archive"
-                                                            style="margin:0;padding:2px;line-height:10px"			                                        
-                                                            (click)="remove_person(p)">
-                                                            <i class="fas fa-times"></i>                                        
-                                                        </button>
-                                                        <button type="button" class="btn btn-secondary btn-sm" 
-                                                            *ngIf="p.archive"
-                                                            style="margin:0;padding:2px;line-height:10px"			                                        
-                                                            (click)="p.archive = false">
-                                                            <i class="icon-action-undo"></i>                                        
-                                                        </button -->
+
+                                                        <div style="float:right" *ngIf="!p.has_tasks">
+                                                            <button type="button" class="btn btn-silver btn-sm" 
+                                                                style="margin: 0; padding:2px; line-height:10px"			                                        
+                                                                *ngIf="!p.archive"
+                                                                (click)="p.archive = true">
+                                                                <i class="fas fa-times"></i>                                        
+                                                            </button>                                    
+                                                            <button type="button" class="btn btn-danger btn-sm" 
+                                                                *ngIf="p.archive"
+                                                                style="margin:0;padding:2px;line-height:10px"			                                        
+                                                                (click)="remove_person(p)">
+                                                                <i class="fas fa-times"></i>                                        
+                                                            </button>
+                                                            <button type="button" class="btn btn-secondary btn-sm" 
+                                                                *ngIf="p.archive"
+                                                                style="margin:0;padding:2px;line-height:10px"			                                        
+                                                                (click)="p.archive = false">
+                                                                <i class="icon-action-undo"></i>                                        
+                                                            </button>
+                                                        </div>
                                                     </div>	
                                                 </div>												                                            
                                                 <div class="row">	
@@ -130,9 +134,16 @@
                             <div class="col-12 text-center">
                                 <button type="button" class="btn btn-success" 
                                     (click)="save_organization_chart()"
-                                    style="margin-right:10px">
+                                    *ngIf="!saving_chart"
+                                    style="margin-right:10px">                                        
                                         <i class="icon-check"></i> Salvar Organograma
-                                </button>              
+                                </button>
+                                <button type="button" class="btn btn-silver"                                     
+                                    *ngIf="saving_chart"
+                                    style="margin-right:10px">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        Salvando...
+                                </button>         
                             </div>
                         </div>                        
                     </div>
@@ -144,3 +155,52 @@
         </div>            
     </div>
 </div>
+
+
+
+<ng-template #new_operator let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h5 class="modal-title" style="font-weight: bold">Associar Operador</h5>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">			
+        <div class="form-body">			
+            <div class="row">
+                <div class="col-12">
+                    <fieldset class="form-group">						
+                        <label for="new_operator"                             
+                            style="font-weight: bold">
+                            Operador
+                        </label>		
+                        <div class="form-group">
+                            <select id="new_operator" 
+                                name="new_operator"
+                                [(ngModel)]="new_operator_id"                                 
+                                class="form-control"								
+                                >			
+                                <option></option>			
+                                <option *ngFor="let ao of available_operators" [value]="ao.id">{{ao.name}}</option>
+                            </select>								
+                        </div>
+					</fieldset>
+				</div>
+            </div>                             
+        </div>			
+    </div>
+    <div class="modal-footer">
+        <button type="button" 
+            class="btn btn-success" 
+			(click)="save_new_operator();">            
+			<i class="icon-check"></i>
+            Adicionar            
+        </button>															
+        <button type="button" class="btn btn-silver" 
+            (click)="d('close new operator!');"
+            >
+            <i class="icon-action-undo"></i>
+            Cancelar
+        </button>	
+    </div>
+</ng-template>

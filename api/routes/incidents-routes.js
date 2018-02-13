@@ -39,7 +39,6 @@ function configure_routes(app, connection_pool) {
         response.send({ sucess: true });
     }));
     app.post("/api/incident/register_incident", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        console.log(request.body.incident);
         let result = yield incident_service.register_incident(request.body.incident);
         response.send({ sucess: true });
     }));

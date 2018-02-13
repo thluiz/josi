@@ -22,6 +22,24 @@ export class CardService {
     return this.http.get(this.dataUrl + `/organizations/${id}`);
   }
 
+  getOperators() {
+    return this.http.get(this.dataUrl + `/operators`);
+  }
+
+  saveOperator(card_id, person_id) {
+    return this.http.post(this.dataUrl + `/person_cards`, { person_card: {
+      card_id,
+      person_id
+    }});
+  }
+
+  removeOperator(card_id, person_id) {
+    return this.http.post(this.dataUrl + `/person_cards/delete`, { person_card: {
+      card_id,
+      person_id
+    }});
+  }
+
   saveOrganizationChart(id, chart: [{person_id: number, position: number, position_description: string}]) {
     let requests = [];
     for(var i = 0; i < chart.length; i++) {

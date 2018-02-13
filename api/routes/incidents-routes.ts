@@ -61,8 +61,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.post("/api/incident/register_incident", 
     SecurityService.ensureLoggedIn(),
-    async (request, response, next) => {      
-        console.log(request.body.incident);
+    async (request, response, next) => {              
         let result = await incident_service.register_incident(
             request.body.incident
         );            
