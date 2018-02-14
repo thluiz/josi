@@ -14,12 +14,6 @@ const card_services_1 = require("../../domain/services/card_services");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     const card_service = new card_services_1.CardService(pool);
-    app.get("/api/organizations", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield new sql.Request(pool)
-            .execute(`GetOrganizations`);
-        let response = result.recordset[0];
-        res.send(response[0].empty ? [] : response);
-    }));
     app.get("/api/person_card_positions", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from person_card_position where active = 1 for json path`);
@@ -35,12 +29,24 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/organizations/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/card_templates", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
-            .input("organization_id", sql.Int, req.params.id)
+            .query(`select * 
+                from card_template 
+                where active = 1
+                order by [order] 
+                for json path`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
+    app.get("/api/organizations/:id?/:include_childrens?", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input("organization_id", sql.Int, req.params.id > 0 ? req.params.id : null)
+            .input("include_childrens", sql.Int, req.params.include_childrens > 0 ? 1 : 0)
             .execute(`GetOrganizations`);
-        let response = result.recordset[0][0];
-        res.send(response);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] :
+            req.params.id > 0 ? response[0] : response);
     }));
     app.post("/api/person_cards", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield card_service.save_person_card(req.body.person_card);

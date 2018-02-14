@@ -1,4 +1,3 @@
-import { NewPersonModalComponent } from './shared/components/new-person-modal/new-person-modal.component';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 
@@ -8,6 +7,9 @@ import { IncidentTreatmentModalComponent } from 'app/shared/components/incident-
 import { AddCommentModalComponent, CommentType } from 'app/shared/components/add-comment-modal/add-comment-modal.component';
 import { IncidentCommentsListModalComponent } from 'app/shared/components/incident-comments-list-modal/incident-comments-list-modal.component';
 import { NewInicidentModalComponent } from 'app/shared/components/new-incident-modal/new-incident-modal.component';
+import { NewPersonModalComponent } from 'app/shared/components/new-person-modal/new-person-modal.component';
+import { NewCardModalComponent, CardType } from 'app/shared/components/new-card-modal/new-card-modal.component';
+
 
 @Component({
     selector: 'app-root',
@@ -23,6 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild(IncidentCommentsListModalComponent) incidentCommentsList : IncidentCommentsListModalComponent;
     @ViewChild(NewPersonModalComponent) newPersonModal : NewPersonModalComponent;
     @ViewChild(NewInicidentModalComponent) newIncidentModal : NewInicidentModalComponent;
+    @ViewChild(NewCardModalComponent) newCardModal : NewCardModalComponent;
 
     constructor(private modalService: ModalService) {
 
@@ -56,6 +59,21 @@ export class AppComponent implements OnInit, OnDestroy {
                         break;
                     case ModalType.AddIncident:
                         this.newIncidentModal.open(data.parameters);
+                        break;
+                    case ModalType.AddTask:
+                        if(!data.parameters) {
+                            data.parameters = {}
+                        }
+                        data.parameters.card_type = CardType.Task;
+                        this.newCardModal.open(data.parameters);
+                        break;
+                    case ModalType.AddProject:
+                        if(!data.parameters) {
+                            data.parameters = {}
+                        }
+                        data.parameters.card_type = CardType.Project;
+                        this.newCardModal.open(data.parameters);
+                        break;
                 }
             });
     }

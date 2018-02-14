@@ -19,7 +19,8 @@ export class ParameterService {
     private domains$ = new ReplaySubject(1);
     
     private personCardPositions$ = new ReplaySubject(1);
-
+    private cardTemplates$ = new ReplaySubject(1);
+    
     constructor(private http:HttpClient) { }  
 
     getDomains(forceRefresh?: boolean) {
@@ -57,6 +58,11 @@ export class ParameterService {
     getPersonCardPositions(forceRefresh?: boolean) {
         return this.cache_results(this.personCardPositions$, `/person_card_positions`, forceRefresh);                      
     }
+
+    getCardTemplates(forceRefresh?: boolean) {
+        return this.cache_results(this.cardTemplates$, `/card_templates`, forceRefresh);                      
+    }
+    
 
     private cache_results(observable : ReplaySubject<any>, endpoint:string, forceRefresh?: boolean) {
         if (!observable.observers.length || forceRefresh) {

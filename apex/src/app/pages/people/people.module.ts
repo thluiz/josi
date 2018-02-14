@@ -10,6 +10,8 @@ import { PersonPageComponent } from './person/person-page.component';
 import { PeopleAwayPageComponent } from './people-away/people-away-panel-page.component';
 import { ManagementPanelPageComponent } from './management-panel/management-panel-page.component';
 import { MembersPanelPageComponent } from './members-panel/members-panel-page.component';
+import { OperatorPageComponent } from 'app/pages/people/operator/operator-page.component';
+import { OperatorConfigPageComponent } from './operator-config/operator-config-page.component';
 
 import { PeopleRoutingModule } from './people-routing.module';
 
@@ -62,7 +64,9 @@ import { FloatActionCenterModule } from 'app/shared/components/float-action-cent
         PersonEditPageComponent,
         InterestedPanelPageComponent,
         PeopleAwayPageComponent,
-        PeopleServiceProviderPageComponent
+        PeopleServiceProviderPageComponent,
+        OperatorPageComponent,
+        OperatorConfigPageComponent
     ]
 })
 export class PeopleModule { }

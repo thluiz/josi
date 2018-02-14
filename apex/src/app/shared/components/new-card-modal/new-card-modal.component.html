@@ -1,0 +1,147 @@
+<ng-template #add_card_modal let-c="close" let-d="dismiss">    
+    <div class="modal-header">
+        <h5 class="modal-title" style="font-weight: bold" *ngIf="type == types.Task">Cadastrar Tarefa</h5>
+        <h5 class="modal-title" style="font-weight: bold" *ngIf="type == types.Project">Cadastrar Projeto</h5>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">			
+        <div class="form-body">			
+            <div class="row">
+                <div class="col-12">
+                    <fieldset class="form-group">						
+                        <label for="card_organization"                             
+                            style="font-weight: bold">
+                            Organização
+                        </label>		
+                        <div class="form-group">
+                            <select id="organization" 
+                                name="card_organization"
+                                [(ngModel)]="card.organization_id" 
+                                (ngModelChange)="filter_possible_projects();validate_new_card()"																	
+                                class="form-control"								
+                                >			
+                                <option></option>			
+                                <option *ngFor="let o of organizations" [value]="o.id">{{ o.title }}</option>
+                            </select>								
+                        </div>
+                        <label for="card_operator"                             
+                            style="font-weight: bold"
+                            *ngIf="card.organization_id > 0">
+                            Operador
+                        </label>		
+                        <div class="form-group">
+                            <select id="organization" 
+                                name="card_operator"
+                                [(ngModel)]="card.operator_id" 
+                                (ngModelChange)="filter_possible_projects()"																	
+                                class="form-control"
+                                *ngIf="card.organization_id > 0"								
+                                >			
+                                <option></option>			
+                                <option *ngFor="let op of card.organization.people" [value]="op.person_id">{{ op.name }}</option>
+                            </select>								
+                        </div>
+                        <label for="card_project"                             
+                            style="font-weight: bold"
+                            *ngIf="card.organization_id > 0 && card.possible_projects.length > 0">
+                            Projeto
+                        </label>		
+                        <div class="form-group">
+                            <select id="organization" 
+                                name="card_project"
+                                [(ngModel)]="card.parent_id"                                 																	
+                                class="form-control"
+                                *ngIf="card.organization_id > 0 && card.possible_projects.length > 0"								
+                                >			
+                                <option></option>			
+                                <option *ngFor="let pp of card.possible_projects" [value]="pp.id">{{ pp.title }}</option>
+                            </select>								
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="card_template">Tipo</label>                                                									
+                                <div class="input-group">							
+                                        <select id="card_template" 
+                                        name="card_template"
+                                        [(ngModel)]="card.template_id"                                 																	
+                                        class="form-control"								
+                                        >			
+                                        <option></option>			
+                                        <option *ngFor="let tpl of templates" [value]="tpl.id">{{ tpl.name }}</option>
+                                    </select>                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="card_title">Título</label>                                                									
+                                <div class="input-group">							
+                                    <input class="form-control"
+                                    [(ngModel)]="card.title"
+                                    (ngModelChange)="validate_new_card()"
+                                    autocomplete="off"
+                                    id="card_title"
+                                    name="card_title"/>                                    
+                                </div>
+                            </div>
+                        </div>
+                                                
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <label for="card_due_date">Previsão</label>                                                									
+                                <div class="input-group">							
+                                    <input class="form-control text-center" placeholder="dd/mm/aaaa" 
+                                    [(ngModel)]="card.due_date_tmp" 
+                                    id="card_due_date"
+                                    name="card_due_date"
+                                    autocomplete="off"
+                                    ngbDatepicker #niDueDateDate="ngbDatepicker" />
+                                    <div class="input-group-addon" (click)="niDueDateDate.toggle()">
+                                        <i class="ft-calendar" style="cursor: pointer;"></i>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>                                            
+
+                        <label for="card_description"                             
+                            style="font-weight: bold">
+                            Descrição
+                        </label>		
+                        <div class="form-group">
+                            <textarea class="form-control"
+                            id="card_description"
+                            autocomplete="off"
+                            [(ngModel)]="card.description" 		
+                            rows="3"></textarea>								
+                        </div>                                                            				
+                    </fieldset>                                
+                </div>
+            </div>                        
+            <div class="row" *ngIf="!card.is_valid">
+                <div class="col-12 text-danger">
+                    <ul>
+                        <li style="line-height:1.2em" *ngFor="let error of card.validation">{{ error }}</li>
+                    </ul>                    
+                </div>
+            </div>
+        </div>			
+    </div>
+    <div class="modal-footer">
+        <button type="button" 
+            class="btn btn-success" 
+            (click)="register_new_card();"
+            *ngIf="card.is_valid">            
+            <i class="icon-check"></i>
+            Cadastrar            
+        </button>															
+        <button type="button" class="btn btn-silver" 
+            (click)="d('close new person!');"
+            >
+            <i class="icon-action-undo"></i>
+            Cancelar
+        </button>	
+    </div>
+</ng-template>

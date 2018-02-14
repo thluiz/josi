@@ -128,13 +128,10 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   }
 
   getMonitorData() {
-
-    if(!this.personService) {
-      return;
-    }
     this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Week, this.current_week).subscribe(
       data => {    
-        const result = data as any;        
+        const result = data as any;  
+        console.log(result);
         
         this.branches = result.branches as any;
         this.current_branch_name = (this.current_branch > 0 ? 
@@ -189,34 +186,12 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
                 this.domains[w].daily[z] = person_incidents;
               }
             }       
-          }   
+          }
+        }   
 
-          this.external_people = [];
-          let external_people = result.people.filter(p => p.branch_id == -1 
-                                                    || (this.current_branch > 0 && p.branch_id != this.current_branch));
-          for(var i = 0; i< this.week_days.length; i++) {    
-            let c = this.week_days[i];
-            
-            for(var z = 0; z < external_people.length; z++) {
-              let person_incidents = external_people[z];  
-              if(!person_incidents.dates) {
-                person_incidents.dates = [];
-              }
-
-              person_incidents.dates[i] = person_incidents.dates[i] || [];
-              let incidents = result.incidents.filter((i : any) => { 
-                return i.date == c.date && i.person_id == external_people[z].person_id;
-              });
-
-              if(incidents.length > 0) {
-                person_incidents.dates[i] = person_incidents.dates[i].concat(incidents);              
-              }
-
-              this.external_people[z] = person_incidents;
-            }
-          } 
-        }                
-      },
+        this.load_external_people(result); 
+      }                
+      ,
       err => console.error(err)      
     );
 
@@ -230,6 +205,40 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     }
 
     this.update_members_timer = setTimeout(() => { this.getMonitorData() }, update_interval);
+  }
+
+  private load_external_people(result) {
+    this.external_people = [];        
+    let external_people =  [];        
+    if(this.current_branch == 0) {
+      external_people = result.people.filter(p => p.is_interested || p.is_service_provider
+        || p.is_associated_with_member || p.is_external_member);
+    } else {
+      external_people = result.people.filter(p => p.is_interested || p.is_service_provider
+        || p.is_associated_with_member || p.is_external_member || p.branch_id != this.current_branch);
+    }
+    
+    for(var i = 0; i< this.week_days.length; i++) {    
+      let c = this.week_days[i];
+      
+      for(var z = 0; z < external_people.length; z++) {
+        let person_incidents = external_people[z];  
+        if(!person_incidents.dates) {
+          person_incidents.dates = [];
+        }
+
+        person_incidents.dates[i] = person_incidents.dates[i] || [];
+        let incidents = result.incidents.filter((i : any) => { 
+          return i.date == c.date && i.person_id == external_people[z].person_id;
+        });
+
+        if(incidents.length > 0) {
+          person_incidents.dates[i] = person_incidents.dates[i].concat(incidents);              
+        }
+
+        this.external_people[z] = person_incidents;
+      }            
+    }
   }
    
 }

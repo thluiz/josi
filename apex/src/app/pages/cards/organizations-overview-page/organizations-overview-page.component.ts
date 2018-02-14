@@ -14,7 +14,7 @@ export class OrganizationsOverviewPageComponent implements OnInit, OnDestroy {
   }  
   
   ngOnInit() {    
-    this.cardService.getOrganizations().subscribe((data : any) => {
+    this.cardService.getOrganizations(true).subscribe((data : any) => {
       this.organizations = data;
     });
   }

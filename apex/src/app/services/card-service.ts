@@ -14,12 +14,12 @@ export class CardService {
 
   constructor(private http: HttpClient, private utilsService: UtilsService) { }  
 
-  getOrganizations() {
-    return this.http.get(this.dataUrl + `/organizations`);
+  getOrganizations(include_childrens = false) {
+    return this.http.get(this.dataUrl + `/organizations/0/${include_childrens? 1 : 0}`);
   }
   
-  getOrganization(id) {
-    return this.http.get(this.dataUrl + `/organizations/${id}`);
+  getOrganization(id, include_childrens = false) {
+    return this.http.get(this.dataUrl + `/organizations/${id}/${include_childrens? 1 : 0}`);
   }
 
   getOperators() {

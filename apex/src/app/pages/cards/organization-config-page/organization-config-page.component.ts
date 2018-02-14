@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs/Subscription';
 import { ParameterService } from 'app/services/parameter-service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CardService } from 'app/services/card-service';
@@ -14,7 +15,7 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
 export class OrganizationConfigPageComponent implements OnInit, OnDestroy {
   
   private id;
-  private sub;
+  private sub : Subscription;
   organization;
   card_positions;
   saving_chart = false;
@@ -48,7 +49,9 @@ export class OrganizationConfigPageComponent implements OnInit, OnDestroy {
   }
   
   ngOnDestroy() {
-    
+     if(this.sub) {
+       this.sub.unsubscribe();
+     }
   }
 
   load_organization_data() {

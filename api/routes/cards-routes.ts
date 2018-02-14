@@ -7,19 +7,6 @@ export function configure_routes(app: any, connection_pool: any) {
 
     const card_service = new CardService(pool);    
 
-    app.get("/api/organizations", 
-    SecurityService.ensureLoggedIn(),
-    async (req, res, next) => {  
-
-        const result = await new sql.Request(pool)            
-        .execute(`GetOrganizations`);                
-        
-        let response = result.recordset[0];
-
-        res.send(response[0].empty ? [] : response);
-
-    });
-
     app.get("/api/person_card_positions", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {  
@@ -48,19 +35,37 @@ export function configure_routes(app: any, connection_pool: any) {
         res.send(response[0].empty ? [] : response);
 
     });
+
+    app.get("/api/card_templates", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+
+        const result = await new sql.Request(pool)            
+        .query(`select * 
+                from card_template 
+                where active = 1
+                order by [order] 
+                for json path`);                
+        
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response);
+
+    });
     
-    app.get("/api/organizations/:id", 
+    app.get("/api/organizations/:id?/:include_childrens?", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {  
 
         const result = await new sql.Request(pool)  
-        .input("organization_id", sql.Int, req.params.id)          
+        .input("organization_id", sql.Int, req.params.id > 0 ? req.params.id : null)          
+        .input("include_childrens", sql.Int, req.params.include_childrens > 0 ? 1 : 0)
         .execute(`GetOrganizations`);                
 
-        let response = result.recordset[0][0];
+        let response = result.recordset[0];
 
-        res.send(response);
-
+        res.send(response[0].empty ? [] : 
+            req.params.id > 0 ? response[0] : response);
     });
 
     app.post("/api/person_cards", 

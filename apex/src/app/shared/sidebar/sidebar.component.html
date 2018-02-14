@@ -67,7 +67,7 @@
                 </ul>                
             </li>
             <li *ngIf="current_user">
-                <a [routerLink]="['/']" class="logo-text">
+                <a [routerLink]="['/people/operator', current_user.person_id]" class="logo-text">
                     <div class="logo-img">
                         <img src="https://myvtmiim.blob.core.windows.net/avatars/{{ current_user.avatar_img }}" class="img-fluid" />
                     </div>

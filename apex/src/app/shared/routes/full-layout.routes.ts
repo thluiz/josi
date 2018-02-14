@@ -66,6 +66,14 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/people/people.module#PeopleModule'
   },
   {
+    path: 'people/operator/:id',
+    loadChildren: './pages/people/people.module#PeopleModule'
+  },
+  {
+    path: 'people/operator/config/:id',
+    loadChildren: './pages/people/people.module#PeopleModule'
+  },
+  {
     path: 'under-construction',
     loadChildren: './pages/under-construction/under-construction.module#UnderConstructionModule'
   },

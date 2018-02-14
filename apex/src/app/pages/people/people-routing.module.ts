@@ -1,3 +1,5 @@
+import { OperatorConfigPageComponent } from './operator-config/operator-config-page.component';
+import { OperatorPageComponent } from './operator/operator-page.component';
 import { PeopleServiceProviderPageComponent } from './people-service-provider/people-service-provider-page.component';
 import { InterestedPanelPageComponent } from './interested/interested-panel-page.component';
 import { PeopleAwayPageComponent } from './people-away/people-away-panel-page.component';
@@ -46,6 +48,14 @@ let routes: Routes = [
     data: {
       title: 'Detalhe da Pessoa'
     },    
+  },
+  {
+    path: 'operator/:id',
+    component: OperatorPageComponent,
+  },
+  {
+    path: 'operator/config/:id',
+    component: OperatorConfigPageComponent,
   },
   {
     path: 'interested',

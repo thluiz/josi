@@ -4,10 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-full-layout-page',
-  templateUrl: './organization-detail-page.component.html',
-  styleUrls: ['../cards-customizations.scss']  
+  templateUrl: './operator-config-page.component.html',
+  styleUrls: ['../people-customizations.scss']  
 })
-export class OrganizationDetailPageComponent implements OnInit, OnDestroy {
+export class OperatorConfigPageComponent implements OnInit, OnDestroy {
   
   private id;
   private sub;
@@ -20,11 +20,7 @@ export class OrganizationDetailPageComponent implements OnInit, OnDestroy {
   
   ngOnInit() {    
     this.sub = this.route.params.subscribe(params => {
-      this.id = +params['id'];      
-      
-      this.cardService.getOrganization(this.id, true).subscribe((data : any) => {
-        this.organization = data;
-      });
+      this.id = +params['id'];
     });    
   }
   
