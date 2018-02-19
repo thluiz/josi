@@ -74,6 +74,13 @@ export class AppComponent implements OnInit, OnDestroy {
                         data.parameters.card_type = CardType.Project;
                         this.newCardModal.open(data.parameters);
                         break;
+                    case ModalType.AddProjectTask:
+                        if(!data.parameters) {
+                            data.parameters = {}
+                        }
+                        data.parameters.card_type = CardType.ProjectTask;
+                        this.newCardModal.open(data.parameters);
+                        break;
                 }
             });
     }

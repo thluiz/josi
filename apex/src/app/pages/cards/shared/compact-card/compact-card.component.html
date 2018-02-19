@@ -1,0 +1,13 @@
+<div 
+	*ngIf="card"
+	class="compact-card">
+	<div class="row">
+		<div class="col-12" *ngIf="!card.is_task">			
+			<a [routerLink]="['/organizations/projects', card.id]">{{ card.title }}</a>
+		</div>
+		<div class="col-12" *ngIf="card.is_task">			
+			{{ card.title }}
+		</div>
+	</div>
+	
+</div>

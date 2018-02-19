@@ -1,1 +1,11 @@
 @import "../../../assets/customizations.scss";
+
+.project.step {
+    width:220px;
+    max-width: 220px;
+    min-width: 220px;
+    float:left;
+    background-color: #EFEFEF;
+    min-height: 200px;
+    margin:5px;
+}

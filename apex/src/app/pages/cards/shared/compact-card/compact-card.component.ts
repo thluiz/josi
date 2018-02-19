@@ -2,21 +2,20 @@ import { Subscription } from 'rxjs';
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { CardService, CARD_ADDED } from 'app/services/card-service';
+import { CardService, CARD_CHANGED } from 'app/services/card-service';
 import { ParameterService } from 'app/services/parameter-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 
 import { Card } from 'app/shared/models/card.model';
 
 @Component({
-  selector: 'organization-card',
-  templateUrl: './organization-card.component.html',
-  styleUrls: ['./organization-card.scss']
+  selector: 'compact-card',
+  templateUrl: './compact-card.component.html',
+  styleUrls: ['./compact-card.scss']
 })
-export class OrganizationCardComponent implements OnInit, OnDestroy {  
+export class CompactCardComponent implements OnInit, OnDestroy {  
 
-  @Input() organization : Card;  
-  @Input() compactView = false;  
+  @Input() card : Card;  
   
   private card_actions : Subscription;
 
@@ -28,9 +27,9 @@ export class OrganizationCardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {    
     this.card_actions = this.cardService.commentChanges$
-    .filter(ca => ca.type == CARD_ADDED)
-    .subscribe((next) => {      
-      this.updateOrganization();
+    .filter(ca => ca.type == CARD_CHANGED && ca.payload.id == this.card.id)
+    .subscribe((action) => {
+      this.card = action.payload;
     });
   }
 
@@ -40,21 +39,13 @@ export class OrganizationCardComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateOrganization() {
-    this.cardService.getOrganization(this.organization.id, true).subscribe((data : Card) => {
-      this.organization = data;
-    })
+  updateOrganization() {    
   }
 
-  add_task(organization) {    
-    this.modalService.open(ModalType.AddTask, {
-      parent: organization
-    });
+  add_task(organization) {        
   }
 
   add_project(organization) {
-    this.modalService.open(ModalType.AddProject, {
-      parent: organization
-    });
+    
   }
 }

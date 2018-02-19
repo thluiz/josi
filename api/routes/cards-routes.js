@@ -48,9 +48,28 @@ function configure_routes(app, connection_pool) {
         res.send(response[0].empty ? [] :
             req.params.id > 0 ? response[0] : response);
     }));
+    app.get("/api/projects/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input("project_id", sql.Int, req.params.id)
+            .execute(`GetProject`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] :
+            req.params.id > 0 ? response[0] : response);
+    }));
     app.post("/api/person_cards", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield card_service.save_person_card(req.body.person_card);
         res.send({ sucess: true });
+    }));
+    app.post("/api/cards", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield card_service.save_card(req.body.card);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] :
+            req.params.id > 0 ? response[0] : response);
+    }));
+    app.post("/api/cards/steps", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield card_service.save_card_step(req.body.card_id, req.body.step_id);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response[0]);
     }));
     app.post("/api/person_cards/delete", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield card_service.remove_person_card(req.body.person_card);

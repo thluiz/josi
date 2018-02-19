@@ -44,7 +44,9 @@
 								<operator-card [person]="p"></operator-card>
 							</td>
 							<td>
-								&nbsp;
+								<compact-card [card]="ch"
+								*ngFor="let ch of organization.childrens | leaderedProjects: p"
+								></compact-card>								
 							</td>
 						</tr>
 					</tbody>

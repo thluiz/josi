@@ -11,7 +11,8 @@ export enum ModalType{
     AddPerson,
     AddIncident,
     AddTask,
-    AddProject
+    AddProject,
+    AddProjectTask
 }
 
 export interface IModalOpening {

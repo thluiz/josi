@@ -92,5 +92,9 @@ export const Full_ROUTES: Routes = [
   {
     path: 'organizations/config/:id',
     loadChildren: './pages/cards/cards.module#CardsModule'
+  },
+  {
+    path: 'organizations/projects/:id',
+    loadChildren: './pages/cards/cards.module#CardsModule'
   }
 ];

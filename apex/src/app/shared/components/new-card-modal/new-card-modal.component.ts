@@ -33,10 +33,12 @@ import { tap } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
 
+import { Card } from 'app/shared/models/card.model';
 
 export enum CardType {
   Task,
-  Project
+  Project,
+  ProjectTask
 }
 
 @Component({
@@ -52,11 +54,14 @@ export class NewCardModalComponent implements OnInit {
   incident_types = [];  
   roles = [];
   person : any = {};  
-  card : any = {};  
+  card : Card;  
   templates = []; 
   modalRef : NgbModalRef;
   type: CardType = CardType.Task;
   types = CardType; 
+  card_is_valid = false;
+  card_validation: string[];
+  operators: any[];
 
   @ViewChild('add_card_modal') add_card_modal: ElementRef;
 
@@ -73,7 +78,7 @@ export class NewCardModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.reset_card({});        
+    this.reset_card({} as Card);        
   }  
 
   open(initial_state :any = {}) {       
@@ -82,20 +87,19 @@ export class NewCardModalComponent implements OnInit {
     Observable.zip(
       this.cardService.getOrganizations(true),                  
       this.parameterService.getCardTemplates(),
-      (organizations : any[], templates : any[]) => {        
+      this.cardService.getOperators(),
+      (organizations : any[], templates : any[], operators: any[]) => {        
         this.organizations = organizations;        
         this.templates = templates.filter(t => !t.automatically_generated 
                                           && t.active
-                                          && t.is_task == (this.type ==  CardType.Task))
+                                          && t.is_task == (this.type ==  CardType.Task || this.type == CardType.ProjectTask))
                                   .map((template) => {
                                     let transformed = template;
-                                    transformed.title = transformed.title.replace('Projeto - ', '')
-                                    return transformed; // ;
-                                  });        
+                                    transformed.name = transformed.name.replace('Projeto - ', '')
+                                    return transformed;
+                                  });    
 
-        if(!initial_state.template_id) {
-          initial_state.template_id = this.templates[0].id;
-        }
+        this.operators = operators;
 
         this.reset_card(initial_state);
         this.open_modal(this.add_card_modal, true);        
@@ -104,17 +108,22 @@ export class NewCardModalComponent implements OnInit {
   }
 
   validate_new_card() {
-    this.card.is_valid = true;
-    this.card.validation = [];
+    this.card_is_valid = true;
+    this.card_validation = [];
 
-    if(!this.card.organization_id || this.card.organization_id <= 0) {
-      this.card.is_valid = false;
-      this.card.validation[this.card.validation.length] =  "Informe a organização";
+    if(!this.card.parent) {
+      this.card_is_valid = false;
+      this.card_validation[this.card_validation.length] =  "Informe a organização";
+    }
+
+    if(!this.card.leaders) {
+      this.card_is_valid = false;
+      this.card_validation[this.card_validation.length] =  "Informe o responsável";
     }
 
     if(!this.card.title || this.card.title.length <= 5) {
-      this.card.is_valid = false;
-      this.card.validation[this.card.validation.length] =  "Informe o título";
+      this.card_is_valid = false;
+      this.card_validation[this.card_validation.length] =  "Informe o título";
     }
 
     if(this.type == CardType.Project) {
@@ -134,27 +143,27 @@ export class NewCardModalComponent implements OnInit {
     });
   }
 
-  filter_possible_projects() {
-
+  register_new_card() {
+    console.log(this.card);
+    this.cardService.saveCard(this.card).subscribe((data) => {
+      console.log(data);
+      if(this.modalRef) {
+        this.modalRef.close(data);
+      }
+    });
   }
 
+  entity_compare(p1, p2) {
+    return p1 != null && p2 != null && p1.id == p2.id
+  }
 
-  private reset_card(initial_state :any = {}){
-    let date = new Date();
+  private reset_card(initial_state :Card){   
+    this.card = initial_state;
     
-    let organization_id = initial_state.organization_id; 
-    
-    if(initial_state.organization) {
-      organization_id = initial_state.organization.id;
+    if(!this.card.template_id && this.templates && this.templates.length > 0) {
+      this.card.template_id = this.templates[0].id;
     }
-
-    this.card = {
-      organization_id: organization_id,
-      organization: initial_state.organization || { childrens: [] },
-      operator_id: initial_state.operator_id || 0,
-      possible_projects: initial_state.possible_projects || []         
-    };
-
+    
     this.validate_new_card();
   }
 

@@ -68,6 +68,20 @@ export function configure_routes(app: any, connection_pool: any) {
             req.params.id > 0 ? response[0] : response);
     });
 
+    app.get("/api/projects/:id", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+
+        const result = await new sql.Request(pool)  
+        .input("project_id", sql.Int, req.params.id)                  
+        .execute(`GetProject`);                
+
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : 
+            req.params.id > 0 ? response[0] : response);
+    });
+
     app.post("/api/person_cards", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {  
@@ -75,6 +89,27 @@ export function configure_routes(app: any, connection_pool: any) {
         let result = await card_service.save_person_card(req.body.person_card);
 
         res.send({ sucess: true});
+    });
+
+    app.post("/api/cards", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {          
+        let result = await card_service.save_card(req.body.card);
+
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : 
+            req.params.id > 0 ? response[0] : response);
+    });
+
+    app.post("/api/cards/steps", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {          
+        let result = await card_service.save_card_step(req.body.card_id, req.body.step_id);
+
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response[0]);
     });
 
     app.post("/api/person_cards/delete", 
