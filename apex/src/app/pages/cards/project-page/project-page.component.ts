@@ -78,7 +78,9 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     
   }
   
-  ngOnDestroy() {
-    
+  ngOnDestroy() {    
+    if (this.dragulaService.find('childrens') !== undefined) { 
+      this.dragulaService.destroy('childrens'); 
+    } 
   }
 }
