@@ -32,31 +32,37 @@
                 </button>
             </div>
         </div>   
-        <div class="row">            
+        <div class="row">                        
             <div class="col-12">
-                <div
-                    class="project step container"                                          
-                    [dragula]='"childrens"'   
-                    [attr.data-parent]="'inbox'"                 
-                    *ngIf="project.childrens && project.childrens.length > 0">
-                    <h5>Caixa de Entrada</h5>
-                    <compact-card [card]="ch"
-                        [attr.data-id]="ch.id"                        
-                        *ngFor="let ch of project.childrens"
-                        ></compact-card>
-                </div>
-                <div
-                    class="project step container"                    
-                    [dragula]='"childrens"'  
-                    [attr.data-parent]="step.id"                   
-                    *ngFor="let step of project.steps, let k=index">                        
-                        <h5>{{ step.name }}</h5>
-
-                        <compact-card [card]="ch"
-                            [attr.data-id]="ch.id"
-                            *ngFor="let ch of step.childrens"
-                            ></compact-card>                            
-                </div>
+                <table class="table table-responsive">
+                    <tr>
+                        <td>
+                            <div
+                                class="project step container"                                          
+                                [dragula]='"childrens"'   
+                                [attr.data-parent]="'inbox'"                 
+                                *ngIf="project.childrens && project.childrens.length > 0">
+                                <h5>Caixa de Entrada</h5>
+                                <compact-card [card]="ch"
+                                    [attr.data-id]="ch.id"                        
+                                    *ngFor="let ch of project.childrens"
+                                    ></compact-card>
+                            </div>
+                            <div
+                                class="project step container"                    
+                                [dragula]='"childrens"'  
+                                [attr.data-parent]="step.id"                   
+                                *ngFor="let step of project.steps, let k=index">                        
+                                    <h5>{{ step.name }}</h5>
+            
+                                    <compact-card [card]="ch"
+                                        [attr.data-id]="ch.id"
+                                        *ngFor="let ch of step.childrens"
+                                        ></compact-card>                            
+                            </div>
+                        </td>
+                    </tr>
+                </table>                
             </div>
         </div>         
     </div>

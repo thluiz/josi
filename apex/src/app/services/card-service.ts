@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
 import { Subject }    from 'rxjs/Subject';
 
 export const CARD_ADDED = "CARD_ADDED"
-export const CARD_CHANGED = "CARD_ADDED"
+export const CARD_CHANGED = "CARD_CHANGED"
 
 export class CardAddedAction {
   public type = CARD_ADDED;
