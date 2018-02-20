@@ -43,4 +43,12 @@ export class CardService {
         .input('step_id', sql.Int, step_id)
         .execute(`SaveCardStep`);
     }
+
+    async save_card_order(card_id, order) {        
+        return await new sql.Request(this.sql_pool)
+        .input('card_id', sql.Int, card_id)
+        .input('order', sql.Int, order)
+        .execute(`SaveCardOrder`);
+    }
+    
 }

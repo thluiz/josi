@@ -54,6 +54,14 @@ class CardService {
                 .execute(`SaveCardStep`);
         });
     }
+    save_card_order(card_id, order) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield new sql.Request(this.sql_pool)
+                .input('card_id', sql.Int, card_id)
+                .input('order', sql.Int, order)
+                .execute(`SaveCardOrder`);
+        });
+    }
 }
 exports.CardService = CardService;
 //# sourceMappingURL=card_services.js.map

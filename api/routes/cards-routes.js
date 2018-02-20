@@ -71,6 +71,10 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response[0]);
     }));
+    app.post("/api/cards/steps/card_order", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield card_service.save_card_order(req.body.card_id, req.body.order);
+        res.send({ sucess: true });
+    }));
     app.post("/api/person_cards/delete", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield card_service.remove_person_card(req.body.person_card);
         res.send({ sucess: true });

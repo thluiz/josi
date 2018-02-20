@@ -112,6 +112,14 @@ export function configure_routes(app: any, connection_pool: any) {
         res.send(response[0].empty ? [] : response[0]);
     });
 
+    app.post("/api/cards/steps/card_order", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {          
+        let result = await card_service.save_card_order(req.body.card_id, req.body.order);
+
+        res.send({ sucess: true});
+    });
+
     app.post("/api/person_cards/delete", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {  

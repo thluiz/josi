@@ -42,7 +42,7 @@
                                 [dragula]='"childrens"'   
                                 [attr.data-parent]="'inbox'"                 
                                 *ngIf="project.childrens && project.childrens.length > 0">
-                                <h5>Caixa de Entrada</h5>
+                                <h5 class="ignore-item">Caixa de Entrada</h5>
                                 <compact-card [card]="ch"
                                     [attr.data-id]="ch.id"                        
                                     *ngFor="let ch of project.childrens"
@@ -53,7 +53,7 @@
                                 [dragula]='"childrens"'  
                                 [attr.data-parent]="step.id"                   
                                 *ngFor="let step of project.steps, let k=index">                        
-                                    <h5>{{ step.name }}</h5>
+                                    <h5 class="ignore-item">{{ step.name }}</h5>
             
                                     <compact-card [card]="ch"
                                         [attr.data-id]="ch.id"

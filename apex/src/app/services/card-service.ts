@@ -109,5 +109,14 @@ export class CardService {
     return Observable.forkJoin(requests);
   }
 
+  saveProjectStepOrder(child_ordering : {card_id:number, order: number}[]) {
+    let requests = [];
+    for(var i = 0; i < child_ordering.length; i++) {
+      requests[requests.length] = this.http.post(this.dataUrl + `/cards/steps/card_order`, child_ordering[i]);
+    }
+
+    return Observable.forkJoin(requests);
+  }
+
 }
 

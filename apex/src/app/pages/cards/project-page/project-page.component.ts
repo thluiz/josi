@@ -8,6 +8,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CardService } from 'app/services/card-service';
 import { ActivatedRoute, Router } from '@angular/router';
 
+const PROJECT_BAG_NAME = 'childrens';
+
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './project-page.component.html',
@@ -18,7 +20,7 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
   private id;
   private sub;
   project : Card;
-  childrens: any;
+  childrens: any;  
 
   private card_actions : Subscription;
 
@@ -30,19 +32,25 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
                 
     dragulaService.drop.subscribe((value) => {            
       let destination = value[2].attributes["data-parent"].value as number;
+      let origin = value[3].attributes["data-parent"].value as number;
       let target = value[1].attributes["data-id"].value as number;
 
       if(destination > 0 && target > 0) {
-        this.cardService.saveCardStep(target, destination).subscribe((data) => console.log('OK!'));
-      }
-
+        if(origin != destination) {
+          this.cardService.saveCardStep(target, destination).subscribe((data) => console.log('OK!'));
+        }
+        this.save_cards_in_step_ordering(value[2])
+      } else {
+        this.dragulaService.find(PROJECT_BAG_NAME).drake.cancel(true);
+      }       
     });
 
-    dragulaService.setOptions('childrens', {
-      removeOnSpill: false
+    dragulaService.setOptions(PROJECT_BAG_NAME, {
+      removeOnSpill: false,
+      moves: (el, source, handle, sibling) => !el.classList.contains('ignore-item')
     });
   }  
-  
+
   ngOnInit() {    
     this.childrens = [];
     this.sub = this.route.params.subscribe(params => {
@@ -79,8 +87,29 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
   }
   
   ngOnDestroy() {    
-    if (this.dragulaService.find('childrens') !== undefined) { 
+    if (this.dragulaService.find(PROJECT_BAG_NAME) !== undefined) { 
       this.dragulaService.destroy('childrens'); 
     } 
+  }
+
+    
+  save_cards_in_step_ordering(destination): any {
+    let ordering : {card_id:number, order: number}[] = [];
+      
+    for(let i = 0; i < destination.children.length; i++) {
+      let data_id = destination.children[i].attributes["data-id"];
+
+      if(!data_id) {
+        continue;
+      }
+
+      let id = data_id.value as number;
+      ordering[ordering.length] = {
+        card_id: id,
+        order: i
+      }
+    }            
+      
+    this.cardService.saveProjectStepOrder(ordering).subscribe();
   }
 }
