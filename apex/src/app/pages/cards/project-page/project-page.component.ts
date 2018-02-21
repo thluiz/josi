@@ -60,9 +60,9 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     });    
 
     this.card_actions = this.cardService.commentChanges$
-    /*.filter(ca => ca.type == CARD_ADDED && this.project 
+    .filter(ca => ca.type == CARD_ADDED && this.project 
         && ((ca.payload.parent && ca.payload.parent.id == this.project.id)
-            || (ca.payload.parent_id == this.project.id))) */
+            || (ca.payload.parent_id == this.project.id)))
     .subscribe((next) => {
       console.log(next);
             

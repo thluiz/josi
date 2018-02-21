@@ -1,11 +1,16 @@
 @import "../../../assets/customizations.scss";
 
 .project.step {
-    width:220px;
-    max-width: 220px;
-    min-width: 220px;
-    float:left;
-    background-color: #EFEFEF;
+    width:280px;
+    max-width: 280px;
+    min-width: 280px;        
     min-height: 200px;
-    margin:5px;
+    height:80vh;
+    overflow-y: auto;        
+}
+
+.project.step .container {
+    padding:5px;
+    background-color: #EFEFEF;
+    height:100%;
 }
