@@ -5,10 +5,10 @@
 		<div class="col-12" *ngIf="!card.is_task">			
 			<a [routerLink]="['/organizations/projects', card.id]">{{ card.title }}</a>
 		</div>
-		<div class="col-12" *ngIf="card.is_task && card.template_id != 3">			
+		<div class="col-12" *ngIf="card.is_task && card.template_id != 1">			
 			{{ card.title }}			
 		</div>
-		<div class="col-12" *ngIf="card.is_task && card.template_id == 3">			
+		<div class="col-12" *ngIf="card.is_task && card.template_id == 1">			
 			<div class="row contact_title">
 				<div class="col-12">Comunicação</div>
 			</div>								
