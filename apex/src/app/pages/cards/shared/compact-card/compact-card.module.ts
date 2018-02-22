@@ -1,3 +1,4 @@
+import { PersonCardModule } from './../../../../shared/components/person-card/person-card.module';
 import { Card } from 'app/shared/models/card.model';
 import { CommonModule } from "@angular/common";
 import { FormsModule } from '@angular/forms';
@@ -10,7 +11,8 @@ import { CompactCardComponent } from './compact-card.component';
     imports: [
         CommonModule,
         FormsModule,
-        RouterModule        
+        RouterModule,
+        PersonCardModule     
     ],
     declarations: [       
         CompactCardComponent

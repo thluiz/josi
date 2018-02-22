@@ -5,8 +5,43 @@
 		<div class="col-12" *ngIf="!card.is_task">			
 			<a [routerLink]="['/organizations/projects', card.id]">{{ card.title }}</a>
 		</div>
-		<div class="col-12" *ngIf="card.is_task">			
-			{{ card.title }}
+		<div class="col-12" *ngIf="card.is_task && card.template_id != 3">			
+			{{ card.title }}			
+		</div>
+		<div class="col-12" *ngIf="card.is_task && card.template_id == 3">			
+			<div class="row contact_title">
+				<div class="col-12">Comunicação</div>
+			</div>								
+			<div class="row" *ngFor="let target of card.people">
+				<div class="col-12">
+					<person-card [person]="target"></person-card>
+				</div>
+			</div>
+		</div>
+		<div class="col-12" *ngIf="!card.is_task">
+			<div class="row">
+				<div class="col-9" style="vertical-align: bottom">
+					<ng-template ngFor let-sd [ngForOf]="card.steps_description" let-k=index let-m=first><span *ngIf="k != 0">/</span><span title="{{ sd.name }}">{{ sd.childrens }}</span></ng-template>			
+					<div *ngIf="card.due_date" class="card_due_date">{{ card.due_date_formated }}</div>
+				</div>
+				<div class="col-3">
+					<img src="https://myvtmiim.blob.core.windows.net/avatars/{{ l.avatar_img }}" 
+						title="{{ l.name }}"
+						*ngFor="let l of card.leaders" style="width:100%" />
+				</div>
+			</div>			
+		</div>
+		<div class="col-12" *ngIf="card.is_task">
+			<div class="row">
+				<div class="col-9">
+					<div *ngIf="card.due_date"  class="card_due_date">{{ card.due_date_formated }}</div>
+				</div>
+				<div class="col-3">
+					<img src="https://myvtmiim.blob.core.windows.net/avatars/{{ l.avatar_img }}" 
+						title="{{ l.name }}"
+						*ngFor="let l of card.leaders" style="width:100%" />
+				</div>
+			</div>
 		</div>
 	</div>
 	

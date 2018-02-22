@@ -9,6 +9,7 @@ export class Card {
     public parent: Card;
     public parent_id: number;
     public due_date: NgbDateStruct;
+    public due_date_formated: string;
     public abrev: string;
     public order: number;
     public leaders: any[];
@@ -18,4 +19,5 @@ export class Card {
     public childrens: Card[];     
     public steps: CardStep[]; 
     public is_task: boolean; 
+    public steps_description: { id: number, name: string, is_blocking_step : boolean, childrens: number }
 }
