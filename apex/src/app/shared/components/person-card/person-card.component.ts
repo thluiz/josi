@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class PersonCardComponent implements OnInit {  
 
   @Input() person: any;
+  @Input() showContacts = false;
 
   constructor() {
             

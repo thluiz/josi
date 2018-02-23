@@ -71,7 +71,22 @@
 				</div>
 			</div>																
 		</div>
-		<div class="row" style="border:1px solid red" style="line-height:10px">
+		<div class="row" *ngIf="showContacts && person.contacts && person.contacts.length > 0">
+			<div class="col-12">
+				<div class="row" style="margin-bottom:10px;">            
+					<div class="col-12">                                
+						<div *ngFor="let ct of person.contacts | onlyPrincipal, let k = index"> 							
+							<contact-listitem [contact]="ct"></contact-listitem>
+							<div *ngIf="ct.show_details" style="display:inline-block">({{ ct.details }})</div>
+						</div>
+						<a *ngIf="false" (click)="show_only_principal_contacts = false">
+							<i class="ft-chevrons-right"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" style="line-height:10px">
 			<person-status-line
 			[person]="person">
 			</person-status-line>

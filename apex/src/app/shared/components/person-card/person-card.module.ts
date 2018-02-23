@@ -1,20 +1,26 @@
+import { ContactListitemModule } from './../contact-listitem/contact-listitem.module';
 import { PersonStatusLineModule } from './../person-status-line/person-status-line.module';
+
 import { RouterModule } from '@angular/router';
 import { PersonCardComponent } from './person-card.component';
 
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
+import { FilterPrincipalPipeModule } from 'app/shared/pipes/filter-principal/filter-principal.module';
+import { FilterPrincipalPipe } from 'app/shared/pipes/filter-principal/filter-principal.pipe';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         RouterModule,
-        PersonStatusLineModule        
+        PersonStatusLineModule,
+        ContactListitemModule,
+        FilterPrincipalPipeModule      
     ],
     declarations: [       
-        PersonCardComponent
+        PersonCardComponent, FilterPrincipalPipe
     ], exports: [
         PersonCardComponent
     ]
