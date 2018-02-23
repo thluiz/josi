@@ -102,14 +102,19 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
 
     this.person.is_valid = true;
     
-    if(this.person.branch_id > 0 && this.person.is_active_member && (!this.person.program_id || this.person.program_id <= 0)) {
+    if(!this.person.is_active_member) {        
+        this.person.errors = [];      
+        return true;        
+    }
+
+    if(this.person.branch_id > 0 && (!this.person.program_id || this.person.program_id <= 0)) {
       this.person.errors['need_program'] = true;      
       this.person.is_valid = false;
     } else {
       this.person.errors['need_program'] = false;      
     }
 
-    if(this.person.program_id > 0 && this.person.is_active_member && (!this.person.domain_id || this.person.domain_id <= 0)) {      
+    if(this.person.program_id > 0 && (!this.person.domain_id || this.person.domain_id <= 0)) {      
       this.person.errors['need_domain'] = true;
       this.person.is_valid = false;
     } else {
