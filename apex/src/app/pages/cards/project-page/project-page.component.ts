@@ -82,6 +82,12 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  add_subproject() {
+    this.modalService.open(ModalType.AddProject, {
+      parent: this.project
+    });
+  }
+
   add_step() {
     
   }

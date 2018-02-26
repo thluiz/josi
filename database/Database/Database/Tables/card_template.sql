@@ -6,6 +6,9 @@
     [order]                   INT           DEFAULT ((0)) NOT NULL,
     [is_task]                 BIT           DEFAULT ((0)) NOT NULL,
     [require_target]          BIT           DEFAULT ((0)) NOT NULL,
+    [require_target_group]    BIT           DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC)
 );
+
+
 

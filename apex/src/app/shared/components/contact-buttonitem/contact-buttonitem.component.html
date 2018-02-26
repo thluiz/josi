@@ -1,0 +1,29 @@
+<span *ngIf="!contact_data.base_url">        
+    <i class="{{ contact_data.icon }}"
+    style="font-size:20px"
+    [style.color]="!showOnlyPrincipal && contact_data.principal ? 'green' : null"></i> 
+    {{ contact_data.contact }}
+</span>    
+
+<a  target="_blank" *ngIf="contact_data.base_url"
+    (click)="showContact = !showContact"
+    [style.color]="!showOnlyPrincipal && contact_data.principal ? 'green' : 'black'">
+    <i class="{{ contact_data.icon }}"
+    style="font-size:20px"></i>     			    
+</a>
+
+<a *ngIf="showContact && contact_data.contact.length < 17"
+    [href]="contact_data.safe_url">
+    {{ contact_data.contact }}
+</a>
+
+<a *ngIf="showContact && contact_data.contact.length > 17"    
+    title="{{ contact_data.contact }}"
+    [href]="contact_data.safe_url">
+    {{ contact_data.contact.substring(0, 14) + '...' }}
+</a> 
+
+<i *ngIf="contact_data.details && showContact"             
+    class="icon-info"
+    (click)="contact_data.show_details = !contact_data.show_details">                  
+</i>

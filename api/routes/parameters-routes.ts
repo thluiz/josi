@@ -75,4 +75,15 @@ export function configure_routes(app: any, connection_pool: any) {
 
         response.send(result.recordset[0]);
     });
+
+    app.get("/api/groups", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {                        
+        const result = await new sql.Request(pool)            
+        .query(`select * from [group] where active = 1 order by [order] for json path`);                
+        
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response);
+    });
 }

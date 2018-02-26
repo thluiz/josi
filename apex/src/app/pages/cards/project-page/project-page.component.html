@@ -16,7 +16,8 @@
                 <button type="button" class="btn btn-silver btn-lg" 
                     style="margin:5px;padding:2px;line-height:10px"
                     title="Adicionar Projeto"
-                    (click)="add_task();">
+                    *ngIf="!project.is_subproject"
+                    (click)="add_subproject();">
 
                     <i class="ft-plus"></i>
 			        <i class="fas fa-columns"></i>

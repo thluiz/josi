@@ -34,6 +34,7 @@ import { switchMap } from 'rxjs/operators';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
 
 import { Card } from 'app/shared/models/card.model';
+import { Group } from 'app/shared/models/group.model';
 
 export enum CardType {
   Task,
@@ -62,6 +63,10 @@ export class NewCardModalComponent implements OnInit {
   card_is_valid = false;
   card_validation: string[];
   operators: any[];
+  search_failed = false;
+  searching_people = false;
+  groups: Group[];
+  branches: any[];
 
   @ViewChild('add_card_modal') add_card_modal: ElementRef;
 
@@ -82,13 +87,16 @@ export class NewCardModalComponent implements OnInit {
   }  
 
   open(initial_state :any = {}) {       
-    this.type = initial_state.card_type || CardType.Task;
-    
+    this.type = initial_state.card_type || CardType.Task;    
+
     Observable.zip(
       this.cardService.getOrganizations(true),                  
       this.parameterService.getCardTemplates(),
       this.cardService.getOperators(),
-      (organizations : any[], templates : any[], operators: any[]) => {        
+      this.parameterService.getGroups(),
+      this.parameterService.getActiveBranches(),
+      (organizations : any[], templates : any[], operators: any[], 
+        groups: Group[], branches: any[]) => {        
         this.organizations = organizations;        
         this.templates = templates.filter(t => !t.automatically_generated 
                                           && t.active
@@ -100,6 +108,8 @@ export class NewCardModalComponent implements OnInit {
                                   });    
 
         this.operators = operators;
+        this.groups = groups;
+        this.branches = branches;
 
         this.reset_card(initial_state);
         this.open_modal(this.add_card_modal, true);        
@@ -119,6 +129,23 @@ export class NewCardModalComponent implements OnInit {
     if(!this.card.leaders) {
       this.card_is_valid = false;
       this.card_validation[this.card_validation.length] =  "Informe o responsável";
+    }
+
+    if(this.card.template) {
+      if(this.card.template.require_target && (!this.card.people || this.card.people.length == 0)) {
+        this.card_is_valid = false;
+        this.card_validation[this.card_validation.length] =  "Informe o interlocutor da tarefa";
+      }
+
+      if(this.card.template.require_target_group && !this.card.group) {
+        this.card_is_valid = false;
+        this.card_validation[this.card_validation.length] =  "Informe o grupo para gerar as tarefas";
+      }
+
+      if(this.card.group && !this.card.branch && !this.card.group.allow_no_branch) {
+        this.card_is_valid = false;
+        this.card_validation[this.card_validation.length] =  "Informe o subgrupo para gerar as tarefas";
+      }
     }
 
     if(!this.card.title || this.card.title.length <= 5) {
@@ -144,7 +171,10 @@ export class NewCardModalComponent implements OnInit {
   }
 
   register_new_card() {
-    console.log(this.card);
+    if(!this.card.template.require_target) {
+      this.card.people = null;
+    }
+    
     this.cardService.saveCard(this.card).subscribe((data) => {
       console.log(data);
       if(this.modalRef) {
@@ -157,11 +187,53 @@ export class NewCardModalComponent implements OnInit {
     return p1 != null && p2 != null && p1.id == p2.id
   }
 
+  remove_person_from_new_card(person) {
+    this.card.people = this.card.people.filter(p => p.person_id != person.person_id);            
+    this.validate_new_card();
+  }
+
+  search_people = (text$: Observable<string>) =>
+    text$
+      .debounceTime(300)
+      .distinctUntilChanged()
+      .do(() => this.searching_people = true)
+      .switchMap(term =>
+        this.personService.search(term)
+          .map(response =>  {             
+            return <string[]>response; 
+          })
+          .do(() => this.search_failed = false)
+          .catch(() => {
+            this.search_failed = true;
+            return Observable.of([]);
+          }))
+      .do(() => this.searching_people = false)
+
+  people_typeahead_formatter = (x) => x.name;
+
+  add_person_to_new_card(event) {    
+    if(!event.name) {
+      return;
+    }
+
+    if(!this.card.people) {
+      this.card.people = [];
+    }
+
+    this.card.people.push(event);
+    this.card.tmp_person = "";
+    this.validate_new_card();
+  }
+
   private reset_card(initial_state :Card){   
     this.card = initial_state;
     
-    if(!this.card.template_id && this.templates && this.templates.length > 0) {
-      this.card.template_id = this.templates[0].id;
+    if(initial_state && initial_state.parent != null) {
+      this.card.leaders = initial_state.parent.leaders[0];
+    }
+
+    if(!this.card.template && this.templates && this.templates.length > 0) {
+      this.card.template = this.templates[0];
     }
     
     this.validate_new_card();

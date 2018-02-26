@@ -17,6 +17,7 @@ export class ParameterService {
     private branches$ = new ReplaySubject(1);
     private programs$ = new ReplaySubject(1);
     private domains$ = new ReplaySubject(1);
+    private group$ = new ReplaySubject(1);
     
     private personCardPositions$ = new ReplaySubject(1);
     private cardTemplates$ = new ReplaySubject(1);
@@ -62,7 +63,10 @@ export class ParameterService {
     getCardTemplates(forceRefresh?: boolean) {
         return this.cache_results(this.cardTemplates$, `/card_templates`, forceRefresh);                      
     }
-    
+
+    getGroups(forceRefresh?: boolean) {
+        return this.cache_results(this.group$, `/groups`, forceRefresh);                      
+    }    
 
     private cache_results(observable : ReplaySubject<any>, endpoint:string, forceRefresh?: boolean) {
         if (!observable.observers.length || forceRefresh) {

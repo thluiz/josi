@@ -1,4 +1,5 @@
-import { ContactListitemModule } from './../contact-listitem/contact-listitem.module';
+import { ContactButtonitemModule } from '../contact-buttonitem/contact-buttonitem.module';
+import { ContactListitemModule } from '../contact-listitem/contact-listitem.module';
 import { PersonStatusLineModule } from './../person-status-line/person-status-line.module';
 
 import { RouterModule } from '@angular/router';
@@ -17,6 +18,7 @@ import { FilterPrincipalPipe } from 'app/shared/pipes/filter-principal/filter-pr
         RouterModule,
         PersonStatusLineModule,
         ContactListitemModule,
+        ContactButtonitemModule,
         FilterPrincipalPipeModule      
     ],
     declarations: [       
