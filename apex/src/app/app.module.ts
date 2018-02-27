@@ -32,6 +32,7 @@ import { IncidentCommentsListModalModule } from 'app/shared/components/incident-
 import { NewCardModalModule } from './shared/components/new-card-modal/new-card-modal.module';
 import { NewIncidentModalModule } from './shared/components/new-incident-modal/new-incident-modal.module';
 import { NewPersonModalModule } from 'app/shared/components/new-person-modal/new-person-modal.module';
+import { CardDetailModalModule } from 'app/shared/components/card-detail-modal/card-detail-modal.module';
 
 @NgModule({
     declarations: [
@@ -51,7 +52,8 @@ import { NewPersonModalModule } from 'app/shared/components/new-person-modal/new
         IncidentCommentsListModalModule,
         NewPersonModalModule,
         NewIncidentModalModule,
-        NewCardModalModule               
+        NewCardModalModule,
+        CardDetailModalModule               
         //BrowserModule,
         //FormsModule, 
         //JsonpModule

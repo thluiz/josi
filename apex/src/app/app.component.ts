@@ -1,3 +1,4 @@
+import { CardDetailModalComponent } from './shared/components/card-detail-modal/card-detail-modal.component';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 
@@ -26,6 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild(NewPersonModalComponent) newPersonModal : NewPersonModalComponent;
     @ViewChild(NewInicidentModalComponent) newIncidentModal : NewInicidentModalComponent;
     @ViewChild(NewCardModalComponent) newCardModal : NewCardModalComponent;
+    @ViewChild(CardDetailModalComponent) cardDetailModal : CardDetailModalComponent;
 
     constructor(private modalService: ModalService) {
 
@@ -50,6 +52,9 @@ export class AppComponent implements OnInit, OnDestroy {
                         break;
                     case ModalType.AddIncidentComment:
                         this.addCommentModal.open(data.parameters, CommentType.Incident);
+                        break;
+                    case ModalType.AddCardComment:
+                        this.addCommentModal.open(data.parameters, CommentType.Card);
                         break;
                     case ModalType.IncidentCommentList:
                         this.incidentCommentsList.open(data.parameters);
@@ -80,6 +85,9 @@ export class AppComponent implements OnInit, OnDestroy {
                         }
                         data.parameters.card_type = CardType.ProjectTask;
                         this.newCardModal.open(data.parameters);
+                        break;
+                    case ModalType.DetailTask:                        
+                        this.cardDetailModal.open(data.parameters);
                         break;
                 }
             });

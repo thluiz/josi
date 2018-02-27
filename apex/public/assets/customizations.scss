@@ -62,3 +62,29 @@ compact-card {
     max-width: 250px;
     cursor: pointer;
 }
+
+.card_due_date {
+    font-size:10px;
+    background-color:green;
+    color:white;
+    padding:3px;
+    padding-top:5px;
+    width:35px;
+    border-radius: 10px;
+    line-height: 10px;
+    display: inline-block;
+    margin-right: 1px;
+    margin-left: 1px;
+}
+
+.contact_title {
+    font-size:10px;    
+}
+
+.card_comment_count {
+    font-size:10px;
+    color:gray;
+    display: inline-block;
+    margin-right: 1px;
+    margin-left: 1px;
+}

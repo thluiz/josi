@@ -25,6 +25,13 @@
             Salvar
         </button>
 
+        <button type="button" class="btn btn-success" 
+            (click)="save_card_comment(d);"
+            *ngIf="type == types.Card">
+            <i class="icon-check"></i>
+            Salvar
+        </button>
+
         <button type="button" class="btn btn-silver"                         
             (click)="d('Cancel')">
             <i class="icon-action-undo"></i>          

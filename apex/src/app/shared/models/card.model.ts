@@ -9,6 +9,9 @@ export class Card {
     public title: string;    
     public parent: Card;
     public parent_id: number;
+    public parent_title: string;
+    public high_level_id: number;
+    public high_level_title: string;
     public due_date: NgbDateStruct;
     public due_date_formated: string;
     public abrev: string;
@@ -25,4 +28,5 @@ export class Card {
     public is_subproject: boolean;
     public group: Group;
     public branch: { id: number, name: string }
+    public comment_count: number;
 }

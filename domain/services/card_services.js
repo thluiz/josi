@@ -66,6 +66,15 @@ class CardService {
                 .execute(`SaveCardOrder`);
         });
     }
+    save_card_comment(card, commentary, user_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield new sql.Request(this.sql_pool)
+                .input('card_id', sql.Int, card.id)
+                .input('commentary', sql.NVarChar(sql.MAX), commentary)
+                .input('user_id', sql.Int, user_id)
+                .execute(`SaveCardCommentary`);
+        });
+    }
 }
 exports.CardService = CardService;
 //# sourceMappingURL=card_services.js.map

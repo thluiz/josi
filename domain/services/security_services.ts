@@ -6,6 +6,18 @@ export enum Permissions {
     Director
 }
 
+export class User{ 
+    id: number; 
+    person_id: number;
+    email: string; 
+    name:string; 
+    avatar_img: string;
+    is_operator:boolean; 
+    is_manager:boolean;
+    is_director:boolean;
+    is_disciple:boolean;    
+}
+
 export class SecurityService {    
     private static get_config () {
         if (process.env.LOAD_ENV === 'true') {
@@ -106,10 +118,10 @@ export class SecurityService {
                 if(user) {
                     switch(permission) {
                         case(Permissions.Operator):
-                            has_permission = user.is_operator || user.is_director || user.id_manager;
+                            has_permission = user.is_operator || user.is_director || user.is_manager;
                             break;
                         case(Permissions.Manager):
-                            has_permission = user.is_director || user.id_manager;
+                            has_permission = user.is_director || user.is_manager;
                             break;
                         case(Permissions.Director):
                             has_permission = user.is_director;
@@ -138,7 +150,7 @@ export class SecurityService {
         }
     }
 
-    static async getUserFromRequest(req) {
+    static async getUserFromRequest(req) : Promise<User> {
         if(process.env.LOAD_ENV === 'true') {                        
             let user = this.findUserByToken(process.env.TOKEN_USER_DEV, () => {});
             return user;

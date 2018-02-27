@@ -102,6 +102,31 @@ export function configure_routes(app: any, connection_pool: any) {
             req.params.id > 0 ? response[0] : response);
     });
 
+    app.post("/api/cards_comments", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {          
+        let user = await SecurityService.getUserFromRequest(req);
+        let result = await card_service.save_card_comment(req.body.card, req.body.comment, user.id);
+
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response);
+    });
+
+    app.get("/api/cards_comments/:card_id", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+
+        const result = await new sql.Request(pool)  
+        .input("card_id", sql.Int, req.params.card_id)                  
+        .execute(`GetCardCommentaries`);                
+
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response);
+
+    });
+
     app.post("/api/cards/steps", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {          
@@ -128,5 +153,6 @@ export function configure_routes(app: any, connection_pool: any) {
 
         res.send({ sucess: true});
     });
+    
 
 }

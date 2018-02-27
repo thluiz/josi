@@ -54,5 +54,14 @@ export class CardService {
         .input('order', sql.Int, order)
         .execute(`SaveCardOrder`);
     }
+
+    async save_card_comment(card, commentary, user_id) {        
+        return await new sql.Request(this.sql_pool)
+        .input('card_id', sql.Int, card.id)
+        .input('commentary', sql.NVarChar(sql.MAX), commentary)
+        .input('user_id', sql.Int, user_id)
+        .execute(`SaveCardCommentary`);
+    }
+    
     
 }

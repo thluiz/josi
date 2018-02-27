@@ -66,6 +66,19 @@ function configure_routes(app, connection_pool) {
         res.send(response[0].empty ? [] :
             req.params.id > 0 ? response[0] : response);
     }));
+    app.post("/api/cards_comments", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let user = yield security_services_1.SecurityService.getUserFromRequest(req);
+        let result = yield card_service.save_card_comment(req.body.card, req.body.comment, user.id);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
+    app.get("/api/cards_comments/:card_id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input("card_id", sql.Int, req.params.card_id)
+            .execute(`GetCardCommentaries`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
     app.post("/api/cards/steps", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield card_service.save_card_step(req.body.card_id, req.body.step_id);
         let response = result.recordset[0];

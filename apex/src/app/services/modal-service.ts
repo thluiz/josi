@@ -7,12 +7,14 @@ export enum ModalType{
     IncidentTreatment,
     AddPersonComment,
     AddIncidentComment,
+    AddCardComment,
     IncidentCommentList,
     AddPerson,
     AddIncident,
     AddTask,
     AddProject,
-    AddProjectTask
+    AddProjectTask,
+    DetailTask
 }
 
 export interface IModalOpening {

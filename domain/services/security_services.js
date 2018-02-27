@@ -15,6 +15,9 @@ var Permissions;
     Permissions[Permissions["Manager"] = 1] = "Manager";
     Permissions[Permissions["Director"] = 2] = "Director";
 })(Permissions = exports.Permissions || (exports.Permissions = {}));
+class User {
+}
+exports.User = User;
 class SecurityService {
     static get_config() {
         if (process.env.LOAD_ENV === 'true') {
@@ -101,10 +104,10 @@ class SecurityService {
                 if (user) {
                     switch (permission) {
                         case (Permissions.Operator):
-                            has_permission = user.is_operator || user.is_director || user.id_manager;
+                            has_permission = user.is_operator || user.is_director || user.is_manager;
                             break;
                         case (Permissions.Manager):
-                            has_permission = user.is_director || user.id_manager;
+                            has_permission = user.is_director || user.is_manager;
                             break;
                         case (Permissions.Director):
                             has_permission = user.is_director;

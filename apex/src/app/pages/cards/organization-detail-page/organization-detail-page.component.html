@@ -1,7 +1,17 @@
-<div class="card text-center">    
+<div class="card">    
     <diary-header panel="managers"></diary-header>    
 
     <div class="card-body">
+        <div class="row">
+            <div class="col-10 text-left">                                
+                <h3>
+                    <a [routerLink]="['/organizations']">
+                        Todos > 
+                    </a>                  
+                    {{ organization.title }}                    
+                </h3>
+            </div>
+        </div>
         <div class="row text-left">
             <div class="col-8">
                 <organization-card                                                         

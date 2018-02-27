@@ -5,12 +5,18 @@
 		<div class="col-12" *ngIf="!card.is_task">			
 			<a [routerLink]="['/organizations/projects', card.id]">{{ card.title }}</a>
 		</div>
-		<div class="col-12" *ngIf="card.is_task && card.template_id != 1">			
-			{{ card.title }}			
+		<div class="col-12" *ngIf="card.is_task && card.template_id != 1">	
+			<a (click)="open_detail_modal()">
+				{{ card.title }}			
+			</a>		
 		</div>
 		<div class="col-12" *ngIf="card.is_task && card.template_id == 1">			
-			<div class="row contact_title">
-				<div class="col-12">Comunicação</div>
+			<div class="row ">
+				<div class="col-12">
+					<a (click)="open_detail_modal()">
+						{{ card.title }}
+					</a>
+				</div>
 			</div>								
 			<div class="row" *ngFor="let target of card.people">
 				<div class="col-12">
@@ -35,6 +41,10 @@
 			<div class="row">
 				<div class="col-9">
 					<div *ngIf="card.due_date"  class="card_due_date">{{ card.due_date_formated }}</div>
+					<div *ngIf="card.comment_count > 0" class="card_comment_count">						
+						{{ card.comment_count }}
+						<i class="far fa-sticky-note"></i> 
+					</div>
 				</div>
 				<div class="col-3">
 					<img src="https://myvtmiim.blob.core.windows.net/avatars/{{ l.avatar_img }}" 

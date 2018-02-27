@@ -5,9 +5,11 @@ import { HttpClient } from '@angular/common/http';
 import {Observable, ReplaySubject} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
 import { Subject }    from 'rxjs/Subject';
+import { CardCommentary } from 'app/shared/models/card-commentary.model';
 
 export const CARD_ADDED = "CARD_ADDED"
 export const CARD_CHANGED = "CARD_CHANGED"
+export const CARD_COMMENT_ADDED = "CARD_COMMENT_ADDED";
 
 export class CardAddedAction {
   public type = CARD_ADDED;
@@ -25,24 +27,33 @@ export class CardChangedAction {
   } 
 }
 
-export type CardAction = CardAddedAction | CardChangedAction;
+export class CardCommentAddedAction {
+  public type = CARD_COMMENT_ADDED;
+
+  constructor(public payload: CardCommentary[]) {
+
+  } 
+}
+
+export type CardAction = CardAddedAction | CardChangedAction | CardCommentAddedAction;
 
 @Injectable()
 export class CardService {
-  saveCardStep(card_id: number, step_id: number) {
-    return this.http.post(this.dataUrl + `/cards/steps`, { card_id, step_id })
-    .do((data : Card) => this.card_changes.next(new CardChangedAction(data)));
-  }
   private dataUrl = environment.api_url;    
 
   private card_changes = new Subject<CardAction>();
-  commentChanges$  = this.card_changes.asObservable();  
+  cardChanges$  = this.card_changes.asObservable();  
 
   constructor(private http: HttpClient, private utilsService: UtilsService) { }  
 
   saveCard(card : Card) {
     return this.http.post(this.dataUrl + `/cards`, { card: card })
     .do((data : Card) => this.card_changes.next(new CardAddedAction(data[0])));
+  }
+
+  saveCardStep(card_id: number, step_id: number) {
+    return this.http.post(this.dataUrl + `/cards/steps`, { card_id, step_id })
+    .do((data : Card) => this.card_changes.next(new CardChangedAction(data)));
   }
 
   getOrganizations(include_childrens = false) {
@@ -116,6 +127,15 @@ export class CardService {
     }
 
     return Observable.forkJoin(requests);
+  }
+
+  saveComment(card: Card, comment: string) {
+    return this.http.post(this.dataUrl + `/cards_comments`, { card, comment })
+    .do((data : any) => this.card_changes.next(new CardCommentAddedAction(data)));
+  }
+
+  getCardCommentaries(card: Card) {
+    return this.http.get(this.dataUrl + `/cards_comments/${card.id}`);
   }
 
 }

@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/subscription';
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -26,8 +26,8 @@ export class CompactCardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {    
-    this.card_actions = this.cardService.commentChanges$
-    .filter(ca => ca.type == CARD_CHANGED && ca.payload.id == this.card.id)
+    this.card_actions = this.cardService.cardChanges$
+    .filter((ca: any) => ca.type == CARD_CHANGED && ca.payload.id == this.card.id)
     .subscribe((action) => {
       this.card = action.payload;
     });
@@ -37,6 +37,10 @@ export class CompactCardComponent implements OnInit, OnDestroy {
     if(this.card_actions) {
       this.card_actions.unsubscribe();
     }
+  }
+
+  open_detail_modal() {        
+    this.modalService.open(ModalType.DetailTask, this.card);
   }
 
   updateOrganization() {    
