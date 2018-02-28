@@ -228,7 +228,7 @@ export class NewCardModalComponent implements OnInit {
   private reset_card(initial_state :Card){   
     this.card = initial_state;
     
-    if(initial_state && initial_state.parent != null) {
+    if(initial_state && initial_state.parent != null && initial_state.parent.leaders && initial_state.parent.leaders.length > 0) {
       this.card.leaders = initial_state.parent.leaders[0];
     }
 

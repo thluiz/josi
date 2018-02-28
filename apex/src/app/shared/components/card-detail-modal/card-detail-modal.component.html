@@ -97,6 +97,12 @@
         </div>    
     </div>
     <div class="modal-footer">
+        <button type="button" class="btn btn-silver"
+        (click)="edit_card()"
+        >
+            <i class="fas fa-edit"></i>
+            Alterar
+        </button>
         <button type="button" class="btn btn-silver" 			
             *ngIf="!begin_remove"
             (click)="begin_remove = true">

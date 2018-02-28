@@ -33,6 +33,7 @@ import { NewCardModalModule } from './shared/components/new-card-modal/new-card-
 import { NewIncidentModalModule } from './shared/components/new-incident-modal/new-incident-modal.module';
 import { NewPersonModalModule } from 'app/shared/components/new-person-modal/new-person-modal.module';
 import { CardDetailModalModule } from 'app/shared/components/card-detail-modal/card-detail-modal.module';
+import { CardEditModalModule } from 'app/shared/components/card-edit-modal/card-edit-modal.module';
 
 @NgModule({
     declarations: [
@@ -53,7 +54,8 @@ import { CardDetailModalModule } from 'app/shared/components/card-detail-modal/c
         NewPersonModalModule,
         NewIncidentModalModule,
         NewCardModalModule,
-        CardDetailModalModule               
+        CardDetailModalModule,
+        CardEditModalModule              
         //BrowserModule,
         //FormsModule, 
         //JsonpModule

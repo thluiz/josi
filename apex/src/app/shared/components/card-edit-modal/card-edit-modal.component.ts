@@ -17,19 +17,19 @@ import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModa
 
 
 @Component({
-  selector: 'card-detail-modal',
-  templateUrl: './card-detail-modal.component.html',
+  selector: 'card-edit-modal',
+  templateUrl: './card-edit-modal.component.html',
   styleUrls: ['../../../../assets/customizations.scss'],
   providers: [ DatePickerI18n,
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
-export class CardDetailModalComponent implements OnInit {  
+export class CardEditModalComponent implements OnInit {  
   card: Card;
   commentaries: CardCommentary[];
   begin_remove = false;
 
-  @ViewChild('card_detail_modal') card_detail_modal: ElementRef;
+  @ViewChild('card_edit_modal') card_edit_modal: ElementRef;
 
   private card_actions : Subscription;
 
@@ -61,28 +61,6 @@ export class CardDetailModalComponent implements OnInit {
     this.card_actions.unsubscribe();
   }
 
-  show_comments() {
-
-  }
-
-  add_comment() {
-    this.modalService.open(ModalType.AddCardComment, this.card);
-  }
-
-  archive_card(close_action) {
-    console.log(close_action);
-    this.cardService.archiveCard(this.card).subscribe((data) => {
-      console.log(data);
-      if(close_action) {
-        close_action();
-      }
-    });
-  }
-
-  edit_card() {
-    this.modalService.open(ModalType.EditCard, this.card);
-  }
-
   open(card) {    
     this.card = card;
     this.begin_remove = false;
@@ -93,7 +71,7 @@ export class CardDetailModalComponent implements OnInit {
 
         this.commentaries = commentaries;
 
-        this.open_modal(this.card_detail_modal, true);
+        this.open_modal(this.card_edit_modal, true);
 
       }).subscribe();              
   }

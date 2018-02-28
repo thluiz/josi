@@ -1,3 +1,4 @@
+import { CardEditModalComponent } from './shared/components/card-edit-modal/card-edit-modal.component';
 import { CardDetailModalComponent } from './shared/components/card-detail-modal/card-detail-modal.component';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
@@ -28,6 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild(NewInicidentModalComponent) newIncidentModal : NewInicidentModalComponent;
     @ViewChild(NewCardModalComponent) newCardModal : NewCardModalComponent;
     @ViewChild(CardDetailModalComponent) cardDetailModal : CardDetailModalComponent;
+    @ViewChild(CardEditModalComponent) cardEditModal : CardEditModalComponent;
 
     constructor(private modalService: ModalService) {
 
@@ -88,6 +90,9 @@ export class AppComponent implements OnInit, OnDestroy {
                         break;
                     case ModalType.DetailTask:                        
                         this.cardDetailModal.open(data.parameters);
+                        break;
+                    case ModalType.EditCard:                        
+                        this.cardEditModal.open(data.parameters);
                         break;
                 }
             });
