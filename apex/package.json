@@ -23,6 +23,7 @@
     "@angular/platform-server": "^5.0.0",
     "@angular/router": "^5.0.0",
     "@angular/service-worker": "^5.2.1",
+    "@markpieszak/ng-application-insights": "^4.0.0",
     "@ng-bootstrap/ng-bootstrap": "^1.0.0-beta.5",
     "@swimlane/ngx-datatable": "^11.0.4",
     "@thluiz/ngx-inline-editor": "git+ssh://git@github.com/thluiz/ngx-inline-editor.git",

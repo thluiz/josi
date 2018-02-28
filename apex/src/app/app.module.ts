@@ -1,3 +1,4 @@
+import { AppInsightsService, ApplicationInsightsModule } from '@markpieszak/ng-application-insights';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -55,7 +56,10 @@ import { CardEditModalModule } from 'app/shared/components/card-edit-modal/card-
         NewIncidentModalModule,
         NewCardModalModule,
         CardDetailModalModule,
-        CardEditModalModule              
+        CardEditModalModule,        
+        ApplicationInsightsModule.forRoot({
+            instrumentationKey: 'afcbdd7f-c599-45cd-8555-812c83b75ae6'
+        })            
         //BrowserModule,
         //FormsModule, 
         //JsonpModule
@@ -74,7 +78,8 @@ import { CardEditModalModule } from 'app/shared/components/card-edit-modal/card-
         UtilsService,
         ModalService,
         SecurityService,
-        CardService                  
+        CardService,
+        AppInsightsService                  
     ],
     bootstrap: [AppComponent]
 })
