@@ -8,6 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+if (process.env.LOAD_ENV === 'true') {
+    require('dotenv').load();
+}
+const appInsights = require("applicationinsights");
+appInsights.setup(process.env.AZURE_APP_INSIGHTS);
+appInsights.start();
 const security_services_1 = require("./domain/services/security_services");
 const sql = require("mssql");
 const builder = require("botbuilder");
@@ -21,9 +27,6 @@ var helmet = require('helmet');
 var session = require('express-session');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
-if (process.env.LOAD_ENV === 'true') {
-    require('dotenv').load();
-}
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,

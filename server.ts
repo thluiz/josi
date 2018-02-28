@@ -1,3 +1,11 @@
+if (process.env.LOAD_ENV === 'true') {
+    require('dotenv').load();
+}
+
+const appInsights = require("applicationinsights");
+appInsights.setup(process.env.AZURE_APP_INSIGHTS);
+appInsights.start();
+
 import { SecurityService, Permissions } from './domain/services/security_services';
 import * as sql from 'mssql';
 import * as builder from 'botbuilder';
@@ -13,10 +21,6 @@ var helmet = require('helmet');
 var session = require('express-session');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
-
-if (process.env.LOAD_ENV === 'true') {
-    require('dotenv').load();
-}
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
