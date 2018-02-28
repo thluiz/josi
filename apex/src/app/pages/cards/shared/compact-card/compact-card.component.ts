@@ -2,7 +2,7 @@ import { Subscription } from 'rxjs/subscription';
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { CardService, CARD_CHANGED } from 'app/services/card-service';
+import { CardService, CARD_CHANGED, CARD_COMMENT_ADDED } from 'app/services/card-service';
 import { ParameterService } from 'app/services/parameter-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 
@@ -30,6 +30,14 @@ export class CompactCardComponent implements OnInit, OnDestroy {
     .filter((ca: any) => ca.type == CARD_CHANGED && ca.payload.id == this.card.id)
     .subscribe((action) => {
       this.card = action.payload;
+    });
+
+    this.card_actions = this.cardService.cardChanges$
+    .filter((ca: any) => ca.type == CARD_COMMENT_ADDED && ca.payload.card.id == this.card.id)    
+    .subscribe((action) => {
+      console.log(action);
+      this.card = action.payload.card;
+      this.card.comment_count = action.payload.commentaries.length;
     });
   }
 

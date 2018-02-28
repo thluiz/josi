@@ -50,6 +50,13 @@ class CardService {
                 .execute(`RemovePersonCard`);
         });
     }
+    toggle_card_archived(card) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield new sql.Request(this.sql_pool)
+                .input('card_id', sql.Int, card.id)
+                .execute(`ToggleCardArchived`);
+        });
+    }
     save_card_step(card_id, step_id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield new sql.Request(this.sql_pool)

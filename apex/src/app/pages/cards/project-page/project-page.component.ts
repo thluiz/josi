@@ -1,11 +1,10 @@
 import { DragulaService } from 'ng2-dragula';
-import { CARD_ADDED } from './../../../services/card-service';
 import { Subscription } from 'rxjs';
 import { ModalType } from './../../../services/modal-service';
 import { ModalService } from 'app/services/modal-service';
 import { Card } from './../../../shared/models/card.model';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CardService } from 'app/services/card-service';
+import { CardService, CARD_CHANGED, CARD_ADDED, CARD_ARCHIVED } from 'app/services/card-service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 const PROJECT_BAG_NAME = 'childrens';
@@ -60,12 +59,12 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     });    
 
     this.card_actions = this.cardService.cardChanges$
-    .filter((ca: any) => ca.type == CARD_ADDED && this.project 
+    .filter((ca: any) => 
+        (ca.type == CARD_ADDED || ca.type == CARD_ARCHIVED) 
+        && this.project 
         && ((ca.payload.parent && ca.payload.parent.id == this.project.id)
             || (ca.payload.parent_id == this.project.id)))
-    .subscribe((next) => {
-      console.log(next);
-            
+    .subscribe((next) => {         
       this.load_project();
     });    
   }

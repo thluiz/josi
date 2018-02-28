@@ -92,6 +92,11 @@ function configure_routes(app, connection_pool) {
         let result = yield card_service.remove_person_card(req.body.person_card);
         res.send({ sucess: true });
     }));
+    app.post("/api/archive_card", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield card_service.toggle_card_archived(req.body.card);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response[0]);
+    }));
 }
 exports.configure_routes = configure_routes;
 //# sourceMappingURL=cards-routes.js.map

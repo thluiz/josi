@@ -41,6 +41,12 @@ export class CardService {
         .execute(`RemovePersonCard`);
     }
 
+    async toggle_card_archived(card) {
+        return await new sql.Request(this.sql_pool)
+        .input('card_id', sql.Int, card.id)        
+        .execute(`ToggleCardArchived`);
+    }    
+
     async save_card_step(card_id, step_id) {
         return await new sql.Request(this.sql_pool)
         .input('card_id', sql.Int, card_id)

@@ -4,29 +4,30 @@ import { CardStep } from './card-step.model';
 import { Location } from './location.model';
 
 export class Card {
-    public id: number;
-    public template: { id: number, name: string, is_task: boolean, require_target: boolean, require_target_group: boolean };
-    public title: string;    
-    public parent: Card;
-    public parent_id: number;
-    public parent_title: string;
-    public high_level_id: number;
-    public high_level_title: string;
-    public due_date: NgbDateStruct;
-    public due_date_formated: string;
-    public abrev: string;
-    public order: number;
-    public leaders: any[];
-    public people: any[];
-    public location: Location;
-    public description: string;
-    public childrens: Card[];     
-    public steps: CardStep[]; 
-    public is_task: boolean; 
-    public steps_description: { id: number, name: string, is_blocking_step : boolean, childrens: number }
-    public tmp_person: any;
-    public is_subproject: boolean;
-    public group: Group;
-    public branch: { id: number, name: string }
-    public comment_count: number;
+    id: number;
+    template: { id: number, name: string, is_task: boolean, require_target: boolean, require_target_group: boolean };
+    title: string;    
+    parent: Card;
+    parent_id: number;
+    parent_title: string;
+    high_level_id: number;
+    high_level_title: string;
+    due_date: NgbDateStruct;
+    due_date_formated: string;
+    abrev: string;
+    order: number;
+    leaders: any[];
+    people: any[];
+    location: Location;
+    description: string;
+    childrens: Card[];     
+    steps: CardStep[]; 
+    is_task: boolean; 
+    steps_description: { id: number, name: string, is_blocking_step : boolean, childrens: number }
+    tmp_person: any;
+    is_subproject: boolean;
+    group: Group;
+    branch: { id: number, name: string }
+    comment_count: number;
+    archived: boolean;
 }

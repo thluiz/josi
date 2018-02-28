@@ -10,6 +10,7 @@ import { CardCommentary } from 'app/shared/models/card-commentary.model';
 export const CARD_ADDED = "CARD_ADDED"
 export const CARD_CHANGED = "CARD_CHANGED"
 export const CARD_COMMENT_ADDED = "CARD_COMMENT_ADDED";
+export const CARD_ARCHIVED = "CARD_ARCHIVED";
 
 export class CardAddedAction {
   public type = CARD_ADDED;
@@ -27,15 +28,23 @@ export class CardChangedAction {
   } 
 }
 
-export class CardCommentAddedAction {
-  public type = CARD_COMMENT_ADDED;
+export class CardArchivedAction {
+  public type = CARD_ARCHIVED;
 
-  constructor(public payload: CardCommentary[]) {
+  constructor(public payload: Card) {
 
   } 
 }
 
-export type CardAction = CardAddedAction | CardChangedAction | CardCommentAddedAction;
+export class CardCommentAddedAction {
+  public type = CARD_COMMENT_ADDED;
+
+  constructor(public payload: {card: Card, commentaries: CardCommentary[] }) {
+
+  } 
+}
+
+export type CardAction = CardAddedAction | CardChangedAction | CardCommentAddedAction | CardArchivedAction;
 
 @Injectable()
 export class CardService {
@@ -49,6 +58,11 @@ export class CardService {
   saveCard(card : Card) {
     return this.http.post(this.dataUrl + `/cards`, { card: card })
     .do((data : Card) => this.card_changes.next(new CardAddedAction(data[0])));
+  }
+
+  archiveCard(card : Card) {
+    return this.http.post(this.dataUrl + `/archive_card`, { card: card })
+    .do((data : Card) => this.card_changes.next(new CardArchivedAction(data)));
   }
 
   saveCardStep(card_id: number, step_id: number) {
@@ -131,7 +145,7 @@ export class CardService {
 
   saveComment(card: Card, comment: string) {
     return this.http.post(this.dataUrl + `/cards_comments`, { card, comment })
-    .do((data : any) => this.card_changes.next(new CardCommentAddedAction(data)));
+    .do((data : CardCommentary[]) => this.card_changes.next(new CardCommentAddedAction({card: card, commentaries: data})));
   }
 
   getCardCommentaries(card: Card) {

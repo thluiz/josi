@@ -97,6 +97,26 @@
         </div>    
     </div>
     <div class="modal-footer">
-        2
+        <button type="button" class="btn btn-silver" 			
+            *ngIf="!begin_remove"
+            (click)="begin_remove = true">
+            <i class="ft-trash-2"></i>
+            Excluir
+        </button>
+        <span *ngIf="begin_remove">
+            Confirma exclusão?
+        </span>
+        <button type="button" class="btn btn-danger" 
+            *ngIf="begin_remove"
+            (click)="archive_card(d);">
+            <i class="ft-trash-2"></i>
+            Excluir
+        </button>
+        <button type="button" class="btn btn-secondary" 
+            *ngIf="begin_remove"
+            (click)="begin_remove = false">
+            <i class="icon-action-undo"></i>
+            Não
+        </button>
     </div>
 </ng-template>

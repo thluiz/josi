@@ -154,5 +154,14 @@ export function configure_routes(app: any, connection_pool: any) {
         res.send({ sucess: true});
     });
     
+    app.post("/api/archive_card", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {          
+        let result = await card_service.toggle_card_archived(req.body.card);
+
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response[0]);
+    });
 
 }
