@@ -21,14 +21,18 @@ export class SecurityHttpInterceptor implements HttpInterceptor {
         return next.handle(req).do((event: HttpEvent<any>) => {
             if (event instanceof HttpResponse) {
               // do stuff with response if you want
-              this.appInsightsService.trackEvent(req.url, req.body);
+              if(environment.production) {
+                this.appInsightsService.trackEvent(req.url, req.body);
+              }
             }
           }, (err: any) => {            
             if (err instanceof HttpErrorResponse) {
               if (err.status === 401) {                                                
                 window.location.href=environment.login_url;
               } else {
-                this.appInsightsService.trackEvent(req.url, req.body);
+                if(environment.production) {
+                  this.appInsightsService.trackEvent(req.url, req.body);
+                }
               }
             }
         });                 

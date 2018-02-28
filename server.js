@@ -11,9 +11,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
 }
-const appInsights = require("applicationinsights");
-appInsights.setup(process.env.AZURE_APP_INSIGHTS);
-appInsights.start();
+else {
+    const appInsights = require("applicationinsights");
+    appInsights.setup(process.env.AZURE_APP_INSIGHTS);
+    appInsights.start();
+}
 const security_services_1 = require("./domain/services/security_services");
 const sql = require("mssql");
 const builder = require("botbuilder");

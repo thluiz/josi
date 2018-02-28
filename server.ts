@@ -1,10 +1,10 @@
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
+} else {
+    const appInsights = require("applicationinsights");
+    appInsights.setup(process.env.AZURE_APP_INSIGHTS);
+    appInsights.start();
 }
-
-const appInsights = require("applicationinsights");
-appInsights.setup(process.env.AZURE_APP_INSIGHTS);
-appInsights.start();
 
 import { SecurityService, Permissions } from './domain/services/security_services';
 import * as sql from 'mssql';
