@@ -8,6 +8,17 @@ export class CardService {
     }
 
     async save_card(card) {        
+        if(card.id && card.id > 0)
+            return await new sql.Request(this.sql_pool)
+                .input('card_id', sql.Int, card.id)            
+                .input('title', sql.NVarChar(500), card.title)            
+                .input('due_date', sql.VarChar(10), card.due_date ? `${card.due_date.year}-${card.due_date.month}-${card.due_date.day}` : null)
+                .input('description', sql.NVarChar(sql.MAX), card.description)                               
+                .input('location_id', sql.Int, card.location_id || 1)                        
+                .input('leader_id', sql.Int, card.leaders[0] ? card.leaders[0].id : (card.leaders.person_id || card.leaders.id))                     
+                .input('abrev', sql.VarChar(15), card.abrev)                               
+                .execute(`UpdateCard`);
+
         return await new sql.Request(this.sql_pool)
         .input('title', sql.NVarChar(500), card.title)
         .input('parent_id', sql.Int, card.parent.id)

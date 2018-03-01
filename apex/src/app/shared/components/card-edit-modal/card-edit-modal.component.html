@@ -11,16 +11,89 @@
                 </h5>   
             </div>
             <div class="col-4 pr-0 text-right">                                 
-                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <button type="button" class="close" aria-label="Close" (click)="cancel(d)">
                     <span aria-hidden="true">&times;</span>
                 </button>                    
             </div>
         </div> 
     </div>
     <div class="modal-body">
-           
-    </div>
+        <div class="form-body">			
+            <div class="row">
+                <div class="col-12">                    
+                    <fieldset class="form-group">	                        					                        
+                        <label for="card_operator"                             
+                            style="font-weight: bold"
+                            *ngIf="card.parent_id">
+                            Responsável
+                        </label>		
+                        <div class="form-group">                            	
+                            <select id="card_operator" 
+                                name="card_operator"
+                                class="form-control"
+                                [(ngModel)]="card.leaders[0]" 
+                                [compareWith]="entity_compare"
+                                (ngModelChange)="validate_edit_card()">			
+                                <option></option>			
+                                <option *ngFor="let op of operators" [ngValue]="op">{{ op.name }}</option>
+                            </select>								                                    
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="card_title">Título</label>                                                									
+                                <div class="input-group">							
+                                    <input class="form-control"
+                                    [(ngModel)]="card.title"
+                                    (ngModelChange)="validate_edit_card()"
+                                    autocomplete="off"
+                                    id="card_title"
+                                    name="card_title"/>                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <label for="card_due_date">Previsão</label>                                                									
+                                <div class="input-group">							
+                                    <input class="form-control text-center" placeholder="dd/mm/aaaa" 
+                                    [(ngModel)]="card.due_date" 
+                                    id="card_due_date"
+                                    name="card_due_date"
+                                    autocomplete="off"
+                                    ngbDatepicker #niDueDateDate="ngbDatepicker" />
+                                    <div class="input-group-addon" (click)="niDueDateDate.toggle()">
+                                        <i class="ft-calendar" style="cursor: pointer;"></i>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+                        <label for="card_description"                             
+                            style="font-weight: bold">
+                            Descrição
+                        </label>		
+                        <div class="form-group">
+                            <textarea class="form-control"
+                            id="card_description"
+                            autocomplete="off"
+                            [(ngModel)]="card.description" 		
+                            rows="3"></textarea>								
+                        </div>  
+                    </fieldset>
+                </div>
+            </div>                            
+        </div>                
+    </div>                           
     <div class="modal-footer">
-        
+        <button class="btn btn-success" style="margin-right:10px" type="button"
+        (click)="update_card(d)"
+        >
+            <i class="icon-check"></i> Salvar
+        </button>
+
+        <button type="button" class="btn btn-silver" 			            
+            (click)="cancel(d)">
+            <i class="icon-action-undo"></i>
+            Cancelar
+        </button>
     </div>
 </ng-template>

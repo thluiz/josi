@@ -60,6 +60,11 @@ export class CardService {
     .do((data : Card) => this.card_changes.next(new CardAddedAction(data[0])));
   }
 
+  updateCard(card : Card) {
+    return this.http.post(this.dataUrl + `/cards`, { card: card })
+    .do((data : Card) => this.card_changes.next(new CardChangedAction(data[0])));
+  }
+  
   archiveCard(card : Card) {
     return this.http.post(this.dataUrl + `/archive_card`, { card: card })
     .do((data : Card) => this.card_changes.next(new CardArchivedAction(data)));

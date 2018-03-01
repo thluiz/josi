@@ -1,3 +1,4 @@
+import { UtilsService } from 'app/services/utils-service';
 import { ParameterService } from 'app/services/parameter-service';
 import { PersonService } from 'app/services/person-service';
 
@@ -41,6 +42,7 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
 
   constructor(private personService: PersonService,
               private parameterService: ParameterService, 
+              private utilsService: UtilsService,
               private route: ActivatedRoute,
               private router: Router, 
               private modalService: NgbModal,
@@ -129,24 +131,12 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
     return false;
   }
 
-  private translate_date_to_view(date) {      
-    if(!date || date.split("-").length != 3) {
-      return null;
-    }
-    const splitted_date = date.split("-");
-
-    return {
-      year: parseInt(splitted_date[0], 10),
-      month: parseInt(splitted_date[1], 10),
-      day: parseInt(splitted_date[2], 10)
-    }
+  private translate_date_to_view(date) {        
+    return this.utilsService.translate_date_to_view(date);
   }
 
-  private translate_date_to_server(date) {
-    if(!date || !date.year)
-      return null;
-
-    return `${date.year}-${date.month}-${date.day}`;
+  private translate_date_to_server(date) {    
+    return this.utilsService.translate_date_to_server(date);
   }
 
   load_person_data() {    

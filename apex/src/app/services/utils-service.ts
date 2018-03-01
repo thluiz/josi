@@ -28,6 +28,19 @@ export class UtilsService {
         return this.sanitizer.bypassSecurityTrustUrl(url);
     }    
 
+    translate_date_to_view(date) {      
+        if(!date || date.split("-").length != 3) {
+            return null;
+        }
+        const splitted_date = date.split("-");
+
+        return {
+            year: parseInt(splitted_date[0], 10),
+            month: parseInt(splitted_date[1], 10),
+            day: parseInt(splitted_date[2], 10)
+        }
+    }
+
     cache_results(observable : ReplaySubject<any>, endpoint:string, forceRefresh?: boolean) {
         if (!observable.observers.length || forceRefresh) {        
             this.http.get(this.dataUrl + endpoint)

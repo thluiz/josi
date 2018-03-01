@@ -26,8 +26,8 @@ import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModa
 })
 export class CardEditModalComponent implements OnInit {  
   card: Card;
-  commentaries: CardCommentary[];
-  begin_remove = false;
+  original: Card;
+  operators: any[];
 
   @ViewChild('card_edit_modal') card_edit_modal: ElementRef;
 
@@ -47,33 +47,35 @@ export class CardEditModalComponent implements OnInit {
   
 
   ngOnInit() {        
-    this.card_actions = this.cardService.cardChanges$    
-    .filter((ca: any) => ca.type == CARD_COMMENT_ADDED && ca.payload.card.id == this.card.id)
-    .subscribe((action) => {
-      if(!this.card)
-        return; 
-      
-      this.commentaries = action.payload.commentaries.sort(cm => cm.id);
-    });    
+    
   }  
 
   ngOnDestroy () {
-    this.card_actions.unsubscribe();
+
   }
 
   open(card) {    
-    this.card = card;
-    this.begin_remove = false;
+    this.card = card;  
+    if(this.card.due_date && !this.card.due_date.year) {
+      this.card.due_date = this.utilsService.translate_date_to_view(this.card.due_date);
+    }
+
+    this.original = JSON.parse(JSON.stringify(this.card));
+
+
     Observable.zip(      
       this.parameterService.getActiveBranches(),
-      this.cardService.getCardCommentaries(this.card),
-      (branches, commentaries: CardCommentary[]) => {                
-
-        this.commentaries = commentaries;
+      this.cardService.getOperators(),
+      (branches, operators: any[]) => {          
+        this.operators = operators;      
 
         this.open_modal(this.card_edit_modal, true);
 
       }).subscribe();              
+  }
+
+  entity_compare(p1, p2) {
+    return p1 != null && p2 != null && p1.id == p2.id
   }
 
   private open_modal(content, on_close_action = false) {
@@ -83,4 +85,31 @@ export class CardEditModalComponent implements OnInit {
         console.log(reason);
     });
   }   
+
+  validate_edit_card() {
+
+  }
+
+  cancel(close_action) {
+    this.reset_card();
+
+    if(close_action) {
+      close_action();
+    }
+  }
+
+  update_card(close_action) {
+    this.cardService.updateCard(this.card).subscribe((data) => {
+      if(close_action) {
+        close_action();
+      }
+    });    
+  }
+
+  private reset_card() {    
+    this.card.title = this.original.title;
+    this.card.due_date = this.original.due_date;
+    this.card.description = this.original.description;
+    this.card.leaders = this.original.leaders;    
+  }
 }

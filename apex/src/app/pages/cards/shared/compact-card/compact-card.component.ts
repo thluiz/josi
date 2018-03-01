@@ -25,19 +25,17 @@ export class CompactCardComponent implements OnInit, OnDestroy {
       
   }
 
-  ngOnInit() {    
-    this.card_actions = this.cardService.cardChanges$
-    .filter((ca: any) => ca.type == CARD_CHANGED && ca.payload.id == this.card.id)
-    .subscribe((action) => {
-      this.card = action.payload;
-    });
+  ngOnInit() {        
+    this.card_actions = this.cardService.cardChanges$      
+    .subscribe((action : any) => {
+      if(action.type == CARD_COMMENT_ADDED && action.payload.card.id == this.card.id) {      
+        this.card = action.payload.card;
+        this.card.comment_count = action.payload.commentaries.length;
+      }
 
-    this.card_actions = this.cardService.cardChanges$
-    .filter((ca: any) => ca.type == CARD_COMMENT_ADDED && ca.payload.card.id == this.card.id)    
-    .subscribe((action) => {
-      console.log(action);
-      this.card = action.payload.card;
-      this.card.comment_count = action.payload.commentaries.length;
+      if(action.type == CARD_CHANGED && action.payload.id == this.card.id) {
+        this.card = action.payload;
+      }
     });
   }
 

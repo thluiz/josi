@@ -17,8 +17,8 @@
     </div>
     <div class="modal-body">
         <div class="row">
-            <div class="col-12">
-                {{ card.description }}			        
+            <div class="col-12" style="margin-bottom:20px;">                
+                <markdown [data]="card.description"></markdown>				        
             </div>
         </div>    
         <div class="row">
