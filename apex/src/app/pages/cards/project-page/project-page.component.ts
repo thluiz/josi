@@ -66,7 +66,7 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
         && this.project 
         && ((ca.payload.parent && ca.payload.parent.id == this.project.id)
             || (ca.payload.parent_id == this.project.id))
-            || (ca.payload.card.id == this.project.id))
+            || (ca.payload.card && ca.payload.card.id == this.project.id))
     .subscribe((action) => {         
       if(action.type == CARD_COMMENT_ADDED) {
         this.commentaries = action.payload.commentaries.sort(ca => ca.id);

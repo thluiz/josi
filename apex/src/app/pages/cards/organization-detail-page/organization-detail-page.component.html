@@ -4,10 +4,10 @@
     <div class="card-body">
         <div class="row">
             <div class="col-10 text-left">                                
-                <h3>
+                <h3 *ngIf="organization">
                     <a [routerLink]="['/organizations']">
                         Todos > 
-                    </a>                  
+                    </a>                                      
                     {{ organization.title }}                    
                 </h3>
             </div>

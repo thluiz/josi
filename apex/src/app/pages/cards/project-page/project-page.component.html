@@ -39,32 +39,22 @@
 
                     <i class="ft-plus"></i>
 			        <i class="fas fa-columns"></i>
-                </button>        
-                <button type="button" 			
-                    class="btn btn-lg btn-silver"
-                    title="Adicionar Atividade"
-                    style="margin:5px;padding:3px;line-height:10px"
-                    (click)="add_step();"
-                    >						
-                    <i class="ft-plus"></i> 	
-                    <i class="fas fa-pause"></i>                                                    
-                </button>
+                </button>  
             </div>
         </div>   
         <div class="row">                        
-            <div class="col-10 col-sm-8 col-xl-10" style="height:90vh;width:100%;overflow-x:auto;overflow-y:auto;">
-                <table class="table" cellpadding='5' cellspacing='5' style="background-color:white">
+            <div class="col-10 col-sm-8 col-xl-10" style="height:88vh;max-height:88vh;width:100%;overflow-x:auto;overflow-y:auto;">
+                <table class="table" cellpadding='5' cellspacing='5' style="background-color:white;width:unset">
                     <tr>
                         <td
                         class="project step"                                                                                   
                         *ngIf="project.childrens && project.childrens.length > 0"
                         >   
+                            <h5 class="ignore-item">Caixa de Entrada</h5>
                             <div class="container"
                             [dragula]='"childrens"'
                             [attr.data-parent]="'inbox'"
-                            >
-
-                                <h5 class="ignore-item">Caixa de Entrada</h5>
+                            >                                
                                 <compact-card [card]="ch"
                                     [attr.data-id]="ch.id"                        
                                     *ngFor="let ch of project.childrens"
@@ -75,12 +65,11 @@
                         <td
                             class="project step"                                                                   
                             *ngFor="let step of project.steps, let k=index">                        
+                            <h5 class="ignore-item">{{ step.name }}</h5>
                             <div class="container"
                             [dragula]='"childrens"'  
                             [attr.data-parent]="step.id"
-                            >
-                                <h5 class="ignore-item">{{ step.name }}</h5>
-            
+                            >                                        
                                 <compact-card [card]="ch"
                                     [attr.data-id]="ch.id"
                                     *ngFor="let ch of step.childrens"
