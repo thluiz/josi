@@ -5,14 +5,20 @@
                 <h3>
                     <a 
                     style="color:grey"
-                    [routerLink]="['/organizations/detail', project.high_level_id]" *ngIf="project.high_level_id">
+                    [routerLink]="['/organizations/detail', project.high_level_id]" 
+                    *ngIf="project.high_level_id">
                         {{ project.high_level_title }} >
                     </a>                    
                     <a 
                     style="color:grey;"
-                    [routerLink]="['/organizations/projects', project.parent_id]" *ngIf="project.parent_id">
-                        {{ project.parent_title }} > 
-                    </a>                    
+                    [routerLink]="['/organizations/projects', project.parent_id]" *ngIf="project.parent_id && project.high_level_id">
+                        {{ project.parent_title }} >
+                    </a>      
+                    <a 
+                    style="color:grey;"
+                    [routerLink]="['/organizations/detail', project.parent_id]" *ngIf="project.parent_id && !project.high_level_id">
+                        {{ project.parent_title }} >
+                    </a>              
                     {{ project.title }}                    
                 </h3>
             </div>            
@@ -46,8 +52,8 @@
             </div>
         </div>   
         <div class="row">                        
-            <div class="col-12">
-                <table class="table table-responsive" cellpadding='5' cellspacing='5' style="background-color:white">
+            <div class="col-10 col-sm-8 col-xl-10" style="height:90vh;width:100%;overflow-x:auto;overflow-y:auto;">
+                <table class="table" cellpadding='5' cellspacing='5' style="background-color:white">
                     <tr>
                         <td
                         class="project step"                                                                                   
@@ -83,6 +89,77 @@
                         </td>
                     </tr>
                 </table>                
+            </div>
+            <div class="col-4 col-sm-4 col-xl-2">
+                <div class="row">
+                    <div class="col-9"
+                    style="border-bottom: 1px solid black;">        
+                        <h6 style="font-weight:bold;margin-bottom:0"> 
+                            <i class="far fa-sticky-note"></i> Comentários </h6>        
+                    </div>
+                    <div class="col-2 text-right"
+                    style="border-bottom: 1px solid black;" >
+                        <button type="button" class="btn btn-silver btn-sm" 
+                            style="margin:0;padding:2px;line-height:10px"
+                            (click)="add_comment();">
+                            <i class="ft-plus"></i>                                        
+                            <i class="far fa-sticky-note"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="row" *ngIf="!commentaries || commentaries.length == 0">
+                    <div class="col-12 text-center">
+                        Nenhum comentário encontrado
+                    </div>
+                </div>
+                <div *ngFor="let cm of commentaries">                        
+                    <div class="col-12 pl-3">
+                        <div class="row">
+                            <div class="col-2 text-right pr-0">
+                                    <img alt="{{ cm.responsible }}"                                    
+                                    class="img-border" 
+                                    src="https://myvtmiim.blob.core.windows.net/avatars/{{ cm.avatar_img }}" 											
+                                    style="width:100%;"																												                                    
+                                    *ngIf="cm.avatar_img && cm.avatar_img.length > 0" />
+                                    
+                                    <img                                     
+                                    class="img-border" 
+                                    src="/assets/img/portrait/avatars/avatar-08.png" 											
+                                    style="width:100%;"																												                                    
+                                    *ngIf="!cm.avatar_img || cm.avatar_img.length <= 0" /> 
+                            </div>
+                            <div class="col-8" style="color:black;">     
+                                <div class="row">
+                                    <div class="col-12">
+                                        <b> {{ cm.responsible }} </b> <i style="font-size:10px">({{ cm.created_date_br }} {{ cm.created_hour_br  }})</i>
+                                        <markdown [data]="cm.commentary" style="margin-bottom:0 !important"></markdown>			
+                                    </div>
+                                </div>                          
+                            </div>
+                            <div class="col-2 text-right pl-0" style="display:none">
+                                <button type="button" class="btn btn-silver btn-sm" 
+                                    style="margin: 0; padding:2px; line-height:10px"			                                        
+                                    *ngIf="!cm.archive"
+                                    (click)="cm.archive = true">
+                                    <i class="fas fa-archive"></i>                                        
+                                </button>                                    
+                                <button type="button" class="btn btn-danger btn-sm" 
+                                    *ngIf="cm.archive"
+                                    style="margin:0;padding:2px;line-height:10px"			                                        
+                                    (click)="archive_comment(cm)">
+                                    <i class="fas fa-archive"></i>                                        
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" 
+                                    *ngIf="cm.archive"
+                                    style="margin:0;padding:2px;line-height:10px"			                                        
+                                    (click)="cm.archive = false">
+                                    <i class="icon-action-undo"></i>                                        
+                                </button>                                    
+                            </div>
+                        </div>        
+                    </div> 
+                </div>
             </div>
         </div>         
     </div>

@@ -6,6 +6,7 @@ import { Location } from './location.model';
 export class Card {
     id: number;
     template: { id: number, name: string, is_task: boolean, require_target: boolean, require_target_group: boolean };
+    template_id: number;
     title: string;    
     parent: Card;
     parent_id: number;

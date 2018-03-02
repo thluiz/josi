@@ -48,7 +48,7 @@ export class CardDetailModalComponent implements OnInit {
 
   ngOnInit() {        
     this.card_actions = this.cardService.cardChanges$    
-    .filter((ca: any) => ca.type == CARD_COMMENT_ADDED && ca.payload.card.id == this.card.id)
+    .filter((ca: any) => ca.type == CARD_COMMENT_ADDED && this.card && ca.payload.card.id == this.card.id)
     .subscribe((action) => {
       if(!this.card)
         return; 
@@ -71,8 +71,7 @@ export class CardDetailModalComponent implements OnInit {
 
   archive_card(close_action) {
     console.log(close_action);
-    this.cardService.archiveCard(this.card).subscribe((data) => {
-      console.log(data);
+    this.cardService.archiveCard(this.card).subscribe((data) => {      
       if(close_action) {
         close_action();
       }

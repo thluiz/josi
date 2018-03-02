@@ -81,6 +81,7 @@ function getParticipationList(people) {
         app.use(session({
             secret: process.env.EXPRESS_SESSION_KEY,
             resave: false,
+            maxAge: 6 * 60 * 60 * 1000,
             saveUninitialized: true,
             cookie: { secure: false }
         }));

@@ -77,7 +77,7 @@
 					<div class="col-12">                                
 						<div *ngFor="let ct of person.contacts | onlyPrincipal, let k = index"							
 							[style.margin-left]="useContactButton ? '5px' : null"
-							[style.display]="useContactButton ? 'inline-block' : null">
+							[style.display]="useContactButton ? 'inline-block' : null">							
 							<contact-listitem [contact]="ct" *ngIf="!useContactButton"></contact-listitem>
 							<contact-buttonitem [contact]="ct" *ngIf="useContactButton"></contact-buttonitem>
 							<div *ngIf="ct.show_details" style="display:inline-block">({{ ct.details }})</div>

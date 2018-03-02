@@ -23,7 +23,7 @@ export class CompactCardComponent implements OnInit, OnDestroy {
               private cardService: CardService,
               private modalService: ModalService) {
       
-  }
+  }  
 
   ngOnInit() {        
     this.card_actions = this.cardService.cardChanges$      
@@ -47,6 +47,10 @@ export class CompactCardComponent implements OnInit, OnDestroy {
 
   open_detail_modal() {        
     this.modalService.open(ModalType.DetailTask, this.card);
+  }
+
+  edit_card() {
+    this.modalService.open(ModalType.EditCard, this.card);
   }
 
   updateOrganization() {    
