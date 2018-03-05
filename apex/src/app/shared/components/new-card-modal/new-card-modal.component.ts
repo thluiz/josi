@@ -35,6 +35,7 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
 
 import { Card } from 'app/shared/models/card.model';
 import { Group } from 'app/shared/models/group.model';
+import { Location } from 'app/shared/models/location.model';
 
 export enum CardType {
   Task,
@@ -67,6 +68,8 @@ export class NewCardModalComponent implements OnInit {
   searching_people = false;
   groups: Group[];
   branches: any[];
+  locations: Location[];
+  saving = false;
 
   @ViewChild('add_card_modal') add_card_modal: ElementRef;
 
@@ -95,9 +98,15 @@ export class NewCardModalComponent implements OnInit {
       this.cardService.getOperators(),
       this.parameterService.getGroups(),
       this.parameterService.getActiveBranches(),
+      this.parameterService.getLocations(),
       (organizations : any[], templates : any[], operators: any[], 
-        groups: Group[], branches: any[]) => {        
+        groups: Group[], branches: any[], locations: Location[]) => {        
         this.organizations = organizations;        
+        this.locations = locations;
+        this.operators = operators;
+        this.groups = groups;
+        this.branches = branches;
+
         this.templates = templates.filter(t => !t.automatically_generated 
                                           && t.active
                                           && t.is_task == (this.type ==  CardType.Task || this.type == CardType.ProjectTask))
@@ -105,11 +114,7 @@ export class NewCardModalComponent implements OnInit {
                                     let transformed = template;
                                     transformed.name = transformed.name.replace('Projeto - ', '')
                                     return transformed;
-                                  });    
-
-        this.operators = operators;
-        this.groups = groups;
-        this.branches = branches;
+                                  });            
 
         this.reset_card(initial_state);
         this.open_modal(this.add_card_modal, true);        
@@ -171,12 +176,13 @@ export class NewCardModalComponent implements OnInit {
   }
 
   register_new_card() {
+    this.saving = true;
     if(!this.card.template.require_target) {
       this.card.people = null;
     }
     
     this.cardService.saveCard(this.card).subscribe((data) => {
-      console.log(data);
+      this.saving = false;
       if(this.modalRef) {
         this.modalRef.close(data);
       }
@@ -234,6 +240,15 @@ export class NewCardModalComponent implements OnInit {
 
     if(!this.card.template && this.templates && this.templates.length > 0) {
       this.card.template = this.templates[0];
+    }
+
+    if(!this.card.locations && this.locations && this.locations.length > 0) {
+      this.card.locations = []
+      this.card.locations[0] = this.locations[0];
+
+      if(initial_state && initial_state.parent != null && initial_state.parent.locations && initial_state.parent.locations.length > 0) {
+        this.card.locations[0] = initial_state.parent.locations[0];
+      }
     }
     
     this.validate_new_card();

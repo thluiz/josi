@@ -58,6 +58,12 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
+    app.get("/api/locations", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .query(`select * from [location] where active = 1 order by [order] for json path`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
 }
 exports.configure_routes = configure_routes;
 //# sourceMappingURL=parameters-routes.js.map

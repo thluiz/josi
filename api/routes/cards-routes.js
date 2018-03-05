@@ -61,7 +61,8 @@ function configure_routes(app, connection_pool) {
         res.send({ sucess: true });
     }));
     app.post("/api/cards", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield card_service.save_card(req.body.card);
+        let user = yield security_services_1.SecurityService.getUserFromRequest(req);
+        let result = yield card_service.save_card(req.body.card, user.person_id);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] :
             req.params.id > 0 ? response[0] : response);
@@ -80,7 +81,8 @@ function configure_routes(app, connection_pool) {
         res.send(response[0].empty ? [] : response);
     }));
     app.post("/api/cards/steps", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield card_service.save_card_step(req.body.card_id, req.body.step_id);
+        let user = yield security_services_1.SecurityService.getUserFromRequest(req);
+        let result = yield card_service.save_card_step(req.body.card_id, req.body.step_id, user.person_id);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response[0]);
     }));
@@ -93,7 +95,8 @@ function configure_routes(app, connection_pool) {
         res.send({ sucess: true });
     }));
     app.post("/api/archive_card", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield card_service.toggle_card_archived(req.body.card);
+        let user = yield security_services_1.SecurityService.getUserFromRequest(req);
+        let result = yield card_service.toggle_card_archived(req.body.card, user.person_id);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response[0]);
     }));

@@ -21,23 +21,7 @@
         <div class="form-body">			
             <div class="row">
                 <div class="col-12">                    
-                    <fieldset class="form-group">	                        					                        
-                        <label for="card_operator"                             
-                            style="font-weight: bold"
-                            *ngIf="card.parent_id">
-                            Responsável
-                        </label>		
-                        <div class="form-group">                            	
-                            <select id="card_operator" 
-                                name="card_operator"
-                                class="form-control"
-                                [(ngModel)]="card.leaders[0]" 
-                                [compareWith]="entity_compare"
-                                (ngModelChange)="validate_edit_card()">			
-                                <option></option>			
-                                <option *ngFor="let op of operators" [ngValue]="op">{{ op.name }}</option>
-                            </select>								                                    
-                        </div>
+                    <fieldset class="form-group">	                        					                                                
                         <div class="row">
                             <div class="col-12">
                                 <label for="card_title">Título</label>                                                									
@@ -50,6 +34,35 @@
                                     name="card_title"/>                                    
                                 </div>
                             </div>
+                        </div>
+                        <label for="card_operator"                             
+                            style="font-weight: bold">
+                            Local
+                        </label>		
+                        <div class="form-group">                            	
+                            <select id="card_location" 
+                                name="card_location"
+                                class="form-control"
+                                [(ngModel)]="card.locations[0]" 
+                                [compareWith]="entity_compare"
+                                (ngModelChange)="validate_edit_card()">			                                		
+                                <option *ngFor="let l of locations" [ngValue]="l">{{ l.name }}</option>
+                            </select>								                                    
+                        </div>
+                        <label for="card_operator"                             
+                            style="font-weight: bold"
+                            *ngIf="card.parent_id">
+                            Responsável
+                        </label>		
+                        <div class="form-group">                            	
+                            <select id="card_operator" 
+                                name="card_operator"
+                                class="form-control"
+                                [(ngModel)]="card.leaders[0]" 
+                                [compareWith]="entity_compare"
+                                (ngModelChange)="validate_edit_card()">			                                
+                                <option *ngFor="let op of operators" [ngValue]="op">{{ op.name }}</option>
+                            </select>								                                    
                         </div>
                         <div class="row">
                             <div class="col-12 col-md-6">
@@ -83,17 +96,46 @@
             </div>                            
         </div>                
     </div>                           
-    <div class="modal-footer">
-        <button class="btn btn-success" style="margin-right:10px" type="button"
+    <div class="modal-footer" *ngIf="saving">        
+        <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+    </div>
+    <div class="modal-footer" *ngIf="!saving">
+        <button class="btn btn-success" 
+        style="margin-right:5px" type="button" 
+        *ngIf="!begin_remove && !saving"
         (click)="update_card(d)"
         >
             <i class="icon-check"></i> Salvar
         </button>
 
-        <button type="button" class="btn btn-silver" 			            
+        <button type="button" class="btn btn-silver" 
+            style="margin-right:20px"			            
+            *ngIf="!begin_remove"
             (click)="cancel(d)">
             <i class="icon-action-undo"></i>
             Cancelar
         </button>
+        
+        <button type="button" class="btn btn-silver" 			
+            *ngIf="!begin_remove"
+            (click)="begin_remove = true">
+            <i class="ft-trash-2"></i>
+            Excluir
+        </button>
+        <span *ngIf="begin_remove">
+            Confirma exclusão?
+        </span>
+        <button type="button" class="btn btn-danger" 
+            *ngIf="begin_remove"
+            (click)="archive_card(d);">
+            <i class="ft-trash-2"></i>
+            Excluir
+        </button>
+        <button type="button" class="btn btn-secondary" 
+            *ngIf="begin_remove"
+            (click)="begin_remove = false">
+            <i class="icon-action-undo"></i>
+            Não
+        </button>        
     </div>
 </ng-template>

@@ -19,7 +19,8 @@ export class Card {
     order: number;
     leaders: any[];
     people: any[];
-    location: Location;
+    locations: Location[];
+    location_id: number;
     description: string;
     childrens: Card[];     
     steps: CardStep[]; 

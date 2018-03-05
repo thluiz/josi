@@ -28,6 +28,7 @@ export class CardDetailModalComponent implements OnInit {
   card: Card;
   commentaries: CardCommentary[];
   begin_remove = false;
+  saving = false;
 
   @ViewChild('card_detail_modal') card_detail_modal: ElementRef;
 
@@ -69,11 +70,12 @@ export class CardDetailModalComponent implements OnInit {
     this.modalService.open(ModalType.AddCardComment, this.card);
   }
 
-  archive_card(close_action) {
-    console.log(close_action);
+  archive_card(close_action) { 
+    this.saving = true;   
     this.cardService.archiveCard(this.card).subscribe((data) => {      
       if(close_action) {
         close_action();
+        this.saving = false;
       }
     });
   }
@@ -85,6 +87,11 @@ export class CardDetailModalComponent implements OnInit {
   open(card) {    
     this.card = card;
     this.begin_remove = false;
+
+    if(!this.card.locations) {
+      this.card.locations = [];
+    }
+    
     Observable.zip(      
       this.parameterService.getActiveBranches(),
       this.cardService.getCardCommentaries(this.card),

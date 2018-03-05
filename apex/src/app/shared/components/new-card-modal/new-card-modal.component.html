@@ -27,6 +27,20 @@
                                 <option *ngFor="let op of operators" [ngValue]="op">{{ op.name }}</option>
                             </select>								
                         </div>
+                        <label for="card_operator"                             
+                            style="font-weight: bold">
+                            Local
+                        </label>		
+                        <div class="form-group">                            	
+                            <select id="card_location" 
+                                name="card_location"
+                                class="form-control"
+                                [(ngModel)]="card.locations[0]" 
+                                [compareWith]="entity_compare"
+                                (ngModelChange)="validate_new_card()">			                                		
+                                <option *ngFor="let l of locations" [ngValue]="l">{{ l.name }}</option>
+                            </select>								                                    
+                        </div>
                         <div class="row">
                             <div class="col-12">
                                 <label for="card_template">Tipo</label>                                                									
@@ -180,7 +194,10 @@
             </div>
         </div>			
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer" *ngIf="saving">        
+        <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+    </div>
+    <div class="modal-footer" *ngIf="!saving">
         <button type="button" 
             class="btn btn-success" 
             (click)="register_new_card();"

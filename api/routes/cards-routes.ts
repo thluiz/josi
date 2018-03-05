@@ -94,7 +94,8 @@ export function configure_routes(app: any, connection_pool: any) {
     app.post("/api/cards", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {          
-        let result = await card_service.save_card(req.body.card);
+        let user = await SecurityService.getUserFromRequest(req);
+        let result = await card_service.save_card(req.body.card, user.person_id);
 
         let response = result.recordset[0];
 
@@ -130,7 +131,8 @@ export function configure_routes(app: any, connection_pool: any) {
     app.post("/api/cards/steps", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {          
-        let result = await card_service.save_card_step(req.body.card_id, req.body.step_id);
+        let user = await SecurityService.getUserFromRequest(req);       
+        let result = await card_service.save_card_step(req.body.card_id, req.body.step_id, user.person_id);
 
         let response = result.recordset[0];
 
@@ -156,8 +158,9 @@ export function configure_routes(app: any, connection_pool: any) {
     
     app.post("/api/archive_card", 
     SecurityService.ensureLoggedIn(),
-    async (req, res, next) => {          
-        let result = await card_service.toggle_card_archived(req.body.card);
+    async (req, res, next) => {   
+        let user = await SecurityService.getUserFromRequest(req);       
+        let result = await card_service.toggle_card_archived(req.body.card, user.person_id);
 
         let response = result.recordset[0];
 

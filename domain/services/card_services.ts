@@ -7,16 +7,17 @@ export class CardService {
         this.sql_pool = sql_pool;
     }
 
-    async save_card(card) {        
+    async save_card(card, responsible_id) {        
         if(card.id && card.id > 0)
             return await new sql.Request(this.sql_pool)
                 .input('card_id', sql.Int, card.id)            
                 .input('title', sql.NVarChar(500), card.title)            
                 .input('due_date', sql.VarChar(10), card.due_date ? `${card.due_date.year}-${card.due_date.month}-${card.due_date.day}` : null)
                 .input('description', sql.NVarChar(sql.MAX), card.description)                               
-                .input('location_id', sql.Int, card.location_id || 1)                        
-                .input('leader_id', sql.Int, card.leaders[0] ? card.leaders[0].id : (card.leaders.person_id || card.leaders.id))                     
-                .input('abrev', sql.VarChar(15), card.abrev)                               
+                .input('location_id', sql.Int, card.locations != null && card.locations[0] ? card.locations[0].id : 1)                        
+                .input('leader_id', sql.Int, card.leaders != null && card.leaders[0] ? card.leaders[0].id : (card.leaders.person_id || card.leaders.id))                     
+                .input('abrev', sql.VarChar(15), card.abrev)
+                .input('responsible_id', sql.Int, responsible_id)                               
                 .execute(`UpdateCard`);
 
         return await new sql.Request(this.sql_pool)
@@ -24,14 +25,15 @@ export class CardService {
         .input('parent_id', sql.Int, card.parent.id)
         .input('due_date', sql.VarChar(10), card.due_date ? `${card.due_date.year}-${card.due_date.month}-${card.due_date.day}` : null)
         .input('description', sql.NVarChar(sql.MAX), card.description)                               
-        .input('location_id', sql.Int, card.location_id || 1)            
+        .input('location_id', sql.Int, card.locations != null && card.locations[0] ? card.locations[0].id : 1)                        
         .input('card_template_id', sql.Int, card.template ? card.template.id : 3)            
         .input('leader_id', sql.Int, card.leaders.person_id || card.leaders.id)         
         .input('people', sql.VarChar(sql.MAX), card.people ? card.people.filter(f => f.person_id > 0).map(p => p.person_id).join(",") : null)
         .input('new_people', sql.VarChar(sql.MAX), card.people ? card.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(",") : null)
         .input('abrev', sql.VarChar(15), card.abrev)       
         .input('group_id', sql.Int, card.group ? card.group.id : null)       
-        .input('branch_id', sql.Int, card.branch ? card.branch.id : null)       
+        .input('branch_id', sql.Int, card.branch ? card.branch.id : null)   
+        .input('responsible_id', sql.Int, responsible_id)    
         .execute(`SaveCard`);
     }
 
@@ -52,16 +54,18 @@ export class CardService {
         .execute(`RemovePersonCard`);
     }
 
-    async toggle_card_archived(card) {
+    async toggle_card_archived(card, responsible_id) {
         return await new sql.Request(this.sql_pool)
         .input('card_id', sql.Int, card.id)        
+        .input('responsible_id', sql.Int, responsible_id)        
         .execute(`ToggleCardArchived`);
     }    
 
-    async save_card_step(card_id, step_id) {
+    async save_card_step(card_id, step_id, responsible_id) {
         return await new sql.Request(this.sql_pool)
         .input('card_id', sql.Int, card_id)
         .input('step_id', sql.Int, step_id)
+        .input('responsible_id', sql.Int, responsible_id)
         .execute(`SaveCardStep`);
     }
 

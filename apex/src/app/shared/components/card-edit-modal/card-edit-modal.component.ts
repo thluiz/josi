@@ -2,6 +2,7 @@ import { CardCommentary } from 'app/shared/models/card-commentary.model';
 import { CardService, CARD_COMMENT_ADDED } from 'app/services/card-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 import { Card } from 'app/shared/models/card.model';
+import { Location } from 'app/shared/models/location.model';
 import { ParameterService } from './../../../services/parameter-service';
 import { Observable } from 'rxjs/Observable';
 import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
@@ -28,6 +29,9 @@ export class CardEditModalComponent implements OnInit {
   card: Card;
   original: Card;
   operators: any[];
+  locations: Location[];
+  begin_remove = false;
+  saving = false;
 
   @ViewChild('card_edit_modal') card_edit_modal: ElementRef;
 
@@ -70,8 +74,10 @@ export class CardEditModalComponent implements OnInit {
     Observable.zip(      
       this.parameterService.getActiveBranches(),
       this.cardService.getOperators(),
-      (branches, operators: any[]) => {          
+      this.parameterService.getLocations(),
+      (branches, operators: any[], locations: Location[]) => {          
         this.operators = operators;      
+        this.locations = locations;
 
         this.open_modal(this.card_edit_modal, true);
 
@@ -103,11 +109,23 @@ export class CardEditModalComponent implements OnInit {
   }
 
   update_card(close_action) {
+    this.saving = true;
     this.cardService.updateCard(this.card).subscribe((data) => {
       if(close_action) {
+        this.saving = false;
         close_action();
       }
     });    
+  }
+
+  archive_card(close_action) {    
+    this.saving = true;
+    this.cardService.archiveCard(this.card).subscribe((data) => {      
+      if(close_action) {
+        this.saving = false;
+        close_action();
+      }
+    });
   }
 
   private reset_card() {    
