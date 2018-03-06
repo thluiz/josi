@@ -210,7 +210,7 @@ export class IncidentTreatmentModalComponent implements OnInit {
     });            
   }  
 
-  add_comment() {
+  add_comment() {    
     this.modalService.open(ModalType.AddIncidentComment, this.current_incident);
   }
 

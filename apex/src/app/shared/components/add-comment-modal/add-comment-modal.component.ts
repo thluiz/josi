@@ -56,7 +56,7 @@ export class AddCommentModalComponent implements OnInit {
         this.person = parameter;
         break;
       case CommentType.Incident:
-        this.person = parameter;
+        this.incident = parameter;
         break;
       case CommentType.Card:
         this.card = parameter;
