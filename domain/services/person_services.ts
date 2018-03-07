@@ -7,6 +7,30 @@ export class PersonService {
         this.sql_pool = sql_pool;
     }
 
+    async save_address(address) {        
+        const result = await new sql.Request(this.sql_pool)
+                                .input('person_id', sql.Int, address.person_id)                                
+                                .input('country_id', sql.Int, address.country_id)
+                                .input('postal_code', sql.VarChar(30), address.postal_code)
+                                .input('street', sql.VarChar(200), address.street)
+                                .input('district', sql.VarChar(100), address.district)
+                                .input('city', sql.VarChar(100), address.city)
+                                .input('state', sql.VarChar(100), address.state)
+                                .input('number', sql.VarChar(30), address.number)
+                                .input('complement', sql.VarChar(50), address.complement)
+                                .execute(`SaveAddress`);
+
+        return result;
+    }
+
+    async archive_address(person_address) {
+        const result = await new sql.Request(this.sql_pool)
+        .input('address_id', sql.Int, person_address.address_id)
+        .execute(`ArchiveAddress`);
+
+        return result;
+    }
+
     public async add_role(person_id, role_id) {
         const result = await new sql.Request(this.sql_pool)
                                 .input('person_id', sql.Int, person_id)                                
@@ -14,7 +38,7 @@ export class PersonService {
                                 .execute(`AddPersonRole`);
 
         return result;                        
-    }
+    }    
     
     public async remove_role(person_id, role_id) {
         const result = await new sql.Request(this.sql_pool)

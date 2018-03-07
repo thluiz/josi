@@ -1,3 +1,4 @@
+import { CardService } from './../../../services/card-service';
 import { Component, TemplateRef, ViewChild, ViewEncapsulation, Input  } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -41,12 +42,16 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
   manual_incident_types;
   recurrence_types;
   branches = [];
+  countries = [];
+  addresses = [];
+  new_address: any;
 
   private router_sub: Subscription;
   private person_changes_subscriber: Subscription;
 
   constructor(private personService: PersonService, 
               private parameterService: ParameterService,
+              private cardService: CardService,
               private route: ActivatedRoute, 
               private modalService: NgbModal,
               private datePickerConfig: NgbDatepickerConfig) {      
@@ -60,6 +65,7 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
       this.load_person_roles();  
       this.load_person_scheduling();  
       this.load_comments_about_person();
+      this.load_person_address();
     });
 
     this.person_changes_subscriber = this.personService.personChanges$
@@ -82,7 +88,7 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
       (branches, incident_types, recurrence_types) => {        
         this.branches = branches;
         this.manual_incident_types = incident_types.filter(f => !f.automatically_generated);        
-        this.recurrence_types = recurrence_types;
+        this.recurrence_types = recurrence_types;        
       }).subscribe(() => {        
         this.open(content);
       });    
@@ -108,14 +114,16 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
   add_role() {        
     this.personService.addRole(this.id, this.new_role).toPromise().then(() => {
       this.load_person_data();
-      this.load_person_roles();
+      this.load_person_roles();     
+      this.cardService.getOperators(true).subscribe();
     });    
   }
 
   remove_role(role_id) {
     this.personService.removeRole(this.id, role_id).toPromise().then(() => {
       this.load_person_data();
-      this.load_person_roles()
+      this.load_person_roles();
+      this.cardService.getOperators(true).subscribe();
     });
   }
 
@@ -240,6 +248,8 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
       }
   }
 
+ 
+
   validate_new_schedule_value() {
     if(parseFloat(this.new_schedule.value) != NaN) {      
       this.validate_new_schedule();
@@ -258,5 +268,65 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
     });
   }
 
+  /**
+   * ADDRESS
+   */
+
+  load_person_address() {
+    this.personService.getAddresses(this.id).subscribe((data:any[]) => {
+      this.addresses = data;  
+    });
+  }
+  
+  open_address_modal(content) {    
+    this.new_address = {
+      country_id: 1,
+      city: 'Rio de Janeiro',
+      state: 'Rio de Janeiro',
+      person_id: this.id
+    };
+    Observable.zip(this.parameterService.getCountries(),
+      (countries, incident_types, recurrence_types) => {        
+        this.countries = countries;        
+      }).subscribe(() => {        
+        this.open(content);
+      });    
+  }
+
+  validate_new_address() {    
+    let errors = [];
+    if(!this.new_address.country_id || this.new_address.country_id <= 0) {      
+      errors[errors.length] = "Selecione o país";
+    }
+
+    if(!this.new_address.state || this.new_address.state.length < 3) {      
+      errors[errors.length] = "Informe o estado";
+    }
+
+    if(!this.new_address.city || this.new_address.city.length < 3) {      
+      errors[errors.length] = "Informe a cidade";
+    }
+
+    if(!this.new_address.street || this.new_address.street.length < 3) {      
+      errors[errors.length] = "Informe a Rua";
+    }
+
+    this.new_address.correct = errors.length == 0;
+    this.new_address.errors = errors;
+  }
+
+  save_address() {
+    this.new_address.saving = true;
+    this.personService.saveAddress(this.new_address).subscribe((data) => {
+      this.new_address.saving = false;
+      this.load_person_address();
+    });
+  } 
+
+  remove_address(ad) {    
+    this.personService.archiveAddress(ad).subscribe((data) => {      
+      this.load_person_address();
+    });
+  }
   
 }

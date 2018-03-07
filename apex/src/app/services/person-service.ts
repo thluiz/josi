@@ -21,7 +21,9 @@ export interface IContact {
 }
 
 export enum PersonActions {
-  ADD
+  ADD,
+  ADD_ADDRESS,
+  ARCHIVE_ADDRESS
 }
 
 export interface IPersonEvent {
@@ -139,6 +141,11 @@ export class PersonService {
         .get(this.dataUrl + `/person_role/person/${id}`);
   }
 
+  getAddresses(id) {    
+    return this.http
+        .get(this.dataUrl + `/person_address/${id}`);
+  }  
+
   getPersonScheduling(id) {    
     return this.http
         .get(this.dataUrl + `/person_schedule/person/${id}`);
@@ -197,6 +204,24 @@ export class PersonService {
         }).do((data) => {          
           this.comment_changes.next({ person });
         });
+  }
+
+  saveAddress(address) {
+    return this.http.post(this.dataUrl + `/person_address`, { address }).do((data) => {          
+      this.person_actions.next({ 
+        type: PersonActions.ADD_ADDRESS,
+        data
+      });
+    });
+  }
+
+  archiveAddress(person_address) {
+    return this.http.post(this.dataUrl + `/person_address/archive`, { person_address }).do((data) => {          
+      this.person_actions.next({ 
+        type: PersonActions.ARCHIVE_ADDRESS,
+        data
+      });
+    });
   }
 
   saveCommentAboutPerson(person, comment) {    

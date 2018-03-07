@@ -19,6 +19,7 @@ export class ParameterService {
     private domains$ = new ReplaySubject(1);
     private locations$ = new ReplaySubject(1);
     private group$ = new ReplaySubject(1);
+    private countries$ = new ReplaySubject(1);
     
     private personCardPositions$ = new ReplaySubject(1);
     private cardTemplates$ = new ReplaySubject(1);
@@ -36,6 +37,10 @@ export class ParameterService {
     getActiveBranches(forceRefresh?: boolean) {
         return this.cache_results(this.branches$, `/branches`, forceRefresh);                      
     }
+
+    getCountries(forceRefresh?: boolean) {
+        return this.cache_results(this.countries$, `/countries`, forceRefresh);                      
+    }    
 
     getLocations(forceRefresh?: boolean) {
         return this.cache_results(this.locations$, `/locations`, forceRefresh);                      

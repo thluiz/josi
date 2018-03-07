@@ -27,6 +27,12 @@ function configure_routes(app, connection_pool) {
             .execute(`GetPrograms`);
         response.send(result.recordset[0]);
     }));
+    app.get("/api/countries", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .query(`select * from [country] order by [order] for json path`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
     app.get("/api/kf_families", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetKungFuFamilies`);

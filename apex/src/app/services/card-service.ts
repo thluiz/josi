@@ -51,7 +51,8 @@ export class CardService {
   private dataUrl = environment.api_url;    
 
   private card_changes = new Subject<CardAction>();
-  cardChanges$  = this.card_changes.asObservable();  
+  cardChanges$  = this.card_changes.asObservable();
+  private operators$ = new ReplaySubject(1);  
 
   constructor(private http: HttpClient, private utilsService: UtilsService) { }  
 
@@ -102,8 +103,8 @@ export class CardService {
     });
   }  
 
-  getOperators() {
-    return this.http.get(this.dataUrl + `/operators`);
+  getOperators(forceRefresh = false) {
+    return this.utilsService.cache_results(this.operators$, `/operators`, forceRefresh);                          
   }
 
   saveOperator(card_id, person_id) {

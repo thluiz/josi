@@ -279,7 +279,7 @@
                                     [person]="person">                                
                                     </person-contact-list>
                                 </div>                     
-                                <div class="col-12 col-xl-12 col-md-6">
+                                <div class="col-12 col-xl-12 col-md-6"  style="margin-bottom:30px;">
                                     <div class="row" style="border-bottom: 1px solid black">
                                         <div class="col-10 col-xl-10 col-sm-9">
                                             <h6 style="padding:0;margin:0;font-weight:bold"><i class="ft-calendar"></i> Agendamento </h6>
@@ -349,7 +349,52 @@
                                             </button>                                    
                                         </div>
                                     </div>
-                                </div>                                                                       
+                                </div>
+                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
+                                    <div class="row" style="border-bottom: 1px solid black">
+                                        <div class="col-10 col-xl-10 col-sm-9">
+                                            <h6 style="padding:0;margin:0;font-weight:bold"><i class="fas fa-map-marker"></i> Endereços </h6>
+                                        </div>
+                                        <div class="col-2 col-sm-3 col-xl-2 text-right">
+                                            <button type="button" class="btn btn-silver btn-sm" 
+                                                style="margin:0;padding:2px;line-height:10px"
+                                                (click)="open_address_modal(new_address_modal);">
+                                                <i class="ft-plus"></i>                                        
+                                                <i class="fas fa-map-marker"></i>
+                                            </button>
+                                        </div>                                        
+                                    </div>
+                                    <div class="row" *ngIf="!addresses || addresses.length == 0">
+                                        <div class="col-12 text-center">
+                                            Nenhum endereço encontrado
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngFor="let ad of addresses">
+                                        <div class="col-9">
+                                            {{ ad.long_description }}
+                                        </div>
+                                        <div class="col-2 col-sm-3 col-xl-2 text-right">
+                                            <button type="button" class="btn btn-silver btn-sm" 
+                                                style="margin:0;padding:2px;line-height:10px"			                                        
+                                                *ngIf="!ad.removing"
+                                                (click)="ad.removing = true">
+                                                <i class="ft-trash-2"></i>                                        
+                                            </button>                                    
+                                            <button type="button" class="btn btn-danger btn-sm" 
+                                                *ngIf="ad.removing"
+                                                style="margin:0;padding:2px;line-height:10px"			                                        
+                                                (click)="remove_address(ad);">
+                                                <i class="ft-trash-2"></i>                                        
+                                            </button>
+                                            <button type="button" class="btn btn-secondary btn-sm" 
+                                                *ngIf="ad.removing"
+                                                style="margin:0;padding:2px;line-height:10px"			                                        
+                                                (click)="ad.removing = false">
+                                                <i class="icon-action-undo"></i>                                        
+                                            </button>                                    
+                                        </div>
+                                    </div>
+                                </div>                                                                        
                             </div>
                         </div>
                     </div>                    
@@ -540,6 +585,154 @@
         </button>															
         <button type="button" class="btn btn-silver" 
             (click)="reset_new_schedule();d('reset new new_schedule!');"
+            >
+            <i class="icon-action-undo"></i>
+            Cancelar
+        </button>	
+    </div>
+</ng-template>
+
+<ng-template #new_address_modal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h5 class="modal-title" style="font-weight: bold">Novo Endereço</h5>
+        <button type="button" class="close" aria-label="Close" (click)="reset_new_schedule();d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" *ngIf="new_address">			
+        <div class="form-body">			
+            <div class="row">
+                <div class="col-12">
+                    <fieldset class="form-group">						
+                        <label for="new_address_country"                             
+                            style="font-weight: bold">
+                            Páis
+                        </label>		
+                        <div class="form-group">
+                            <select id="new_address_country" 
+                                [(ngModel)]="new_address.country_id"       
+                                (ngModelChange)="validate_new_address()"																	                          
+                                class="form-control">			                                
+                                <option *ngFor="let c of countries" [value]="c.id">{{c.name}}</option>
+                            </select>								
+                        </div>                        
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <label for="new_address_state">Estado</label>                                                									
+                                <div class="input-group">							
+                                    <input class="form-control"
+                                    [(ngModel)]="new_address.state"
+                                    (ngModelChange)="validate_new_address()"
+                                    autocomplete="off"
+                                    id="new_address_state"
+                                    maxlength="100"
+                                    name="new_address_state"/>                                    
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="new_address_city">Cidade</label>                                                									
+                                <div class="input-group">							
+                                    <input class="form-control"
+                                    [(ngModel)]="new_address.city"
+                                    (ngModelChange)="validate_new_address()"
+                                    autocomplete="off"
+                                    maxlength="100"
+                                    id="new_address_city"
+                                    name="new_address_city"/>                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">                            
+                            <div class="col-6">
+                                <label for="new_address_postal_code">CEP</label>                                                									
+                                <div class="input-group">							
+                                    <input class="form-control text-center"
+                                    [(ngModel)]="new_address.postal_code"
+                                    (ngModelChange)="validate_new_address()"
+                                    autocomplete="off"
+                                    maxlength="30"
+                                    id="new_address_postal_code"
+                                    name="new_address_postal_code"/>                                    
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label for="new_address_district">Bairro</label>                                                									
+                                <div class="input-group">							
+                                    <input class="form-control"
+                                    [(ngModel)]="new_address.district"
+                                    (ngModelChange)="validate_new_address()"
+                                    autocomplete="off"
+                                    maxlength="30"
+                                    id="new_address_district"
+                                    name="new_address_district"/>                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="new_address_street">Rua</label>                                                									
+                                <div class="input-group">							
+                                    <input class="form-control"
+                                    [(ngModel)]="new_address.street"
+                                    (ngModelChange)="validate_new_address()"
+                                    autocomplete="off"
+                                    id="new_address_street"
+                                    maxlength="200"
+                                    name="new_address_street"/>                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="new_address_number">Número</label>                                                									
+                                <div class="input-group">							
+                                    <input class="form-control text-center"
+                                    [(ngModel)]="new_address.number"
+                                    (ngModelChange)="validate_new_address()"
+                                    autocomplete="off"
+                                    id="new_address_number"
+                                    maxlength="30"
+                                    name="new_address_number"/>                                    
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label for="new_address_complement">Complemento</label>                                                									
+                                <div class="input-group">							
+                                    <input class="form-control"
+                                    [(ngModel)]="new_address.complement"
+                                    (ngModelChange)="validate_new_address()"
+                                    autocomplete="off"
+                                    id="new_address_complement"
+                                    maxlength="50"
+                                    name="new_address_complement"/>                                    
+                                </div>
+                            </div>
+                        </div>                        
+                    </fieldset>                                
+                </div>
+            </div>
+            <div class="row" *ngIf="!new_address.correct">
+                <div class="col-12 text-danger">
+                    <ul>
+                        <li style="line-height:1.2em" *ngFor="let error of new_address.errors">{{ error }}</li>
+                    </ul>                    
+                </div>
+            </div>  
+        </div>			
+    </div>
+    <div class="modal-footer" *ngIf="new_address.saving">        
+        <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+    </div>
+    <div class="modal-footer" *ngIf="!new_address.saving">
+        <button type="button" 
+            class="btn btn-success" 
+            (click)="save_address();d('new schedule!');"
+            *ngIf="new_address.correct">
+            <i class="icon-check"></i>
+            Salvar
+        </button>															
+        <button type="button" class="btn btn-silver" 
+            (click)="d('reset new new_schedule!');"
             >
             <i class="icon-action-undo"></i>
             Cancelar

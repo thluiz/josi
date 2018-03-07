@@ -128,6 +128,35 @@ export function configure_routes(app: any, connection_pool: any) {
         response.send(result.recordset[0][0]);
     });
     
+
+    app.get("/api/person_address/:person_id", 
+    SecurityService.ensureLoggedIn(),
+    async (request, res, next) => {                        
+        const result = await new sql.Request(pool)
+        .input('person_id', sql.Int, request.params.person_id)
+        .execute(`GetPersonAddress`);                
+
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response);
+    });
+
+    app.post("/api/person_address", 
+    SecurityService.ensureLoggedIn(),
+    async (request, response, next) => {            
+        let result = await person_service.save_address(request.body.address);            
+
+        response.send({ sucess: true});                        
+    });
+
+    app.post("/api/person_address/archive", 
+    SecurityService.ensureLoggedIn(),
+    async (request, response, next) => {            
+        let result = await person_service.archive_address(request.body.person_address);            
+
+        response.send({ sucess: true});                        
+    })
+
     /**
      * ROLES
      */

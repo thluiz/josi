@@ -13,6 +13,30 @@ class PersonService {
     constructor(sql_pool) {
         this.sql_pool = sql_pool;
     }
+    save_address(address) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield new sql.Request(this.sql_pool)
+                .input('person_id', sql.Int, address.person_id)
+                .input('country_id', sql.Int, address.country_id)
+                .input('postal_code', sql.VarChar(30), address.postal_code)
+                .input('street', sql.VarChar(200), address.street)
+                .input('district', sql.VarChar(100), address.district)
+                .input('city', sql.VarChar(100), address.city)
+                .input('state', sql.VarChar(100), address.state)
+                .input('number', sql.VarChar(30), address.number)
+                .input('complement', sql.VarChar(50), address.complement)
+                .execute(`SaveAddress`);
+            return result;
+        });
+    }
+    archive_address(person_address) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield new sql.Request(this.sql_pool)
+                .input('address_id', sql.Int, person_address.address_id)
+                .execute(`ArchiveAddress`);
+            return result;
+        });
+    }
     add_role(person_id, role_id) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield new sql.Request(this.sql_pool)

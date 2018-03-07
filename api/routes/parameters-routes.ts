@@ -31,6 +31,17 @@ export function configure_routes(app: any, connection_pool: any) {
         response.send(result.recordset[0]);
     });
 
+    app.get("/api/countries", 
+    SecurityService.ensureLoggedIn(),
+    async (request, res, next) => {                        
+        const result = await new sql.Request(pool)            
+        .query(`select * from [country] order by [order] for json path`);                
+        
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response);
+    });
+
     app.get("/api/kf_families", 
     SecurityService.ensureLoggedIn(),
     async (request, response, next) => {                        
