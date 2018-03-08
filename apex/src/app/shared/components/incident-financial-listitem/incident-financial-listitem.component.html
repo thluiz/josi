@@ -1,0 +1,40 @@
+<div class="row">    
+    <div class="col-9 d-none d-md-block" 
+        [style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "        
+        style="cursor:pointer;"
+        [style.font-weight]="incident.type == 36 ? 'bold' : 'normal'"
+        (click)="show_incident_details(incident);">        
+        <span style="width:45px;display:inline-table;">{{ incident.small_date }}</span>
+        <span style="width:30px;display:inline-table;text-align:right">
+            {{ incident.abrev }}
+        </span>
+        <span style="width:60px;display:inline-table;text-align:right;padding-right:10px">
+            {{ incident.final_value }}
+        </span>
+        {{ incident.person }}
+    </div>
+    
+    <div class="col-9 d-block d-md-none"         
+        style="cursor:pointer;"
+        [style.font-weight]="incident.type == 36 ? 'bold' : 'normal'"
+        [style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "
+        (click)="show_incident_details(incident);">
+        <div class="row">
+            <div class="col-12 p-0 pl-2">                
+                <span style="width:45px;display:inline-table;">{{ incident.small_date }}</span>
+                <span style="width:40px;display:inline-table;">{{ incident.abrev }}</span>
+            </div>
+            <div class="col-12 p-0 pl-2">												
+                {{ incident.person }}
+            </div>
+        </div>										
+    </div>
+    
+    <div class="col-3">        
+        <person-status-line	
+            *ngIf="incident.person_data"										
+            [person]="incident.person_data[0]"            
+        >
+        </person-status-line>
+    </div>	    
+</div>

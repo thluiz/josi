@@ -113,6 +113,9 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
     if (this.dragulaService.find(PROJECT_BAG_NAME) !== undefined) { 
       this.dragulaService.destroy('childrens'); 
     } 
+    if(this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
     

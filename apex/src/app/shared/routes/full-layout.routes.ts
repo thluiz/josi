@@ -96,5 +96,13 @@ export const Full_ROUTES: Routes = [
   {
     path: 'organizations/projects/:id',
     loadChildren: './pages/cards/cards.module#CardsModule'
+  },
+  {
+    path: 'financial',
+    loadChildren: './pages/financial/financial.module#FinancialModule'
+  },
+  {
+    path: 'financial/:branch_id',
+    loadChildren: './pages/financial/financial.module#FinancialModule'
   }
 ];

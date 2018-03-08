@@ -41,7 +41,7 @@ export class ParameterService {
     getCountries(forceRefresh?: boolean) {
         return this.cache_results(this.countries$, `/countries`, forceRefresh);                      
     }    
-
+    
     getLocations(forceRefresh?: boolean) {
         return this.cache_results(this.locations$, `/locations`, forceRefresh);                      
     }    

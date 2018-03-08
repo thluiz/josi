@@ -35,6 +35,7 @@ import { NewIncidentModalModule } from './shared/components/new-incident-modal/n
 import { NewPersonModalModule } from 'app/shared/components/new-person-modal/new-person-modal.module';
 import { CardDetailModalModule } from 'app/shared/components/card-detail-modal/card-detail-modal.module';
 import { CardEditModalModule } from 'app/shared/components/card-edit-modal/card-edit-modal.module';
+import { FinancialService } from 'app/services/financial-service';
 
 @NgModule({
     declarations: [
@@ -79,6 +80,7 @@ import { CardEditModalModule } from 'app/shared/components/card-edit-modal/card-
         ModalService,
         SecurityService,
         CardService,
+        FinancialService,
         AppInsightsService                  
     ],
     bootstrap: [AppComponent]

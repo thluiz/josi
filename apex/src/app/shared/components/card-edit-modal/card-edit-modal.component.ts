@@ -60,10 +60,16 @@ export class CardEditModalComponent implements OnInit {
 
   open(card: Card) {    
     this.card = card;
+    console.log(this.card);
     
     if(!card.leaders) {
       card.leaders = [];
     }
+
+    if(!card.locations) {
+      card.locations = [];
+    }
+
     if(this.card.due_date && !this.card.due_date.year) {
       this.card.due_date = this.utilsService.translate_date_to_view(this.card.due_date);
     }

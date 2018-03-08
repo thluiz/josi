@@ -24,6 +24,7 @@ const people_routes = require("./api/routes/people-routes");
 const parameters_routes = require("./api/routes/parameters-routes");
 const incidents_routes = require("./api/routes/incidents-routes");
 const cards_routes = require("./api/routes/cards-routes");
+const financial_routes = require("./api/routes/financial-routes");
 const express = require('express');
 var helmet = require('helmet');
 var session = require('express-session');
@@ -111,6 +112,7 @@ function getParticipationList(people) {
         parameters_routes.configure_routes(app, pool);
         incidents_routes.configure_routes(app, pool);
         cards_routes.configure_routes(app, pool);
+        financial_routes.configure_routes(app, pool);
         app.get("/api/hourly-jobs", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             const jobs_service = new jobs_services_1.JobsService(pool);
             yield jobs_service.hourly_jobs();
