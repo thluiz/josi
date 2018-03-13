@@ -70,6 +70,10 @@ export class CardEditModalComponent implements OnInit {
       card.locations = [];
     }
 
+    if(this.card.due_date && (!this.card.due_time || !this.card.due_time.hour)) {
+      this.card.due_time = this.utilsService.translate_time_to_view(this.card.due_date);
+    }
+
     if(this.card.due_date && !this.card.due_date.year) {
       this.card.due_date = this.utilsService.translate_date_to_view(this.card.due_date);
     }

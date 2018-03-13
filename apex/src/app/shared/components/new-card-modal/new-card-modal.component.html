@@ -157,6 +157,10 @@
                         <div class="row">
                             <div class="col-12 col-md-6">
                                 <label for="card_due_date">Previsão</label>                                                									
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6">                                
                                 <div class="input-group">							
                                     <input class="form-control text-center" placeholder="dd/mm/aaaa" 
                                     [(ngModel)]="card.due_date" 
@@ -168,8 +172,13 @@
                                         <i class="ft-calendar" style="cursor: pointer;"></i>
                                     </div>
                                 </div>
-                            </div>                            
-                        </div>                                            
+                            </div>  
+                            <div class="col-12 col-md-6">                                                                                									
+                                <div class="input-group">							
+                                    <ngb-timepicker [spinners]="false" [(ngModel)]="card.due_time"></ngb-timepicker>
+                                </div>
+                            </div>                          
+                        </div>                                           
 
                         <label for="card_description"                             
                             style="font-weight: bold">

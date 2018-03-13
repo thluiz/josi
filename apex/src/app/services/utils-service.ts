@@ -41,6 +41,20 @@ export class UtilsService {
         }
     }
 
+    translate_time_to_view(date) {      
+        if(!date || date.split("-").length != 3 || date.split("T").length != 2) {
+            return null;
+        }
+        const splitted_date = date.split("T");
+        const time = splitted_date[1].split(":");
+
+        return {
+            hour: parseInt(time[0], 10),
+            minute: parseInt(time[1], 10),
+            second: 0
+        }
+    }
+
     cache_results(observable : ReplaySubject<any>, endpoint:string, forceRefresh?: boolean) {
         if (!observable.observers.length || forceRefresh) {        
             this.http.get(this.dataUrl + endpoint)

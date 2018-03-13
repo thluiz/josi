@@ -70,6 +70,77 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
+    app.get("/api/payment_methods", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .query(`select * from payment_method where active = 1 order by [order] for json path`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
+    app.get("/api/acquirers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .query(`select * from acquirer where active = 1 order by [order] for json path`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
+    /**
+     * UPDATES
+     */
+    app.post("/api/branches", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const branch = req.body.branch;
+        const result = yield new sql.Request(pool)
+            .input('id', sql.Int, branch.id)
+            .input('name', sql.VarChar(100), branch.name)
+            .input('abrev', sql.VarChar(100), branch.abrev)
+            .input('initials', sql.VarChar(3), branch.initials)
+            .query(`update branch set
+                    name = @name,
+                    abrev = @abrev,
+                    initials = @initials
+                where id = @id`);
+        res.send({ sucess: true });
+    }));
+    app.post("/api/payment_methods", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const payment_method = req.body.payment_method;
+        if (payment_method.id > 0) {
+            const result = yield new sql.Request(pool)
+                .input('id', sql.Int, payment_method.id)
+                .input('name', sql.VarChar(100), payment_method.name)
+                .input('order', sql.Int, payment_method.order)
+                .query(`update payment_method set
+                        name = @name,
+                        [order] = @order
+                    where id = @id`);
+        }
+        else {
+            const result = yield new sql.Request(pool)
+                .input('name', sql.VarChar(100), payment_method.name)
+                .input('order', sql.Int, payment_method.order)
+                .query(`insert into payment_method (name, [order])
+                    values (@name, @order)`);
+        }
+        res.send({ sucess: true });
+    }));
+    app.post("/api/acquirers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const acquirer = req.body.acquirer;
+        if (acquirer.id > 0) {
+            const result = yield new sql.Request(pool)
+                .input('id', sql.Int, acquirer.id)
+                .input('name', sql.VarChar(100), acquirer.name)
+                .input('order', sql.Int, acquirer.order)
+                .query(`update acquirer set
+                        name = @name,
+                        [order] = @order
+                    where id = @id`);
+        }
+        else {
+            const result = yield new sql.Request(pool)
+                .input('name', sql.VarChar(100), acquirer.name)
+                .input('order', sql.Int, acquirer.order)
+                .query(`insert into acquirer (name, [order])
+                    values (@name, @order)`);
+        }
+        res.send({ sucess: true });
+    }));
 }
 exports.configure_routes = configure_routes;
 //# sourceMappingURL=parameters-routes.js.map

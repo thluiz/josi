@@ -7,12 +7,18 @@ export class CardService {
         this.sql_pool = sql_pool;
     }
 
-    async save_card(card, responsible_id) {        
+    async save_card(card, responsible_id) {    
+        let date = card.due_date ? `${card.due_date.year}-${card.due_date.month}-${card.due_date.day}` : null;
+
+        if(date != null && card.due_time) {
+            date += ` ${card.due_time.hour}:${card.due_time.minute}`;
+        }
+        
         if(card.id && card.id > 0)
             return await new sql.Request(this.sql_pool)
                 .input('card_id', sql.Int, card.id)            
                 .input('title', sql.NVarChar(500), card.title)            
-                .input('due_date', sql.VarChar(10), card.due_date ? `${card.due_date.year}-${card.due_date.month}-${card.due_date.day}` : null)
+                .input('due_date', sql.VarChar(10), date)
                 .input('description', sql.NVarChar(sql.MAX), card.description)                               
                 .input('location_id', sql.Int, card.locations != null && card.locations[0] ? card.locations[0].id : 1)                        
                 .input('leader_id', sql.Int, card.leaders != null && card.leaders[0] ? card.leaders[0].id : (card.leaders.person_id || card.leaders.id))                     
@@ -23,7 +29,7 @@ export class CardService {
         return await new sql.Request(this.sql_pool)
         .input('title', sql.NVarChar(500), card.title)
         .input('parent_id', sql.Int, card.parent.id)
-        .input('due_date', sql.VarChar(10), card.due_date ? `${card.due_date.year}-${card.due_date.month}-${card.due_date.day}` : null)
+        .input('due_date', sql.VarChar(10), date)
         .input('description', sql.NVarChar(sql.MAX), card.description)                               
         .input('location_id', sql.Int, card.locations != null && card.locations[0] ? card.locations[0].id : 1)                        
         .input('card_template_id', sql.Int, card.template ? card.template.id : 3)            

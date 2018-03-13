@@ -115,7 +115,7 @@
             Alterar
         </button>
         <button type="button" class="btn btn-silver" 			
-            *ngIf="!begin_remove"
+            *ngIf="!begin_remove && card.is_task"
             (click)="begin_remove = true">
             <i class="ft-trash-2"></i>
             Excluir
@@ -124,13 +124,13 @@
             Confirma exclusão?
         </span>
         <button type="button" class="btn btn-danger" 
-            *ngIf="begin_remove"
+            *ngIf="begin_remove && card.is_task"
             (click)="archive_card(d);">
             <i class="ft-trash-2"></i>
             Excluir
         </button>
         <button type="button" class="btn btn-secondary" 
-            *ngIf="begin_remove"
+            *ngIf="begin_remove && card.is_task"
             (click)="begin_remove = false">
             <i class="icon-action-undo"></i>
             Não

@@ -1,3 +1,4 @@
+import { UtilsService } from 'app/services/utils-service';
 import {Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Observable, ReplaySubject} from 'rxjs/Rx';
@@ -20,77 +21,100 @@ export class ParameterService {
     private locations$ = new ReplaySubject(1);
     private group$ = new ReplaySubject(1);
     private countries$ = new ReplaySubject(1);
+    private payment_methods$ = new ReplaySubject(1);
+    private acquirers$ = new ReplaySubject(1);
     
     private personCardPositions$ = new ReplaySubject(1);
     private cardTemplates$ = new ReplaySubject(1);
     
-    constructor(private http:HttpClient) { }  
+    constructor(private http:HttpClient, private utilsService: UtilsService) { }  
 
     getDomains(forceRefresh?: boolean) {
-        return this.cache_results(this.domains$, `/domains`, forceRefresh);                      
+        return this.utilsService.cache_results(this.domains$, `/domains`, forceRefresh);                      
     }
 
     getPrograms(forceRefresh?: boolean) {
-        return this.cache_results(this.programs$, `/programs`, forceRefresh);                      
+        return this.utilsService.cache_results(this.programs$, `/programs`, forceRefresh);                      
     }
 
     getActiveBranches(forceRefresh?: boolean) {
-        return this.cache_results(this.branches$, `/branches`, forceRefresh);                      
+        return this.utilsService.cache_results(this.branches$, `/branches`, forceRefresh);                      
     }
 
     getCountries(forceRefresh?: boolean) {
-        return this.cache_results(this.countries$, `/countries`, forceRefresh);                      
+        return this.utilsService.cache_results(this.countries$, `/countries`, forceRefresh);                      
     }    
     
     getLocations(forceRefresh?: boolean) {
-        return this.cache_results(this.locations$, `/locations`, forceRefresh);                      
+        return this.utilsService.cache_results(this.locations$, `/locations`, forceRefresh);                      
     }    
 
     getKungFuFamilies(forceRefresh?: boolean) {
-        return this.cache_results(this.kf_families$, `/kf_families`, forceRefresh);                      
+        return this.utilsService.cache_results(this.kf_families$, `/kf_families`, forceRefresh);                      
     }
 
     getRoles(forceRefresh?: boolean) {
-        return this.cache_results(this.roles$, `/roles`, forceRefresh);                      
+        return this.utilsService.cache_results(this.roles$, `/roles`, forceRefresh);                      
     }
 
     getRecurrenceTypes(forceRefresh?: boolean) {
-        return this.cache_results(this.recurrence_types$, `/recurrence_types`, forceRefresh);                      
+        return this.utilsService.cache_results(this.recurrence_types$, `/recurrence_types`, forceRefresh);                      
     }
 
     getIncidentTypes(forceRefresh?: boolean) {
-        return this.cache_results(this.incident_types$, `/incident_types`, forceRefresh);        
+        return this.utilsService.cache_results(this.incident_types$, `/incident_types`, forceRefresh);        
     }
 
     getContactTypes(forceRefresh?: boolean) {        
-        return this.cache_results(this.contact_types$, `/contact_types`, forceRefresh);
+        return this.utilsService.cache_results(this.contact_types$, `/contact_types`, forceRefresh);
     }
 
     getPersonCardPositions(forceRefresh?: boolean) {
-        return this.cache_results(this.personCardPositions$, `/person_card_positions`, forceRefresh);                      
+        return this.utilsService.cache_results(this.personCardPositions$, `/person_card_positions`, forceRefresh);                      
     }
 
     getCardTemplates(forceRefresh?: boolean) {
-        return this.cache_results(this.cardTemplates$, `/card_templates`, forceRefresh);                      
+        return this.utilsService.cache_results(this.cardTemplates$, `/card_templates`, forceRefresh);                      
     }
 
     getGroups(forceRefresh?: boolean) {
-        return this.cache_results(this.group$, `/groups`, forceRefresh);                      
+        return this.utilsService.cache_results(this.group$, `/groups`, forceRefresh);                      
     }    
 
-    private cache_results(observable : ReplaySubject<any>, endpoint:string, forceRefresh?: boolean) {
-        if (!observable.observers.length || forceRefresh) {
-            this.http.get(this.dataUrl + endpoint)
-            .subscribe(
-                data => observable.next(data),
-                error => {
-                    observable.error(error);
-                    // Recreate the Observable as after Error we cannot emit data anymore
-                    observable = new ReplaySubject(1);
-                }
-            );
-        }
+    getPaymentMethods(forceRefresh?: boolean) {
+        return this.utilsService.cache_results(this.payment_methods$, `/payment_methods`, forceRefresh);                      
+    } 
 
-        return observable;
+    getAcquirers(forceRefresh?: boolean) {
+        return this.utilsService.cache_results(this.acquirers$, `/acquirers`, forceRefresh);                      
+    } 
+
+
+
+    saveBranch(branch) {
+        return this.http
+        .post(this.dataUrl + `/branches`, {
+          branch
+        }).map((data : any) => {          
+          this.getActiveBranches(true);
+        });
+    }
+
+    savePaymentMethod(payment_method) {
+        return this.http
+        .post(this.dataUrl + `/payment_methods`, {
+            payment_method
+        }).map((data : any) => {          
+          this.getPaymentMethods(true);
+        });
+    }
+
+    saveAcquirer(acquirer) {
+        return this.http
+        .post(this.dataUrl + `/acquirers`, {
+            acquirer
+        }).map((data : any) => {          
+          this.getAcquirers(true);
+        });
     }
 }

@@ -12,15 +12,16 @@ const sql = require("mssql");
 const security_services_1 = require("../../domain/services/security_services");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
-    app.get("/api/financial/accounts/:branch_id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/financial/accounts/:branch_id?", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
-            .input('branch_id', sql.Int, req.params.branch_id)
-            .query(`select * 
-                from account 
-                where active = 1
-                and branch_id = @branch_id
+            .input('branch_id', sql.Int, req.params.branch_id || null)
+            .query(`select a.*, isnull(b.abrev, 'Gestão Integrada') branch, isnull(b.initials, 'GI') branch_initials 
+                from account a
+                    left join branch b on b.id = a.branch_id
+                where a.active = 1
+                and a.branch_id = isnull(@branch_id, branch_id)
                 order by [order] 
-                for json path`, [req.params.branch_id]);
+                for json path`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
@@ -48,6 +49,28 @@ function configure_routes(app, connection_pool) {
             .execute(`GetMissingPayments`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
+    }));
+    app.post("/api/financial/accounts", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const account = req.body.account;
+        if (account.id > 0) {
+            const result = yield new sql.Request(pool)
+                .input('id', sql.Int, account.id)
+                .input('name', sql.VarChar(100), account.name)
+                .input('order', sql.Int, account.order)
+                .query(`update account set
+                        name = @name,
+                        [order] = @order
+                    where id = @id`);
+        }
+        else {
+            const result = yield new sql.Request(pool)
+                .input('name', sql.VarChar(100), account.name)
+                .input('order', sql.Int, account.order)
+                .input('branch', sql.Int, account.branch_id > 0 ? account.branch_id : null)
+                .query(`insert into account (name, [order], branch_id, active)
+                    values (@name, @order, @branch, 1)`);
+        }
+        res.send({ sucess: true });
     }));
 }
 exports.configure_routes = configure_routes;

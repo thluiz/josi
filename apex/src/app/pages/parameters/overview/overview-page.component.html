@@ -1,0 +1,38 @@
+<div class="card">
+    <div class="card-body">
+        <h2>Parâmetros</h2>
+
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <h5>Gerais</h5>        
+                <table class="table table-hover">             
+                    <tr>
+                        <td [routerLink]="['/parameters/branches']" style="cursor:pointer;" >
+                            Núcleos
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-6 col-md-3">
+                <h5>Financeiros</h5>        
+                <table class="table table-hover" style="cursor:pointer;width:100%" >                         
+                    <tr>
+                        <td [routerLink]="['/parameters/accounts']">
+                            Contas
+                        </td>
+                    </tr>            
+                    <tr>
+                        <td [routerLink]="['/parameters/payment-methods']" style="cursor:pointer;">
+                            Formas de Pagamento
+                        </td>
+                    </tr>
+                    <tr>
+                        <td [routerLink]="['/parameters/acquirers']" style="cursor:pointer;">
+                            Adquirentes
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>                
+    </div>
+</div>

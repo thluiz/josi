@@ -104,5 +104,25 @@ export const Full_ROUTES: Routes = [
   {
     path: 'financial/:branch_id',
     loadChildren: './pages/financial/financial.module#FinancialModule'
+  },
+  {
+    path: 'parameters',
+    loadChildren: './pages/parameters/parameters.module#ParametersModule'
+  },
+  {
+    path: 'parameters/branches',
+    loadChildren: './pages/parameters/parameters.module#ParametersModule'
+  },
+  {
+    path: 'parameters/accounts',
+    loadChildren: './pages/parameters/parameters.module#ParametersModule'
+  },
+  {
+    path: 'parameters/domains',
+    loadChildren: './pages/parameters/parameters.module#ParametersModule'
+  },
+  {
+    path: 'parameters/acquirers',
+    loadChildren: './pages/parameters/parameters.module#ParametersModule'
   }
 ];

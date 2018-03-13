@@ -1,5 +1,5 @@
 import { Group } from './group.model';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateStruct, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { CardStep } from './card-step.model';
 import { Location } from './location.model';
 
@@ -14,7 +14,9 @@ export class Card {
     high_level_id: number;
     high_level_title: string;
     due_date: NgbDateStruct;
+    due_time: NgbTimeStruct;
     due_date_formated: string;
+    due_time_formated: string;
     abrev: string;
     order: number;
     leaders: any[];

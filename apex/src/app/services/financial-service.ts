@@ -15,6 +15,17 @@ export class FinancialService {
     return this.http.get(this.dataUrl + `/financial/accounts/${branch_id}`);
   }
 
+  getAccounts() {    
+    return this.http.get(this.dataUrl + `/financial/accounts`);
+  }
+
+  public saveAccount(account) {
+    return this.http
+        .post(this.dataUrl + `/financial/accounts`, {
+          account
+        });
+  }
+
   getExpectedPayments(account_id:number, start_date? :Date, end_date? :Date) {
     let url = this.dataUrl + `/financial_board/expected_payments/${account_id}?`;
 

@@ -29,5 +29,12 @@ export const ROUTES: RouteInfo[] = [
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,
         submenu: []
+    },
+    {
+        path: '/parameters', title: 'Parâmetros',
+        icon: 'ft-settings',
+        class: '', badge: '',
+        badgeClass: '', isExternalLink: false,
+        submenu: []
     }
 ];
