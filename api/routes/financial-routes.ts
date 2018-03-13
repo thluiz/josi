@@ -15,7 +15,7 @@ export function configure_routes(app: any, connection_pool: any) {
                 from account a
                     left join branch b on b.id = a.branch_id
                 where a.active = 1
-                and a.branch_id = isnull(@branch_id, branch_id)
+                and isnull(a.branch_id, -1) = isnull(@branch_id, isnull(a.branch_id, -1))
                 order by [order] 
                 for json path`);                
         
