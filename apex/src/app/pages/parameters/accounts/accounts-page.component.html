@@ -42,7 +42,7 @@
         <div class="modal-body" *ngIf="current_item">		
             <div class="row" *ngIf="current_item.id > 0">
                 <div class="col-6">
-                    <label>Núcleo</label>
+                    <label>Dono</label>
                     <div class="input-group">
                         {{ current_item.branch }}
                     </div>
@@ -50,7 +50,7 @@
             </div>
             <div class="row" *ngIf="current_item.id <= 0">
                 <div class="col-12">
-                    <label for="item_branch">Núcleo</label>
+                    <label for="item_branch">Dono</label>
                     <div class="input-group">
                         <select id="item_branch" 
                             name="item_branch"
@@ -93,7 +93,7 @@
         </div>
         <div class="modal-footer" *ngIf="!saving">
             <button type="button" class="btn btn-success" 
-                *ngIf="current_item.branch_id >= 0 && current_item.name.length > 3"
+                *ngIf="current_item.name.length > 3"
                 (click)="save(d);">
                 <i class="icon-check"></i>
                 Salvar

@@ -41,6 +41,10 @@ export class ParameterService {
         return this.utilsService.cache_results(this.branches$, `/branches`, forceRefresh);                      
     }
 
+    getBranch(id) {
+        return this.http.get(this.dataUrl + `/branches/${id}`);
+    }
+
     getCountries(forceRefresh?: boolean) {
         return this.utilsService.cache_results(this.countries$, `/countries`, forceRefresh);                      
     }    
@@ -115,6 +119,14 @@ export class ParameterService {
             acquirer
         }).map((data : any) => {          
           this.getAcquirers(true);
+        });
+    }
+
+    ToggleAssociateBranchAcquirer(branch_id, acquirer_id) {
+        return this.http
+        .post(this.dataUrl + `/branches_acquirers`, {
+            branch_id,
+            acquirer_id
         });
     }
 }

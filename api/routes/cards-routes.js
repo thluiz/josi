@@ -14,6 +14,13 @@ const card_services_1 = require("../../domain/services/card_services");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     const card_service = new card_services_1.CardService(pool);
+    app.get("/api/cards/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input("card", sql.Int, req.params.id)
+            .query(`select * from vwCard where id = @card for json path`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
     app.get("/api/person_card_positions", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from person_card_position where active = 1 for json path`);

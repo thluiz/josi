@@ -76,6 +76,10 @@ export class CardService {
     .do((data : Card) => this.card_changes.next(new CardChangedAction(data)));
   }
 
+  getCardData(id) {
+    return this.http.get(this.dataUrl + `/cards/${id}`);
+  }
+
   getOrganizations(include_childrens = false) {
     return this.http.get(this.dataUrl + `/organizations/0/${include_childrens? 1 : 0}`);
   }

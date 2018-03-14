@@ -3,10 +3,14 @@ import { Observable } from 'rxjs/Observable';
 import { Component, Input, OnInit, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
-import { PersonService } from 'app/services/person-service';
-import { IncidentService } from 'app/services/incident-service';
+
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
+
+import { CardService } from 'app/services/card-service';
+import { IncidentService } from 'app/services/incident-service';
+import { PersonService } from 'app/services/person-service';
+
 
 @Component({
   selector: 'incident-treatment-modal',
@@ -28,7 +32,8 @@ export class IncidentTreatmentModalComponent implements OnInit {
     private incidentService: IncidentService, 
     private ngbModalService: NgbModal,
     private modalService: ModalService,
-    private personService: PersonService) {
+    private personService: PersonService,
+    private cardService: CardService) {
    
       datePickerConfig.firstDayOfWeek = 7
   }
@@ -196,6 +201,12 @@ export class IncidentTreatmentModalComponent implements OnInit {
       .catch((reason) => {
         console.log(reason);
       }); 
+  }
+
+  open_card_detail(card_id) {
+    this.cardService.getCardData(card_id).subscribe((data) => {      
+      this.modalService.open(ModalType.DetailTask, data[0]);
+    });
   }
 
   register_contact_for_incident(incident, close_modal_action) {

@@ -9,7 +9,7 @@
             <div class="col-4 pr-0 text-right">
                 <button type="button" class="btn btn-silver btn-sm" 
                     style="margin:0;padding:2px;line-height:10px"
-                    *ngIf="current_incident.comment_count > 0"
+                    *ngIf="current_incident.comment_count > 0 && !current_incident.card_id"
                     (click)="show_comments();">
                     
                     {{ current_incident.comment_count }} 
@@ -19,6 +19,7 @@
         
                 <button type="button" class="btn btn-silver btn-sm" 
                     style="margin:0;padding:2px;line-height:10px"
+                    *ngIf="!current_incident.card_id"
                     (click)="add_comment();">
                     <i class="ft-plus"></i>                                        
                     <i class="far fa-sticky-note"></i>
@@ -32,6 +33,29 @@
     </div>
     <div class="modal-body">                
         <form class="form" #f="ngForm">
+            <div class="row" *ngIf="current_incident.card_id > 0" style="margin-bottom:15px;">
+                <div class="col-12">
+                    <label>Referente à: </label>
+                    <a 
+                        style="color:black"
+                        (click)="d('go to projetct')"
+                        [routerLink]="['/organizations/projects', current_incident.card_parent_id]">
+                        {{ current_incident.card_parent }} 
+                    </a>
+                    - 
+                    <a (click)="open_card_detail(current_incident.card_id)">
+                        {{ current_incident.card_title}}
+                    </a>
+                    <button type="button" class="btn btn-silver btn-sm" 
+                        style="margin:0;padding:2px;line-height:10px"
+                        *ngIf="current_incident.card_comment_count > 0">
+                        
+                        {{ current_incident.comment_count }} 
+            
+                        <i class="far fa-sticky-note"></i>
+                    </button>
+                </div>
+            </div>
             <div class="row" *ngIf="current_incident.title">
                 <div class="col-12">													
                     <markdown [data]="current_incident.title"></markdown>			
@@ -240,7 +264,7 @@
             Voltar
         </button>		
         <button type="button" class="btn btn-silver" 			
-            *ngIf="!current_incident.begin_remove && !current_incident.in_treatment"
+            *ngIf="!current_incident.begin_remove && !current_incident.in_treatment && !current_incident.card_id"            
             (click)="begin_remove_incident(current_incident);">
             <i class="ft-trash-2"></i>
             Excluir

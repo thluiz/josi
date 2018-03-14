@@ -7,6 +7,20 @@ export function configure_routes(app: any, connection_pool: any) {
 
     const card_service = new CardService(pool);    
 
+    app.get("/api/cards/:id", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+
+        const result = await new sql.Request(pool)   
+        .input("card", sql.Int, req.params.id)                   
+        .query(`select * from vwCard where id = @card for json path`);                
+        
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response);
+
+    });
+
     app.get("/api/person_card_positions", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {  

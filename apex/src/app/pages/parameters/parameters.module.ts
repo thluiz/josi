@@ -25,6 +25,7 @@ import { BranchesPageComponent } from 'app/pages/parameters/branches/branches-pa
 import { DomainsPageComponent } from 'app/pages/parameters/domains/domains-page.component';
 import { OverviewPageComponent } from 'app/pages/parameters/overview/overview-page.component';
 import { PaymentMethodsPageComponent } from 'app/pages/parameters/payment-methods/payment-methods-page.component';
+import { BranchDetailPageComponent } from 'app/pages/parameters/branch-detail/branch-detail-page.component';
 
 @NgModule({
     imports: [
@@ -40,7 +41,8 @@ import { PaymentMethodsPageComponent } from 'app/pages/parameters/payment-method
         AcquirersPageComponent,
         DomainsPageComponent,
         AccountsPageComponent,
-        PaymentMethodsPageComponent
+        PaymentMethodsPageComponent,
+        BranchDetailPageComponent
     ]
 })
 export class ParametersModule { }

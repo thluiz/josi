@@ -7,6 +7,7 @@ import { BranchesPageComponent } from 'app/pages/parameters/branches/branches-pa
 import { DomainsPageComponent } from 'app/pages/parameters/domains/domains-page.component';
 import { OverviewPageComponent } from 'app/pages/parameters/overview/overview-page.component';
 import { PaymentMethodsPageComponent } from 'app/pages/parameters/payment-methods/payment-methods-page.component';
+import { BranchDetailPageComponent } from 'app/pages/parameters/branch-detail/branch-detail-page.component';
 
 let routes: Routes = [
   {
@@ -38,7 +39,12 @@ let routes: Routes = [
     path: 'payment-methods',
     component: PaymentMethodsPageComponent,
     data: { },    
-  }
+  },
+  {
+    path: 'branch/:id',
+    component: BranchDetailPageComponent,
+    data: { },    
+  }  
 ];
 
 @NgModule({

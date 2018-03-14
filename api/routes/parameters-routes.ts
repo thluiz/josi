@@ -4,13 +4,23 @@ import { SecurityService } from '../../domain/services/security_services';
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
 
-    app.get("/api/branches", 
+    app.get("/api/branches/:id?", 
     SecurityService.ensureLoggedIn(),
-    async (request, response, next) => {                        
-        const result = await new sql.Request(pool)            
-        .execute(`GetBranches`);                
+    async (req, res, next) => {                        
+        if(!req.params.id) {
+            const result = await new sql.Request(pool)            
+            .execute(`GetBranches`);                
 
-        response.send(result.recordset[0]);
+            res.send(result.recordset[0]);
+        } else {
+            const result = await new sql.Request(pool)   
+            .input("branch", sql.Int, req.params.id)                   
+            .query(`select * from vwBranch where id = @branch for json path`);                
+            
+            let response = result.recordset[0];
+
+            res.send(response[0].empty ? [] : response);
+        }
     });
 
     app.get("/api/domains", 
@@ -201,6 +211,17 @@ export function configure_routes(app: any, connection_pool: any) {
             .query(`insert into acquirer (name, [order])
                     values (@name, @order)`);         
         }
+
+        res.send({ sucess: true});   
+    });
+
+    app.post("/api/branches_acquirers", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {                                
+        const result = await new sql.Request(pool)            
+        .input('branch_id', sql.Int, req.body.branch_id)          
+        .input('acquirer_id', sql.Int, req.body.acquirer_id)
+        .execute(`ToggleBranchAcquirerAssociation`);         
 
         res.send({ sucess: true});   
     });

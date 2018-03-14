@@ -5,16 +5,29 @@
             <thead>
                 <th>Nome</th>
                 <th>Abreviação</th>
-                <th style="text-align:center">Iniciais</th>                
+                <th style="text-align:center">Iniciais</th>
+                <th width="30px"></th>                
             </thead>
             <tbody>
-                <tr *ngFor="let item of collection"
-                class="cursor_pointer"
-                (click)="edit(edit_modal, item)"
-                >
-                    <td>{{ item["name"] }}</td>
-                    <td>{{ item["abrev"] }}</td>
-                    <td style="text-align:center">{{ item["initials"] }}</td>                    
+                <tr *ngFor="let item of collection">
+                    <td class="cursor_pointer"
+                    [routerLink]="['/parameters/branch', item.id]">
+                        {{ item["name"] }}
+                    </td>
+                    <td class="cursor_pointer"
+                    [routerLink]="['/parameters/branch', item.id]">
+                        {{ item["abrev"] }}
+                    </td>                    
+                    <td class="cursor_pointer"
+                    [routerLink]="['/parameters/branch', item.id]"
+                    style="text-align:center">
+                        {{ item["initials"] }}
+                    </td> 
+                    <td>
+                        <a (click)="edit(edit_modal, item)">
+                            <i class="fas fa-edit cursor_pointer"></i>
+                        </a>
+                    </td>                   
                 </tr>
             </tbody>
         </table>

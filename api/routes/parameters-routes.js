@@ -12,10 +12,19 @@ const sql = require("mssql");
 const security_services_1 = require("../../domain/services/security_services");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
-    app.get("/api/branches", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield new sql.Request(pool)
-            .execute(`GetBranches`);
-        response.send(result.recordset[0]);
+    app.get("/api/branches/:id?", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        if (!req.params.id) {
+            const result = yield new sql.Request(pool)
+                .execute(`GetBranches`);
+            res.send(result.recordset[0]);
+        }
+        else {
+            const result = yield new sql.Request(pool)
+                .input("branch", sql.Int, req.params.id)
+                .query(`select * from vwBranch where id = @branch for json path`);
+            let response = result.recordset[0];
+            res.send(response[0].empty ? [] : response);
+        }
     }));
     app.get("/api/domains", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
@@ -139,6 +148,13 @@ function configure_routes(app, connection_pool) {
                 .query(`insert into acquirer (name, [order])
                     values (@name, @order)`);
         }
+        res.send({ sucess: true });
+    }));
+    app.post("/api/branches_acquirers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input('branch_id', sql.Int, req.body.branch_id)
+            .input('acquirer_id', sql.Int, req.body.acquirer_id)
+            .execute(`ToggleBranchAcquirerAssociation`);
         res.send({ sucess: true });
     }));
 }
