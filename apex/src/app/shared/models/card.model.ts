@@ -34,4 +34,5 @@ export class Card {
     branch: { id: number, name: string }
     comment_count: number;
     archived: boolean;
+    has_overdue_card: boolean;
 }

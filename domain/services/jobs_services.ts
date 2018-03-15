@@ -13,14 +13,22 @@ export class JobsService {
         this.sumary_service = new SumaryService(sql_pool);
         this.person_service = new PersonService(sql_pool);
     }
-
+    
     async hourly_jobs() {
         try {
             this.sumary_service.consolidate_members_sumary();
             this.sumary_service.consolidate_activity_sumary();
             this.person_service.check_people_status();
+            this.check_cards_has_overdue_cards();
         } catch(ex) {
             console.log(ex);
         }
+    }
+
+    private async check_cards_has_overdue_cards() {        
+        const result = await new sql.Request(this.sql_pool)                               
+                                .execute(`CheckCardsHasOverdueCards`);
+
+        return result;  
     }
 }

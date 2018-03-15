@@ -41,11 +41,15 @@ export class BranchDetailPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private load_data() {
-    this.parameterService.getBranch(this.id).subscribe((data) => {
-      this.current = data[0];
-    });
-  }  
+  toggle_associate_acquirer(acquirer, close_action) {
+    this.parameterService.ToggleAssociateBranchAcquirer(this.id, acquirer).subscribe((data) => {      
+      this.load_data();
+
+      if(close_action) {
+        close_action();
+      }
+    })
+  }
 
   open_add_acquirer(content) {
     this.current_acquirer = null;
@@ -65,15 +69,11 @@ export class BranchDetailPageComponent implements OnInit, OnDestroy {
     }, (reason) => {      
       console.log(reason);
     });
-  }
+  } 
   
-  public toggle_associate_acquirer(acquirer, close_action) {
-    this.parameterService.ToggleAssociateBranchAcquirer(this.id, acquirer).subscribe((data) => {      
-      this.load_data();
-
-      if(close_action) {
-        close_action();
-      }
-    })
-  }
+  private load_data() {
+    this.parameterService.getBranch(this.id).subscribe((data) => {
+      this.current = data[0];
+    });
+  }  
 }

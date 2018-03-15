@@ -23,10 +23,18 @@ class JobsService {
                 this.sumary_service.consolidate_members_sumary();
                 this.sumary_service.consolidate_activity_sumary();
                 this.person_service.check_people_status();
+                this.check_cards_has_overdue_cards();
             }
             catch (ex) {
                 console.log(ex);
             }
+        });
+    }
+    check_cards_has_overdue_cards() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield new sql.Request(this.sql_pool)
+                .execute(`CheckCardsHasOverdueCards`);
+            return result;
         });
     }
 }

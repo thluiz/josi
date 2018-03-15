@@ -9,36 +9,40 @@ export function configure_routes(app: any, connection_pool: any) {
     
     app.post("/api/incident/close", 
     SecurityService.ensureLoggedIn(),
-    async (request, response, next) => {
-        let result = await incident_service.close_incident(request.body.incident);
+    async (req, response, next) => {
+        let user = await SecurityService.getUserFromRequest(req);
+        let result = await incident_service.close_incident(req.body.incident, user.person_id);
 
         response.send({ sucess: true});
     });
 
     app.post("/api/incident/start", 
     SecurityService.ensureLoggedIn(),
-    async (request, response, next) => {
-        let result = await incident_service.start_incident(request.body.incident);
+    async (req, response, next) => {
+        let user = await SecurityService.getUserFromRequest(req);
+        let result = await incident_service.start_incident(req.body.incident, user.person_id);
 
         response.send({ sucess: true});
     });
 
     app.post("/api/incident/reopen", 
     SecurityService.ensureLoggedIn(),
-    async (request, response, next) => {
-        let result = await incident_service.reopen_incident(request.body.incident);
+    async (req, response, next) => {
+        let user = await SecurityService.getUserFromRequest(req);
+        let result = await incident_service.reopen_incident(req.body.incident, user.person_id);
 
         response.send({ sucess: true});
     });
 
     app.post("/api/incident/start/cancel", 
     SecurityService.ensureLoggedIn(),
-    async (request, response, next) => {
-        let result = await incident_service.cancel_start_incident(request.body.incident);
+    async (req, response, next) => {
+        let user = await SecurityService.getUserFromRequest(req);
+        let result = await incident_service.cancel_start_incident(req.body.incident, user.person_id);
 
         response.send({ sucess: true});
-    });
-
+    }); 
+ 
     app.post("/api/incident/remove", 
     SecurityService.ensureLoggedIn(),
     async (request, response, next) => {            

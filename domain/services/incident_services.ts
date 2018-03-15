@@ -7,34 +7,38 @@ export class IncidentService {
         this.sql_pool = sql_pool;
     }
 
-    public async start_incident(incident) {
+    public async start_incident(incident, responsible_id) {
         const result = await new sql.Request(this.sql_pool)
-                                .input('incident', sql.Int, incident.id)                                
+                                .input('incident', sql.Int, incident.id) 
+                                .input('responsible_id', sql.Int, responsible_id)                                
                                 .execute(`StartIncident`);
 
         return result;                        
     }
 
-    public async reopen_incident(incident) {
+    public async reopen_incident(incident, responsible_id) {
         const result = await new sql.Request(this.sql_pool)
-                                .input('id', sql.Int, incident.id)                                
+                                .input('id', sql.Int, incident.id)   
+                                .input('responsible_id', sql.Int, responsible_id)                              
                                 .execute(`ReopenIncident`);
 
         return result;                        
     }
 
-    public async cancel_start_incident(incident) {
+    public async cancel_start_incident(incident, responsible_id) {
         const result = await new sql.Request(this.sql_pool)
                                 .input('incident', sql.Int, incident.id)                                
+                                .input('responsible_id', sql.Int, responsible_id) 
                                 .execute(`CancelIncidentStart`);
 
         return result;                        
     }
     
-    public async close_incident(incident) {
+    public async close_incident(incident, responsible_id) {
         const result = await new sql.Request(this.sql_pool)
                                 .input('id', sql.Int, incident.id)
                                 .input('close_description', sql.VarChar(sql.MAX), incident.closing_contact_text || "")                        
+                                .input('responsible_id', sql.Int, responsible_id) 
                                 .execute(`CloseIncident`);
 
         return result;                        

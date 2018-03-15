@@ -14,20 +14,24 @@ const security_services_1 = require("../../domain/services/security_services");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     const incident_service = new incident_services_1.IncidentService(pool);
-    app.post("/api/incident/close", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield incident_service.close_incident(request.body.incident);
+    app.post("/api/incident/close", security_services_1.SecurityService.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
+        let user = yield security_services_1.SecurityService.getUserFromRequest(req);
+        let result = yield incident_service.close_incident(req.body.incident, user.person_id);
         response.send({ sucess: true });
     }));
-    app.post("/api/incident/start", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield incident_service.start_incident(request.body.incident);
+    app.post("/api/incident/start", security_services_1.SecurityService.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
+        let user = yield security_services_1.SecurityService.getUserFromRequest(req);
+        let result = yield incident_service.start_incident(req.body.incident, user.person_id);
         response.send({ sucess: true });
     }));
-    app.post("/api/incident/reopen", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield incident_service.reopen_incident(request.body.incident);
+    app.post("/api/incident/reopen", security_services_1.SecurityService.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
+        let user = yield security_services_1.SecurityService.getUserFromRequest(req);
+        let result = yield incident_service.reopen_incident(req.body.incident, user.person_id);
         response.send({ sucess: true });
     }));
-    app.post("/api/incident/start/cancel", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield incident_service.cancel_start_incident(request.body.incident);
+    app.post("/api/incident/start/cancel", security_services_1.SecurityService.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
+        let user = yield security_services_1.SecurityService.getUserFromRequest(req);
+        let result = yield incident_service.cancel_start_incident(req.body.incident, user.person_id);
         response.send({ sucess: true });
     }));
     app.post("/api/incident/remove", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {

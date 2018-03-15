@@ -109,6 +109,7 @@
     </div>
     <div class="modal-footer" *ngIf="!saving">
         <button type="button" class="btn btn-silver"
+        *ngIf="!begin_remove"
         (click)="edit_card()"
         >
             <i class="fas fa-edit"></i>
@@ -117,17 +118,17 @@
         <button type="button" class="btn btn-silver" 			
             *ngIf="!begin_remove && card.is_task"
             (click)="begin_remove = true">
-            <i class="ft-trash-2"></i>
-            Excluir
+            <i class="fas fa-archive"></i>
+            Arquivar
         </button>
         <span *ngIf="begin_remove">
-            Confirma exclusão?
+            Confirma Arquivamento?
         </span>
         <button type="button" class="btn btn-danger" 
             *ngIf="begin_remove && card.is_task"
             (click)="archive_card(d);">
-            <i class="ft-trash-2"></i>
-            Excluir
+            <i class="fas fa-archive"></i>
+            Arquivar!
         </button>
         <button type="button" class="btn btn-secondary" 
             *ngIf="begin_remove && card.is_task"

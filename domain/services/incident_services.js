@@ -13,35 +13,39 @@ class IncidentService {
     constructor(sql_pool) {
         this.sql_pool = sql_pool;
     }
-    start_incident(incident) {
+    start_incident(incident, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield new sql.Request(this.sql_pool)
                 .input('incident', sql.Int, incident.id)
+                .input('responsible_id', sql.Int, responsible_id)
                 .execute(`StartIncident`);
             return result;
         });
     }
-    reopen_incident(incident) {
+    reopen_incident(incident, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield new sql.Request(this.sql_pool)
                 .input('id', sql.Int, incident.id)
+                .input('responsible_id', sql.Int, responsible_id)
                 .execute(`ReopenIncident`);
             return result;
         });
     }
-    cancel_start_incident(incident) {
+    cancel_start_incident(incident, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield new sql.Request(this.sql_pool)
                 .input('incident', sql.Int, incident.id)
+                .input('responsible_id', sql.Int, responsible_id)
                 .execute(`CancelIncidentStart`);
             return result;
         });
     }
-    close_incident(incident) {
+    close_incident(incident, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield new sql.Request(this.sql_pool)
                 .input('id', sql.Int, incident.id)
                 .input('close_description', sql.VarChar(sql.MAX), incident.closing_contact_text || "")
+                .input('responsible_id', sql.Int, responsible_id)
                 .execute(`CloseIncident`);
             return result;
         });

@@ -7,7 +7,7 @@
 		</div>		
 		<div class="col-10" *ngIf="card.is_task && card.template_id != 1">	
 			<a (click)="open_detail_modal()">
-				{{ card.title }}			
+				{{ card.title }}							
 			</a>				
 		</div>
 		<div class="col-1" *ngIf="!card.is_task || card.template_id != 1">			
@@ -36,14 +36,19 @@
 		</div>
 		<div class="col-12">
 			<div class="row">
-				<div class="col-9" style="vertical-align: bottom">					
-					<ng-template *ngIf="!card.is_task" ngFor let-sd [ngForOf]="card.steps_description" let-k=index let-m=first><span *ngIf="k == 0">&nbsp;</span><span *ngIf="k != 0">/</span><span title="{{ sd.name }}">{{ sd.childrens }}</span></ng-template>									
-					<div *ngIf="card.due_date && card.due_date_formated" class="card_due_date">{{ card.due_date_formated }}</div>
+				<div class="col-9" style="vertical-align: bottom">										
+					<div *ngIf="!card.is_task">
+						<ng-template ngFor let-sd [ngForOf]="card.steps_description" let-k=index let-m=first><span *ngIf="k == 0">&nbsp;</span><span *ngIf="k != 0">/</span><span title="{{ sd.name }}">{{ sd.childrens }}</span></ng-template>														
+					</div>
+					<i class="fas fa-exclamation-triangle" style="color:red" *ngIf="card.has_overdue_card"></i>
+					<div *ngIf="card.due_date 
+						&& card.due_date_formated" 
+						class="card_due_date">{{ card.due_date_formated }}</div>
 					<div *ngIf="card.due_date && !card.due_date_formated" class="card_due_date">{{  card.due_date.day + "/" + (card.due_date.month) }}</div>
 					<div *ngIf="card.comment_count > 0" class="card_comment_count">						
 						<i class="far fa-sticky-note"></i> 
 						{{ card.comment_count }}						
-					</div>							
+					</div>												
 				</div>
 				<div class="col-3">
 					<img src="https://myvtmiim.blob.core.windows.net/avatars/{{ l.avatar_img }}" 
