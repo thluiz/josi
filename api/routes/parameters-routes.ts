@@ -41,6 +41,26 @@ export function configure_routes(app: any, connection_pool: any) {
         response.send(result.recordset[0]);
     });
 
+    app.get("/api/products", 
+    SecurityService.ensureLoggedIn(),
+    async (request, res, next) => {         
+        try {
+            const result = await new sql.Request(pool)            
+            .query(`select * from [vwProduct] for json path`);                
+            
+            let response = result.recordset[0];
+    
+            res.send(response);
+        } catch (error) {
+            if(error.code = 'EJSON') {
+                res.send([]);       
+            } else {
+                res.status(500).json(error);                              
+            }
+        }             
+    });
+
+
     app.get("/api/countries", 
     SecurityService.ensureLoggedIn(),
     async (request, res, next) => {                        
@@ -210,6 +230,51 @@ export function configure_routes(app: any, connection_pool: any) {
             .input('order', sql.Int, acquirer.order)        
             .query(`insert into acquirer (name, [order])
                     values (@name, @order)`);         
+        }
+
+        res.send({ sucess: true});   
+    });
+
+    app.post("/api/products", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {                        
+        const product = req.body.product;
+
+        if(product.id > 0) {
+            const result = await new sql.Request(pool)            
+            .input('id', sql.Int, product.id)          
+            .input('name', sql.VarChar(100), product.name)
+            .input('base_value', sql.Decimal(12,2), product.base_value)        
+            .input('association_percentage', sql.Decimal(12,2), product.association_percentage)        
+            .input('im_percentage', sql.Decimal(12,2), product.im_percentage)        
+            .input('local_percentage', sql.Decimal(12,2), product.local_percentage)        
+            .input('association_minimal_value', sql.Decimal(12,2), product.association_minimal_value)        
+            .input('im_minimal_value', sql.Decimal(12,2), product.im_minimal_value)
+            .input('local_minimal_value', sql.Decimal(12,2), product.local_minimal_value)
+            .query(`update product set
+                        name = @name,
+                        [association_percentage] = @association_percentage,
+                        [im_percentage] = @im_percentage,
+                        [local_percentage] = @local_percentage,                        
+                        [association_minimal_value] = @association_minimal_value,
+                        [im_minimal_value] = @im_minimal_value,
+                        [local_minimal_value] = @local_minimal_value,
+                        base_value = @base_value
+                    where id = @id`);         
+        } else {
+            const result = await new sql.Request(pool)                                    
+            .input('name', sql.VarChar(100), product.name)
+            .input('base_value', sql.Decimal(12,2), product.base_value)        
+            .input('association_percentage', sql.Decimal(12,2), product.association_percentage)        
+            .input('im_percentage', sql.Decimal(12,2), product.im_percentage)        
+            .input('local_percentage', sql.Decimal(12,2), product.local_percentage)        
+            .input('association_minimal_value', sql.Decimal(12,2), product.association_minimal_value)        
+            .input('im_minimal_value', sql.Decimal(12,2), product.im_minimal_value)
+            .input('local_minimal_value', sql.Decimal(12,2), product.local_minimal_value)        
+            .query(`insert into product (name, base_value, country_id, [association_percentage], im_percentage, local_percentage, 
+                    association_minimal_value, im_minimal_value, local_minimal_value)
+                values (@name, @base_value, 1, @association_percentage, @im_percentage, @local_percentage,
+                @association_minimal_value, @im_minimal_value, @local_minimal_value)`);         
         }
 
         res.send({ sucess: true});   

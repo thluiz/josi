@@ -124,5 +124,9 @@ export const Full_ROUTES: Routes = [
   {
     path: 'parameters/acquirers',
     loadChildren: './pages/parameters/parameters.module#ParametersModule'
+  },
+  {
+    path: 'products',
+    loadChildren: './pages/parameters/parameters.module#ParametersModule'
   }
 ];

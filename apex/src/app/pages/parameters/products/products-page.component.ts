@@ -1,0 +1,62 @@
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ParameterService } from 'app/services/parameter-service';
+import { Component, OnInit } from "@angular/core";
+
+@Component({
+  selector: 'app-full-layout-page',
+  templateUrl: './products-page.component.html',
+  styleUrls: ['../parameters-customizations.scss']  
+})
+export class ProductsPageComponent implements OnInit {      
+  collection: any;
+  current_item: any;
+  saving = false;
+
+  constructor(private parameterService: ParameterService, 
+              private ngbModalService: NgbModal) {      
+
+  }  
+
+  ngOnInit() {
+    this.load_data();    
+  }
+
+  create(content) {    
+    this.current_item = {
+      id: 0,
+      name: ""
+    }
+
+    this.open_modal(content);
+  }
+
+  private load_data() {
+    this.parameterService.getProducts().subscribe((data) => {
+      this.collection = data;
+    });
+  }
+
+  save(close_action) {
+    this.saving = true;
+    this.parameterService.saveProduct(this.current_item).subscribe((data) => {
+      if(close_action) {
+        close_action();
+      }
+      this.saving = false;
+      this.load_data();
+    });
+  }
+
+  edit(content, item) {
+    this.current_item = item;
+    this.open_modal(content);
+  }
+
+  private open_modal(content: any) {
+    this.ngbModalService.open(content).result.then((result) => {
+    }, (reason) => {
+      this.current_item = null;
+      console.log(reason);
+    });
+  }
+}

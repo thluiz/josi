@@ -1,0 +1,183 @@
+<div class="card">
+    <div class="card-body" style="padding:10px;">
+        <h4>Produtos</h4>
+        <table class="table table-hover table-striped" style="width:100%">            
+            <thead>
+                <th>Nome</th>
+                <th style="text-align:center;width:80px">Valor</th>
+                <th style="text-align:center;width:80px">% GI</th>
+                <th style="text-align:center;width:100px">% Assoc.</th>                
+                <th style="text-align:center;width:100px">% Núcleo</th>
+                <th style="text-align:center;width:80px">Min. GI</th>
+                <th style="text-align:center;width:120px">Min. Assoc.</th>                
+                <th style="text-align:center;width:120px">Min. Núcleo</th>                
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of collection" (click)="edit(modal, item)" class="cursor_pointer">
+                    <td>
+                        {{ item["name"] }}
+                    </td>
+                    <td style="text-align:right;padding-right:10px">
+                        {{ item["base_value"] }}
+                    </td>
+                    <td style="text-align:center;">
+                        {{ item["im_percentage"] }}
+                    </td>
+                    <td style="text-align:center;">
+                        {{ item["association_percentage"] }}
+                    </td>                    
+                    <td style="text-align:center;">
+                        {{ item["local_percentage"] }}
+                    </td>
+                    <td style="text-align:right;padding-right:10px">
+                        {{ item["im_minimal_value"] }}
+                    </td>
+                    <td style="text-align:right;padding-right:10px">
+                        {{ item["association_minimal_value"] }}
+                    </td>                    
+                    <td style="text-align:right;padding-right:10px">
+                        {{ item["local_minimal_value"] }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-silver"             
+            (click)="create(modal);">
+            <i class="fas fa-plus-circle"></i>
+            Novo
+        </button>
+    </div>
+</div>
+
+
+<ng-template #modal let-c="close" let-d="dismiss">
+        <div class="modal-header">
+            <h5 class="modal-title" style="font-weight: bold" *ngIf="current_item.id > 0">
+                Alterar Produto
+            </h5>
+            <h5 class="modal-title" style="font-weight: bold" *ngIf="!current_item.id || current_item.id <= 0">
+                Novo Produto
+            </h5>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" *ngIf="current_item">		
+            <div class="row">
+                <div class="col-12">
+                    <label for="item_name">Nome</label>                                                									
+                    <div class="input-group">							
+                        <input class="form-control"
+                        [(ngModel)]="current_item.name"                        
+                        autocomplete="off"
+                        maxlength="100"
+                        id="item_name"                        
+                        name="item_name"/>                                    
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <label for="item_base_value">Valor</label>                                                									
+                    <div class="input-group">							
+                        <input class="form-control"
+                        [(ngModel)]="current_item.base_value"                        
+                        autocomplete="off"
+                        type="number"                        
+                        id="item_base_value"                        
+                        name="item_base_value"/>                                    
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <h6 style="font-weight:bold">Percentuais</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label for="item_im_percentage">Gestão Integrada</label>                                                									
+                    <div class="input-group">							
+                        <input class="form-control text-center"
+                        [(ngModel)]="current_item.im_percentage"                        
+                        autocomplete="off" type="number"                                                
+                        id="item_im_percentage"
+                        name="item_im_percentage"/>                                    
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label for="item_association_percentage">Associação</label>                                                									
+                    <div class="input-group">							
+                        <input class="form-control text-center"
+                        [(ngModel)]="current_item.association_percentage"                        
+                        autocomplete="off" type="number"                        
+                        id="item_association_percentage"
+                        name="item_association_percentage"/>                                    
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label for="item_local_percentage">Núcleo</label>                                                									
+                    <div class="input-group">							
+                        <input class="form-control text-center"
+                        [(ngModel)]="current_item.local_percentage"                        
+                        autocomplete="off" type="number"                        
+                        id="item_local_percentage"
+                        name="item_local_percentage"/>                                    
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">                    
+                    <h6 style="font-weight:bold">Valores Mínimos</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label for="item_im_minimal_value">Gestão Integrada</label>                                                									
+                    <div class="input-group">							
+                        <input class="form-control text-center"
+                        [(ngModel)]="current_item.im_minimal_value"                        
+                        autocomplete="off" type="number"                                                
+                        id="item_im_minimal_value"
+                        name="item_im_minimal_value"/>                                    
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label for="item_association_minimal_value">Associação</label>                                                									
+                    <div class="input-group">							
+                        <input class="form-control text-center"
+                        [(ngModel)]="current_item.association_minimal_value"                        
+                        autocomplete="off" type="number"                        
+                        id="item_association_minimal_value"
+                        name="item_association_minimal_value"/>                                    
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label for="item_association_minimal_value">Núcleo</label>                                                									
+                    <div class="input-group">							
+                        <input class="form-control text-center"
+                        [(ngModel)]="current_item.local_minimal_value"                        
+                        autocomplete="off" type="number"                        
+                        id="item_local_minimal_value"
+                        name="item_local_minimal_value"/>                                    
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer" *ngIf="saving">        
+                <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+            </div>
+        <div class="modal-footer" *ngIf="!saving">
+            <button type="button" class="btn btn-success" 
+                (click)="save(d);">
+                <i class="icon-check"></i>
+                Salvar
+            </button>        
+            <button type="button" class="btn btn-silver" 			            
+                (click)="d('Cancelled')">
+                <i class="icon-action-undo"></i>
+                Cancelar
+            </button>        
+        </div>
+    </ng-template>

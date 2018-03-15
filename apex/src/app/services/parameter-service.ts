@@ -16,13 +16,14 @@ export class ParameterService {
     private roles$ = new ReplaySubject(1);
 
     private branches$ = new ReplaySubject(1);
-    private programs$ = new ReplaySubject(1);
+    private programs$ = new ReplaySubject(1);    
     private domains$ = new ReplaySubject(1);
     private locations$ = new ReplaySubject(1);
     private group$ = new ReplaySubject(1);
     private countries$ = new ReplaySubject(1);
     private payment_methods$ = new ReplaySubject(1);
     private acquirers$ = new ReplaySubject(1);
+    private products$ = new ReplaySubject(1);
     
     private personCardPositions$ = new ReplaySubject(1);
     private cardTemplates$ = new ReplaySubject(1);
@@ -37,6 +38,10 @@ export class ParameterService {
         return this.utilsService.cache_results(this.programs$, `/programs`, forceRefresh);                      
     }
 
+    getProducts(forceRefresh?: boolean) {
+        return this.utilsService.cache_results(this.products$, `/products`, forceRefresh);                      
+    }
+    
     getActiveBranches(forceRefresh?: boolean) {
         return this.utilsService.cache_results(this.branches$, `/branches`, forceRefresh);                      
     }
@@ -101,6 +106,15 @@ export class ParameterService {
           branch
         }).map((data : any) => {          
           this.getActiveBranches(true);
+        });
+    }
+
+    saveProduct(product) {
+        return this.http
+        .post(this.dataUrl + `/products`, {
+            product 
+        }).map((data : any) => {          
+          this.getProducts(true);
         });
     }
 
