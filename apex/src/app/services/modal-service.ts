@@ -15,7 +15,8 @@ export enum ModalType{
     AddProject,
     AddProjectTask,
     DetailTask,
-    EditCard
+    EditCard,
+    PersonComunicationTreatment
 }
 
 export interface IModalOpening {

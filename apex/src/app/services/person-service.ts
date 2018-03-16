@@ -84,6 +84,11 @@ export class PersonService {
   getPersonContacts(person_id, only_principal = false) {
     return this.http.get(this.dataUrl + `/person_contact/person/${person_id}/${only_principal ? 1 : 0}`);    
   }
+
+  getPendingCommunication(person_id, only_principal = false) {
+    return this.http.get(this.dataUrl + `/person_communication/pending/${person_id}`);    
+  }
+  
   getPersonMissingData(person_id) {
     return this.http.get(this.dataUrl + `/person/missing_data/${person_id}`);    
   }

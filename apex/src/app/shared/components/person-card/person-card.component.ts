@@ -11,6 +11,7 @@ export class PersonCardComponent implements OnInit {
   @Input() person: any;
   @Input() showContacts = false;
   @Input() useContactButton = false;
+  @Input() hideCommunicationStatus = false;
 
   constructor() {
             

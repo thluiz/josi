@@ -63,6 +63,15 @@ compact-card {
     cursor: pointer;
 }
 
+task-treatment-card {
+    width:100%;
+    float:left;
+    border:1px solid silver;
+    margin: auto;
+    margin-right:5px;
+    margin-bottom:5px;    
+}
+
 .card_due_date {
     font-size:10px;
     background-color:green;

@@ -11,6 +11,7 @@ import { IncidentCommentsListModalComponent } from 'app/shared/components/incide
 import { NewInicidentModalComponent } from 'app/shared/components/new-incident-modal/new-incident-modal.component';
 import { NewPersonModalComponent } from 'app/shared/components/new-person-modal/new-person-modal.component';
 import { NewCardModalComponent, CardType } from 'app/shared/components/new-card-modal/new-card-modal.component';
+import { PersonComunicationTreatmentModalComponent } from 'app/shared/components/person-communication-treatment-modal/person-communication-treatment-modal.component';
 
 
 @Component({
@@ -30,6 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild(NewCardModalComponent) newCardModal : NewCardModalComponent;
     @ViewChild(CardDetailModalComponent) cardDetailModal : CardDetailModalComponent;
     @ViewChild(CardEditModalComponent) cardEditModal : CardEditModalComponent;
+    @ViewChild(PersonComunicationTreatmentModalComponent) personComunicationTreatmentModal : PersonComunicationTreatmentModalComponent;
 
     constructor(private modalService: ModalService) {
 
@@ -45,6 +47,9 @@ export class AppComponent implements OnInit, OnDestroy {
                 switch(data.type) {
                     case ModalType.PersonTreatment:                        
                         this.personDataTreatmentModal.open(data.parameters);
+                        break;
+                    case ModalType.PersonComunicationTreatment:                        
+                        this.personComunicationTreatmentModal.open(data.parameters);
                         break;
                     case ModalType.IncidentTreatment:
                         this.incidentTreatmentModal.open(data.parameters);

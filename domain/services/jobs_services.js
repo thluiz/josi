@@ -10,12 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const sumary_services_1 = require("./sumary_services");
 const person_services_1 = require("./person_services");
+const card_services_1 = require("./card_services");
 const sql = require('mssql');
 class JobsService {
     constructor(sql_pool) {
         this.sql_pool = sql_pool;
         this.sumary_service = new sumary_services_1.SumaryService(sql_pool);
         this.person_service = new person_services_1.PersonService(sql_pool);
+        this.card_service = new card_services_1.CardService(sql_pool);
     }
     hourly_jobs() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -23,18 +25,12 @@ class JobsService {
                 this.sumary_service.consolidate_members_sumary();
                 this.sumary_service.consolidate_activity_sumary();
                 this.person_service.check_people_status();
-                this.check_cards_has_overdue_cards();
+                this.card_service.check_cards_has_overdue_cards();
+                this.card_service.correct_card_out_of_parent_step();
             }
             catch (ex) {
                 console.log(ex);
             }
-        });
-    }
-    check_cards_has_overdue_cards() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield new sql.Request(this.sql_pool)
-                .execute(`CheckCardsHasOverdueCards`);
-            return result;
         });
     }
 }

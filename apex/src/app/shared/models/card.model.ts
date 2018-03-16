@@ -13,6 +13,7 @@ export class Card {
     parent_title: string;
     high_level_id: number;
     high_level_title: string;
+    high_level_abrev: string;
     due_date: NgbDateStruct;
     due_time: NgbTimeStruct;
     due_date_formated: string;
@@ -20,6 +21,7 @@ export class Card {
     abrev: string;
     order: number;
     leaders: any[];
+    parent_leaders: any[];
     people: any[];
     locations: Location[];
     location_id: number;

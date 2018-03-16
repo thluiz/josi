@@ -14,6 +14,7 @@ import { PersonService } from 'app/services/person-service';
 export class PersonStatusLineComponent implements OnInit {  
 
   @Input() person: any;  
+  @Input() hideCommunicationStatus = false;
 
   private person_changes_subscriber: Subscription;  
 
@@ -39,5 +40,9 @@ export class PersonStatusLineComponent implements OnInit {
 
   begin_person_data_treatment() {    
     this.modalService.open(ModalType.PersonTreatment, this.person);    
+  }
+
+  begin_person_comunication_treatment() {
+    this.modalService.open(ModalType.PersonComunicationTreatment, this.person);    
   }
 }

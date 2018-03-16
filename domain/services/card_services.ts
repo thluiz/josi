@@ -6,7 +6,7 @@ export class CardService {
     constructor(sql_pool) {
         this.sql_pool = sql_pool;
     }
-
+    
     async save_card(card, responsible_id) {    
         let date = card.due_date ? `${card.due_date.year}-${card.due_date.month}-${card.due_date.day}` : null;
 
@@ -90,5 +90,21 @@ export class CardService {
         .execute(`SaveCardCommentary`);
     }
     
-    
+
+    /**
+     * JOBS
+     */
+    async check_cards_has_overdue_cards() {        
+        const result = await new sql.Request(this.sql_pool)                               
+                                .execute(`CheckCardsHasOverdueCards`);
+
+        return result;  
+    }
+
+    async correct_card_out_of_parent_step() {        
+        const result = await new sql.Request(this.sql_pool)                               
+                                .execute(`CorrectCardOutOfParentStep`);
+
+        return result;  
+    }    
 }

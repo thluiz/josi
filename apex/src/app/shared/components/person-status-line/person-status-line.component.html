@@ -1,4 +1,10 @@
-<div class="col-12 d-none d-xl-block pl-1">                                
+<div class="col-12 d-none d-xl-block pl-1">  
+	<span *ngIf="person.comunication_status == 1 && !hideCommunicationStatus" 			
+		(click)="begin_person_comunication_treatment()"
+		style="cursor:pointer">												
+			<i class="fas fa-bullhorn"
+			style="color:red"></i>
+	</span>                               
 	<span *ngIf="person.scheduling_status > 0"
 		[title]="person.scheduling_description">
 			<i class="ft-calendar" 
@@ -15,16 +21,22 @@
 		style="cursor:pointer">												
 			<i class="fas fa-user"
 			style="color:red"></i>
-	</span>	
-	<div style="float:right" class="pr-1">				
-		<i  *ngIf="person.has_birthday_this_month"												
-			class="icon-present"
+	</span>		
+	<span *ngIf="person.has_birthday_this_month">
+		&#160;
+		<i  class="icon-present"
 			[style.color]="'silver'"					
 			title="Aniversariante do mês">
 		</i>
-	</div>
+	</span>
 </div>
-<div class="col-12 d-block d-xl-none" style="line-height:10px">                                
+<div class="col-12 d-block d-xl-none" style="line-height:10px">  
+	<span *ngIf="person.comunication_status == 1 && !hideCommunicationStatus" 			
+		(click)="begin_person_comunication_treatment()"
+		style="cursor:pointer">												
+			<i class="fas fa-user"
+			style="color:red"></i>
+	</span>                               
 	<span *ngIf="person.scheduling_status > 0"
 		[title]="person.scheduling_description">
 			<i class="ft-calendar" 
@@ -41,12 +53,12 @@
 		style="cursor:pointer">												
 			<i class="fas fa-user"
 			style="color:red"></i>
-	</span>	
-	<div style="float:right" class="pr-1">
-		<i  *ngIf="person.has_birthday_this_month"												
-			class="icon-present"
+	</span>		
+	<span *ngIf="person.has_birthday_this_month">
+		&#160;
+		<i  class="icon-present"
 			[style.color]="'silver'"					
 			title="Aniversariante do mês">
 		</i>
-	</div>
+	</span>
 </div>
