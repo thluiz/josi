@@ -56,12 +56,18 @@ function configure_routes(app, connection_pool) {
             req.params.id > 0 ? response[0] : response);
     }));
     app.get("/api/projects/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield new sql.Request(pool)
-            .input("project_id", sql.Int, req.params.id)
-            .execute(`GetProject`);
-        let response = result.recordset[0];
-        res.send(response[0].empty ? [] :
-            req.params.id > 0 ? response[0] : response);
+        try {
+            const result = yield new sql.Request(pool)
+                .input("project_id", sql.Int, req.params.id)
+                .execute(`GetProject`);
+            let response = result.recordset[0];
+            res.send(response[0].empty ? [] :
+                req.params.id > 0 ? response[0] : response);
+        }
+        catch (error) {
+            console.log(error);
+            res.status(500).json(error);
+        }
     }));
     app.post("/api/person_cards", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield card_service.save_person_card(req.body.person_card);

@@ -84,16 +84,20 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.get("/api/projects/:id", 
     SecurityService.ensureLoggedIn(),
-    async (req, res, next) => {  
+    async (req, res, next) => {          
+        try {
+            const result = await new sql.Request(pool)  
+            .input("project_id", sql.Int, req.params.id)                  
+            .execute(`GetProject`);                
 
-        const result = await new sql.Request(pool)  
-        .input("project_id", sql.Int, req.params.id)                  
-        .execute(`GetProject`);                
-
-        let response = result.recordset[0];
-
-        res.send(response[0].empty ? [] : 
-            req.params.id > 0 ? response[0] : response);
+            let response = result.recordset[0];
+            
+            res.send(response[0].empty ? [] : 
+                req.params.id > 0 ? response[0] : response);
+        } catch(error)  {   
+            console.log(error);
+            res.status(500).json(error);
+        }
     });
 
     app.post("/api/person_cards", 

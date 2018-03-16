@@ -35,6 +35,7 @@ export class SecurityService {
             password: process.env.SQL_PASSWORD,
             server: process.env.SQL_HOST,
             user: process.env.SQL_USER,
+            requestTimeout: 60000
         };
     }
 
