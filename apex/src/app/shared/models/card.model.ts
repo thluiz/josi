@@ -29,12 +29,13 @@ export class Card {
     childrens: Card[];     
     steps: CardStep[]; 
     is_task: boolean; 
-    steps_description: { id: number, name: string, is_blocking_step : boolean, childrens: number }
+    steps_description: { id: number, name: string, is_blocking_step : boolean, childrens: number, order: number }[];
     tmp_person: any;
     is_subproject: boolean;
     group: Group;
     branch: { id: number, name: string }
     comment_count: number;
     archived: boolean;
-    has_overdue_card: boolean;
+    has_overdue_card: boolean;    
+    current_step_id: number;
 }

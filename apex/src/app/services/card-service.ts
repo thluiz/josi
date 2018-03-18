@@ -6,6 +6,7 @@ import {Observable, ReplaySubject} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
 import { Subject }    from 'rxjs/Subject';
 import { CardCommentary } from 'app/shared/models/card-commentary.model';
+import { CardStep } from 'app/shared/models/card-step.model';
 
 export const CARD_ADDED = "CARD_ADDED"
 export const CARD_CHANGED = "CARD_CHANGED"
@@ -89,19 +90,21 @@ export class CardService {
   }
 
   getProject(id) {
-    return this.http.get(this.dataUrl + `/projects/${id}`).map((data : Card) => {
-      let project = data;
-      if(!project.steps) {
-        project.steps = [];
-      }
+    return this.http.get(this.dataUrl + `/projects/${id}`).map((project : Card) => {      
+      project.steps = project.steps_description.map((step_description) => {
+        let step : CardStep = {
+          id: step_description.id,
+          name: step_description.name,
+          childrens: [],
+          order: step_description.order      
+        };
 
-      project.steps = project.steps.map((step) => {
-        if(!step.childrens) {
-          step.childrens = [];
-        }
+        step.childrens = project.childrens.filter(ch => ch.current_step_id == step.id);
 
         return step;
       });
+
+      project.childrens = project.childrens.filter(ch => !ch.current_step_id);
 
       return project;
     });

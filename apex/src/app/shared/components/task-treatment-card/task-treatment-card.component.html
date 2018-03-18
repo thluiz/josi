@@ -11,11 +11,11 @@
 								[routerLink]="['/organizations/projects', card.high_level_id]"
 								*ngIf="card.high_level_id != card.parent.id" 
 								target="_blank">{{ card.high_level_abrev || card.high_level_title }}</a>	
-							-
+							>
 							<a 
 								[routerLink]="['/organizations/projects', card.parent_id]"						
 								target="_blank">{{ card.parent_title }}</a>
-							-
+							>
 							<a (click)="open_detail_modal()">
 								{{ card.title || "Confirmar" }}							
 							</a>				
