@@ -9,6 +9,8 @@ import { OverviewPageComponent } from 'app/pages/parameters/overview/overview-pa
 import { PaymentMethodsPageComponent } from 'app/pages/parameters/payment-methods/payment-methods-page.component';
 import { BranchDetailPageComponent } from 'app/pages/parameters/branch-detail/branch-detail-page.component';
 import { ProductsPageComponent } from 'app/pages/parameters/products/products-page.component';
+import { ProductCatergoriesPageComponent } from 'app/pages/parameters/product_categories/product_categories-page.component';
+import { CurrenciesPageComponent } from 'app/pages/parameters/currencies/currencies-page.component';
 
 let routes: Routes = [
   {
@@ -42,6 +44,16 @@ let routes: Routes = [
     data: { },    
   },
   {
+    path: 'product_categories',
+    component: ProductCatergoriesPageComponent,
+    data: { },    
+  },
+  {
+    path: 'currencies',
+    component: CurrenciesPageComponent,
+    data: { },    
+  },
+  {
     path: 'payment-methods',
     component: PaymentMethodsPageComponent,
     data: { },    
@@ -50,7 +62,7 @@ let routes: Routes = [
     path: 'branch/:id',
     component: BranchDetailPageComponent,
     data: { },    
-  }  
+  }
 ];
 
 @NgModule({

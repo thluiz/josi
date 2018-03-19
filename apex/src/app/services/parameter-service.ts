@@ -24,6 +24,8 @@ export class ParameterService {
     private payment_methods$ = new ReplaySubject(1);
     private acquirers$ = new ReplaySubject(1);
     private products$ = new ReplaySubject(1);
+    private currencies$ = new ReplaySubject(1);
+    private product_categories$ = new ReplaySubject(1);
     
     private personCardPositions$ = new ReplaySubject(1);
     private cardTemplates$ = new ReplaySubject(1);
@@ -39,6 +41,7 @@ export class ParameterService {
     }
 
     getProducts(forceRefresh?: boolean) {
+        console.log(`getting products: ${forceRefresh}`);
         return this.utilsService.cache_results(this.products$, `/products`, forceRefresh);                      
     }
     
@@ -97,24 +100,32 @@ export class ParameterService {
     getAcquirers(forceRefresh?: boolean) {
         return this.utilsService.cache_results(this.acquirers$, `/acquirers`, forceRefresh);                      
     } 
-
-
+    
+    getCurrencies(forceRefresh?: boolean) {
+        return this.utilsService.cache_results(this.currencies$, `/currencies`, forceRefresh);                      
+    }
+    
+    getProductCategories(forceRefresh?: boolean) {        
+        return this.utilsService.cache_results(this.product_categories$, `/product_categories`, forceRefresh);                      
+    }
 
     saveBranch(branch) {
         return this.http
         .post(this.dataUrl + `/branches`, {
           branch
-        }).map((data : any) => {          
-          this.getActiveBranches(true);
+        }).do((data : any) => {          
+          this.getActiveBranches(true).subscribe();
         });
     }
 
     saveProduct(product) {
+        console.log(`saving product...`);
         return this.http
         .post(this.dataUrl + `/products`, {
             product 
-        }).map((data : any) => {          
-          this.getProducts(true);
+        }).do((data : any) => {      
+          console.log("refreshing objects...")    
+          this.getProducts(true).subscribe();
         });
     }
 
@@ -122,8 +133,8 @@ export class ParameterService {
         return this.http
         .post(this.dataUrl + `/payment_methods`, {
             payment_method
-        }).map((data : any) => {          
-          this.getPaymentMethods(true);
+        }).do((data : any) => {          
+          this.getPaymentMethods(true).subscribe();
         });
     }
 
@@ -131,8 +142,26 @@ export class ParameterService {
         return this.http
         .post(this.dataUrl + `/acquirers`, {
             acquirer
-        }).map((data : any) => {          
-          this.getAcquirers(true);
+        }).do((data : any) => {          
+            this.getAcquirers(true).subscribe();
+        });
+    }
+
+    saveCurrency(currency) {
+        return this.http
+        .post(this.dataUrl + `/currencies`, {
+            currency
+        }).do((data : any) => {          
+            this.getCurrencies(true).subscribe();
+        });
+    }
+
+    saveProductCategory(product_category) {
+        return this.http
+        .post(this.dataUrl + `/product_categories`, {
+            product_category
+        }).do((data : any) => {          
+            this.getProductCategories(true).subscribe();
         });
     }
 

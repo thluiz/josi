@@ -1,0 +1,68 @@
+<div class="card">
+    <div class="card-body" style="padding:10px">
+        <h4>Catetoria de Produtos</h4>
+        <table class="table table-hover table-striped" width="100%">                        
+            <thead>
+                <th>Nome</th>                           
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of collection"
+                class="cursor_pointer"
+                (click)="edit(modal, item)"
+                >
+                    <td>{{ item["name"] }}</td>                                        
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-silver"             
+            (click)="create(modal);">
+            <i class="fas fa-plus-circle"></i>
+            Nova
+        </button>
+    </div>
+</div>
+    
+    
+<ng-template #modal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h5 class="modal-title" style="font-weight: bold" *ngIf="current_item.id > 0">
+            Editar Categoria de Produto
+        </h5>
+        <h5 class="modal-title" style="font-weight: bold" *ngIf="current_item.id <= 0">
+            Novo Categoria de Produto
+        </h5>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" *ngIf="current_item">		
+        <div class="row">
+            <div class="col-6">
+                <label for="item_name">Nome</label>                                                									
+                <div class="input-group">							
+                    <input class="form-control"
+                    [(ngModel)]="current_item.name"                        
+                    autocomplete="off" placeholder="Nome do Produto"
+                    maxlength="100"
+                    id="item_name"                        
+                    name="item_name"/>                                    
+                </div>
+            </div>            
+        </div>                
+    </div>
+    <div class="modal-footer" *ngIf="saving">        
+        <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+    </div>
+    <div class="modal-footer" *ngIf="!saving">
+        <button type="button" class="btn btn-success" 
+            (click)="save(d);">
+            <i class="icon-check"></i>
+            Salvar
+        </button>        
+        <button type="button" class="btn btn-silver" 			            
+            (click)="d('Cancelled')">
+            <i class="icon-action-undo"></i>
+            Cancelar
+        </button>        
+    </div>
+</ng-template>

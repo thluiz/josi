@@ -12,6 +12,8 @@
 );
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [idx_person_contact_person]
     ON [dbo].[person_contact]([person_id] ASC);
@@ -25,4 +27,9 @@ CREATE NONCLUSTERED INDEX [idx_person_contact_removed]
 GO
 CREATE NONCLUSTERED INDEX [idx_person_contact_principal_person]
     ON [dbo].[person_contact]([person_id] ASC, [principal] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [ix_person_contact_contact_type]
+    ON [dbo].[person_contact]([contact_type] ASC);
 

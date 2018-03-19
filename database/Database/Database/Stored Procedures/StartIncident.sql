@@ -1,12 +1,29 @@
-﻿CREATE procedure StartIncident(  
- @incident int,  
- @started_by int = null  
-)  
-as   
-begin  
+﻿CREATE procedure [dbo].[StartIncident](    
+ @incident int,    
+ @responsible_id int = null    
+)    
+as     
+begin    
   
- update incident set started_on = dbo.getCurrentDateTime(), 
-	started_by = @started_by 
- where id = @incident  
+  declare @card_id int   
+    
+  select @card_id = card_id from incident where id = @incident  
   
+ update incident set started_on = dbo.getCurrentDateTime(),   
+ started_by = @responsible_id   
+ where id = @incident    
+  
+ if(@card_id is not null)  
+ begin  
+ declare @doing_step int  
+ select top 1 @doing_step = cs.id  
+ from [card] c  
+  join [card] parent on parent.id = c.parent_id  
+  join [card_step] cs on cs.card_id = parent.id  
+ where c.id = @card_id  
+  and cs.start_incident = 1  
+  
+ exec SaveCardStep @card_id, @doing_step, @responsible_id  
+ end  
+    
 end

@@ -8,3 +8,10 @@
     PRIMARY KEY CLUSTERED ([id] ASC)
 );
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [ix_person_card_card]
+    ON [dbo].[person_card]([card_id] ASC);
+

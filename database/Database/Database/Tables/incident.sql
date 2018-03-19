@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[incident] (
     [id]                 INT             IDENTITY (1, 1) NOT NULL,
-    [responsible_id]     INT             NOT NULL,
+    [responsible_id]     INT             NULL,
     [created_on]         DATETIME        DEFAULT (getdate()) NOT NULL,
     [incident_type]      INT             NOT NULL,
     [date]               DATETIME        NOT NULL,
@@ -28,6 +28,8 @@
     CONSTRAINT [fk_incident_card] FOREIGN KEY ([card_id]) REFERENCES [dbo].[card] ([id]),
     CONSTRAINT [FK_incident_responsible] FOREIGN KEY ([responsible_id]) REFERENCES [dbo].[person] ([id])
 );
+
+
 
 
 GO

@@ -90,7 +90,10 @@ export class CardService {
   }
 
   getProject(id) {
-    return this.http.get(this.dataUrl + `/projects/${id}`).map((project : Card) => {      
+    return this.http.get(this.dataUrl + `/projects/${id}`).map((project : Card) => {  
+      if(!project.childrens || project.childrens.length < 0) {
+        project.childrens = [];
+      }    
       project.steps = project.steps_description.map((step_description) => {
         let step : CardStep = {
           id: step_description.id,

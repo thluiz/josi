@@ -27,6 +27,8 @@ import { OverviewPageComponent } from 'app/pages/parameters/overview/overview-pa
 import { PaymentMethodsPageComponent } from 'app/pages/parameters/payment-methods/payment-methods-page.component';
 import { BranchDetailPageComponent } from 'app/pages/parameters/branch-detail/branch-detail-page.component';
 import { ProductsPageComponent } from 'app/pages/parameters/products/products-page.component';
+import { CurrenciesPageComponent } from 'app/pages/parameters/currencies/currencies-page.component';
+import { ProductCatergoriesPageComponent } from 'app/pages/parameters/product_categories/product_categories-page.component';
 
 @NgModule({
     imports: [
@@ -44,7 +46,9 @@ import { ProductsPageComponent } from 'app/pages/parameters/products/products-pa
         AccountsPageComponent,
         PaymentMethodsPageComponent,
         BranchDetailPageComponent,
-        ProductsPageComponent
+        ProductsPageComponent,
+        CurrenciesPageComponent,
+        ProductCatergoriesPageComponent
     ]
 })
 export class ParametersModule { }

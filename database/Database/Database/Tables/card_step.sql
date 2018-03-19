@@ -11,9 +11,24 @@
     [is_negative_closing_step] BIT           DEFAULT ((0)) NOT NULL,
     [generate_incident]        BIT           DEFAULT ((0)) NOT NULL,
     [close_financial_incident] BIT           DEFAULT ((0)) NOT NULL,
+    [start_incident]           BIT           DEFAULT ((0)) NOT NULL,
+    [initial_step]             BIT           DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [fk_card_step_card] FOREIGN KEY ([card_id]) REFERENCES [dbo].[card] ([id])
 );
 
 
+
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [ix_card_step_archived]
+    ON [dbo].[card_step]([archived] ASC)
+    INCLUDE([card_id]);
+
+
+GO
+CREATE NONCLUSTERED INDEX [ix_card_step]
+    ON [dbo].[card_step]([card_id] ASC);
 

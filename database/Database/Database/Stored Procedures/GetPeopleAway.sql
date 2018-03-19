@@ -1,5 +1,5 @@
 ﻿    
-CREATE procedure GetPeopleAway(    
+CREATE procedure [dbo].[GetPeopleAway](    
  @branch int = null,  
  @name varchar(150) = null,  
  @people_per_page int = 50,        
@@ -25,13 +25,7 @@ begin
  end        
   
   
- select p.*,  
- (  
- select * from vwPersonContact pc   
- where pc.person_id = p.id and pc.removed = 0  
- order by pc.principal desc  
- for json path  
- ) contacts,  
+ select p.*,
  (  
  select * from person_comment pc   
  where pc.person_id = p.id and pc.archived = 0   

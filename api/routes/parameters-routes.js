@@ -52,6 +52,22 @@ function configure_routes(app, connection_pool) {
             }
         }
     }));
+    app.get("/api/product_categories", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = yield new sql.Request(pool)
+                .query(`select * from [product_category] for json path`);
+            let response = result.recordset[0];
+            res.send(response);
+        }
+        catch (error) {
+            if (error.code = 'EJSON') {
+                res.send([]);
+            }
+            else {
+                res.status(500).json(error);
+            }
+        }
+    }));
     app.get("/api/countries", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from [country] order by [order] for json path`);
@@ -104,6 +120,12 @@ function configure_routes(app, connection_pool) {
     app.get("/api/acquirers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from acquirer where active = 1 order by [order] for json path`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
+    app.get("/api/currencies", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .query(`select * from currency for json path`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
@@ -166,6 +188,45 @@ function configure_routes(app, connection_pool) {
         }
         res.send({ sucess: true });
     }));
+    app.post("/api/product_categories", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const product_category = req.body.product_category;
+        if (product_category.id > 0) {
+            const result = yield new sql.Request(pool)
+                .input('id', sql.Int, product_category.id)
+                .input('name', sql.VarChar(100), product_category.name)
+                .query(`update product_category set
+                        name = @name
+                    where id = @id`);
+        }
+        else {
+            const result = yield new sql.Request(pool)
+                .input('name', sql.VarChar(100), product_category.name)
+                .query(`insert into product_category (name)
+                    values (@name)`);
+        }
+        res.send({ sucess: true });
+    }));
+    app.post("/api/currencies", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const currency = req.body.currency;
+        if (currency.id > 0) {
+            const result = yield new sql.Request(pool)
+                .input('id', sql.Int, currency.id)
+                .input('name', sql.VarChar(100), currency.name)
+                .input('symbol', sql.VarChar(3), currency.symbol)
+                .query(`update currency set
+                        name = @name,
+                        [symbol] = @symbol
+                    where id = @id`);
+        }
+        else {
+            const result = yield new sql.Request(pool)
+                .input('name', sql.VarChar(100), currency.name)
+                .input('symbol', sql.VarChar(3), currency.symbol)
+                .query(`insert into currency (name, [symbol])
+                    values (@name, @symbol)`);
+        }
+        res.send({ sucess: true });
+    }));
     app.post("/api/products", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const product = req.body.product;
         if (product.id > 0) {
@@ -179,6 +240,8 @@ function configure_routes(app, connection_pool) {
                 .input('association_minimal_value', sql.Decimal(12, 2), product.association_minimal_value)
                 .input('im_minimal_value', sql.Decimal(12, 2), product.im_minimal_value)
                 .input('local_minimal_value', sql.Decimal(12, 2), product.local_minimal_value)
+                .input('currency_id', sql.Int, product.currency_id || 1)
+                .input('category_id', sql.Int, product.category_id)
                 .query(`update product set
                         name = @name,
                         [association_percentage] = @association_percentage,
@@ -187,7 +250,9 @@ function configure_routes(app, connection_pool) {
                         [association_minimal_value] = @association_minimal_value,
                         [im_minimal_value] = @im_minimal_value,
                         [local_minimal_value] = @local_minimal_value,
-                        base_value = @base_value
+                        base_value = @base_value,
+                        currency_id = @currency_id,
+                        category_id = @category_id
                     where id = @id`);
         }
         else {
@@ -200,10 +265,12 @@ function configure_routes(app, connection_pool) {
                 .input('association_minimal_value', sql.Decimal(12, 2), product.association_minimal_value)
                 .input('im_minimal_value', sql.Decimal(12, 2), product.im_minimal_value)
                 .input('local_minimal_value', sql.Decimal(12, 2), product.local_minimal_value)
+                .input('currency_id', sql.Int, product.currency_id || 1)
+                .input('category_id', sql.Int, product.category_id)
                 .query(`insert into product (name, base_value, country_id, [association_percentage], im_percentage, local_percentage, 
-                    association_minimal_value, im_minimal_value, local_minimal_value)
+                    association_minimal_value, im_minimal_value, local_minimal_value, currency_id, category_id)
                 values (@name, @base_value, 1, @association_percentage, @im_percentage, @local_percentage,
-                @association_minimal_value, @im_minimal_value, @local_minimal_value)`);
+                @association_minimal_value, @im_minimal_value, @local_minimal_value, @currency_id, @category_id)`);
         }
         res.send({ sucess: true });
     }));

@@ -1,30 +1,60 @@
-﻿CREATE procedure [dbo].[DeleteTestData]  
-as  
-begin   
- declare @name varchar(150) = 'teste'  
+﻿CREATE procedure [dbo].[DeleteTestData]      
+as      
+begin       
+ declare @name varchar(150) = 'teste'      
+      
+ delete pic       
+ from person_incident pic       
+  join person p on pic.person_id = p.id      
+ where [name] like '%' + @name + '%'      
+      
+ delete pr      
+  from person_role pr      
+  join person p on pr.person_id = p.id      
+  where [name] like '%' + @name + '%'      
+    
+ delete pc      
+  from person_comment pc      
+  join person p on pc.person_id = p.id      
+  where [name] like '%' + @name + '%'      
+      
+  delete pc      
+  from person_card pc      
+  join person p on pc.person_id = p.id      
+  where [name] like '%' + @name + '%'    
+      
+ delete pc      
+  from person_contact pc      
+  join person p on pc.person_id = p.id      
+  where [name] like '%' + @name + '%'    
+    
+ delete from person where [name] like '%' + @name + '%'      
   
- delete pic   
- from person_incident pic   
-  join person p on pic.person_id = p.id  
- where [name] like '%' + @name + '%'  
-  
- delete pr  
-  from person_role pr  
-  join person p on pr.person_id = p.id  
-  where [name] like '%' + @name + '%'  
+ delete from card_commentary where commentary like 'teste%' and responsible_id = 16  
 
- delete pc  
-  from person_comment pc  
-  join person p on pc.person_id = p.id  
-  where [name] like '%' + @name + '%'  
-  
-  
- delete pc  
-  from person_contact pc  
-  join person p on pc.person_id = p.id  
-  where [name] like '%' + @name + '%'
+ delete ch 
+ from card_history ch 
+	join [card] c on c.id = ch.card_id
+ where c.title like 'teste de tarefa%'
+	and leader_id = 4      
 
- delete from person where [name] like '%' + @name + '%'  
-  
+ delete cs 
+ from card_step cs 
+	join [card] c on c.id = cs.card_id
+ where c.title like 'teste de tarefa%'
+	and leader_id = 4      
+
+delete pc 
+ from person_card pc
+	join [card] c on c.id = pc.card_id
+ where c.title like 'teste de tarefa%'
+	and leader_id = 4      
+
+ delete c
+ from [card] c
+ where c.title like 'teste de tarefa%'
+	and leader_id = 4      
+
+
 end  
   

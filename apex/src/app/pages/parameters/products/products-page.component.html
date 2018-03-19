@@ -1,46 +1,53 @@
 <div class="card">
     <div class="card-body" style="padding:10px;">
-        <h4>Produtos</h4>
-        <table class="table table-hover table-striped" style="width:100%">            
-            <thead>
-                <th>Nome</th>
-                <th style="text-align:center;width:80px">Valor</th>
-                <th style="text-align:center;width:80px">% GI</th>
-                <th style="text-align:center;width:100px">% Assoc.</th>                
-                <th style="text-align:center;width:100px">% Núcleo</th>
-                <th style="text-align:center;width:80px">Min. GI</th>
-                <th style="text-align:center;width:120px">Min. Assoc.</th>                
-                <th style="text-align:center;width:120px">Min. Núcleo</th>                
-            </thead>
-            <tbody>
-                <tr *ngFor="let item of collection" (click)="edit(modal, item)" class="cursor_pointer">
-                    <td>
-                        {{ item["name"] }}
-                    </td>
-                    <td style="text-align:right;padding-right:10px">
-                        {{ item["base_value"] }}
-                    </td>
-                    <td style="text-align:center;">
-                        {{ item["im_percentage"] }}
-                    </td>
-                    <td style="text-align:center;">
-                        {{ item["association_percentage"] }}
-                    </td>                    
-                    <td style="text-align:center;">
-                        {{ item["local_percentage"] }}
-                    </td>
-                    <td style="text-align:right;padding-right:10px">
-                        {{ item["im_minimal_value"] }}
-                    </td>
-                    <td style="text-align:right;padding-right:10px">
-                        {{ item["association_minimal_value"] }}
-                    </td>                    
-                    <td style="text-align:right;padding-right:10px">
-                        {{ item["local_minimal_value"] }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <h4>Produtos</h4>        
+        <ng-template ngFor let-c [ngForOf]="collection">            
+            <table class="table table-hover table-striped" style="width:100%;margin-bottom:30px">            
+                <thead>
+                    <th><b> {{ c.name }} </b></th>
+                    <th style="text-align:center;width:40px">Moeda</th>
+                    <th style="text-align:center;width:80px">Valor</th>
+                    <th style="text-align:center;width:80px">% GI</th>
+                    <th style="text-align:center;width:100px">% Assoc.</th>                
+                    <th style="text-align:center;width:100px">% Núcleo</th>
+                    <th style="text-align:center;width:80px">Min. GI</th>
+                    <th style="text-align:center;width:120px">Min. Assoc.</th>                
+                    <th style="text-align:center;width:120px">Min. Núcleo</th>                
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of c.items" (click)="edit(modal, item)" class="cursor_pointer">
+                        <td>
+                            {{ item["name"] }}
+                        </td>
+                        <td style="text-align:center">
+                            {{ item.currency_symbol }}
+                        </td>
+                        <td style="text-align:right;padding-right:10px">
+                            {{ item.base_value }}
+                        </td>
+                        <td style="text-align:center;">
+                            {{ item["im_percentage"] }}
+                        </td>
+                        <td style="text-align:center;">
+                            {{ item["association_percentage"] }}
+                        </td>                    
+                        <td style="text-align:center;">
+                            {{ item["local_percentage"] }}
+                        </td>
+                        <td style="text-align:right;padding-right:10px">
+                            {{ item["im_minimal_value"] }}
+                        </td>
+                        <td style="text-align:right;padding-right:10px">
+                            {{ item["association_minimal_value"] }}
+                        </td>                    
+                        <td style="text-align:right;padding-right:10px">
+                            {{ item["local_minimal_value"] }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </ng-template>
+
         <button type="button" class="btn btn-silver"             
             (click)="create(modal);">
             <i class="fas fa-plus-circle"></i>
@@ -73,6 +80,28 @@
                         maxlength="100"
                         id="item_name"                        
                         name="item_name"/>                                    
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="item_base_value">Categoria</label>                                                									
+                    <div class="input-group">							
+                        <select [(ngModel)]="current_item.category_id" 								                            
+                            class="form-control form-control-sm"
+                            [ngModelOptions]="{standalone: true}">			                                                        			                            
+                            <option *ngFor="let cp of collection" [value]="cp.id">{{cp.name}}</option>
+                        </select> 
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label for="item_base_value">Moeda</label>                                                									
+                    <div class="input-group">							
+                        <select [(ngModel)]="current_item.currency_id" 								                            
+                            class="form-control form-control-sm"
+                            [ngModelOptions]="{standalone: true}">			                                                        			                            
+                            <option *ngFor="let cp of currencies" [value]="cp.id">{{cp.name}}</option>
+                        </select> 
                     </div>
                 </div>
             </div>

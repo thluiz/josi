@@ -1,6 +1,7 @@
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParameterService } from 'app/services/parameter-service';
 import { Component, OnInit } from "@angular/core";
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -8,7 +9,9 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ['../parameters-customizations.scss']  
 })
 export class ProductsPageComponent implements OnInit {      
-  collection: any;
+  category_group: { id: number, name: string, items : any[] }[];
+  collection: any[];
+  currencies: any[];
   current_item: any;
   saving = false;
 
@@ -31,19 +34,33 @@ export class ProductsPageComponent implements OnInit {
   }
 
   private load_data() {
-    this.parameterService.getProducts().subscribe((data) => {
-      this.collection = data;
-    });
+    Observable.zip(      
+      this.parameterService.getProductCategories(),
+      this.parameterService.getProducts(true),
+      this.parameterService.getCurrencies(),
+      (product_category: any[], product : any[], currencies : any[]) => {
+        this.currencies = currencies;
+        
+        let collection = product_category;
+        product_category.forEach((pc: any) => {
+          pc.items = product.filter(p => p.category_id == pc.id);
+        });
+
+        this.collection = collection;
+      }
+    ).subscribe();
   }
 
   save(close_action) {
     this.saving = true;
-    this.parameterService.saveProduct(this.current_item).subscribe((data) => {
+    this.parameterService.saveProduct(this.current_item)       
+    .delay(500) 
+    .subscribe((data) => {      
       if(close_action) {
         close_action();
       }
-      this.saving = false;
-      this.load_data();
+      this.saving = false;      
+      this.load_data();      
     });
   }
 
