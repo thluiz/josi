@@ -146,6 +146,13 @@ export class PersonService {
             .execute(`SavePersonContact`);
     }
 
+    async check_people_comunication_status() {
+        const result = await new sql.Request(this.sql_pool)                                
+                                .execute(`CheckPeopleComunicationStatus`);
+
+        return result;  
+    }
+
     async check_people_status() {        
         const result = await new sql.Request(this.sql_pool)                                
                                 .execute(`CheckPeopleStatus`);

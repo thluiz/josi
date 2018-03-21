@@ -104,6 +104,20 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response);
     }));
+    app.get("/api/person_financial/pending/:person_id", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input('person_id', sql.Int, request.params.person_id)
+            .execute(`GetPersonPendingFinancial`);
+        let response = result.recordset[0];
+        res.send(response);
+    }));
+    app.get("/api/person_schedule/pending/:person_id", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input('person_id', sql.Int, request.params.person_id)
+            .execute(`GetPersonPendingSchedule`);
+        let response = result.recordset[0];
+        res.send(response);
+    }));
     app.post("/api/person_address", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.save_address(request.body.address);
         response.send({ sucess: true });

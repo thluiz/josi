@@ -111,7 +111,7 @@
     <div class="modal-footer" *ngIf="!saving">
         <button class="btn btn-success" 
         style="margin-right:5px" type="button" 
-        *ngIf="!begin_remove && !saving"
+        *ngIf="!begin_remove && !show_actions"
         (click)="update_card(d)"
         >
             <i class="icon-check"></i> Salvar
@@ -119,14 +119,27 @@
 
         <button type="button" class="btn btn-silver" 
             style="margin-right:20px"			            
-            *ngIf="!begin_remove"
+            *ngIf="!begin_remove && !show_actions"
             (click)="cancel(d)">
             <i class="icon-action-undo"></i>
             Cancelar
         </button>
+
+        <button type="button" class="btn btn-silver"             
+            *ngIf="!begin_remove && !show_actions"
+            (click)="show_actions = true">
+            <i class="ft-settings"></i>            
+        </button>
+
+        <button type="button" class="btn btn-silver" 			
+            *ngIf="!begin_remove && show_actions"
+            (click)="open_move_modal(d)">
+            <i class="fas fa-expand-arrows-alt"></i>
+            Mover
+        </button>
         
         <button type="button" class="btn btn-silver" 			
-            *ngIf="!begin_remove && !card.is_task"
+            *ngIf="!begin_remove && !card.is_task && show_actions"
             (click)="begin_remove = true">
             <i class="fas fa-archive"></i>
             Arquivar
@@ -145,6 +158,13 @@
             (click)="begin_remove = false">
             <i class="icon-action-undo"></i>
             Não
-        </button>        
+        </button>  
+        
+        <button type="button" class="btn btn-silver" 
+            style="margin-left:20px"			            
+            *ngIf="!begin_remove && show_actions"
+            (click)="show_actions = false">
+            <i class="icon-action-undo"></i>            
+        </button>
     </div>
 </ng-template>

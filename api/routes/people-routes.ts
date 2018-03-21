@@ -152,6 +152,28 @@ export function configure_routes(app: any, connection_pool: any) {
         res.send(response);
     });
 
+    app.get("/api/person_financial/pending/:person_id", 
+    SecurityService.ensureLoggedIn(),
+    async (request, res, next) => {                        
+        const result = await new sql.Request(pool)
+        .input('person_id', sql.Int, request.params.person_id)
+        .execute(`GetPersonPendingFinancial`);                
+
+        let response = result.recordset[0];        
+        res.send(response);
+    });
+
+    app.get("/api/person_schedule/pending/:person_id", 
+    SecurityService.ensureLoggedIn(),
+    async (request, res, next) => {                        
+        const result = await new sql.Request(pool)
+        .input('person_id', sql.Int, request.params.person_id)
+        .execute(`GetPersonPendingSchedule`);                
+
+        let response = result.recordset[0];        
+        res.send(response);
+    });
+
     app.post("/api/person_address", 
     SecurityService.ensureLoggedIn(),
     async (request, response, next) => {            

@@ -15,6 +15,8 @@ export class PersonStatusLineComponent implements OnInit {
 
   @Input() person: any;  
   @Input() hideCommunicationStatus = false;
+  @Input() hideScheduleStatus = false;
+  @Input() hideFinancialStatus = false;
 
   private person_changes_subscriber: Subscription;  
 
@@ -44,5 +46,13 @@ export class PersonStatusLineComponent implements OnInit {
 
   begin_person_comunication_treatment() {
     this.modalService.open(ModalType.PersonComunicationTreatment, this.person);    
+  }
+
+  begin_person_financial_treatment() {
+    this.modalService.open(ModalType.PersonFinancialTreatment, this.person);    
+  }
+
+  begin_person_schedule_treatment() {
+    this.modalService.open(ModalType.PersonScheduleTreatment, this.person);    
   }
 }

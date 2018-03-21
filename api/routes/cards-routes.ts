@@ -67,6 +67,18 @@ export function configure_routes(app: any, connection_pool: any) {
 
     });
     
+    app.get("/api/organizations/flat", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+
+        const result = await new sql.Request(pool)          
+        .execute(`GetFlatOrganizationsData`);                
+
+        let response = result.recordset[0];
+
+        res.send(response);
+    });
+
     app.get("/api/organizations/:id?/:include_childrens?", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {  
@@ -119,6 +131,23 @@ export function configure_routes(app: any, connection_pool: any) {
 
         res.send(response[0].empty ? [] : 
             req.params.id > 0 ? response[0] : response);
+    });
+
+    app.post("/api/move_card", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {          
+        let user = await SecurityService.getUserFromRequest(req);
+
+        const result = await new sql.Request(pool)  
+            .input("card_id", sql.Int, req.body.card_id)                  
+            .input("parent_id", sql.Int, req.body.parent_id)                  
+            .input("step_id", sql.Int, req.body.step_id)                  
+            .input("responsible_id", sql.Int, user.person_id)                  
+        .execute(`MoveCard`);
+
+        let response = result.recordset[0];
+
+        res.send({ sucess: true});
     });
 
     app.post("/api/cards_comments", 

@@ -10,7 +10,7 @@ export class IncidentService {
   private dataUrl = environment.api_url;    
 
   private incident_added = new Subject<boolean>();
-  private incident_changes = new Subject<boolean>();
+  private incident_changes = new Subject<{id: number, person_id: number}>(); //TODO map incidents
   incidentAdd$ = this.incident_added.asObservable();  
   incidentsChanges$ = this.incident_changes.asObservable();
 
@@ -39,7 +39,7 @@ export class IncidentService {
     return this.http.post(this.dataUrl + '/incident/close', { 
       incident
     }).do((next) => {            
-      this.incident_changes.next(true);
+      this.incident_changes.next(incident);
     });
   }
 
@@ -47,7 +47,7 @@ export class IncidentService {
     return this.http.post(this.dataUrl + '/incident/remove', { 
       incident
     }).do((next) => {            
-      this.incident_changes.next(true);
+      this.incident_changes.next(incident);
     });
   }
 
@@ -55,7 +55,7 @@ export class IncidentService {
     return this.http.post(this.dataUrl + '/incident/reschedule', { 
       incident, new_incident, contact     
     }).do((next) => {            
-      this.incident_changes.next(true);
+      this.incident_changes.next(incident);
     });
   }
 
@@ -63,7 +63,7 @@ export class IncidentService {
     return this.http.post(this.dataUrl + '/incident/start', { 
       incident
     }).do((next) => {            
-      this.incident_changes.next(true);
+      this.incident_changes.next(incident);
     });
   }
 
@@ -71,7 +71,7 @@ export class IncidentService {
     return this.http.post(this.dataUrl + '/incident/reopen', { 
       incident
     }).do((next) => {            
-      this.incident_changes.next(true);
+      this.incident_changes.next(incident);
     });
   }
 
@@ -79,7 +79,7 @@ export class IncidentService {
     return this.http.post(this.dataUrl + '/incident/start/cancel', { 
       incident
     }).do((next) => {            
-      this.incident_changes.next(true);
+      this.incident_changes.next(incident);
     });
   }
 
@@ -87,7 +87,7 @@ export class IncidentService {
     return this.http.post(this.dataUrl + '/incident/register_contact', { 
       incident, contact     
     }).do((next) => {            
-      this.incident_changes.next(true);
+      this.incident_changes.next(incident);
     });
   }
 

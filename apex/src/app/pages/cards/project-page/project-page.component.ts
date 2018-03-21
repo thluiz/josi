@@ -5,7 +5,7 @@ import { ModalType } from './../../../services/modal-service';
 import { ModalService } from 'app/services/modal-service';
 import { Card } from './../../../shared/models/card.model';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CardService, CARD_CHANGED, CARD_ADDED, CARD_ARCHIVED, CARD_COMMENT_ADDED } from 'app/services/card-service';
+import { CardService, CARD_CHANGED, CARD_ADDED, CARD_ARCHIVED, CARD_COMMENT_ADDED, CARD_MOVED } from 'app/services/card-service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 const PROJECT_BAG_NAME = 'childrens';
@@ -62,10 +62,11 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
 
     this.card_actions = this.cardService.cardChanges$
     .filter((ca: any) => 
-        (ca.type == CARD_ADDED || ca.type == CARD_ARCHIVED || ca.type == CARD_COMMENT_ADDED) 
+        (ca.type == CARD_ADDED || ca.type == CARD_ARCHIVED || ca.type == CARD_COMMENT_ADDED || ca.type == CARD_MOVED) 
         && this.project 
         && ((ca.payload.parent && ca.payload.parent.id == this.project.id)
             || (ca.payload.parent_id == this.project.id))
+            || (ca.payload && (this.project.id == ca.payload.old_parent_id || this.project.id == ca.payload.new_parent_id))
             || (ca.payload.card && ca.payload.card.id == this.project.id))
     .subscribe((action) => {         
       if(action.type == CARD_COMMENT_ADDED) {

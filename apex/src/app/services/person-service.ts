@@ -85,10 +85,18 @@ export class PersonService {
     return this.http.get(this.dataUrl + `/person_contact/person/${person_id}/${only_principal ? 1 : 0}`);    
   }
 
-  getPendingCommunication(person_id, only_principal = false) {
+  getPendingCommunication(person_id) {
     return this.http.get(this.dataUrl + `/person_communication/pending/${person_id}`);    
   }
+
+  getPendingFinancial(person_id) {
+    return this.http.get(this.dataUrl + `/person_financial/pending/${person_id}`);    
+  }
   
+  getPendingSchedule(person_id) {
+    return this.http.get(this.dataUrl + `/person_schedule/pending/${person_id}`);    
+  }
+
   getPersonMissingData(person_id) {
     return this.http.get(this.dataUrl + `/person/missing_data/${person_id}`);    
   }

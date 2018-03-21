@@ -70,7 +70,7 @@ export class OverviewPageComponent implements OnInit, OnDestroy {
       data.forEach((account : any) => { 
         var account_id = account.id;        
 
-        let account_data = {data: account, account_status: [], expected_payments: [], missing_payments: [] };        
+        let account_data = {data: account, account_status: null, expected_payments: null, missing_payments: null };        
 
         this.financialService.getAccountStatus(account_id).subscribe((data : any[]) => {
           account_data.account_status = data;

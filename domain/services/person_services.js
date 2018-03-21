@@ -153,6 +153,13 @@ class PersonService {
                 .execute(`SavePersonContact`);
         });
     }
+    check_people_comunication_status() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield new sql.Request(this.sql_pool)
+                .execute(`CheckPeopleComunicationStatus`);
+            return result;
+        });
+    }
     check_people_status() {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield new sql.Request(this.sql_pool)

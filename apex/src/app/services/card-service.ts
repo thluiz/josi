@@ -12,6 +12,7 @@ export const CARD_ADDED = "CARD_ADDED"
 export const CARD_CHANGED = "CARD_CHANGED"
 export const CARD_COMMENT_ADDED = "CARD_COMMENT_ADDED";
 export const CARD_ARCHIVED = "CARD_ARCHIVED";
+export const CARD_MOVED = "CARD_MOVED";
 
 export class CardAddedAction {
   public type = CARD_ADDED;
@@ -37,6 +38,14 @@ export class CardArchivedAction {
   } 
 }
 
+export class CardMovedAction {
+  public type = CARD_MOVED;
+
+  constructor(public payload:  {  card: Card, old_parent_id: number, new_parent_id: number }) {
+
+  } 
+}
+
 export class CardCommentAddedAction {
   public type = CARD_COMMENT_ADDED;
 
@@ -45,7 +54,8 @@ export class CardCommentAddedAction {
   } 
 }
 
-export type CardAction = CardAddedAction | CardChangedAction | CardCommentAddedAction | CardArchivedAction;
+export type CardAction = CardAddedAction | CardChangedAction | 
+                          CardCommentAddedAction | CardArchivedAction | CardMovedAction;
 
 @Injectable()
 export class CardService {
@@ -89,6 +99,10 @@ export class CardService {
     return this.http.get(this.dataUrl + `/organizations/${id}/${include_childrens? 1 : 0}`);
   }
 
+  getFlatOrganizationsData() {
+    return this.http.get(this.dataUrl + `/organizations/flat`);
+  }
+
   getProject(id) {
     return this.http.get(this.dataUrl + `/projects/${id}`).map((project : Card) => {  
       if(!project.childrens || project.childrens.length < 0) {
@@ -123,6 +137,19 @@ export class CardService {
       person_id
     }});
   }
+
+  moveCard(card: Card, parent_id, step_id) {
+    return this.http.post(this.dataUrl + `/move_card`, { 
+      card_id: card.id, parent_id, step_id
+    })
+    .do((data) => { 
+      let old_parent_id = card.parent_id;
+      card.parent_id = parent_id;
+      card.current_step_id = step_id;
+
+      this.card_changes.next(new CardMovedAction({ card, old_parent_id, new_parent_id: card.parent_id }));       
+    });
+  }  
 
   removeOperator(card_id, person_id) {
     return this.http.post(this.dataUrl + `/person_cards/delete`, { person_card: {

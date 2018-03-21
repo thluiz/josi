@@ -31,32 +31,33 @@ import { Subscription } from 'rxjs';
 
 
 @Component({
-  selector: 'person-communication-treatment-modal',
-  templateUrl: './person-communication-treatment-modal.component.html',
+  selector: 'person-financial-treatment-modal',
+  templateUrl: './person-financial-treatment-modal.component.html',
   styleUrls: ['../../../../assets/customizations.scss'],
   providers: [ DatePickerI18n,
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
 
-export class PersonComunicationTreatmentModalComponent implements OnInit {  
+export class PersonFinancialTreatmentModalComponent implements OnInit {  
   person;
   branches = [];
-  pending: { person: any[], incidents: any[], communications: Card[] } = { person: [], incidents: [], communications: [] };
+  pending: { person: any[], incidents: any[] };
+  without_schedule_payments = false;
   contacts = [];
   principal_contacts = [];
   show_only_principal_contacts = true;
   has_aditional_contacts = false;
 
-  @ViewChild('comunication_treatment_modal') comunication_treatment_modal: ElementRef;
+  @ViewChild('financial_treatment_modal') financial_treatment_modal: ElementRef;
   
   private person_changes_subscriber: Subscription;
   private incident_changes_subscriber: Subscription;
-
+  
   constructor(private personService: PersonService, 
     private parameterService: ParameterService,
-    private incidentService: IncidentService,
     private utilsService: UtilsService,    
+    private incidentService: IncidentService,
     private ngbModalService: NgbModal,
     private datePickerConfig: NgbDatepickerConfig) {
    
@@ -93,12 +94,13 @@ export class PersonComunicationTreatmentModalComponent implements OnInit {
   open(person) {    
     this.person = person;
     Observable.zip(
-      this.personService.getPendingCommunication(this.person_id()),
+      this.personService.getPendingFinancial(this.person_id()),
       this.personService.getPersonContacts(this.person_id()),
       this.parameterService.getActiveBranches(),
       (pending_data: any, contacts, branches) => {        
         this.pending = pending_data.pending[0];
-        this.person = this.pending.person[0];
+        this.without_schedule_payments = pending_data.pending[0].without_schedule_payments;
+        this.person = this.pending.person[0];        
         this.load_contacts(contacts);
         this.branches = branches;
 
@@ -106,7 +108,7 @@ export class PersonComunicationTreatmentModalComponent implements OnInit {
           this.show_only_principal_contacts = false;
         }
 
-        this.open_modal(this.comunication_treatment_modal, true);
+        this.open_modal(this.financial_treatment_modal, true);
 
       }).subscribe();              
   }
@@ -123,14 +125,14 @@ export class PersonComunicationTreatmentModalComponent implements OnInit {
     }, (reason) => {        
         console.log(reason);
     });
-  }     
+  }   
 
   private load_data() {
-    this.personService.getPendingCommunication(this.person_id()).subscribe((missing_data) => {
+    this.personService.getPendingFinancial(this.person_id()).subscribe((missing_data) => {
       this.pending = missing_data as any;      
     });
   }
-
+  
   private load_contacts(contacts) {
     this.contacts = contacts;
     this.principal_contacts = this.contacts.filter(ct => ct.principal);

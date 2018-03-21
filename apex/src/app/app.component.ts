@@ -1,17 +1,23 @@
-import { CardEditModalComponent } from './shared/components/card-edit-modal/card-edit-modal.component';
-import { CardDetailModalComponent } from './shared/components/card-detail-modal/card-detail-modal.component';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { ModalService, ModalType } from 'app/services/modal-service';
-import { PersonDataTreatmentModalComponent } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.component';
-import { IncidentTreatmentModalComponent } from 'app/shared/components/incident-treatment-modal/incident-treatment-modal.component';
 import { AddCommentModalComponent, CommentType } from 'app/shared/components/add-comment-modal/add-comment-modal.component';
+import { CardDetailModalComponent } from './shared/components/card-detail-modal/card-detail-modal.component';
+import { CardEditModalComponent } from './shared/components/card-edit-modal/card-edit-modal.component';
 import { IncidentCommentsListModalComponent } from 'app/shared/components/incident-comments-list-modal/incident-comments-list-modal.component';
+import { IncidentTreatmentModalComponent } from 'app/shared/components/incident-treatment-modal/incident-treatment-modal.component';
+import { MoveCardModalComponent } from 'app/shared/components/move-card-modal/move-card-modal.component';
+import { PersonComunicationTreatmentModalComponent } from 'app/shared/components/person-communication-treatment-modal/person-communication-treatment-modal.component';
+import { PersonDataTreatmentModalComponent } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.component';
 import { NewInicidentModalComponent } from 'app/shared/components/new-incident-modal/new-incident-modal.component';
 import { NewPersonModalComponent } from 'app/shared/components/new-person-modal/new-person-modal.component';
 import { NewCardModalComponent, CardType } from 'app/shared/components/new-card-modal/new-card-modal.component';
-import { PersonComunicationTreatmentModalComponent } from 'app/shared/components/person-communication-treatment-modal/person-communication-treatment-modal.component';
+import { PersonFinancialTreatmentModalComponent } from 'app/shared/components/person-financial-treatment-modal/person-financial-treatment-modal.component';
+import { PersonScheduleTreatmentModalComponent } from 'app/shared/components/person-schedule-treatment-modal/person-schedule-treatment-modal.component';
+
+
+
 
 
 @Component({
@@ -32,7 +38,10 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild(CardDetailModalComponent) cardDetailModal : CardDetailModalComponent;
     @ViewChild(CardEditModalComponent) cardEditModal : CardEditModalComponent;
     @ViewChild(PersonComunicationTreatmentModalComponent) personComunicationTreatmentModal : PersonComunicationTreatmentModalComponent;
-
+    @ViewChild(MoveCardModalComponent) moveCardModal : MoveCardModalComponent;
+    @ViewChild(PersonFinancialTreatmentModalComponent) personFinancialTreatmentModal : PersonFinancialTreatmentModalComponent;
+    @ViewChild(PersonScheduleTreatmentModalComponent) personScheduleTreatmentModal : PersonScheduleTreatmentModalComponent;
+    
     constructor(private modalService: ModalService) {
 
     }
@@ -98,6 +107,15 @@ export class AppComponent implements OnInit, OnDestroy {
                         break;
                     case ModalType.EditCard:                        
                         this.cardEditModal.open(data.parameters);
+                        break;
+                    case ModalType.MoveCard: 
+                        this.moveCardModal.open(data.parameters);
+                        break;
+                    case ModalType.PersonFinancialTreatment: 
+                        this.personFinancialTreatmentModal.open(data.parameters);
+                        break;
+                    case ModalType.PersonScheduleTreatment: 
+                        this.personScheduleTreatmentModal.open(data.parameters);
                         break;
                 }
             });

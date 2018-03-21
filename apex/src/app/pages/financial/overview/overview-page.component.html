@@ -44,6 +44,9 @@
                                 <div *ngFor="let missing of m.missing">                                    
                                     <incident-financial-listitem [incident]="missing"></incident-financial-listitem>
                                 </div>
+                                <div>
+                                    <b>Total em Aberto: </b> {{ m.total }}
+                                </div>
                             </div>
                         </div>
                     </div>

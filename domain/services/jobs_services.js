@@ -25,6 +25,7 @@ class JobsService {
                 this.sumary_service.consolidate_members_sumary();
                 this.sumary_service.consolidate_activity_sumary();
                 this.person_service.check_people_status();
+                this.person_service.check_people_comunication_status();
                 this.card_service.check_cards_has_overdue_cards();
                 this.card_service.correct_card_out_of_parent_step();
             }

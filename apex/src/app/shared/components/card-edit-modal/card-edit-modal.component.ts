@@ -32,6 +32,7 @@ export class CardEditModalComponent implements OnInit {
   locations: Location[];
   begin_remove = false;
   saving = false;
+  show_actions = false;
 
   @ViewChild('card_edit_modal') card_edit_modal: ElementRef;
 
@@ -59,8 +60,8 @@ export class CardEditModalComponent implements OnInit {
   }
 
   open(card: Card) {    
+    this.show_actions = false;
     this.card = card;
-    console.log(this.card);
     
     if(!card.leaders) {
       card.leaders = [];
@@ -105,6 +106,13 @@ export class CardEditModalComponent implements OnInit {
         console.log(reason);
     });
   }   
+
+  open_move_modal(close_action) {
+    if(close_action) {
+      close_action();
+    }
+    this.modalService.open(ModalType.MoveCard, this.card);    
+  }
 
   validate_edit_card() {
 

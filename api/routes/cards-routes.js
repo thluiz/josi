@@ -46,6 +46,12 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
+    app.get("/api/organizations/flat", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .execute(`GetFlatOrganizationsData`);
+        let response = result.recordset[0];
+        res.send(response);
+    }));
     app.get("/api/organizations/:id?/:include_childrens?", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input("organization_id", sql.Int, req.params.id > 0 ? req.params.id : null)
@@ -79,6 +85,17 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] :
             req.params.id > 0 ? response[0] : response);
+    }));
+    app.post("/api/move_card", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let user = yield security_services_1.SecurityService.getUserFromRequest(req);
+        const result = yield new sql.Request(pool)
+            .input("card_id", sql.Int, req.body.card_id)
+            .input("parent_id", sql.Int, req.body.parent_id)
+            .input("step_id", sql.Int, req.body.step_id)
+            .input("responsible_id", sql.Int, user.person_id)
+            .execute(`MoveCard`);
+        let response = result.recordset[0];
+        res.send({ sucess: true });
     }));
     app.post("/api/cards_comments", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let user = yield security_services_1.SecurityService.getUserFromRequest(req);

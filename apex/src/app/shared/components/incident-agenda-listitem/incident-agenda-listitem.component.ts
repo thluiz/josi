@@ -13,6 +13,8 @@ export class IncidentAgendaListitemComponent {
     @Input() incident : any; 
     @Input("branch") current_branch = 0;    
     @Input() forceCompact = false;
+    @Input() showDate = false;
+    @Input() hideName = false;
 
     constructor(private incidentService: IncidentService,
               private modalService: ModalService) {
