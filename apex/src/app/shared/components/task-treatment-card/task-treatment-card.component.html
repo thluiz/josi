@@ -18,7 +18,13 @@
 							>
 							<a (click)="open_detail_modal()">
 								{{ card.title || "Confirmar" }}							
-							</a>				
+							</a>	
+							
+							<button type="button" class="btn btn-silver card_actions"             
+								*ngIf="!begin_remove && !show_actions"								
+								(click)="show_actions = true">
+								<i class="ft-settings"></i>            
+							</button>
 						</div>						
 					</div>	
 					<div class="row">
@@ -34,7 +40,22 @@
 								<i class="far fa-sticky-note"></i> 
 								{{ card.comment_count }}						
 							</div>
+							
+							<button type="button" class="btn btn-silver" 			
+								*ngIf="!begin_remove && show_actions"
+								(click)="open_move_modal(d)">
+								<i class="fas fa-expand-arrows-alt"></i>
+								Mover
+							</button>												 
+							
+							<button type="button" class="btn btn-silver" 
+								style="margin-left:20px"			            
+								*ngIf="!begin_remove && show_actions"
+								(click)="show_actions = false">
+								<i class="icon-action-undo"></i>            
+							</button>
 						</div>
+						
 					</div>		
 				</div>
 				<div class="col-2" *ngIf="card.leaders && card.leaders.length > 0">

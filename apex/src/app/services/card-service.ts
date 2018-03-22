@@ -186,8 +186,8 @@ export class CardService {
     return Observable.forkJoin(requests);
   }
 
-  saveComment(card: Card, comment: string) {
-    return this.http.post(this.dataUrl + `/cards_comments`, { card, comment })
+  saveComment(card: Card, comment: string, commentary_type) {
+    return this.http.post(this.dataUrl + `/cards_comments`, { card, comment, commentary_type })
     .do((data : CardCommentary[]) => this.card_changes.next(new CardCommentAddedAction({card: card, commentaries: data})));
   }
 

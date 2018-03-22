@@ -9,6 +9,26 @@
         <textarea class="form-control"        
         [(ngModel)]="comment"							         		
         rows="3"></textarea>
+
+        <div class="row" 
+            *ngIf="type == types.Card && card && card.people != null && card.people.length == 1">            
+            <div class="col-12">                
+                <input type="radio" 
+                    name="commentary_type"
+                    [value]="1"                    
+                    [(ngModel)]="commentary_type" /> Comentário sobre a tarefa
+                <br />
+                <input type="radio" 
+                    name="commentary_type"
+                    [value]="2"                    
+                    [(ngModel)]="commentary_type" /> Contato com {{card.people[0].name}} sobre esse assunto
+                    <br />
+                <input type="radio" 
+                    name="commentary_type"
+                    [value]="3"                    
+                    [(ngModel)]="commentary_type" /> Tentativa de Contato com {{card.people[0].name}}
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-success" 

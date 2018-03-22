@@ -24,6 +24,7 @@ export class AddCommentModalComponent implements OnInit {
   comment;
   type;  
   types = CommentType;
+  commentary_type = 1;
 
   @ViewChild('add_comment_modal') add_comment_modal: ElementRef;
   
@@ -88,7 +89,7 @@ export class AddCommentModalComponent implements OnInit {
   }
 
   save_card_comment(close_action) {
-    this.cardService.saveComment(this.card, this.comment).subscribe(
+    this.cardService.saveComment(this.card, this.comment, this.commentary_type).subscribe(
     (data) => {
       this.comment = "";
       this.person = null;

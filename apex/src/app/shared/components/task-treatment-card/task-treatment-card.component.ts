@@ -16,6 +16,7 @@ import { Card } from 'app/shared/models/card.model';
 export class TaskTreatmentCardComponent implements OnInit, OnDestroy {  
 
   @Input() card : Card;  
+  show_actions = false;
   
   private card_actions : Subscription;
 
@@ -61,5 +62,12 @@ export class TaskTreatmentCardComponent implements OnInit, OnDestroy {
 
   add_project(organization) {
     
+  }
+
+  open_move_modal(close_action) {
+    if(close_action) {
+      close_action();
+    }
+    this.modalService.open(ModalType.MoveCard, this.card);    
   }
 }

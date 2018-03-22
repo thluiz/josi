@@ -154,7 +154,8 @@ export function configure_routes(app: any, connection_pool: any) {
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {          
         let user = await SecurityService.getUserFromRequest(req);
-        let result = await card_service.save_card_comment(req.body.card, req.body.comment, user.id);
+        let result = await card_service.save_card_comment(req.body.card, req.body.comment, 
+            req.body.commentary_type, user.person_id);
 
         let response = result.recordset[0];
 
