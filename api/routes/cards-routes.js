@@ -95,7 +95,7 @@ function configure_routes(app, connection_pool) {
             .input("responsible_id", sql.Int, user.person_id)
             .execute(`MoveCard`);
         let response = result.recordset[0];
-        res.send({ sucess: true });
+        res.send(response);
     }));
     app.post("/api/cards_comments", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let user = yield security_services_1.SecurityService.getUserFromRequest(req);

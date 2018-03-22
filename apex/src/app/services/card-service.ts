@@ -143,11 +143,10 @@ export class CardService {
       card_id: card.id, parent_id, step_id
     })
     .do((data) => { 
-      let old_parent_id = card.parent_id;
-      card.parent_id = parent_id;
-      card.current_step_id = step_id;
+      var old_parent_id = card.parent_id;
+      var result = data[0] as Card;
 
-      this.card_changes.next(new CardMovedAction({ card, old_parent_id, new_parent_id: card.parent_id }));       
+      this.card_changes.next(new CardMovedAction({ card: result, old_parent_id, new_parent_id: card.parent_id }));       
     });
   }  
 

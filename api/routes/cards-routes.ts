@@ -147,7 +147,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
         let response = result.recordset[0];
 
-        res.send({ sucess: true});
+        res.send(response);
     });
 
     app.post("/api/cards_comments", 

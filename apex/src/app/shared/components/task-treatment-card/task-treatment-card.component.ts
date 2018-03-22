@@ -1,3 +1,4 @@
+import { CardMovedAction, CARD_MOVED } from './../../../services/card-service';
 import { Subscription } from 'rxjs/subscription';
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -37,6 +38,10 @@ export class TaskTreatmentCardComponent implements OnInit, OnDestroy {
       if(action.type == CARD_CHANGED && action.payload.id == this.card.id) {
         this.card = action.payload;
       }
+
+      if(action.type == CARD_MOVED && action.payload.card.id == this.card.id) {
+        this.card = action.payload.card;
+      }
     });
   }
 
@@ -52,16 +57,6 @@ export class TaskTreatmentCardComponent implements OnInit, OnDestroy {
 
   edit_card() {
     this.modalService.open(ModalType.EditCard, this.card);
-  }
-
-  updateOrganization() {    
-  }
-
-  add_task(organization) {        
-  }
-
-  add_project(organization) {
-    
   }
 
   open_move_modal(close_action) {

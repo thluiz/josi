@@ -20,6 +20,10 @@
 								{{ card.title || "Confirmar" }}							
 							</a>	
 							
+							<a (click)="open_move_modal()">
+								({{ card.current_step }})
+							</a>
+
 							<button type="button" class="btn btn-silver card_actions"             
 								*ngIf="!begin_remove && !show_actions"								
 								(click)="show_actions = true">

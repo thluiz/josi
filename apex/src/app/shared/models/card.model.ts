@@ -38,5 +38,6 @@ export class Card {
     archived: boolean;
     has_overdue_card: boolean;    
     current_step_id: number;
+    current_step: string;
     organization_id: number;
 }
