@@ -29,10 +29,14 @@ export class UtilsService {
     }    
 
     translate_date_to_view(date) {      
-        if(!date || date.split("-").length != 3) {
+        if(!date || date.year > 0 || date.split("-").length != 3) {
             return null;
         }
         const splitted_date = date.split("-");
+
+        if(splitted_date.length < 3) {
+            return null;
+        }
 
         return {
             year: parseInt(splitted_date[0], 10),
@@ -42,7 +46,7 @@ export class UtilsService {
     }
 
     translate_time_to_view(date) {      
-        if(!date || date.split("-").length != 3 || date.split("T").length != 2) {
+        if(!date || date.year > 0 || date.split("-").length != 3 || date.split("T").length != 2) {
             return null;
         }
         const splitted_date = date.split("T");
