@@ -48,6 +48,10 @@ export class UtilsService {
         const splitted_date = date.split("T");
         const time = splitted_date[1].split(":");
 
+        if(time.length < 2) {
+            return null;
+        }
+
         return {
             hour: parseInt(time[0], 10),
             minute: parseInt(time[1], 10),

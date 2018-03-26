@@ -11,7 +11,7 @@
 			</a>				
 		</div>
 		<div class="col-1" *ngIf="!card.is_task || card.template_id != 1">			
-			<a (click)="edit_card()" style="color:silver">
+			<a (click)="edit_card()" class="edit_card_button">
 				<i class="fas fa-edit"></i>							
 			</a>			
 		</div>	
@@ -23,7 +23,7 @@
 					</a>
 				</div>
 				<div class="col-1">
-					<a (click)="edit_card()" style="color:silver">
+					<a (click)="edit_card()" class="edit_card_button">
 						<i class="fas fa-edit"></i>							
 					</a>
 				</div>
