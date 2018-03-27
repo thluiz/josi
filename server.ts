@@ -16,6 +16,8 @@ import * as parameters_routes from "./api/routes/parameters-routes";
 import * as incidents_routes from "./api/routes/incidents-routes";
 import * as cards_routes from "./api/routes/cards-routes";
 import * as financial_routes from "./api/routes/financial-routes";
+import * as voucher_routes from "./api/routes/voucher-routes";
+
 
 const express = require('express');
 var helmet = require('helmet');
@@ -130,6 +132,7 @@ function getParticipationList(people) {
         incidents_routes.configure_routes(app, pool);
         cards_routes.configure_routes(app, pool);
         financial_routes.configure_routes(app, pool);
+        voucher_routes.configure_routes(app, pool);
         
         app.get("/api/hourly-jobs", async (request, response, next) => {            
             const jobs_service = new JobsService(pool);                
