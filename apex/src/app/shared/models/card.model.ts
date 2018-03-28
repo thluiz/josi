@@ -40,4 +40,5 @@ export class Card {
     current_step_id: number;
     current_step: string;
     organization_id: number;
+    automatically_generated: boolean;
 }

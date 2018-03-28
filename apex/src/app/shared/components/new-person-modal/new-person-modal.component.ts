@@ -47,6 +47,7 @@ export class NewPersonModalComponent implements OnInit {
   roles = [];
   person : any = {};  
   modalRef : NgbModalRef;
+  saving = false;
 
   @ViewChild('add_person_modal') add_person_modal: ElementRef;
 
@@ -67,7 +68,8 @@ export class NewPersonModalComponent implements OnInit {
     this.reset_person({});        
   }  
 
-  open(initial_state = {}) {      
+  open(initial_state = {}) {   
+    this.saving = false;
     this.reset_person(initial_state);
     Observable.zip(
       this.parameterService.getActiveBranches(),      
@@ -126,13 +128,15 @@ export class NewPersonModalComponent implements OnInit {
   }
 
   register_new_person() {
+    this.saving = true;
     this.person.birth_date = this.utilsService.translate_date_to_server(this.person.birth_date_tmp);
     this.person.next_incident_date = this.utilsService.translate_date_time_to_server(
       this.person.next_incident_dt, this.person.next_incident_time
     );
 
-    this.personService.registerPerson(this.person).subscribe((data) => {      
+    this.personService.registerPerson(this.person).subscribe((data) => {            
       this.modalRef.close(data);      
+      this.saving = false;
       this.modalService.open(ModalType.PersonTreatment, data);
     });
   }

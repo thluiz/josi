@@ -12,14 +12,21 @@ const sql = require("mssql");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     app.post("/api/voucher", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield new sql.Request(pool)
-            .input('name', sql.VarChar(200), req.body.name)
-            .input('email', sql.VarChar(100), req.body.email)
-            .input('cpf', sql.VarChar(11), req.body.cpf)
-            .input('phone', sql.VarChar(100), req.body.phone)
-            .input('socialLinks', sql.VarChar(100), req.body.socialLinks)
-            .input('branch_id', sql.Int, req.body.unit)
-            .execute(`CreatePersonFromVoucher`);
+        try {
+            console.log(req.body.unit);
+            const result = yield new sql.Request(pool)
+                .input('name', sql.VarChar(200), req.body.name)
+                .input('email', sql.VarChar(100), req.body.email)
+                .input('cpf', sql.VarChar(11), req.body.cpf)
+                .input('phone', sql.VarChar(100), req.body.phone)
+                .input('socialLinks', sql.VarChar(100), req.body.socialLinks)
+                .input('branch_id', sql.Int, req.body.unit)
+                .input('voucher_id', sql.Int, req.body.voucher_id || 1)
+                .execute(`CreatePersonFromVoucher`);
+        }
+        catch (error) {
+            console.log(error); //TODO jogar para azure
+        }
         res.send({ sucess: true });
     }));
 }

@@ -52,17 +52,17 @@ export class CardEditModalComponent implements OnInit {
   
 
   ngOnInit() {        
-    
+    this.reset_form();
   }  
 
   ngOnDestroy () {
 
   }
 
-  open(card: Card) {    
-    this.show_actions = false;
+  open(card: Card) {        
     this.card = card;
-    
+    this.reset_form();
+        
     if(!card.leaders) {
       card.leaders = [];
     }
@@ -93,6 +93,12 @@ export class CardEditModalComponent implements OnInit {
         this.open_modal(this.card_edit_modal, true);
 
       }).subscribe();              
+  }
+
+  private reset_form() {
+    this.show_actions = false;
+    this.saving = false;    
+    this.begin_remove = false;
   }
 
   entity_compare(p1, p2) {

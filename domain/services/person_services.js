@@ -167,6 +167,34 @@ class PersonService {
             return result;
         });
     }
+    check_people_financial_status() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield new sql.Request(this.sql_pool)
+                .execute(`CheckPeopleFinancialStatus`);
+            return result;
+        });
+    }
+    check_people_scheduling_status() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield new sql.Request(this.sql_pool)
+                .execute(`CheckPeopleSchedulingStatus`);
+            return result;
+        });
+    }
+    generate_birthdate_incidents() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield new sql.Request(this.sql_pool)
+                .execute(`GenerateBirthDateIncidents`);
+            return result;
+        });
+    }
+    cancel_expired_people_scheduling() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield new sql.Request(this.sql_pool)
+                .execute(`CancelExpiredPeopleScheduling`);
+            return result;
+        });
+    }
     save_comment_about(person_id, comment) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield new sql.Request(this.sql_pool)

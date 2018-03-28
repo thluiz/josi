@@ -47,7 +47,9 @@ export class CardDetailModalComponent implements OnInit {
   }
   
 
-  ngOnInit() {        
+  ngOnInit() {  
+    this.reset_form();
+    
     this.card_actions = this.cardService.cardChanges$    
     .filter((ca: any) => ca.type == CARD_COMMENT_ADDED && this.card && ca.payload.card.id == this.card.id)
     .subscribe((action) => {
@@ -86,7 +88,7 @@ export class CardDetailModalComponent implements OnInit {
 
   open(card) {    
     this.card = card;
-    this.begin_remove = false;
+    this.reset_form();
 
     if(!this.card.locations) {
       this.card.locations = [];
@@ -102,6 +104,11 @@ export class CardDetailModalComponent implements OnInit {
         this.open_modal(this.card_detail_modal, true);
 
       }).subscribe();              
+  }
+
+  private reset_form() {
+    this.begin_remove = false;
+    this.saving = false;
   }
 
   private open_modal(content, on_close_action = false) {

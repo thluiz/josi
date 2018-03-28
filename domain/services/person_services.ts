@@ -160,6 +160,34 @@ export class PersonService {
         return result;  
     }
 
+    async check_people_financial_status() {        
+        const result = await new sql.Request(this.sql_pool)                                
+                                .execute(`CheckPeopleFinancialStatus`);
+
+        return result;  
+    }
+
+    async check_people_scheduling_status() {        
+        const result = await new sql.Request(this.sql_pool)                                
+                                .execute(`CheckPeopleSchedulingStatus`);
+
+        return result;  
+    }
+
+    async generate_birthdate_incidents() {        
+        const result = await new sql.Request(this.sql_pool)                                
+                                .execute(`GenerateBirthDateIncidents`);
+
+        return result;  
+    }
+
+    async cancel_expired_people_scheduling() {        
+        const result = await new sql.Request(this.sql_pool)                                
+                                .execute(`CancelExpiredPeopleScheduling`);
+
+        return result;  
+    }
+
     async save_comment_about(person_id, comment) {
         const result = await new sql.Request(this.sql_pool) 
                                 .input('person_id', sql.Int, person_id)
