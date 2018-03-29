@@ -139,7 +139,7 @@
         </button>
         
         <button type="button" class="btn btn-silver" 			
-            *ngIf="!begin_remove && !card.is_task && show_actions"
+            *ngIf="!begin_remove && !card.is_task && show_actions && !card.automatically_generated"
             (click)="begin_remove = true">
             <i class="fas fa-archive"></i>
             Arquivar

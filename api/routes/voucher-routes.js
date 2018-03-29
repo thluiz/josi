@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
+const security_services_1 = require("../../domain/services/security_services");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     app.post("/api/voucher", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -25,7 +26,49 @@ function configure_routes(app, connection_pool) {
                 .execute(`CreatePersonFromVoucher`);
         }
         catch (error) {
-            console.log(error); //TODO jogar para azure
+            console.log(error); //TODO: jogar para azure
+        }
+        res.send({ sucess: true });
+    }));
+    app.get("/api/voucher", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .execute(`GetDataForVoucher`);
+        let response = result.recordset[0];
+        res.send(response);
+    }));
+    app.get("/api/parameters/vouchers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .query(`select * from voucher for json path`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
+    app.post("/api/parameters/vouchers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const voucher = req.body.voucher;
+        if (voucher.id > 0) {
+            const result = yield new sql.Request(pool)
+                .input('id', sql.Int, voucher.id)
+                .input('title', sql.VarChar(100), voucher.title)
+                .input('url', sql.VarChar(100), voucher.url)
+                .input('initials', sql.VarChar(3), voucher.initials)
+                .input('additional_question', sql.VarChar(200), voucher.additional_question)
+                .input('header_text', sql.VarChar(sql.MAX), voucher.header_text)
+                .query(`update voucher set
+                        title = @title,
+                        [url] = @url,
+                        header_text = @header_text,
+                        additional_question = @additional_question,
+                        initials = @initials
+                    where id = @id`);
+        }
+        else {
+            const result = yield new sql.Request(pool)
+                .input('title', sql.VarChar(100), voucher.title)
+                .input('url', sql.VarChar(100), voucher.url)
+                .input('initials', sql.VarChar(3), voucher.initials)
+                .input('additional_question', sql.VarChar(200), voucher.additional_question)
+                .input('header_text', sql.VarChar(sql.MAX), voucher.header_text)
+                .query(`insert into voucher (title, [url], header_text, additional_question, initials)
+                    values (@title, @url, @header_text, @additional_question, @initials)`);
         }
         res.send({ sucess: true });
     }));

@@ -109,6 +109,10 @@ export class ParameterService {
         return this.utilsService.cache_results(this.product_categories$, `/product_categories`, forceRefresh);                      
     }
 
+    getVouchers() {        
+        return this.http.get(this.dataUrl + `/parameters/vouchers`);        
+    }
+
     saveBranch(branch) {
         return this.http
         .post(this.dataUrl + `/branches`, {
@@ -162,6 +166,13 @@ export class ParameterService {
             product_category
         }).do((data : any) => {          
             this.getProductCategories(true).subscribe();
+        });
+    }
+    
+    saveVoucher(voucher) {
+        return this.http
+        .post(this.dataUrl + `/parameters/vouchers`, {
+            voucher
         });
     }
 

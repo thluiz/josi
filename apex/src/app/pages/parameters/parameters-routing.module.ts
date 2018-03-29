@@ -11,6 +11,7 @@ import { BranchDetailPageComponent } from 'app/pages/parameters/branch-detail/br
 import { ProductsPageComponent } from 'app/pages/parameters/products/products-page.component';
 import { ProductCatergoriesPageComponent } from 'app/pages/parameters/product_categories/product_categories-page.component';
 import { CurrenciesPageComponent } from 'app/pages/parameters/currencies/currencies-page.component';
+import { VouchersPageComponent } from 'app/pages/parameters/vouchers/vouchers-page.component';
 
 let routes: Routes = [
   {
@@ -61,6 +62,11 @@ let routes: Routes = [
   {
     path: 'branch/:id',
     component: BranchDetailPageComponent,
+    data: { },    
+  },
+  {
+    path: 'vouchers',
+    component: VouchersPageComponent,
     data: { },    
   }
 ];

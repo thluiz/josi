@@ -128,5 +128,9 @@ export const Full_ROUTES: Routes = [
   {
     path: 'products',
     loadChildren: './pages/parameters/parameters.module#ParametersModule'
+  },
+  {
+    path: 'parameters/vouchers',
+    loadChildren: './pages/parameters/parameters.module#ParametersModule'
   }
 ];
