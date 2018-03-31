@@ -38,7 +38,8 @@ import { VouchersPageComponent } from 'app/pages/parameters/vouchers/vouchers-pa
         CommonModule,
         FormsModule,                                 
         ReactiveFormsModule,                        
-        NgbModule        
+        NgbModule,
+        NgbTimepickerModule.forRoot(),      
     ],
     declarations: [    
         OverviewPageComponent,

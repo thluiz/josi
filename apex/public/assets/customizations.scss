@@ -114,3 +114,65 @@ task-treatment-card {
 .cursor_pointer {
     cursor: pointer;
 }
+
+/* Checkbox and Radio Buttons Customizations */
+.option_container {
+    display: block;
+    position: relative;
+    padding-left: 20px;    
+    padding-top: 2px;
+    cursor: pointer;    
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;    
+}
+
+.option_container:hover  {
+    text-decoration: underline; 
+}
+
+.option_container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    background-color: #eee;
+}
+
+.option_container:hover input ~ .checkmark {
+    background-color: #ddd;      
+}
+
+.option_container input:checked ~ .checkmark {
+    background-color:white;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.option_container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.option_container .checkmark:after {
+    left: 5px;
+    top: 1px;
+    width: 5px;
+    height: 10px;
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}

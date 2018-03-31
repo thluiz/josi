@@ -38,7 +38,7 @@ function configure_routes(app, connection_pool) {
     }));
     app.get("/api/parameters/vouchers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
-            .query(`select * from voucher for json path`);
+            .query(`select * from voucher order by title for json path`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));

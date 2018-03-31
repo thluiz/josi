@@ -53,6 +53,10 @@ export class ParameterService {
         return this.http.get(this.dataUrl + `/branches/${id}`);
     }
 
+    getBranchMap(branch_id) {
+        return this.http.get(this.dataUrl + `/branch_maps/branch/${branch_id}`);
+    }
+    
     getCountries(forceRefresh?: boolean) {
         return this.utilsService.cache_results(this.countries$, `/countries`, forceRefresh);                      
     }    
@@ -120,6 +124,14 @@ export class ParameterService {
         }).do((data : any) => {          
           this.getActiveBranches(true).subscribe();
         });
+    }
+
+    saveBranchMap(map) {
+        return this.http.post(this.dataUrl + `/branch_maps`, map);
+    }
+
+    archiveMap(map)  {
+        return this.http.post(this.dataUrl + `/branch_maps/archive`, map);
     }
 
     saveProduct(product) {

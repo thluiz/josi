@@ -1,77 +1,252 @@
 <div class="card" *ngIf="current">
     <div class="card-body" style="padding:10px;">
         <h4 [routerLink]="['/parameters/branches']" class="cursor_pointer">Núcleos - {{ current.name }}</h4>
-        <div class="row">
-            <div class="col-4">
-                <div class="col-12 col-xl-12 col-md-6"  style="margin-bottom:30px;">
-                    <div class="row" style="border-bottom: 1px solid black">
-                        <div class="col-10 col-xl-10 col-sm-9">
-                            <h6 style="padding:0;margin:0;font-weight:bold"><i class="fas fa-credit-card"></i> Adquirentes </h6>
+        <div class="row">                        
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-12 col-xl-12 col-md-6"  style="margin-bottom:30px;">
+                        <div class="row" style="border-bottom: 1px solid black">
+                            <div class="col-10 col-xl-10 col-sm-9">
+                                <h6 style="padding:0;margin:0;font-weight:bold"><i class="ft-calendar"></i> Horários </h6>
+                            </div>
+                            <div class="col-2 col-sm-3 col-xl-2 text-right">
+                                <button type="button" class="btn btn-silver btn-sm" 
+                                    style="margin:0;padding:2px;line-height:10px"
+                                    (click)="open_add_map(map_modal);">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <i class="ft-calendar"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-2 col-sm-3 col-xl-2 text-right">
-                            <button type="button" class="btn btn-silver btn-sm" 
-                                style="margin:0;padding:2px;line-height:10px"
-                                (click)="open_add_acquirer(new_acquirer);">
-                                <i class="fas fa-plus-circle"></i>
-                            </button>
+                        
+                        <div class="row" *ngIf="current.map.length == 0">
+                            <div class="col-12 text-center">
+                                Nenhum horário definido
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="row" *ngIf="!current.acquirers || current.acquirers.length == 0">
-                        <div class="col-12 text-center">
-                            Nenhum Adquirente encontrado
+                        <div class="row" 
+                            style="cursor:pointer;"                                
+                            *ngFor="let m of current.map">
+                            <div class="col-10"
+                            (click)="open_edit_map(map_modal, m)">
+                                {{ m.title ? m.title + ' - ' : '' }}
+                                {{ m.incident_type }}
+                                {{ m.receive_voucher ? '(Voucher)' : ''  }}
+                                : 
+                                <ng-template ngFor let-wk [ngForOf]="m.week_days" let-k=index><span *ngIf="k != 0">, </span><span title="{{ wk.name }}">{{ wk.abrev }}</span></ng-template>														
+                                - 
+                                {{ m.start_hour }}:{{ ('00' + m.start_minute ).slice(-2) }}
+                                às 
+                                {{ m.end_hour }}:{{ ('00' + m.end_minute ).slice(-2) }}
+                            </div>
+                            <div 
+                                class="col-2 col-sm-3 col-xl-2 text-right">
+
+                                <button type="button" class="btn btn-silver btn-sm" 
+                                    style="margin:0;padding:2px;line-height:10px"			                                        
+                                    *ngIf="!m.remove"
+                                    (click)="m.remove = true">
+                                    <i class="ft-trash-2"></i>                                        
+                                </button>                                    
+                                <button type="button" class="btn btn-danger btn-sm" 
+                                    *ngIf="m.remove"
+                                    style="margin:0;padding:2px;line-height:10px"			                                        
+                                    (click)="archive_map(m);">
+                                    <i class="ft-trash-2"></i>                                        
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" 
+                                    *ngIf="m.remove"
+                                    style="margin:0;padding:2px;line-height:10px"			                                        
+                                    (click)="m.remove = false">
+                                    <i class="icon-action-undo"></i>                                        
+                                </button>                                    
+                            </div>
                         </div>
-                    </div>
-                    <div class="row" *ngFor="let ac of current.acquirers">
-                        <div class="col-10">
-                            {{ ac.name }}
-                        </div>
-                        <div class="col-2 col-sm-3 col-xl-2 text-right">
-                            <button type="button" class="btn btn-silver btn-sm" 
-                                style="margin:0;padding:2px;line-height:10px"			                                        
-                                *ngIf="!ac.remove"
-                                (click)="ac.remove = true">
-                                <i class="ft-trash-2"></i>                                        
-                            </button>                                    
-                            <button type="button" class="btn btn-danger btn-sm" 
-                                *ngIf="ac.remove"
-                                style="margin:0;padding:2px;line-height:10px"			                                        
-                                (click)="toggle_associate_acquirer(ac.id);">
-                                <i class="ft-trash-2"></i>                                        
-                            </button>
-                            <button type="button" class="btn btn-secondary btn-sm" 
-                                *ngIf="ac.remove"
-                                style="margin:0;padding:2px;line-height:10px"			                                        
-                                (click)="ac.remove = false">
-                                <i class="icon-action-undo"></i>                                        
-                            </button>                                    
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="col-12 col-xl-12 col-md-6"  style="margin-bottom:30px;">
-                    <div class="row" style="border-bottom: 1px solid black">
-                        <div class="col-10 col-xl-10 col-sm-9">
-                            <h6 style="padding:0;margin:0;font-weight:bold; padding-bottom:6px">Produtos </h6>
-                        </div>
-                    </div>
-                    
-                    <div class="row" *ngIf="!current.products || current.products.length == 0">
-                        <div class="col-12 text-center">
-                            Nenhum produto vinculado
-                        </div>
-                    </div>
-                    <div class="row" *ngFor="let pr of current.products">
-                        <div class="col-12">
-                            {{ pr.name }}
-                        </div>                        
                     </div>
                 </div>
-            </div>
+            </div>                                
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="col-12 col-xl-12 col-md-6"  style="margin-bottom:30px;">
+                            <div class="row" style="border-bottom: 1px solid black">
+                                <div class="col-10 col-xl-10 col-sm-9">
+                                    <h6 style="padding:0;margin:0;font-weight:bold"><i class="fas fa-credit-card"></i> Adquirentes </h6>
+                                </div>
+                                <div class="col-2 col-sm-3 col-xl-2 text-right">
+                                    <button type="button" class="btn btn-silver btn-sm" 
+                                        style="margin:0;padding:2px;line-height:10px"
+                                        (click)="open_add_acquirer(new_acquirer);">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    Nenhum Adquirente encontrado
+                                </div>
+                            </div>
+                            <div class="row" *ngFor="let ac of current.acquirers">
+                                <div class="col-10">
+                                    {{ ac.name }}
+                                </div>
+                                <div class="col-2 col-sm-3 col-xl-2 text-right">
+                                    <button type="button" class="btn btn-silver btn-sm" 
+                                        style="margin:0;padding:2px;line-height:10px"			                                        
+                                        *ngIf="!ac.remove"
+                                        (click)="ac.remove = true">
+                                        <i class="ft-trash-2"></i>                                        
+                                    </button>                                    
+                                    <button type="button" class="btn btn-danger btn-sm" 
+                                        *ngIf="ac.remove"
+                                        style="margin:0;padding:2px;line-height:10px"			                                        
+                                        (click)="toggle_associate_acquirer(ac.id);">
+                                        <i class="ft-trash-2"></i>                                        
+                                    </button>
+                                    <button type="button" class="btn btn-secondary btn-sm" 
+                                        *ngIf="ac.remove"
+                                        style="margin:0;padding:2px;line-height:10px"			                                        
+                                        (click)="ac.remove = false">
+                                        <i class="icon-action-undo"></i>                                        
+                                    </button>                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="col-12 col-xl-12 col-md-6"  style="margin-bottom:30px;">
+                            <div class="row" style="border-bottom: 1px solid black">
+                                <div class="col-10 col-xl-10 col-sm-9">
+                                    <h6 style="padding:0;margin:0;font-weight:bold; padding-bottom:6px">Produtos </h6>
+                                </div>
+                            </div>
+                            
+                            <div class="row" *ngIf="!current.products || current.products.length == 0">
+                                <div class="col-12 text-center">
+                                    Nenhum produto vinculado
+                                </div>
+                            </div>
+                            <div class="row" *ngFor="let pr of current.products">
+                                <div class="col-12">
+                                    {{ pr.name }}
+                                </div>                        
+                            </div>
+                        </div>
+                    </div>                                           
+                </div>
+            </div>                    
         </div>
     </div>
 </div>
+
+<ng-template #map_modal let-c="close" let-d="dismiss">
+        <div class="modal-header">
+            <h5 class="modal-title" style="font-weight: bold">
+                Horário
+            </h5>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">		
+            <div class="row">
+                <div class="col-12">
+                    <label for="item_title">Título</label>                                                									
+                    <div class="input-group">							
+                        <input class="form-control"
+                            [(ngModel)]="current_map.title"                        
+                            autocomplete="off"
+                            maxlength="200"
+                            id="item_title"                        
+                            name="item_title"/>                                 
+                    </div>
+                </div>
+            </div> 
+            <div class="row">
+                <div class="col-12">
+                    <label for="item_incident_type">Atividade</label>                                                									
+                    <div class="input-group">							
+                        <select 
+                            [(ngModel)]="current_map.incident_type_id" 								                            
+                            id="item_incident_type" name="item_incident_type"
+                            class="form-control form-control-sm"
+                            [ngModelOptions]="{standalone: true}">			                                                        			                            
+                            <option *ngFor="let ic of incident_types" [value]="ic.id">{{ic.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>     
+            <div class="row" *ngIf="current_map.incident_type_id == 10">
+                <div class="col-12">
+                    <label class="option_container">
+                        Recebe Voucher
+                        <input type="checkbox"                         
+                        [checked]="current_map.receive_voucher" 
+                        (change)="current_map.receive_voucher = !current_map.receive_voucher"
+                        id="item_receive_voucher" name="item_receive_voucher"/>
+                        <span class="checkmark"></span>
+                    </label>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="col-12">                    
+                    <h6 style="font-size:15px;margin-top:20px;margin-bottom:5px;">Dias da Semana</h6>
+                </div>
+            </div>
+            <div class="row" >
+                <div class="col-12">
+                    <div *ngFor="let w of current_map.week_days" style="display:inline-block;margin-left:10px">
+                        <label class="option_container">
+                            {{ w.abrev }}
+                            <input type="checkbox"                         
+                            [checked]="w.selected" 
+                            (change)="w.selected = !w.selected"
+                            id="week_day_{{w.week_day}}" name="week_day_{{w.week_day}}"/>
+                            <span class="checkmark"></span>
+                        </label>                        
+                    </div>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="col-12">                    
+                    <h6 style="font-size:15px;margin-top:20px;margin-bottom:5px;">Horário</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="item_start_time">Início</label>
+                    <ngb-timepicker 
+                        id="item_start_time"
+                        [spinners]="false" 
+                        [(ngModel)]="current_map.start_time"></ngb-timepicker>
+                </div>
+                <div class="col-6">
+                    <label for="item_end_time">Fim</label>
+                    <ngb-timepicker 
+                        id="item_end_time"
+                        [spinners]="false" 
+                        [(ngModel)]="current_map.end_time"></ngb-timepicker>
+                </div>
+            </div>            
+        </div>
+        <div class="modal-footer" *ngIf="saving">        
+                <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+            </div>
+        <div class="modal-footer" *ngIf="!saving">
+            <button type="button" class="btn btn-success"                 
+                (click)="save_map(current_map, d);">
+                <i class="icon-check"></i>
+                Salvar
+            </button>        
+            <button type="button" class="btn btn-silver" 			            
+                (click)="d('Cancelled')">
+                <i class="icon-action-undo"></i>
+                Cancelar
+            </button>        
+        </div>
+    </ng-template>
+
 
 <ng-template #new_acquirer let-c="close" let-d="dismiss">
     <div class="modal-header">
@@ -115,3 +290,4 @@
         </button>        
     </div>
 </ng-template>
+

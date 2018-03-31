@@ -26,6 +26,13 @@ function configure_routes(app, connection_pool) {
             res.send(response[0].empty ? [] : response);
         }
     }));
+    app.get("/api/branch_maps/branch/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input("branch_id", sql.Int, req.params.id)
+            .execute(`GetBranchMap`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
     app.get("/api/domains", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetDomains`);
@@ -225,6 +232,35 @@ function configure_routes(app, connection_pool) {
                 .query(`insert into currency (name, [symbol])
                     values (@name, @symbol)`);
         }
+        res.send({ sucess: true });
+    }));
+    app.post("/api/branch_maps/archive", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input('id', sql.Int, req.body.id)
+            .query(`update branch_map set
+                    active = 0                    
+                where id = @id`);
+        res.send({ sucess: true });
+    }));
+    app.post("/api/branch_maps", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const week_days = req.body.week_days
+            .filter(wk => wk.selected)
+            .map((wk) => {
+            return wk.week_day;
+        })
+            .join(",");
+        const result = yield new sql.Request(pool)
+            .input("id", sql.Int, req.body.id || 0)
+            .input("branch_id", sql.Int, req.body.branch_id)
+            .input("incident_type_id", sql.Int, req.body.incident_type_id)
+            .input("receive_voucher", sql.Bit, req.body.receive_voucher)
+            .input("week_days", sql.VarChar(sql.MAX), week_days)
+            .input("start_hour", sql.Int, req.body.start_time ? req.body.start_time.hour : 0)
+            .input("start_minute", sql.Int, req.body.start_time ? req.body.start_time.minute : 0)
+            .input("end_hour", sql.Int, req.body.end_time ? req.body.end_time.hour : 0)
+            .input("end_minute", sql.Int, req.body.end_time ? req.body.end_time.minute : 0)
+            .input("title", sql.VarChar(200), req.body.title)
+            .execute(`SaveBranchMap`);
         res.send({ sucess: true });
     }));
     app.post("/api/products", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {

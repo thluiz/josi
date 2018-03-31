@@ -37,7 +37,7 @@ export function configure_routes(app: any, connection_pool: any) {
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {                        
         const result = await new sql.Request(pool)            
-        .query(`select * from voucher for json path`);                
+        .query(`select * from voucher order by title for json path`);                
         
         let response = result.recordset[0];
 

@@ -307,7 +307,7 @@
                                                 - Dia {{ ps.month_day }}
                                             </span>
                                             <span *ngIf="ps.recurrence_type == 2 || ps.recurrence_type == 3">
-                                                - {{ ps.week_day_description + " " + ps.start_hour + ":" + ps.start_minute }}
+                                                - {{ ps.week_day_description + " " + ps.start_hour + ":" + ('00' + ps.start_minute ).slice(-2) }}
                                             </span>
                                             <span *ngIf="ps.value > 0n">
                                                 - {{ ps.value }}
