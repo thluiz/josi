@@ -6,8 +6,7 @@ export function configure_routes(app: any, connection_pool: any) {
     
     app.post("/api/voucher",
     async (req, res, next) => {              
-        try {           
-            console.log(req.body.unit);
+        try {                       
             const result = await new sql.Request(pool)            
             .input('name', sql.VarChar(200), req.body.name)  
             .input('email', sql.VarChar(100), req.body.email)                  
@@ -15,9 +14,10 @@ export function configure_routes(app: any, connection_pool: any) {
             .input('phone', sql.VarChar(100), req.body.phone)                  
             .input('socialLinks', sql.VarChar(100), req.body.socialLinks)                  
             .input('branch_id', sql.Int, req.body.unit)   
-            .input('voucher_id', sql.Int, req.body.voucher_id || 1)   
+            .input('voucher_id', sql.Int, req.body.voucher_id || 1)
+            .input('branch_map_id', sql.Int, req.body.schedule)             
             .execute(`CreatePersonFromVoucher`);         
-
+            
         } catch (error) {
             console.log(error); //TODO: jogar para azure
         }
