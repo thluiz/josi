@@ -15,6 +15,7 @@ export function configure_routes(app: any, connection_pool: any) {
             .input('socialLinks', sql.VarChar(100), req.body.socialLinks)                  
             .input('branch_id', sql.Int, req.body.unit)   
             .input('voucher_id', sql.Int, req.body.voucher_id || 1)
+            .input('additionalAnswer', sql.VarChar(sql.MAX), req.body.additionalAnswer || '')
             .input('branch_map_id', sql.Int, req.body.schedule)             
             .execute(`CreatePersonFromVoucher`);         
             
