@@ -7,7 +7,8 @@
  @new_people varchar(max) = null,  
  @register_closed bit = 0,  
  @responsible_id int = null,
- @card_id int = null              
+ @card_id int = null,
+ @register_treated bit = 0              
 ) as                 
 begin                
         
@@ -55,16 +56,18 @@ begin
         
   insert into incident(                
    responsible_id, incident_type, [date], branch_id, [description], [value],                 
-   closed, closed_by,  
+   closed, 
+   closed_by,  
    closed_on,   
    scheduled, 
-   card_id                
+   card_id, treated                
   ) values (                
    @responsible_id, @type, @date, @branch, @description, @value,                
-   @register_closed, @responsible_id,   
-   case when @register_closed = 1 then dbo.getCurrentDateTime() end,     
+   case when @register_closed = 1 or @register_treated = 1 then 1 else 0 end, 
+   @responsible_id,   
+   case when @register_closed = 1 or @register_treated = 1 then dbo.getCurrentDateTime() end,     
    cast((case when @date < dbo.getCurrentDateTime() then 1 else 0 end) as bit),
-   @card_id                        
+   @card_id, @register_treated                       
   )                
                  
   declare @incident int = @@identity                

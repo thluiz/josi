@@ -1,7 +1,8 @@
 ﻿CREATE procedure [dbo].[SaveCardStep](@card_id int, @step_id int, @responsible_id int = null)  
 as  
 begin  
- declare @is_closing_step bit, @is_negative_closing_step bit, @history_type int = 1, @start_incident bit = 0  
+ declare @is_closing_step bit, @is_negative_closing_step bit, 
+ @history_type int = 1, @start_incident bit = 0, @current_date datetime = dbo.getCurrentDateTime() 
   
  select @is_closing_step = is_closing_step,   
    @is_negative_closing_step = is_negative_closing_step,  
@@ -31,6 +32,46 @@ begin
   
   update [card] set closed = 1, closed_on = dbo.getCurrentDateTime() where id = @card_id and closed = 0
   
+  	declare @target int
+
+	select top 1 @target = person_id 
+	from person_card pc where pc.card_id = @card_id and pc.position = 5
+	
+	if(@target is not null)
+	begin
+		declare @register_treated bit = 0, @target_branch int, 
+			@result_description nvarchar(max) = 'Confirmou participação',
+			@parent_template int
+
+		select @target_branch = branch_id from person where id = @target
+
+		select @parent_template = parent.card_template_id 
+		from [card]	c
+			join [card] parent on parent.id = c.parent_id
+		where c.id = @card_id 
+
+		if(@parent_template = 2)
+		begin 
+			set @result_description = 'Confirmou participação'
+
+			if(@is_negative_closing_step = 1)
+			begin
+				set @register_treated = 1
+				set @result_description = 'Não participará'
+			end
+		end
+		else 
+		begin
+			set @result_description = 'Finalizado contato sobre essa tarefa'			
+		end
+
+
+
+		exec RegisterNewIncident  @type = 5, @people = @target, @branch = @target_branch, 
+							@date = @current_date, @description = @result_description, @register_closed = 1, 
+							@responsible_id = @responsible_id, @register_treated = @register_treated,
+							@card_id = @card_id
+	end		
  end    
  else
  begin
