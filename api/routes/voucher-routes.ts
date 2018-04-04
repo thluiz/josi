@@ -1,11 +1,15 @@
 import * as sql from 'mssql';
 import { SecurityService } from '../../domain/services/security_services';
 
-export function configure_routes(app: any, connection_pool: any) {
+export function configure_routes(app: any, connection_pool: any, appInsights: any) {
     const pool = connection_pool;    
     
     app.post("/api/voucher",
-    async (req, res, next) => {              
+    async (req, res, next) => { 
+        if(appInsights) {
+            appInsights.defaultClient.trackNodeHttpRequest({request: req, response: res});
+        }
+
         try {                       
             const result = await new sql.Request(pool)            
             .input('name', sql.VarChar(200), req.body.name)  
@@ -20,7 +24,10 @@ export function configure_routes(app: any, connection_pool: any) {
             .execute(`CreatePersonFromVoucher`);         
             
         } catch (error) {
-            console.log(error); //TODO: jogar para azure
+            if(appInsights) {
+                appInsights.trackException(error);  
+            }
+            console.log(error);
         }
         res.send({ sucess: true});   
     });

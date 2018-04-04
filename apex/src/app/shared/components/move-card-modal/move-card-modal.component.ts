@@ -49,12 +49,30 @@ export class MoveCardModalComponent implements OnInit {
       } else if (this.card.high_level_id > 0) {
         // card in project
         this.new_organization = data.find(d => d.id == this.card.high_level_id);
-        this.new_project = this.new_organization.childs.find(c => c.id == this.card.parent_id);        
+        this.new_project = this.new_organization.childs.find(c => c.id == this.card.parent_id); 
         this.new_project_step = this.new_project.steps.find(s => s.id == this.card.current_step_id);
+      }
+
+      if(this.new_organization != null && this.new_organization.childs != null && this.new_organization.childs.length > 0) {        
+        this.new_organization.childs = (this.new_organization.childs as any[]).sort(this.sortByTitle);        
+      }
+
+      if(this.new_project != null && this.new_project.subprojects != null &&  this.new_project.subprojects.length > 0) {
+        this.new_project.subprojects = (this.new_project.subprojects as any[]).sort(this.sortByTitle);
       }
 
       this.open_modal(this.move_card_modal);        
     });                
+  }
+
+  private sortByTitle(a, b) {
+    let firstLetterA = a.title.substring(0, 1);
+    let firstLetterB = b.title.substring(0, 1);
+
+    if(a.title > b.title) return 1;    
+    if(a.title < b.title) return -1;
+
+    return 0;
   }
 
   private open_modal(content) {

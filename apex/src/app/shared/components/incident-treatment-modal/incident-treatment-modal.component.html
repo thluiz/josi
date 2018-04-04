@@ -3,7 +3,13 @@
         <div class="row" style="width:100%">
             <div class="col-8">
                 <h5 class="modal-title" style="font-weight: bold">
-                    {{ current_incident.long_description }}
+                    <a
+                    style="color:#666"
+                    [routerLink]="['/people/person', current_incident.person_id]"
+                    target="_blank"
+                    >
+                        {{ current_incident.long_description }}
+                    </a>
                 </h5>   
             </div>
             <div class="col-4 pr-0 text-right">

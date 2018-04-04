@@ -8,11 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+let appInsights = null;
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
 }
 else {
-    const appInsights = require("applicationinsights");
+    appInsights = require("applicationinsights");
     appInsights.setup(process.env.AZURE_APP_INSIGHTS);
     appInsights.start();
 }
@@ -114,7 +115,7 @@ function getParticipationList(people) {
         incidents_routes.configure_routes(app, pool);
         cards_routes.configure_routes(app, pool);
         financial_routes.configure_routes(app, pool);
-        voucher_routes.configure_routes(app, pool);
+        voucher_routes.configure_routes(app, pool, appInsights);
         app.get("/api/hourly-jobs", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
             const jobs_service = new jobs_services_1.JobsService(pool);
             yield jobs_service.hourly_jobs();

@@ -1,7 +1,9 @@
+let appInsights = null;
+
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
 } else {
-    const appInsights = require("applicationinsights");
+    appInsights = require("applicationinsights");
     appInsights.setup(process.env.AZURE_APP_INSIGHTS);
     appInsights.start();
 }
@@ -132,7 +134,7 @@ function getParticipationList(people) {
         incidents_routes.configure_routes(app, pool);
         cards_routes.configure_routes(app, pool);
         financial_routes.configure_routes(app, pool);
-        voucher_routes.configure_routes(app, pool);
+        voucher_routes.configure_routes(app, pool, appInsights);
         
         app.get("/api/hourly-jobs", async (request, response, next) => {            
             const jobs_service = new JobsService(pool);                

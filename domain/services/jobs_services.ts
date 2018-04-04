@@ -20,16 +20,16 @@ export class JobsService {
     
     async hourly_jobs() {
         try {
-            this.sumary_service.consolidate_members_sumary();
-            this.sumary_service.consolidate_activity_sumary();
+            this.card_service.correct_card_out_of_parent_step();
+            this.person_service.generate_birthdate_incidents();
             this.person_service.cancel_expired_people_scheduling();
             this.person_service.check_people_status();
             this.person_service.check_people_comunication_status();
             this.person_service.check_people_financial_status();
-            this.person_service.check_people_scheduling_status();            
-            this.person_service.generate_birthdate_incidents();
-            this.card_service.check_cards_has_overdue_cards();
-            this.card_service.correct_card_out_of_parent_step();
+            this.person_service.check_people_scheduling_status();                        
+            this.card_service.check_cards_has_overdue_cards();            
+            this.sumary_service.consolidate_members_sumary();
+            this.sumary_service.consolidate_activity_sumary();
         } catch(ex) {
             console.log(ex);
         }

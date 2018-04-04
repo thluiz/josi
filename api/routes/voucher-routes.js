@@ -10,9 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
 const security_services_1 = require("../../domain/services/security_services");
-function configure_routes(app, connection_pool) {
+function configure_routes(app, connection_pool, appInsights) {
     const pool = connection_pool;
     app.post("/api/voucher", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        if (appInsights) {
+            appInsights.defaultClient.trackNodeHttpRequest({ request: req, response: res });
+        }
         try {
             const result = yield new sql.Request(pool)
                 .input('name', sql.VarChar(200), req.body.name)
@@ -27,7 +30,10 @@ function configure_routes(app, connection_pool) {
                 .execute(`CreatePersonFromVoucher`);
         }
         catch (error) {
-            console.log(error); //TODO: jogar para azure
+            if (appInsights) {
+                appInsights.trackException(error);
+            }
+            console.log(error);
         }
         res.send({ sucess: true });
     }));
