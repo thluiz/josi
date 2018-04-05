@@ -28,6 +28,7 @@
   "homepage": "https://github.com/thluiz/josi#readme",
   "dependencies": {
     "applicationinsights": "^1.0.2",
+    "axios": "^0.18.0",
     "azure-storage": "^2.7.0",
     "body-parser": "^1.18.2",
     "botbuilder": "^3.12.0",

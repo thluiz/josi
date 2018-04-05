@@ -1,5 +1,6 @@
 import * as sql from 'mssql';
 import { SecurityService } from '../../domain/services/security_services';
+import axios from 'axios'
 
 export function configure_routes(app: any, connection_pool: any, appInsights: any) {
     const pool = connection_pool;    
@@ -82,6 +83,16 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
             .query(`insert into voucher (title, [url], header_text, additional_question, initials)
                     values (@title, @url, @header_text, @additional_question, @initials)`); 
         }     
+
+        try {
+            axios.get(process.env.VOUCHER_SITE_UPDATE_URL)
+            .then(function (response) {
+                console.log('voucher site updated!')
+            });
+
+        } catch (err) {
+            
+        } 
 
         res.send({ sucess: true});   
     });
