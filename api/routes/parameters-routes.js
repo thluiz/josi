@@ -10,8 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
 const security_services_1 = require("../../domain/services/security_services");
+const jobs_services_1 = require("../../domain/services/jobs_services");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
+    let jobs = new jobs_services_1.JobsService(connection_pool);
     app.get("/api/branches/:id?", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         if (!req.params.id) {
             const result = yield new sql.Request(pool)
@@ -240,6 +242,7 @@ function configure_routes(app, connection_pool) {
             .query(`update branch_map set
                     active = 0                    
                 where id = @id`);
+        jobs.update_voucher_site();
         res.send({ sucess: true });
     }));
     app.post("/api/branch_maps", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -261,6 +264,7 @@ function configure_routes(app, connection_pool) {
             .input("end_minute", sql.Int, req.body.end_time ? req.body.end_time.minute : 0)
             .input("title", sql.VarChar(200), req.body.title)
             .execute(`SaveBranchMap`);
+        jobs.update_voucher_site();
         res.send({ sucess: true });
     }));
     app.post("/api/products", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {

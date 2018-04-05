@@ -1,8 +1,11 @@
 import * as sql from 'mssql';
 import { SecurityService } from '../../domain/services/security_services';
+import { JobsService } from '../../domain/services/jobs_services';
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
+
+    let jobs: JobsService = new JobsService(connection_pool);
 
     app.get("/api/branches/:id?", 
     SecurityService.ensureLoggedIn(),
@@ -332,6 +335,8 @@ export function configure_routes(app: any, connection_pool: any) {
                     active = 0                    
                 where id = @id`); 
 
+        jobs.update_voucher_site();
+
         res.send({ sucess: true});   
     });        
 
@@ -356,7 +361,9 @@ export function configure_routes(app: any, connection_pool: any) {
         .input("end_hour", sql.Int,  req.body.end_time? req.body.end_time.hour : 0)
         .input("end_minute", sql.Int, req.body.end_time ? req.body.end_time.minute : 0)
         .input("title", sql.VarChar(200), req.body.title)
-        .execute(`SaveBranchMap`);                
+        .execute(`SaveBranchMap`); 
+        
+        jobs.update_voucher_site();
 
         res.send({ sucess: true});   
     });

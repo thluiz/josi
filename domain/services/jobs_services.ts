@@ -3,7 +3,9 @@ import { SumaryService } from "./sumary_services";
 import { PersonService } from "./person_services";
 import { CardService } from "./card_services";
 
-const sql = require('mssql')
+import axios from 'axios';
+
+const sql = require('mssql');
 
 export class JobsService {
     private sql_pool;
@@ -16,6 +18,17 @@ export class JobsService {
         this.sumary_service = new SumaryService(sql_pool);
         this.person_service = new PersonService(sql_pool);
         this.card_service = new CardService(sql_pool);
+    }
+
+    update_voucher_site() {
+        try {
+            axios.get(process.env.VOUCHER_SITE_UPDATE_URL)
+            .then(function (response) {
+                console.log('voucher site updated!')
+            });
+        } catch (err) {
+            
+        } 
     }
     
     async hourly_jobs() {

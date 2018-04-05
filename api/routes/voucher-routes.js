@@ -8,11 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const jobs_services_1 = require("./../../domain/services/jobs_services");
 const sql = require("mssql");
 const security_services_1 = require("../../domain/services/security_services");
-const axios_1 = require("axios");
 function configure_routes(app, connection_pool, appInsights) {
     const pool = connection_pool;
+    let jobs = new jobs_services_1.JobsService(connection_pool);
     app.post("/api/voucher", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         if (appInsights) {
             appInsights.defaultClient.trackNodeHttpRequest({ request: req, response: res });
@@ -78,14 +79,7 @@ function configure_routes(app, connection_pool, appInsights) {
                 .query(`insert into voucher (title, [url], header_text, additional_question, initials)
                     values (@title, @url, @header_text, @additional_question, @initials)`);
         }
-        try {
-            axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_URL)
-                .then(function (response) {
-                console.log('voucher site updated!');
-            });
-        }
-        catch (err) {
-        }
+        jobs.update_voucher_site();
         res.send({ sucess: true });
     }));
 }

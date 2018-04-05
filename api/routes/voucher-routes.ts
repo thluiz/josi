@@ -1,9 +1,10 @@
+import { JobsService } from './../../domain/services/jobs_services';
 import * as sql from 'mssql';
 import { SecurityService } from '../../domain/services/security_services';
-import axios from 'axios'
 
 export function configure_routes(app: any, connection_pool: any, appInsights: any) {
-    const pool = connection_pool;    
+    const pool = connection_pool;  
+    let jobs: JobsService = new JobsService(connection_pool);
     
     app.post("/api/voucher",
     async (req, res, next) => { 
@@ -84,15 +85,7 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
                     values (@title, @url, @header_text, @additional_question, @initials)`); 
         }     
 
-        try {
-            axios.get(process.env.VOUCHER_SITE_UPDATE_URL)
-            .then(function (response) {
-                console.log('voucher site updated!')
-            });
-
-        } catch (err) {
-            
-        } 
+        jobs.update_voucher_site();
 
         res.send({ sucess: true});   
     });

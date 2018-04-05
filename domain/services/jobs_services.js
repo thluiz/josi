@@ -11,6 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sumary_services_1 = require("./sumary_services");
 const person_services_1 = require("./person_services");
 const card_services_1 = require("./card_services");
+const axios_1 = require("axios");
 const sql = require('mssql');
 class JobsService {
     constructor(sql_pool) {
@@ -18,6 +19,16 @@ class JobsService {
         this.sumary_service = new sumary_services_1.SumaryService(sql_pool);
         this.person_service = new person_services_1.PersonService(sql_pool);
         this.card_service = new card_services_1.CardService(sql_pool);
+    }
+    update_voucher_site() {
+        try {
+            axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_URL)
+                .then(function (response) {
+                console.log('voucher site updated!');
+            });
+        }
+        catch (err) {
+        }
     }
     hourly_jobs() {
         return __awaiter(this, void 0, void 0, function* () {
