@@ -35,6 +35,7 @@ import { PersonDataTreatmentModalModule } from 'app/shared/components/person-dat
 import { PersonStatusLineModule } from 'app/shared/components/person-status-line/person-status-line.module';
 import { PersonContactListModule } from 'app/pages/people/shared/components/person-contact-list/person-contact-list.module';
 import { FloatActionCenterModule } from 'app/shared/components/float-action-center/float-action-center.module';
+import { VoucherPeoplePageComponent } from './voucher/voucher-people-page.component';
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import { FloatActionCenterModule } from 'app/shared/components/float-action-cent
         PeopleAwayPageComponent,
         PeopleServiceProviderPageComponent,
         OperatorPageComponent,
-        OperatorConfigPageComponent
+        OperatorConfigPageComponent,
+        VoucherPeoplePageComponent
     ]
 })
 export class PeopleModule { }

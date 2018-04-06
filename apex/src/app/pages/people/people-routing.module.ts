@@ -7,6 +7,7 @@ import { MembersPanelPageComponent } from './members-panel/members-panel-page.co
 import { ManagementPanelPageComponent } from './management-panel/management-panel-page.component';
 import { PersonPageComponent } from './person/person-page.component';
 import { PersonEditPageComponent } from './edit/person-edit-page.component';
+import { VoucherPeoplePageComponent } from './voucher/voucher-people-page.component';
 
 
 import { NgModule } from '@angular/core';
@@ -70,6 +71,11 @@ let routes: Routes = [
   {
     path: 'service_provider',
     component: PeopleServiceProviderPageComponent,
+    data: { },    
+  },
+  {
+    path: 'voucher',
+    component: VoucherPeoplePageComponent,
     data: { },    
   }
 ];

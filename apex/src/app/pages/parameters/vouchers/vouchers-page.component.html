@@ -9,12 +9,16 @@
             </thead>
             <tbody>
                 <tr *ngFor="let item of collection"
-                class="cursor_pointer"
-                (click)="edit(modal, item)"
+                class="cursor_pointer"                
                 >
-                    <td>{{ item["title"] }}</td>                                        
-                    <td>{{ item["initials"] }}</td>
-                    <td>/voucher/{{ item["url"] }}</td>
+                    <td (click)="edit(modal, item)">{{ item["title"] }}</td>                                        
+                    <td (click)="edit(modal, item)">{{ item["initials"] }}</td>
+                    <td>
+                        <a href="{{'http://myvtmi.im/voucher/' + item['url'] }}"
+                        target="_blank">
+                            /voucher/{{ item["url"] }}
+                        </a>
+                    </td>
                 </tr>
             </tbody>
         </table>

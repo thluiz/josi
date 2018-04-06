@@ -54,6 +54,17 @@ function configure_routes(app, connection_pool) {
             res.status(500).json(error);
         }
     }));
+    app.get("/api/voucher_people", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
+            .input('voucher', sql.Int, req.query.voucher > 0 ? req.query.voucher : null)
+            .input('name', sql.VarChar(150), req.query.name)
+            .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)
+            .input('page', sql.Int, req.query.page > 1 ? req.query.page : 1)
+            .execute(`GetPeopleFromVouchers`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
     app.get("/api/interested", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)

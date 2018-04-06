@@ -60,6 +60,10 @@ export const Full_ROUTES: Routes = [
   {
     path: 'people/away',
     loadChildren: './pages/people/people.module#PeopleModule'
+  },   
+  {
+    path: 'people/voucher',
+    loadChildren: './pages/people/people.module#PeopleModule'
   },
   {
     path: 'people/service-provider',

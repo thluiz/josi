@@ -6,7 +6,8 @@ enum Panels {
   Members = 0,
   Interested = 1,
   Away = 2,
-  ServiceProvider = 3   
+  ServiceProvider = 3,
+  Voucher = 4   
 }
 
 @Component({
@@ -33,6 +34,8 @@ export class PeopleHeaderComponent implements OnInit {
       this.current_panel = Panels.Interested;
     } else if(this.initial_panel == "service_providers") {        
       this.current_panel = Panels.ServiceProvider;
+    } else if(this.initial_panel == "voucher") {        
+      this.current_panel = Panels.Voucher;
     }
     
   }
@@ -50,6 +53,9 @@ export class PeopleHeaderComponent implements OnInit {
         break;
       case Panels.ServiceProvider.toString(): 
         this.router.navigateByUrl(`people/service_provider`);
+        break;
+      case Panels.Voucher.toString(): 
+        this.router.navigateByUrl(`people/voucher`);
         break;
     }
   }
