@@ -139,4 +139,8 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
       
     this.cardService.saveProjectStepOrder(ordering).subscribe();
   }
+
+  open_new_person_modal() {
+    this.modalService.open(ModalType.AddPerson, {});
+  }
 }

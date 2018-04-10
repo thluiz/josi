@@ -83,6 +83,23 @@
                     <ngb-timepicker [spinners]="false" [(ngModel)]="new_incident.time"></ngb-timepicker>					
                 </div>
             </div>
+            <div class="row" *ngIf="this.new_incident.type && this.new_incident.type.need_to_be_started">				
+                <div class="col-12">                                        
+                    <label for="new_incident_start_activity"
+                            style="font-weight: bold">
+                        Atividade em Andamento
+                    </label>		
+                    <div class="form-group">
+                        <select id="new_incident_start_activity" 
+                            [(ngModel)]="new_incident.start_activity"                             
+                            class="form-control"								
+                            >			
+                            <option [ngValue]="0">Não</option>			
+                            <option [ngValue]="1">Sim</option>
+                        </select>								
+                    </div>
+                </div>
+            </div>
             <div class="row" *ngIf="new_incident.type != null">
                 <div class="col-12">
                     <label for="new_incident_search_people" style="font-weight: bold">Participante{{ new_incident.people == null || new_incident.people.length <= 1 ? '' : 's' }}</label>	

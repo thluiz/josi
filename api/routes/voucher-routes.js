@@ -61,10 +61,12 @@ function configure_routes(app, connection_pool, appInsights) {
                 .input('initials', sql.VarChar(3), voucher.initials)
                 .input('additional_question', sql.VarChar(200), voucher.additional_question)
                 .input('header_text', sql.VarChar(sql.MAX), voucher.header_text)
+                .input('final_text', sql.VarChar(sql.MAX), voucher.final_text)
                 .query(`update voucher set
                         title = @title,
                         [url] = @url,
                         header_text = @header_text,
+                        final_text = @final_text,
                         additional_question = @additional_question,
                         initials = @initials
                     where id = @id`);
@@ -76,8 +78,9 @@ function configure_routes(app, connection_pool, appInsights) {
                 .input('initials', sql.VarChar(3), voucher.initials)
                 .input('additional_question', sql.VarChar(200), voucher.additional_question)
                 .input('header_text', sql.VarChar(sql.MAX), voucher.header_text)
-                .query(`insert into voucher (title, [url], header_text, additional_question, initials)
-                    values (@title, @url, @header_text, @additional_question, @initials)`);
+                .input('final_text', sql.VarChar(sql.MAX), voucher.final_text)
+                .query(`insert into voucher (title, [url], header_text, final_text, additional_question, initials)
+                    values (@title, @url, @header_text, @final_text, @additional_question, @initials)`);
         }
         jobs.update_voucher_site();
         res.send({ sucess: true });

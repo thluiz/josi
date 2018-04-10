@@ -106,7 +106,20 @@
                     rows="4"></textarea>                                   
                 </div>
             </div>                       
-        </div>                
+        </div>    
+        <div class="row">
+            <div class="col-12">
+                <label for="item_final_text">Texto de Finalização</label>                                                									
+                <div class="input-group">							
+                    <textarea class="form-control"
+                    id="item_final_text"
+                    name="item_final_text"
+                    autocomplete="off"
+                    [(ngModel)]="current_item.final_text" 		
+                    rows="4"></textarea>                                   
+                </div>
+            </div>                       
+        </div>            
     </div>
     <div class="modal-footer" *ngIf="saving">        
         <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
