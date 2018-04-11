@@ -56,6 +56,21 @@ export function configure_routes(app: any, connection_pool: any) {
         response.send(result.recordset[0]);
     });
 
+    app.get("/api/configurations", 
+    SecurityService.ensureLoggedIn(),
+    async (request, res, next) => {         
+        try {
+            const result = await new sql.Request(pool)            
+            .query(`select * from [configuration] for json path`);                
+            
+            let response = result.recordset[0];
+    
+            res.send(response);
+        } catch (error) {
+            res.status(500).json(error);                                          
+        }             
+    });
+
     app.get("/api/products", 
     SecurityService.ensureLoggedIn(),
     async (request, res, next) => {         

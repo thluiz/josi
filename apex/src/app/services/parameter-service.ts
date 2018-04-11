@@ -5,10 +5,17 @@ import {Observable, ReplaySubject} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
 import { Subject }    from 'rxjs/Subject';
 
+export enum Configurations {
+    MinimalIndicationsPerActiveMember = 1
+}
+
 @Injectable()
 export class ParameterService {
+   
     private dataUrl = environment.api_url;  
     
+    private configuration$ = new ReplaySubject(1);
+
     private incident_types$ = new ReplaySubject(1);
     private contact_types$ = new ReplaySubject(1);
     private recurrence_types$ = new ReplaySubject(1);
@@ -24,13 +31,17 @@ export class ParameterService {
     private payment_methods$ = new ReplaySubject(1);
     private acquirers$ = new ReplaySubject(1);
     private products$ = new ReplaySubject(1);
-    private currencies$ = new ReplaySubject(1);
+    private currencies$ = new ReplaySubject(1);    
     private product_categories$ = new ReplaySubject(1);
     
     private personCardPositions$ = new ReplaySubject(1);
     private cardTemplates$ = new ReplaySubject(1);
     
     constructor(private http:HttpClient, private utilsService: UtilsService) { }  
+
+    getConfigurations(forceRefresh?: boolean) {        
+        return this.utilsService.cache_results(this.configuration$, `/configurations`, forceRefresh);                      
+    }
 
     getDomains(forceRefresh?: boolean) {
         return this.utilsService.cache_results(this.domains$, `/domains`, forceRefresh);                      
@@ -40,8 +51,7 @@ export class ParameterService {
         return this.utilsService.cache_results(this.programs$, `/programs`, forceRefresh);                      
     }
 
-    getProducts(forceRefresh?: boolean) {
-        console.log(`getting products: ${forceRefresh}`);
+    getProducts(forceRefresh?: boolean) {        
         return this.utilsService.cache_results(this.products$, `/products`, forceRefresh);                      
     }
     

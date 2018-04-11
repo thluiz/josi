@@ -45,6 +45,17 @@ function configure_routes(app, connection_pool) {
             .execute(`GetPrograms`);
         response.send(result.recordset[0]);
     }));
+    app.get("/api/configurations", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = yield new sql.Request(pool)
+                .query(`select * from [configuration] for json path`);
+            let response = result.recordset[0];
+            res.send(response);
+        }
+        catch (error) {
+            res.status(500).json(error);
+        }
+    }));
     app.get("/api/products", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield new sql.Request(pool)

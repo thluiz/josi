@@ -1,0 +1,198 @@
+<div class="row" *ngIf="showHeader"
+    style="border-bottom: 1px solid black;" >
+    <div class="col-10">        
+        <h6 style="font-weight:bold;margin-bottom:0"> <i class="fas fa-hand-point-down"></i> Indicações </h6>
+    </div>
+    <div class="col-2 text-right">
+        <button type="button" class="btn btn-silver btn-sm" 
+            style="margin:0;padding:2px;line-height:10px"
+            (click)="open(new_indication_modal);">
+            <i class="ft-plus"></i>                                        
+            <i class="fas fa-hand-point-down"></i>
+        </button>
+    </div>
+</div>
+
+<div class="row" *ngIf="!indications || indications.length == 0">
+    <div class="col-12 text-center">
+        Nenhuma indicação encontrada
+    </div>    
+</div>
+<div class="row" *ngFor="let item of indications">
+    <div class="col-10" style="color:black">
+        <a [routerLink]="['/person', item.person2_id]">
+            {{ item.indicated_name }}
+        </a>           
+    </div>
+    <div class="col-2 text-right">
+        <button type="button" class="btn btn-silver btn-sm" 
+            style="margin:0;padding:2px;line-height:10px"			                                        
+            *ngIf="!item.remove_contact"
+            (click)="item.remove_contact = true">
+            <i class="ft-trash-2"></i>                                        
+        </button>                                    
+        <button type="button" class="btn btn-danger btn-sm" 
+            *ngIf="item.remove_indication"
+            style="margin:0;padding:2px;line-height:10px"			                                        
+            (click)="remove_indication(item)">
+            <i class="ft-trash-2"></i>                                        
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" 
+            *ngIf="item.remove_indication"
+            style="margin:0;padding:2px;line-height:10px"			                                        
+            (click)="ct.remove_contact = false">
+            <i class="icon-action-undo"></i>                                        
+        </button>                                    
+    </div>
+</div>
+<div class="row" *ngIf="needed_indications > 0">
+    <div class="col-12 text-center" *ngIf="needed_indications > 1">        
+        É preciso fazer mais {{ needed_indications }} indicações
+    </div>
+    <div class="col-12 text-center" *ngIf="needed_indications == 1">        
+        Falta apenas uma indicação
+    </div>
+</div>
+
+<ng-template #new_indication_modal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h5 class="modal-title" style="font-weight: bold">
+            Indicar pessoa
+        </h5>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">	        
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="new_indication_name">Nome</label>
+                    <input class="form-control text-center" style="width:100%" 
+                        placeholder="Nome da pessoa a indicar"
+                        name="new_indication_name" 
+                        (ngModelChange)="validate_new_indication()"
+                        (keyup)="validate_new_indication()"
+                        (keypress)="validate_new_indication()"
+                        (keydown)="validate_new_indication()"
+                        [(ngModel)]="new_indication.name" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <div class="form-group">
+                        <label for="contact_type1">Contato Principal</label>
+                        <select id="contact_type1" name="contact_type1" 
+                            [(ngModel)]="new_indication.contact_type1" 
+                            (ngModelChange) ="validate_new_indication()"
+                            class="form-control">						
+                            <option *ngFor="let c of contact_types" [value]="c.id">{{c.description}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>            
+            <div class="col-12 col-md-8">
+                <div class="form-group">
+                    <div class="form-group">     
+                        <label for="new_indication_contact1">&#160;</label>                       
+                        <input class="form-control text-center" style="width:100%" 
+                            placeholder=""
+                            name="new_indication_contact1" 
+                            (ngModelChange)="validate_new_indication()"
+                            (keyup)="validate_new_indication()"
+                            (keypress)="validate_new_indication()"
+                            (keydown)="validate_new_indication()"
+                            [(ngModel)]="new_indication.contact1" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <div class="form-group">
+                        <label for="contact_type2">Contato</label>
+                        <select id="contact_type2" name="contact_type2" 
+                            [(ngModel)]="new_indication.contact_type2" 
+                            (ngModelChange) ="validate_new_indication()"
+                            class="form-control">						
+                            <option *ngFor="let c of contact_types" [value]="c.id">{{c.description}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>            
+            <div class="col-12 col-md-8">
+                <div class="form-group">
+                    <div class="form-group">     
+                        <label for="new_indication_contact2">&#160;</label>                       
+                        <input class="form-control text-center" style="width:100%" 
+                            placeholder=""
+                            name="new_indication_contact2" 
+                            (ngModelChange)="validate_new_indication()"
+                            (keyup)="validate_new_indication()"
+                            (keypress)="validate_new_indication()"
+                            (keydown)="validate_new_indication()"
+                            [(ngModel)]="new_indication.contact2" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    <div class="form-group">
+                        <label for="contact_type3">Contato</label>
+                        <select id="contact_type3" name="contact_type3" 
+                            [(ngModel)]="new_indication.contact_type3" 
+                            (ngModelChange) ="validate_new_indication()"
+                            class="form-control">						
+                            <option *ngFor="let c of contact_types" [value]="c.id">{{c.description}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>            
+            <div class="col-12 col-md-8">
+                <div class="form-group">
+                    <div class="form-group">     
+                        <label for="new_indication_contact3">&#160;</label>                       
+                        <input class="form-control text-center" style="width:100%" 
+                            placeholder=""
+                            name="new_indication_contact3" 
+                            (ngModelChange)="validate_new_indication()"
+                            (keyup)="validate_new_indication()"
+                            (keypress)="validate_new_indication()"
+                            (keydown)="validate_new_indication()"
+                            [(ngModel)]="new_indication.contact3" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="!new_indication.valid">
+            <div class="col-12 text-danger">
+                <ul>
+                    <li style="line-height:1.2em" *ngFor="let error of errors">{{ error }}</li>
+                </ul>                    
+            </div>
+        </div>   
+    </div>	  
+    <div class="modal-footer" *ngIf="saving">        
+        <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+    </div>
+    <div class="modal-footer" *ngIf="!saving">
+        <div class="form-actions text-right">
+            <button type="button" class="btn btn-success" 
+                (click)="save_new_indication();"
+                *ngIf="new_indication.valid">
+                <i class="icon-check"></i>
+                Salvar
+            </button>
+            <button type="button" class="btn btn-silver"                 
+                (click)="d('cancel')">
+                <i class="icon-action-undo"></i>
+                Cancelar
+            </button>	
+        </div>
+    </div>
+</ng-template>

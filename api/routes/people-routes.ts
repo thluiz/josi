@@ -339,6 +339,33 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     /**
+     * INDICATIONS
+     */
+
+    app.get("/api/person_indications/person/:id", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+        try {                                              
+            const result = await new sql.Request(pool)   
+            .input("person", sql.Int, req.params.id)                   
+            .query(`select * from vwPersonRelationships 
+                    where relationship_type = 10 and person_id = @person 
+                    for json path`);                
+            
+            let response = result.recordset[0];
+            res.send(response);   
+                     
+        } catch(error)  {   
+            if(error.code = 'EJSON') {
+                res.send([]);       
+            } else {
+                console.log(error);
+                res.status(500).json(error);
+            }
+        }
+    });
+
+    /**
      * SCHEDULING
      */
 

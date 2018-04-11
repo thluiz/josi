@@ -36,6 +36,7 @@ import { PersonStatusLineModule } from 'app/shared/components/person-status-line
 import { PersonContactListModule } from 'app/pages/people/shared/components/person-contact-list/person-contact-list.module';
 import { FloatActionCenterModule } from 'app/shared/components/float-action-center/float-action-center.module';
 import { VoucherPeoplePageComponent } from './voucher/voucher-people-page.component';
+import { PersonIndicationListModule } from 'app/shared/components/person-indication-list/person-indication-list.module';
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import { VoucherPeoplePageComponent } from './voucher/voucher-people-page.compon
         PeopleHeaderModule,
         ChangeMembersViewModule,
         ContactListitemModule,
-        FloatActionCenterModule           
+        FloatActionCenterModule,
+        PersonIndicationListModule           
     ],
     declarations: [       
         MembersPanelPageComponent,

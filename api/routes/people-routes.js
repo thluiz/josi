@@ -217,6 +217,29 @@ function configure_routes(app, connection_pool) {
         }
     }));
     /**
+     * INDICATIONS
+     */
+    app.get("/api/person_indications/person/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = yield new sql.Request(pool)
+                .input("person", sql.Int, req.params.id)
+                .query(`select * from vwPersonRelationships 
+                    where relationship_type = 10 and person_id = @person 
+                    for json path`);
+            let response = result.recordset[0];
+            res.send(response);
+        }
+        catch (error) {
+            if (error.code = 'EJSON') {
+                res.send([]);
+            }
+            else {
+                console.log(error);
+                res.status(500).json(error);
+            }
+        }
+    }));
+    /**
      * SCHEDULING
      */
     app.post("/api/person_schedule/delete", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {

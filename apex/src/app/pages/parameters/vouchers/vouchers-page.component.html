@@ -83,17 +83,17 @@
         </div> 
         <div class="row">
             <div class="col-12">
-                <label for="item_additional_question">Pergunta Adicional</label>                                                									
+                <label for="item_header_title">Título da página do Voucher</label>                                                									
                 <div class="input-group">							
                     <input class="form-control"
-                    [(ngModel)]="current_item.additional_question"                        
-                    autocomplete="off" placeholder=""
-                    maxlength="200"
-                    id="item_additional_question"                        
-                    name="item_additional_question"/>                                    
+                        [(ngModel)]="current_item.header_title"                        
+                        autocomplete="off" placeholder="Agende sua semana de aula grátis"
+                        maxlength="35"
+                        id="item_header_title"                        
+                        name="item_header_title"/>                                  
                 </div>
             </div>                       
-        </div> 
+        </div>
         <div class="row">
             <div class="col-12">
                 <label for="item_header_text">Texto do topo</label>                                                									
@@ -106,7 +106,33 @@
                     rows="4"></textarea>                                   
                 </div>
             </div>                       
-        </div>    
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <label for="item_additional_question">Pergunta Adicional</label>                                                									
+                <div class="input-group">							
+                    <input class="form-control"
+                    [(ngModel)]="current_item.additional_question"                        
+                    autocomplete="off" placeholder=""
+                    maxlength="200"
+                    id="item_additional_question"                        
+                    name="item_additional_question"/>                                    
+                </div>
+            </div>                       
+        </div>     
+        <div class="row">
+            <div class="col-12">
+                <label for="item_confirm_button_text">Texto do botão de confirmação</label>                                                									
+                <div class="input-group">							
+                    <input class="form-control"
+                        [(ngModel)]="current_item.confirm_button_text"                        
+                        autocomplete="off" placeholder="Iniciar minha semana de aulas grátis"
+                        maxlength="40"
+                        id="item_confirm_button_text"                        
+                        name="item_confirm_button_text"/>                                  
+                </div>
+            </div>                       
+        </div>
         <div class="row">
             <div class="col-12">
                 <label for="item_final_text">Texto de Finalização</label>                                                									
@@ -119,7 +145,7 @@
                     rows="4"></textarea>                                   
                 </div>
             </div>                       
-        </div>            
+        </div>             
     </div>
     <div class="modal-footer" *ngIf="saving">        
         <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...

@@ -20,6 +20,11 @@ export interface IContact {
   details :string;
 }
 
+export interface IIndication {
+  person_id: number;
+  person2_id: number;      
+}
+
 export enum PersonActions {
   ADD,
   ADD_ADDRESS,
@@ -46,6 +51,10 @@ export class PersonService {
 
   private person_actions = new Subject<IPersonEvent>();
   personActions$  = this.person_actions.asObservable();
+
+  private indication_actions = new Subject<IIndication>();
+  indicationChanges$  = this.indication_actions.asObservable();
+  
 
   constructor(private http:HttpClient) { }  
   
@@ -87,6 +96,11 @@ export class PersonService {
 
   getPersonContacts(person_id, only_principal = false) {
     return this.http.get(this.dataUrl + `/person_contact/person/${person_id}/${only_principal ? 1 : 0}`);    
+  }
+
+  
+  getPersonIndications(person_id) {
+    return this.http.get(this.dataUrl + `/person_indications/person/${person_id}`);    
   }
 
   getPendingCommunication(person_id) {

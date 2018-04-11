@@ -68,13 +68,17 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
             .input('additional_question', sql.VarChar(200), voucher.additional_question)
             .input('header_text', sql.VarChar(sql.MAX), voucher.header_text)
             .input('final_text', sql.VarChar(sql.MAX), voucher.final_text) 
+            .input('confirm_button_text', sql.VarChar(35), voucher.confirm_button_text) 
+            .input('header_title', sql.VarChar(40), voucher.header_title) 
             .query(`update voucher set
                         title = @title,
                         [url] = @url,
                         header_text = @header_text,
                         final_text = @final_text,
                         additional_question = @additional_question,
-                        initials = @initials
+                        initials = @initials,
+                        confirm_button_text = @confirm_button_text,
+                        header_title = @header_title
                     where id = @id`);    
         } else {
             const result = await new sql.Request(pool)                        
@@ -84,8 +88,10 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
             .input('additional_question', sql.VarChar(200), voucher.additional_question)
             .input('header_text', sql.VarChar(sql.MAX), voucher.header_text) 
             .input('final_text', sql.VarChar(sql.MAX), voucher.final_text)             
-            .query(`insert into voucher (title, [url], header_text, final_text, additional_question, initials)
-                    values (@title, @url, @header_text, @final_text, @additional_question, @initials)`); 
+            .query(`insert into voucher (title, [url], header_text, final_text, 
+                    additional_question, initials, confirm_button_text, header_title)
+                        values (@title, @url, @header_text, @final_text, @additional_question, 
+                                @initials, @confirm_button_text, @header_title)`); 
         }     
 
         jobs.update_voucher_site();
