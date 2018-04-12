@@ -28,20 +28,23 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
     contact2: "",
     contact_type3: 0,
     contact3: "",
-    valid: false
+    valid: false,
+    comment: "",
+    person_id: 0
   };
   contact_types: any[];
   errors :string[] = [];
-
+  
   private indication_changes_subscriber: Subscription;
 
   constructor(private modalService: NgbModal, 
-    private parameterService: ParameterService,
+    private parameterService: ParameterService,    
     private personService: PersonService) {   
 
   }
 
-  ngOnInit() {    
+  ngOnInit() {      
+    
     this.indication_changes_subscriber = this.personService.indicationChanges$
       .filter((data) => data != null && data.person_id == this.person.id)
       .subscribe((data) => {            
@@ -81,7 +84,9 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
       contact2: "",
       contact_type3: 0,
       contact3: "",
-      valid: false
+      valid: false,
+      comment: "",
+      person_id: this.person.id
     };  
 
     this.parameterService.getContactTypes().subscribe((data) => {  
@@ -95,8 +100,16 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
     });    
   } 
 
-  save_new_indication() {
+  save_new_indication(close_action) {
     this.saving = true;
+
+    this.personService.saveIndication(this.new_indication).subscribe((data) => {
+      this.saving = false;
+
+      if(close_action) {
+        close_action();
+      }
+    });
   } 
 
   remove_indication(indication) {

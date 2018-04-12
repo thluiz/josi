@@ -365,6 +365,35 @@ export function configure_routes(app: any, connection_pool: any) {
         }
     });
 
+    app.post("/api/person_indications", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+        try {                          
+            let indication = req.body.indication;
+
+            const result = await new sql.Request(pool)   
+            .input("person_id", sql.Int, indication.person_id)                   
+            .input("contact_type1", sql.Int, indication.contact_type1)
+            .input("contact_type2", sql.Int, indication.contact_type2)
+            .input("contact_type3", sql.Int, indication.contact_type3)
+            .input('comments', sql.VarChar(sql.MAX), indication.comment)
+            .input('name', sql.VarChar(250), indication.name)
+            .input('contact1', sql.VarChar(250), indication.contact1)            
+            .input('contact2', sql.VarChar(250), indication.contact2)
+            .input('contact3', sql.VarChar(250), indication.contact3)
+            .execute(`SaveNewIndication`);      
+                        
+            res.send({ success: true});                        
+        } catch(error)  {   
+            if(error.code = 'EJSON') {
+                res.send([]);       
+            } else {
+                console.log(error);
+                res.status(500).json(error);
+            }
+        }
+    });
+
     /**
      * SCHEDULING
      */

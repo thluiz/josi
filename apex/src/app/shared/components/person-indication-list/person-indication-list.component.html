@@ -20,7 +20,7 @@
 </div>
 <div class="row" *ngFor="let item of indications">
     <div class="col-10" style="color:black">
-        <a [routerLink]="['/person', item.person2_id]">
+        <a href="/people/person/{{ item.person2_id}}">
             {{ item.indicated_name }}
         </a>           
     </div>
@@ -68,7 +68,7 @@
             <div class="col-12">
                 <div class="form-group">
                     <label for="new_indication_name">Nome</label>
-                    <input class="form-control text-center" style="width:100%" 
+                    <input class="form-control" style="width:100%" 
                         placeholder="Nome da pessoa a indicar"
                         name="new_indication_name" 
                         (ngModelChange)="validate_new_indication()"
@@ -169,6 +169,17 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12">                
+                <div class="form-group">
+                    <label for="new_indication_comment">Comentários</label>
+                    <textarea class="form-control" 
+                    name="new_indication_comment" id="new_indication_comment"                    
+                    [(ngModel)]="new_indication.comment"		
+                    rows="3"></textarea>
+                </div>
+            </div>
+        </div>
         <div class="row" *ngIf="!new_indication.valid">
             <div class="col-12 text-danger">
                 <ul>
@@ -183,7 +194,7 @@
     <div class="modal-footer" *ngIf="!saving">
         <div class="form-actions text-right">
             <button type="button" class="btn btn-success" 
-                (click)="save_new_indication();"
+                (click)="save_new_indication(d('indication created!'));"
                 *ngIf="new_indication.valid">
                 <i class="icon-check"></i>
                 Salvar

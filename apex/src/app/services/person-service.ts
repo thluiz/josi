@@ -119,6 +119,12 @@ export class PersonService {
     return this.http.get(this.dataUrl + `/person/missing_data/${person_id}`);    
   }
 
+  saveIndication(indication) {
+    return this.http.post(this.dataUrl + `/person_indications`, { indication }).do((d) => {
+      this.indication_actions.next(indication);
+    });    
+  }
+
   savePersonContact(person_id, contact_type, contact, details, principal) {
     const contact_data = {
       person_id, 

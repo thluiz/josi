@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { PersonService } from './../../../services/person-service';
 import { ParameterService } from './../../../services/parameter-service';
 
-import { OnInit, OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
+import { OnInit, OnDestroy, AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 
 import { FormControl, FormsModule, ReactiveFormsModule,
   FormGroup, Validators, NgForm } from '@angular/forms';
@@ -20,6 +20,7 @@ NgbDatepickerConfig
 } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { Subscription } from 'rxjs/Subscription';
+import { PersonIndicationListComponent } from '../../../shared/components/person-indication-list/person-indication-list.component';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -29,7 +30,15 @@ import { Subscription } from 'rxjs/Subscription';
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
-export class PersonPageComponent implements OnInit, OnDestroy  {
+export class PersonPageComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChild(PersonIndicationListComponent) personIndicationListComponent : PersonIndicationListComponent;
+
+  ngAfterViewInit(): void {
+    if(this.personIndicationListComponent)
+      this.personIndicationListComponent.load_indications();
+  }
+
   id: number;
   person: any;   
   current_roles; 
@@ -263,7 +272,7 @@ export class PersonPageComponent implements OnInit, OnDestroy  {
    * COMMENTS
    */
   load_comments_about_person() {
-    this.personService.getPersonContacts(this.id).subscribe((comments) => {
+    this.personService.getCommentsAboutPerson(this.id).subscribe((comments) => {
       this.comments = comments as any;  
     });
   }
