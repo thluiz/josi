@@ -52,6 +52,8 @@ export class VouchersPageComponent implements OnInit {
   }
 
   private open_modal(content: any) {
+    this.saving = false;
+    
     this.ngbModalService.open(content).result.then((result) => {
     }, (reason) => {
       this.current_item = null;

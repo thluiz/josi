@@ -83,6 +83,8 @@ function configure_routes(app, connection_pool, appInsights) {
                 .input('additional_question', sql.VarChar(200), voucher.additional_question)
                 .input('header_text', sql.VarChar(sql.MAX), voucher.header_text)
                 .input('final_text', sql.VarChar(sql.MAX), voucher.final_text)
+                .input('confirm_button_text', sql.VarChar(35), voucher.confirm_button_text)
+                .input('header_title', sql.VarChar(40), voucher.header_title)
                 .query(`insert into voucher (title, [url], header_text, final_text, 
                     additional_question, initials, confirm_button_text, header_title)
                         values (@title, @url, @header_text, @final_text, @additional_question, 
