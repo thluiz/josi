@@ -89,7 +89,8 @@ export class NewCardModalComponent implements OnInit {
     this.reset_card({} as Card);        
   }  
 
-  open(initial_state :any = {}) {       
+  open(initial_state :any = {}) { 
+    this.saving = false;      
     this.type = initial_state.card_type || CardType.Task;    
 
     Observable.zip(

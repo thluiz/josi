@@ -67,8 +67,13 @@ export class CardService {
 
   constructor(private http: HttpClient, private utilsService: UtilsService) { }  
 
-  saveCard(card : Card) {
-    return this.http.post(this.dataUrl + `/cards`, { card: card })
+  saveCard(card : Card) {    
+    let clone = JSON.parse(JSON.stringify(card));    
+    clone.parent.childrens = null;    
+    clone.parent.steps = null
+    clone.parent.steps_description = null;
+
+    return this.http.post(this.dataUrl + `/cards`, { card: clone })
     .do((data : Card) => this.card_changes.next(new CardAddedAction(data[0])));
   }
 
