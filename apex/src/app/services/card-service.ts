@@ -191,7 +191,15 @@ export class CardService {
   }
 
   saveComment(card: Card, comment: string, commentary_type) {
-    return this.http.post(this.dataUrl + `/cards_comments`, { card, comment, commentary_type })
+    let clone = JSON.parse(JSON.stringify(card));    
+    clone.parent.childrens = null;    
+    clone.parent.steps = null
+    clone.parent.steps_description = null;
+    clone.childrens = null;  
+    clone.steps = null; 
+    clone.steps_description = null;
+
+    return this.http.post(this.dataUrl + `/cards_comments`, { card: clone, comment, commentary_type })
     .do((data : CardCommentary[]) => this.card_changes.next(new CardCommentAddedAction({card: card, commentaries: data})));
   }
 

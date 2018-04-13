@@ -1,3 +1,4 @@
+import { PersonIndicationListModule } from 'app/shared/components/person-indication-list/person-indication-list.module';
 import { NewContactFormModule } from 'app/shared/components/new-contact-form/new-contact-form.module';
 import { ContactListitemModule } from 'app/shared/components/contact-listitem/contact-listitem.module';
 import { RouterModule } from '@angular/router';
@@ -18,7 +19,8 @@ import { NgbDatepickerModule, NgbTimepickerModule, NgbModule } from '@ng-bootstr
         NgbTimepickerModule.forRoot(),
         NgbModule,
         ContactListitemModule,
-        NewContactFormModule
+        NewContactFormModule,
+        PersonIndicationListModule
     ],
     declarations: [       
         PersonDataTreatmentModalComponent

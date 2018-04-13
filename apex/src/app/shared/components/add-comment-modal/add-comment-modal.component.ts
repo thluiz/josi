@@ -25,6 +25,7 @@ export class AddCommentModalComponent implements OnInit {
   type;  
   types = CommentType;
   commentary_type = 1;
+  saving = false;
 
   @ViewChild('add_comment_modal') add_comment_modal: ElementRef;
   
@@ -69,6 +70,7 @@ export class AddCommentModalComponent implements OnInit {
   }
 
   private open_modal(content, on_close_action = false) {
+    this.saving = false;
     this.ngbModalService.open(content).result.then((result) => {                                  
       
     }, (reason) => {        
@@ -77,11 +79,13 @@ export class AddCommentModalComponent implements OnInit {
   }   
 
   save_person_comment(close_action) {
+    this.saving = true;
     this.personService.saveCommentAboutPerson(this.person, this.comment).subscribe(
     (data) => {
       this.comment = "";
       this.person = null;
-      
+      this.saving = false;
+
       if(close_action) {
         close_action();
       }
@@ -89,11 +93,13 @@ export class AddCommentModalComponent implements OnInit {
   }
 
   save_card_comment(close_action) {
+    this.saving = true;
     this.cardService.saveComment(this.card, this.comment, this.commentary_type).subscribe(
     (data) => {
       this.comment = "";
       this.person = null;
-      
+      this.saving = false;
+
       if(close_action) {
         close_action();
       }
@@ -101,10 +107,12 @@ export class AddCommentModalComponent implements OnInit {
   }
 
   save_incident_comment(close_action) {
+    this.saving = true;
     this.incidentService.saveComment(this.incident, this.comment).subscribe(
     (data) => {
       this.comment = "";
       this.incident = null;
+      this.saving = false;
       
       console.log(close_action);
 
