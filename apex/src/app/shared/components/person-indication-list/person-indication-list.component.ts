@@ -1,6 +1,7 @@
-
+import { CardService } from 'app/services/card-service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 
+import { SecurityService } from 'app/services/security-service';
 import { ParameterService, Configurations } from 'app/services/parameter-service';
 import { PersonService } from 'app/services/person-service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -30,15 +31,22 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
     contact3: "",
     valid: false,
     comment: "",
-    person_id: 0
+    person_id: 0,
+    branch_id: 0,
+    operator_id: 0,
+    indication_contact_type: 0
   };
   contact_types: any[];
+  branches: any[];
+  operators: any[];
   errors :string[] = [];
   
   private indication_changes_subscriber: Subscription;
 
   constructor(private modalService: NgbModal, 
-    private parameterService: ParameterService,    
+    private parameterService: ParameterService, 
+    private securityService: SecurityService,  
+    private cardService: CardService,
     private personService: PersonService) {   
 
   }
@@ -86,18 +94,30 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
       contact3: "",
       valid: false,
       comment: "",
-      person_id: this.person.id
+      person_id: this.person.id,
+      branch_id: this.person.branch_id,
+      operator_id: 0,
+      indication_contact_type: 0
     };  
 
-    this.parameterService.getContactTypes().subscribe((data) => {  
-      this.contact_types = data;
+    Observable.zip(
+      this.securityService.getCurrentUserData(),
+      this.parameterService.getContactTypes(),
+      this.parameterService.getActiveBranches(),
+      this.cardService.getOperators(),
+      (user, contact_types, branches, operators) => {        
+        this.new_indication.operator_id = user.person_id;        
+        this.contact_types = contact_types;
+        this.branches = branches;
+        this.operators = operators; 
 
-      this.modalService.open(content).result.then((result) => {                                  
-
-      }, (reason) => {
-        console.log(reason);
-      });                
-    });    
+        this.modalService.open(content).result.then((result) => {                                  
+  
+        }, (reason) => {
+          console.log(reason);
+        }); 
+      }  
+    ).subscribe(); 
   } 
 
   save_new_indication(close_action) {
@@ -124,6 +144,14 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
 
     if(!this.new_indication.name || this.new_indication.name.length < 3) {
       this.errors.push("Informe o nome da pessoa");
+    }
+
+    if(this.new_indication.branch_id <= 0) {
+      this.errors.push("Informe o núcleo para indicação");
+    }
+
+    if(this.new_indication.operator_id <= 0) {
+      this.errors.push("Informe o operador responsável para indicação");
     }
 
     if((!this.new_indication.contact1 || this.new_indication.contact1.length < 3)

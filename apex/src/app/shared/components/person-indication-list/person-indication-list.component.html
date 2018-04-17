@@ -24,7 +24,7 @@
             {{ item.indicated_name }}
         </a>           
     </div>
-    <div class="col-2 text-right">
+    <div class="col-2 text-right" *ngIf="false">
         <button type="button" class="btn btn-silver btn-sm" 
             style="margin:0;padding:2px;line-height:10px"			                                        
             *ngIf="!item.remove_contact"
@@ -63,7 +63,18 @@
         <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="modal-body">	        
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="new_indication_branch">Núcleo</label>
+            <select id="new_indication_branch" 
+                [(ngModel)]="new_indication.branch_id" 
+                (ngModelChange)="validate_new_indication()"																	
+                class="form-control"								
+                >			
+                <option></option>			
+                <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
+            </select>								
+        </div>	        
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
@@ -78,6 +89,27 @@
                         [(ngModel)]="new_indication.name" />
                 </div>
             </div>
+        </div>
+        <div class="form-group">
+            <label for="new_indication_operator">Operador Responsável</label>
+            <select id="new_indication_operator" 
+                [(ngModel)]="new_indication.operator_id" 
+                (ngModelChange)="validate_new_indication()"																	
+                class="form-control"								
+                >			
+                <option></option>			
+                <option *ngFor="let o of operators" [value]="o.id">{{o.name}}</option>
+            </select>								
+        </div>
+        <div class="form-group">            
+            <select id="new_indication_operator" 
+                [(ngModel)]="new_indication.indication_contact_type" 
+                (ngModelChange)="validate_new_indication()"																	
+                class="form-control"								
+                >			
+                <option value="0">O Núcleo fará o contato</option>			                
+                <option value="1">O Membro fará o contato</option>
+            </select>								
         </div>
         <div class="row">
             <div class="col-12 col-md-4">

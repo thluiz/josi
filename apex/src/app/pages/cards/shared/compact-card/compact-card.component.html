@@ -36,7 +36,7 @@
 		</div>
 		<div class="col-12">
 			<div class="row">
-				<div class="col-9" style="vertical-align: bottom">										
+				<div class="col-12" style="vertical-align: bottom">										
 					<div *ngIf="!card.is_task">
 						<ng-template ngFor let-sd [ngForOf]="card.steps_description" let-k=index let-m=first><span *ngIf="k == 0">&nbsp;</span><span *ngIf="k != 0">/</span><span title="{{ sd.name }}">{{ sd.childrens }}</span></ng-template>														
 					</div>
@@ -50,10 +50,19 @@
 						{{ card.comment_count }}						
 					</div>												
 				</div>
-				<div class="col-3">
+				
+			</div>
+			<div class="row">
+				<div class="col-12 text-right">
 					<img src="https://myvtmiim.blob.core.windows.net/avatars/{{ l.avatar_img }}" 
 						title="{{ l.name }}"
-						*ngFor="let l of card.leaders" style="width:100%" />
+						style="float:right" style="width:40px" 
+						*ngFor="let l of card.leaders" />
+
+					<img src="https://myvtmiim.blob.core.windows.net/avatars/{{ s.avatar_img }}" 
+						title="Suporte - {{ s.name }}"
+						style="float:right" style="width:40px" 
+						*ngFor="let s of card.supporters"/>
 				</div>
 			</div>			
 		</div>		

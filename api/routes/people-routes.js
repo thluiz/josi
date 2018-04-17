@@ -252,6 +252,9 @@ function configure_routes(app, connection_pool) {
                 .input('contact1', sql.VarChar(250), indication.contact1)
                 .input('contact2', sql.VarChar(250), indication.contact2)
                 .input('contact3', sql.VarChar(250), indication.contact3)
+                .input("indication_contact_type", sql.Int, indication.indication_contact_type)
+                .input("branch_id", sql.Int, indication.branch_id)
+                .input("operator_id", sql.Int, indication.operator_id)
                 .execute(`SaveNewIndication`);
             res.send({ success: true });
         }
