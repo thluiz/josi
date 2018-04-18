@@ -38,6 +38,7 @@ import { FloatActionCenterModule } from 'app/shared/components/float-action-cent
 import { VoucherPeoplePageComponent } from './voucher/voucher-people-page.component';
 import { PersonIndicationListModule } from 'app/shared/components/person-indication-list/person-indication-list.module';
 import { PersonPartnershipListModule } from 'app/pages/people/shared/components/person-partnership-list/person-partnership-list.module';
+import { PersonExternalUnitListModule } from 'app/pages/people/shared/components/person-external-unit-list/person-external-unit-list.module';
 
 
 @NgModule({
@@ -60,7 +61,8 @@ import { PersonPartnershipListModule } from 'app/pages/people/shared/components/
         ContactListitemModule,
         FloatActionCenterModule,
         PersonIndicationListModule,
-        PersonPartnershipListModule           
+        PersonPartnershipListModule,
+        PersonExternalUnitListModule         
     ],
     declarations: [       
         MembersPanelPageComponent,
