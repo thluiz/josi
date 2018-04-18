@@ -339,6 +339,113 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     /**
+     * PARTNERSHIP INDICATIONS
+     */
+
+    app.get("/api/person_partnerships/person/:id", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+        try {                                              
+            const result = await new sql.Request(pool)   
+            .input("person", sql.Int, req.params.id)                   
+            .query(`select * from person_partnership 
+                    where person_id = @person 
+                    for json path`);                
+            
+            let response = result.recordset[0];
+            res.send(response);   
+                     
+        } catch(error)  {   
+            if(error.code = 'EJSON') {
+                res.send([]);       
+            } else {
+                console.log(error);
+                res.status(500).json(error);
+            }
+        }
+    });
+
+    app.post("/api/person_partnerships", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+        try {                          
+            let partnership = req.body.partnership;
+            console.log(partnership)
+
+            const result = await new sql.Request(pool)   
+            .input("person_id", sql.Int, partnership.person_id)                               
+            .input('comments', sql.VarChar(sql.MAX), partnership.comment)
+            .input('name', sql.VarChar(250), partnership.name)            
+            .input("branch_id", sql.Int, partnership.branch_id)
+            .input("operator_id", sql.Int, partnership.operator_id)
+            .input("indication_contact_type", sql.Int, partnership.indication_contact_type)            
+            .execute(`SaveNewPartnership`);      
+                        
+            res.send({ success: true});                        
+        } catch(error)  {   
+            if(error.code = 'EJSON') {
+                res.send([]);       
+            } else {
+                console.log(error);
+                res.status(500).json(error);
+            }
+        }
+    });
+
+    /**
+     * EXTERNAL UNIT INDICATIONS
+     */
+
+    app.get("/api/person_external_units/person/:id", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+        try {                                              
+            const result = await new sql.Request(pool)   
+            .input("person", sql.Int, req.params.id)                   
+            .query(`select * from person_external_unit 
+                    where person_id = @person 
+                    for json path`);                
+            
+            let response = result.recordset[0];
+            res.send(response);   
+                     
+        } catch(error)  {   
+            if(error.code = 'EJSON') {
+                res.send([]);       
+            } else {
+                console.log(error);
+                res.status(500).json(error);
+            }
+        }
+    });
+
+    app.post("/api/person_external_units", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {  
+        try {                          
+            let external_unit = req.body.external_unit;
+
+            const result = await new sql.Request(pool)   
+            .input("person_id", sql.Int, external_unit.person_id)                               
+            .input('comments', sql.VarChar(sql.MAX), external_unit.comment)
+            .input('name', sql.VarChar(250), external_unit.name)            
+            .input("branch_id", sql.Int, external_unit.branch_id)
+            .input("operator_id", sql.Int, external_unit.operator_id)
+            .input("indication_contact_type", sql.Int, external_unit.indication_contact_type)            
+            .execute(`SaveNewExternalUnit`);      
+                        
+            res.send({ success: true});                        
+        } catch(error)  {   
+            if(error.code = 'EJSON') {
+                res.send([]);       
+            } else {
+                console.log(error);
+                res.status(500).json(error);
+            }
+        }
+    });
+
+    /**
      * INDICATIONS
      */
 

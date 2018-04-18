@@ -55,6 +55,11 @@ export class PersonService {
   private indication_actions = new Subject<IIndication>();
   indicationChanges$  = this.indication_actions.asObservable();
   
+  private partnership_actions = new Subject<IIndication>();
+  partnershipChanges$  = this.partnership_actions.asObservable();
+
+  private external_unit_actions = new Subject<IIndication>();
+  externalUnitChanges$  = this.external_unit_actions.asObservable();
 
   constructor(private http:HttpClient) { }  
   
@@ -99,6 +104,14 @@ export class PersonService {
   }
 
   
+  getPersonPartnerships(person_id) {
+    return this.http.get(this.dataUrl + `/person_partnerships/person/${person_id}`);    
+  }
+
+  getPersonExternalUnits(person_id) {
+    return this.http.get(this.dataUrl + `/person_external_units/person/${person_id}`);    
+  }
+    
   getPersonIndications(person_id) {
     return this.http.get(this.dataUrl + `/person_indications/person/${person_id}`);    
   }
@@ -122,6 +135,18 @@ export class PersonService {
   saveIndication(indication) {
     return this.http.post(this.dataUrl + `/person_indications`, { indication }).do((d) => {
       this.indication_actions.next(indication);
+    });    
+  }
+
+  savePartnership(partnership) {
+    return this.http.post(this.dataUrl + `/person_partnerships`, { partnership }).do((d) => {
+      this.partnership_actions.next(partnership);
+    });    
+  }
+
+  saveExternalUnit(external_unit) {
+    return this.http.post(this.dataUrl + `/person_external_units`, { external_unit }).do((d) => {
+      this.external_unit_actions.next(external_unit);
     });    
   }
 

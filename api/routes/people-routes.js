@@ -217,6 +217,99 @@ function configure_routes(app, connection_pool) {
         }
     }));
     /**
+     * PARTNERSHIP INDICATIONS
+     */
+    app.get("/api/person_partnerships/person/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = yield new sql.Request(pool)
+                .input("person", sql.Int, req.params.id)
+                .query(`select * from person_partnership 
+                    where person_id = @person 
+                    for json path`);
+            let response = result.recordset[0];
+            res.send(response);
+        }
+        catch (error) {
+            if (error.code = 'EJSON') {
+                res.send([]);
+            }
+            else {
+                console.log(error);
+                res.status(500).json(error);
+            }
+        }
+    }));
+    app.post("/api/person_partnerships", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            let partnership = req.body.partnership;
+            console.log(partnership);
+            const result = yield new sql.Request(pool)
+                .input("person_id", sql.Int, partnership.person_id)
+                .input('comments', sql.VarChar(sql.MAX), partnership.comment)
+                .input('name', sql.VarChar(250), partnership.name)
+                .input("branch_id", sql.Int, partnership.branch_id)
+                .input("operator_id", sql.Int, partnership.operator_id)
+                .input("indication_contact_type", sql.Int, partnership.indication_contact_type)
+                .execute(`SaveNewPartnership`);
+            res.send({ success: true });
+        }
+        catch (error) {
+            if (error.code = 'EJSON') {
+                res.send([]);
+            }
+            else {
+                console.log(error);
+                res.status(500).json(error);
+            }
+        }
+    }));
+    /**
+     * EXTERNAL UNIT INDICATIONS
+     */
+    app.get("/api/person_external_units/person/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = yield new sql.Request(pool)
+                .input("person", sql.Int, req.params.id)
+                .query(`select * from person_external_unit 
+                    where person_id = @person 
+                    for json path`);
+            let response = result.recordset[0];
+            res.send(response);
+        }
+        catch (error) {
+            if (error.code = 'EJSON') {
+                res.send([]);
+            }
+            else {
+                console.log(error);
+                res.status(500).json(error);
+            }
+        }
+    }));
+    app.post("/api/person_external_units", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            let external_unit = req.body.external_unit;
+            const result = yield new sql.Request(pool)
+                .input("person_id", sql.Int, external_unit.person_id)
+                .input('comments', sql.VarChar(sql.MAX), external_unit.comment)
+                .input('name', sql.VarChar(250), external_unit.name)
+                .input("branch_id", sql.Int, external_unit.branch_id)
+                .input("operator_id", sql.Int, external_unit.operator_id)
+                .input("indication_contact_type", sql.Int, external_unit.indication_contact_type)
+                .execute(`SaveNewExternalUnit`);
+            res.send({ success: true });
+        }
+        catch (error) {
+            if (error.code = 'EJSON') {
+                res.send([]);
+            }
+            else {
+                console.log(error);
+                res.status(500).json(error);
+            }
+        }
+    }));
+    /**
      * INDICATIONS
      */
     app.get("/api/person_indications/person/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
