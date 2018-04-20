@@ -21,6 +21,13 @@ export class BranchDetailPageComponent implements OnInit, OnDestroy {
   acquirers: any[];
   incident_types: any[];
 
+  current_product_association : any;
+  categories: any[];
+  all_products: any[];
+  currencies: any[];
+  products_from_category: any[];
+  current_product: any;
+
   saving = false; 
 
   constructor(private parameterService: ParameterService, 
@@ -102,6 +109,18 @@ export class BranchDetailPageComponent implements OnInit, OnDestroy {
     return map;
   }
 
+  save_branch_product(close_action) {
+    this.saving = true;
+    this.parameterService.saveBranchProduct(this.current.id, this.current_product)           
+    .subscribe((data) => {      
+      if(close_action) {
+        close_action();
+      }
+      this.saving = false;      
+      this.load_data();      
+    });
+  }
+
   save_map(map, close_action) {
     console.log(map);
     this.parameterService.saveBranchMap(map).subscribe((data) => {
@@ -160,6 +179,90 @@ export class BranchDetailPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  open_edit_product(product, content) {
+    this.saving = false;    
+    this.current_product = product;
+    this.current_product.name = product.product;    
+
+    Observable.zip(
+      this.parameterService.getProductCategories(),      
+      this.parameterService.getCurrencies(),
+      (categories, currencies) => {
+        this.categories = categories;                
+        this.currencies = currencies;
+
+        this.open_modal(content);
+      }
+    ).subscribe(); 
+  }
+
+  open_add_product(content) {
+    this.saving = false;    
+    this.current_product = {};
+
+    Observable.zip(
+      this.parameterService.getProductCategories(),      
+      this.parameterService.getCurrencies(),
+      (categories, currencies) => {
+        this.categories = categories;                
+        this.currencies = currencies;
+
+        this.open_modal(content);
+      }
+    ).subscribe();    
+  }
+  
+  open_associate_product(content) {
+    this.current_product_association = { valid: false};
+    this.saving = false;
+
+    Observable.zip(
+      this.parameterService.getProductCategories(),
+      this.parameterService.getProducts(),
+      (categories, products) => {
+        this.categories = categories;        
+        this.all_products = products;
+
+        this.open_modal(content);
+      }
+    ).subscribe();    
+  }
+
+  get_products_from_category() {
+    if(this.current_product_association.product_id > 0) {
+      this.current_product_association.product_id = 0;
+      this.current_product_association.valid = false;
+    }
+
+    let products = this.all_products.filter(p => p.category_id == this.current_product_association.category_id);    
+
+    if(this.current.associated_products != null && this.current.associated_products.length > 0) {
+      //TODO: Filter already defined products
+      // products = products.filter(f => this.current.associated_products.find(p2 => p2.id != f.id) == null);
+    }
+        
+    this.products_from_category = products
+  }
+
+  change_base_product_for_association() {
+    let current_product = this.all_products.find(p => p.id == this.current_product_association.product_id);
+    this.current_product_association.base_value = current_product.base_value;
+    this.current_product_association.valid = true;
+  }
+
+  associate_branch_product(close_action) {
+    this.parameterService.associateBranchProduct({
+        branch_id: this.id, 
+        product_id: this.current_product_association.product_id, 
+        base_value: this.current_product_association.base_value
+    }).subscribe((data) => {
+      this.load_data();
+      if(close_action) {
+        close_action();
+      }
+    });
+  }
+
   private open_modal(content: any) {
     this.ngbModalService.open(content).result.then((result) => {
     }, (reason) => {      
@@ -172,9 +275,13 @@ export class BranchDetailPageComponent implements OnInit, OnDestroy {
       this.parameterService.getBranch(this.id),
       this.parameterService.getBranchMap(this.id),  
       this.parameterService.getIncidentTypes(),
-      (branch_data, map, incident_types) => {
+      this.parameterService.getBranchProducts(this.id),
+      (branch_data, map, incident_types, branch_products : any[]) => {
         const current = branch_data[0];
         current.map = map;
+        current.associated_products = branch_products.filter(bp => bp.product_id != null);
+        current.branch_products = branch_products.filter(bp => bp.product_id == null);
+
 
         if(!current.map) {
           current.map = [];

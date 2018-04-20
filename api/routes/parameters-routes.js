@@ -35,6 +35,13 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
+    app.get("/api/branch_products/branch/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input("branch_id", sql.Int, req.params.id)
+            .execute(`GetBranchProducts`);
+        let response = result.recordset[0];
+        res.send(response[0].empty ? [] : response);
+    }));
     app.get("/api/domains", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetDomains`);
@@ -254,6 +261,25 @@ function configure_routes(app, connection_pool) {
                     active = 0                    
                 where id = @id`);
         jobs.update_voucher_site();
+        res.send({ sucess: true });
+    }));
+    app.post("/api/branch_products/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input("id", sql.Int, req.body.id)
+            .input("branch_id", sql.Int, req.params.id)
+            .input("currency_id", sql.Int, req.body.currency_id)
+            .input("category_id", sql.Int, req.body.category_id)
+            .input("name", sql.VarChar(250), req.body.name)
+            .input("base_value", sql.Decimal(12, 2), req.body.base_value)
+            .execute(`SaveBranchProduct`);
+        res.send({ sucess: true });
+    }));
+    app.post("/api/branch_products", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .input("branch_id", sql.Int, req.body.branch_id)
+            .input("product_id", sql.Int, req.body.product_id)
+            .input("base_value", sql.Decimal(12, 2), req.body.base_value)
+            .execute(`AssociateBranchProduct`);
         res.send({ sucess: true });
     }));
     app.post("/api/branch_maps", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {

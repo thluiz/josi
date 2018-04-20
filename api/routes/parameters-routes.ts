@@ -38,6 +38,18 @@ export function configure_routes(app: any, connection_pool: any) {
         res.send(response[0].empty ? [] : response);
     });
 
+    app.get("/api/branch_products/branch/:id", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {                                
+        const result = await new sql.Request(pool)     
+        .input("branch_id", sql.Int, req.params.id)       
+        .execute(`GetBranchProducts`);                
+
+        let response = result.recordset[0];
+
+        res.send(response[0].empty ? [] : response);
+    });
+
     app.get("/api/domains", 
     SecurityService.ensureLoggedIn(),
     async (request, response, next) => {                        
@@ -354,6 +366,36 @@ export function configure_routes(app: any, connection_pool: any) {
 
         res.send({ sucess: true});   
     });        
+
+    app.post("/api/branch_products/:id", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {                                
+        
+        const result = await new sql.Request(pool)  
+        .input("id", sql.Int, req.body.id)
+        .input("branch_id", sql.Int, req.params.id)                               
+        .input("currency_id", sql.Int, req.body.currency_id)
+        .input("category_id", sql.Int, req.body.category_id)
+        .input("name", sql.VarChar(250), req.body.name)
+        .input("base_value", sql.Decimal(12,2), req.body.base_value)                               
+        .execute(`SaveBranchProduct`); 
+                
+        res.send({ sucess: true}); 
+    });
+
+    app.post("/api/branch_products", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {                                
+        
+        const result = await new sql.Request(pool)  
+        .input("branch_id", sql.Int, req.body.branch_id)                               
+        .input("product_id", sql.Int, req.body.product_id)                               
+        .input("base_value", sql.Decimal(12,2), req.body.base_value)                               
+        .execute(`AssociateBranchProduct`); 
+                
+
+        res.send({ sucess: true}); 
+    });
 
     app.post("/api/branch_maps", 
     SecurityService.ensureLoggedIn(),

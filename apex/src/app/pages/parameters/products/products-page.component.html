@@ -61,7 +61,7 @@
             </div>
             <div class="row">
                 <div class="col-6">
-                    <label for="item_base_value">Categoria</label>                                                									
+                    <label for="item_category">Categoria</label>                                                									
                     <div class="input-group">							
                         <select [(ngModel)]="current_item.category_id" 								                            
                             class="form-control form-control-sm"
@@ -71,7 +71,7 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    <label for="item_base_value">Moeda</label>                                                									
+                    <label for="item_currency">Moeda</label>                                                									
                     <div class="input-group">							
                         <select [(ngModel)]="current_item.currency_id" 								                            
                             class="form-control form-control-sm"
@@ -85,7 +85,7 @@
                 <div class="col-12">
                     <label for="item_base_value">Valor</label>                                                									
                     <div class="input-group">							
-                        <input class="form-control"
+                        <input class="form-control text-right"
                         [(ngModel)]="current_item.base_value"                        
                         autocomplete="off"
                         type="number"                        
@@ -100,7 +100,7 @@
             </div>
         <div class="modal-footer" *ngIf="!saving">
             <button type="button" class="btn btn-success" 
-                (click)="save(d);">
+                (click)="save_new_product(d);">
                 <i class="icon-check"></i>
                 Salvar
             </button>        
