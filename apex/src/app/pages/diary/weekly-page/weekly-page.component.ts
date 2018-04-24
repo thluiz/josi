@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChildren, QueryList } from '@angular/core';
 
 import { PersonService, DailyMonitorDisplayType } from 'app/services/person-service';
 import { IncidentService } from 'app/services/incident-service';
@@ -26,6 +26,7 @@ import { Observable } from 'rxjs/Observable';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SecurityService } from 'app/services/security-service';
+import { LateralSummaryComponent } from 'app/shared/components/lateral-summary/lateral-summary.component';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -36,6 +37,10 @@ import { SecurityService } from 'app/services/security-service';
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
 export class WeeklyPageComponent implements OnInit, OnDestroy {
+
+  @ViewChildren(LateralSummaryComponent) 
+  lateralSummaryComponent : QueryList<LateralSummaryComponent>;
+
   daily: Observable<any[]>;
   cols;
 
@@ -108,6 +113,13 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     this.current_branch = id;
     this.getMonitorData();    
     this.show_change_branch = false;
+
+    if(this.lateralSummaryComponent) {
+      this.lateralSummaryComponent.forEach(ls => {
+        ls.branch = this.current_branch;
+        ls.getPeopleSummaryData()
+      });
+    }
   }
 
   change_week(modifier) {

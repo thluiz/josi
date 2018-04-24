@@ -35,6 +35,7 @@ export class PersonPartnershipListComponent implements OnInit, OnDestroy {
   errors :string[] = [];
   
   private changes_subscriber: Subscription;
+  private last_call : Date;
 
   constructor(private modalService: NgbModal, 
     private parameterService: ParameterService, 
@@ -60,10 +61,16 @@ export class PersonPartnershipListComponent implements OnInit, OnDestroy {
   }
 
   load_items() {    
+    if(this.last_call != null && ((new Date()).getTime() - (this.last_call.getTime()) <= this.parameterService.getTimeReloadComponents()))  {
+      return;
+    }
+
     this.personService.getPersonPartnerships(this.person.id)
     .subscribe((data : any) => {       
       this.items = data;
     });
+
+    this.last_call = new Date();
   }
        
   open(content){  

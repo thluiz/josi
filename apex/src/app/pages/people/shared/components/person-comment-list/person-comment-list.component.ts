@@ -20,6 +20,7 @@ export class PersonCommentListComponent implements OnInit, OnDestroy {
   @Input() person:any;  
 
   private comment_changes_subscriber: Subscription;
+  private last_call : Date;
 
   constructor(private modalService: ModalService, 
     private parameterService: ParameterService,
@@ -50,8 +51,14 @@ export class PersonCommentListComponent implements OnInit, OnDestroy {
   }
 
   load_comments() {
+    if(this.last_call != null && ((new Date()).getTime() - (this.last_call.getTime()) <= this.parameterService.getTimeReloadComponents()))  {
+      return;
+    }
+
     this.personService.getCommentsAboutPerson(this.person.id)
     .subscribe((data) => this.comments = data);
+
+    this.last_call = new Date();
   }
        
   add_comment(){             

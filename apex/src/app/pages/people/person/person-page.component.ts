@@ -1,12 +1,17 @@
+import { PersonCommentListComponent } from './../shared/components/person-comment-list/person-comment-list.component';
+import { PersonPartnershipListComponent } from './../shared/components/person-partnership-list/person-partnership-list.component';
+import { PersonContactListComponent } from './../shared/components/person-contact-list/person-contact-list.component';
+import { PersonExternalUnitListComponent } from './../shared/components/person-external-unit-list/person-external-unit-list.component';
 import { CardService } from './../../../services/card-service';
-import { Component, TemplateRef, ViewChild, ViewEncapsulation, Input  } from '@angular/core';
+
+import { Component, Input, AfterViewInit, QueryList, OnInit, OnDestroy, ViewChildren   } 
+from '@angular/core';
+
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
 import { PersonService } from './../../../services/person-service';
 import { ParameterService } from './../../../services/parameter-service';
-
-import { OnInit, OnDestroy, AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 
 import { FormControl, FormsModule, ReactiveFormsModule,
   FormGroup, Validators, NgForm } from '@angular/forms';
@@ -30,14 +35,22 @@ import { PersonIndicationListComponent } from '../../../shared/components/person
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
-export class PersonPageComponent implements OnInit, OnDestroy, AfterViewInit {
+export class PersonPageComponent implements OnInit, OnDestroy {
 
-  @ViewChild(PersonIndicationListComponent) personIndicationListComponent : PersonIndicationListComponent;
+  @ViewChildren(PersonIndicationListComponent)   
+  indicationsComponent : QueryList<PersonIndicationListComponent>;
 
-  ngAfterViewInit(): void {
-    if(this.personIndicationListComponent)
-      this.personIndicationListComponent.load_indications();
-  }
+  @ViewChildren(PersonExternalUnitListComponent) 
+  externalUnitsComponent : QueryList<PersonExternalUnitListComponent>;
+
+  @ViewChildren(PersonContactListComponent) 
+  contactListComponent : QueryList<PersonContactListComponent>;
+
+  @ViewChildren(PersonPartnershipListComponent) 
+  partnershipComponent : QueryList<PersonPartnershipListComponent>;
+
+  @ViewChildren(PersonCommentListComponent) 
+  commentListComponent : QueryList<PersonCommentListComponent>;
 
   id: number;
   person: any;   
@@ -54,9 +67,8 @@ export class PersonPageComponent implements OnInit, OnDestroy, AfterViewInit {
   countries = [];
   addresses = [];
   new_address: any;
-
-  private router_sub: Subscription;
-  private person_changes_subscriber: Subscription;
+  
+  private subs: Subscription[];
 
   constructor(private personService: PersonService, 
               private parameterService: ParameterService,
@@ -66,8 +78,38 @@ export class PersonPageComponent implements OnInit, OnDestroy, AfterViewInit {
               private datePickerConfig: NgbDatepickerConfig) {      
   }  
 
+  public ngAfterViewInit() {
+    if(!this.subs) {
+      this.subs = [];
+    }
+          
+    this.subs.push(this.indicationsComponent.changes.subscribe((comps: QueryList <PersonIndicationListComponent>) => {        
+      comps.first.load_indications();
+    }));
+    
+    this.subs.push(this.externalUnitsComponent.changes.subscribe((comps: QueryList <PersonExternalUnitListComponent>) => {        
+      comps.first.load_items();
+    }));
+
+    this.subs.push(this.partnershipComponent.changes.subscribe((comps: QueryList <PersonPartnershipListComponent>) => {        
+      comps.first.load_items();
+    }));
+
+    this.subs.push(this.contactListComponent.changes.subscribe((comps: QueryList <PersonContactListComponent>) => {        
+      comps.first.load_contacts();
+    }));
+
+    this.subs.push(this.commentListComponent.changes.subscribe((comps: QueryList <PersonCommentListComponent>) => {        
+      comps.first.load_comments();
+    }));
+  }
+
   ngOnInit() {
-    this.router_sub = this.route.params.subscribe(params => {
+    if(!this.subs) {
+      this.subs = [];
+    }
+
+    this.subs.push(this.route.params.subscribe(params => {
       this.id = +params['id'];      
       
       this.load_person_data();      
@@ -75,19 +117,21 @@ export class PersonPageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.load_person_scheduling();  
       this.load_comments_about_person();
       this.load_person_address();
-    });
+    }));
 
-    this.person_changes_subscriber = this.personService.personChanges$
+    this.subs.push(this.personService.personChanges$
     .filter((data) => data != null && data.id == this.id)
     .subscribe((data) => {                       
-      this.person = data;
-    });
+      this.person = data;      
+    }));
  
     this.reset_new_schedule();    
   }
   
-  ngOnDestroy() {    
-    this.router_sub.unsubscribe();    
+  ngOnDestroy() {            
+    if(this.subs) {
+      this.subs.forEach(s => s.unsubscribe());
+    }
   }
   
   open_schedule_modal(content) {    

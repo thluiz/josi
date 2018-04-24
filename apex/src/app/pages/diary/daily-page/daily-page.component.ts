@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { LateralSummaryComponent } from './../../../shared/components/lateral-summary/lateral-summary.component';
+import { Component, ViewChild, QueryList, ViewChildren } from '@angular/core';
 
 import { PersonService, DailyMonitorDisplayType } from 'app/services/person-service';
 import { IncidentService } from 'app/services/incident-service';
@@ -38,6 +39,9 @@ export class DailyPageComponent implements OnInit, OnDestroy {
   cols;
   
   people_summary : Observable<any[]>;
+
+  @ViewChildren(LateralSummaryComponent) 
+  lateralSummaryComponent : QueryList<LateralSummaryComponent>;
 
   current_display = 1;
   selected_week;
@@ -119,6 +123,15 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     this.current_branch = id;
     this.getMonitorData();    
     this.show_change_branch = false;
+
+    console.log(this.lateralSummaryComponent);
+
+    if(this.lateralSummaryComponent) {
+      this.lateralSummaryComponent.forEach(ls => {
+        ls.branch = this.current_branch;
+        ls.getPeopleSummaryData()
+      });
+    }
   }
 
   change_week(modifier) {

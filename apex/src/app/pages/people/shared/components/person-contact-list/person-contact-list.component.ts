@@ -23,6 +23,7 @@ export class PersonContactListComponent implements OnInit, OnDestroy {
   @Input() showDelete = true;
 
   private contact_changes_subscriber: Subscription;
+  private last_call : Date;
 
   constructor(private modalService: NgbModal, 
     private parameterService: ParameterService,
@@ -45,8 +46,14 @@ export class PersonContactListComponent implements OnInit, OnDestroy {
   }
 
   load_contacts() {
+    if(this.last_call != null && ((new Date()).getTime() - (this.last_call.getTime()) <= this.parameterService.getTimeReloadComponents()))  {
+      return;
+    }
+
     this.personService.getPersonContacts(this.person.id, this.showOnlyPrincipal)
     .subscribe((data : any) => this.contacts = data);
+
+    this.last_call = new Date();
   }
        
   open(content){        

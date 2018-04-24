@@ -39,6 +39,10 @@ export class ParameterService {
     
     constructor(private http:HttpClient, private utilsService: UtilsService) { }  
 
+    getTimeReloadComponents() {
+        return 200;
+    }
+
     getConfigurations(forceRefresh?: boolean) {        
         return this.utilsService.cache_results(this.configuration$, `/configurations`, forceRefresh);                      
     }

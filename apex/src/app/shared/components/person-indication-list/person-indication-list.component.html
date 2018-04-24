@@ -20,7 +20,8 @@
 </div>
 <div class="row" *ngFor="let item of indications">
     <div class="col-10" style="color:black">
-        <a href="/people/person/{{ item.person2_id}}">
+        <a
+            [routerLink]="['/people/person', item.person2_id ]">
             {{ item.indicated_name }}
         </a>           
     </div>

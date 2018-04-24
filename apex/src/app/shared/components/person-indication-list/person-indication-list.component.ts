@@ -40,6 +40,7 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
   branches: any[];
   operators: any[];
   errors :string[] = [];
+  private last_call : Date;
   
   private indication_changes_subscriber: Subscription;
 
@@ -67,6 +68,10 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
   }
 
   load_indications() {    
+    if(this.last_call != null && ((new Date()).getTime() - (this.last_call.getTime()) <= this.parameterService.getTimeReloadComponents()))  {
+      return;
+    }
+    
     this.personService.getPersonIndications(this.person.id)
     .subscribe((data : any) => { 
 
@@ -80,6 +85,8 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
 
       this.indications = data;
     });
+
+    this.last_call = new Date();
   }
        
   open(content){  
