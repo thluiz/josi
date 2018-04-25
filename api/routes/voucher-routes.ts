@@ -4,7 +4,7 @@ import { SecurityService } from '../../domain/services/security_services';
 
 export function configure_routes(app: any, connection_pool: any, appInsights: any) {
     const pool = connection_pool;  
-    let jobs: JobsService = new JobsService(connection_pool);
+    let jobs: JobsService = new JobsService(connection_pool, appInsights);
     
     app.post("/api/voucher",
     async (req, res, next) => { 

@@ -13,7 +13,7 @@ const sql = require("mssql");
 const security_services_1 = require("../../domain/services/security_services");
 function configure_routes(app, connection_pool, appInsights) {
     const pool = connection_pool;
-    let jobs = new jobs_services_1.JobsService(connection_pool);
+    let jobs = new jobs_services_1.JobsService(connection_pool, appInsights);
     app.post("/api/voucher", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         if (appInsights) {
             appInsights.defaultClient.trackNodeHttpRequest({ request: req, response: res });

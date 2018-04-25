@@ -137,7 +137,7 @@ function getParticipationList(people) {
         voucher_routes.configure_routes(app, pool, appInsights);
         
         app.get("/api/hourly-jobs", async (request, response, next) => {            
-            const jobs_service = new JobsService(pool);                
+            const jobs_service = new JobsService(pool, appInsights);                
             await jobs_service.hourly_jobs();
 
             response.send({ sucess: true});

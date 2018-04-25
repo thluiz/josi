@@ -117,7 +117,7 @@ function getParticipationList(people) {
         financial_routes.configure_routes(app, pool);
         voucher_routes.configure_routes(app, pool, appInsights);
         app.get("/api/hourly-jobs", (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-            const jobs_service = new jobs_services_1.JobsService(pool);
+            const jobs_service = new jobs_services_1.JobsService(pool, appInsights);
             yield jobs_service.hourly_jobs();
             response.send({ sucess: true });
         }));
