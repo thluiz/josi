@@ -33,7 +33,7 @@ function configure_routes(app, connection_pool, appInsights) {
         }
         catch (error) {
             if (appInsights) {
-                appInsights.trackException(error);
+                appInsights.trackException(error, "voucher");
             }
             console.log(error);
         }

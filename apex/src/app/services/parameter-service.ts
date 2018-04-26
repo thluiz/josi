@@ -152,6 +152,10 @@ export class ParameterService {
         return this.http.post(this.dataUrl + `/branch_products/${branch_id}`, branch_product);
     }
 
+    archiveBranchProduct(product) {
+        return this.http.post(this.dataUrl + `/branch_products/archive/${product.branch_id || 0 }`, product);
+    }
+    
     saveBranchMap(map) {
         return this.http.post(this.dataUrl + `/branch_maps`, map);
     }
@@ -160,8 +164,17 @@ export class ParameterService {
         return this.http.post(this.dataUrl + `/branch_maps/archive`, map);
     }
 
-    saveProduct(product) {
-        console.log(`saving product...`);
+    archiveProduct(product) {
+        return this.http
+        .post(this.dataUrl + `/products/archive`, {
+            product 
+        }).do((data : any) => {      
+          console.log("refreshing objects...")    
+          this.getProducts(true).subscribe();
+        });
+    }
+    
+    saveProduct(product) {        
         return this.http
         .post(this.dataUrl + `/products`, {
             product 

@@ -90,9 +90,29 @@
                                 </div>
                             </div>
                             <div class="row" *ngFor="let pr of current.associated_products">
-                                <div class="col-12">
+                                <div class="col-10">
                                     {{ pr.product }} - {{ pr.currency_symbol }} {{ pr.base_value }}
-                                </div>                        
+                                </div>           
+                                <div class="col-2 text-right">
+                                    <button type="button" class="btn btn-silver btn-sm" 
+                                        style="margin:0;padding:2px;line-height:10px"			                                        
+                                        *ngIf="!pr.remove_contact"
+                                        (click)="pr.remove_contact = true">
+                                        <i class="ft-trash-2"></i>                                        
+                                    </button>                                    
+                                    <button type="button" class="btn btn-danger btn-sm" 
+                                        *ngIf="pr.remove_contact"
+                                        style="margin:0;padding:2px;line-height:10px"			                                        
+                                        (click)="archive_branch_product(pr)">
+                                        <i class="ft-trash-2"></i>                                        
+                                    </button>
+                                    <button type="button" class="btn btn-secondary btn-sm" 
+                                        *ngIf="pr.remove_contact"
+                                        style="margin:0;padding:2px;line-height:10px"			                                        
+                                        (click)="pr.remove_contact = false">
+                                        <i class="icon-action-undo"></i>                                        
+                                    </button> 
+                                </div>             
                             </div>
                         </div>
                         <div class="col-12 col-xl-12 col-md-6"  style="margin-bottom:30px;">
@@ -119,9 +139,29 @@
                             <div class="row" 
                             *ngFor="let pr of current.branch_products" 
                             (click)="open_edit_product(pr, add_product)">
-                                <div class="col-12">
+                                <div class="col-10">
                                     {{ pr.category }} - {{ pr.product }} - {{ pr.currency_symbol }} {{ pr.base_value }}
-                                </div>                        
+                                </div>   
+                                <div class="col-2 text-right">
+                                    <button type="button" class="btn btn-silver btn-sm" 
+                                        style="margin:0;padding:2px;line-height:10px"			                                        
+                                        *ngIf="!pr.remove_contact"
+                                        (click)="pr.remove_contact = true">
+                                        <i class="ft-trash-2"></i>                                        
+                                    </button>                                    
+                                    <button type="button" class="btn btn-danger btn-sm" 
+                                        *ngIf="pr.remove_contact"
+                                        style="margin:0;padding:2px;line-height:10px"			                                        
+                                        (click)="archive_branch_product(pr)">
+                                        <i class="ft-trash-2"></i>                                        
+                                    </button>
+                                    <button type="button" class="btn btn-secondary btn-sm" 
+                                        *ngIf="pr.remove_contact"
+                                        style="margin:0;padding:2px;line-height:10px"			                                        
+                                        (click)="pr.remove_contact = false">
+                                        <i class="icon-action-undo"></i>                                        
+                                    </button> 
+                                </div>                     
                             </div>
                         </div>
                     </div>    

@@ -2,10 +2,10 @@ import * as sql from 'mssql';
 import { SecurityService } from '../../domain/services/security_services';
 import { JobsService } from '../../domain/services/jobs_services';
 
-export function configure_routes(app: any, connection_pool: any) {
+export function configure_routes(app: any, connection_pool: any, appInsights) {
     const pool = connection_pool;
 
-    let jobs: JobsService = new JobsService(connection_pool);
+    let jobs: JobsService = new JobsService(connection_pool, appInsights);
 
     app.get("/api/branches/:id?", 
     SecurityService.ensureLoggedIn(),
@@ -88,7 +88,7 @@ export function configure_routes(app: any, connection_pool: any) {
     async (request, res, next) => {         
         try {
             const result = await new sql.Request(pool)            
-            .query(`select * from [vwProduct] for json path`);                
+            .query(`select * from [vwProduct] where archived = 0 for json path`);                
             
             let response = result.recordset[0];
     
@@ -383,6 +383,19 @@ export function configure_routes(app: any, connection_pool: any) {
         res.send({ sucess: true}); 
     });
 
+    app.post("/api/branch_products/archive/:branch_id", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {                                
+        
+        const result = await new sql.Request(pool)            
+        .input('id', sql.Int, req.body.product.id)                            
+        .query(`update branch_product set
+                    archived = 1
+                where id = @id`); 
+                
+        res.send({ sucess: true}); 
+    })
+
     app.post("/api/branch_products", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {                                
@@ -421,6 +434,20 @@ export function configure_routes(app: any, connection_pool: any) {
         .execute(`SaveBranchMap`); 
         
         jobs.update_voucher_site();
+
+        res.send({ sucess: true});   
+    });
+
+    app.post("/api/products/archive", 
+    SecurityService.ensureLoggedIn(),
+    async (req, res, next) => {                        
+        const product = req.body.product;
+
+        const result = await new sql.Request(pool)            
+        .input('id', sql.Int, product.id)                  
+        .query(`update product set
+            archived = 1
+        where id = @id`);                 
 
         res.send({ sucess: true});   
     });

@@ -27,7 +27,7 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
             
         } catch (error) {
             if(appInsights) {
-                appInsights.trackException(error);  
+                appInsights.trackException(error, "voucher");  
             }
             console.log(error);
         }

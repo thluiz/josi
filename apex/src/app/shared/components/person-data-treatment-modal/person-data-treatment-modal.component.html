@@ -18,6 +18,13 @@
                 <a *ngIf="has_aditional_contacts" (click)="show_only_principal_contacts = false">
                     <i class="ft-chevrons-right"></i>
                 </a>
+                <button class="btn btn-fab btn-sm btn-silver" 
+                    style="padding:1px"
+                    title="Adicionar Contato"   
+                    style="margin-left:10px;padding:0 3px;margin:0;line-height:10px"
+                    (click)="open_new_contact(new_contact_modal)">
+                    <i class="ft-plus"></i>    
+                </button>
             </div>
             <div class="col-12" *ngIf="!show_only_principal_contacts">                
                 <div *ngFor="let ct of contacts, let k = index" style="display:inline-block"> 
@@ -28,6 +35,13 @@
                 <a *ngIf="has_aditional_contacts" (click)="show_only_principal_contacts = true">
                     <i class="ft-chevrons-left"></i>
                 </a>
+                <button class="btn btn-fab btn-sm btn-silver" 
+                    style="padding:1px"
+                    title="Adicionar Contato"   
+                    style="margin-left:10px;padding:0 3px;margin:0;line-height:10px"
+                    (click)="open_new_contact(new_contact_modal)">
+                    <i class="ft-plus"></i>    
+                </button>
             </div>
         </div>
         <div class="row" *ngFor="let ms of missing_data">

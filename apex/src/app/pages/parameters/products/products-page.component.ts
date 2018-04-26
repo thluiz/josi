@@ -64,11 +64,21 @@ export class ProductsPageComponent implements OnInit {
     });
   }
 
+  archive_product(product) {
+    this.saving = true;
+    this.parameterService.archiveProduct(product)      
+    .delay(500)      
+    .subscribe((data) => {            
+      this.saving = false;      
+      this.load_data();      
+    });
+  }
+
   edit(content, item) {
     this.current_item = item;
     this.open_modal(content);
   }
-
+  
   private open_modal(content: any) {
     this.ngbModalService.open(content).result.then((result) => {
     }, (reason) => {

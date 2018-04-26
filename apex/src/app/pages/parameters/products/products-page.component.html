@@ -7,17 +7,38 @@
                     <th><b> {{ c.name }} </b></th>
                     <th style="text-align:center;width:40px">Moeda</th>
                     <th style="text-align:center;width:80px">Valor</th>             
+                    <th style="width:90px"></th>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let item of c.items" (click)="edit(modal, item)" class="cursor_pointer">
-                        <td>
+                    <tr *ngFor="let item of c.items" class="cursor_pointer">
+                        <td (click)="edit(modal, item)">
                             {{ item["name"] }}
                         </td>
-                        <td style="text-align:center">
+                        <td style="text-align:center" (click)="edit(modal, item)">
                             {{ item.currency_symbol }}
                         </td>
-                        <td style="text-align:right;padding-right:10px">
+                        <td style="text-align:right;padding-right:10px" (click)="edit(modal, item)">
                             {{ item.base_value }}
+                        </td>
+                        <td class="text-right">
+                            <button type="button" class="btn btn-silver btn-sm" 
+                                style="margin:0;padding:2px;line-height:10px"			                                        
+                                *ngIf="!item.remove_contact"
+                                (click)="item.remove_contact = true">
+                                <i class="ft-trash-2"></i>                                        
+                            </button>                                    
+                            <button type="button" class="btn btn-danger btn-sm" 
+                                *ngIf="item.remove_contact"
+                                style="margin:0;padding:2px;line-height:10px"			                                        
+                                (click)="archive_product(item)">
+                                <i class="ft-trash-2"></i>                                        
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" 
+                                *ngIf="item.remove_contact"
+                                style="margin:0;padding:2px;line-height:10px"			                                        
+                                (click)="item.remove_contact = false">
+                                <i class="icon-action-undo"></i>                                        
+                            </button>                                    
                         </td>
                     </tr>
                 </tbody>
@@ -100,7 +121,7 @@
             </div>
         <div class="modal-footer" *ngIf="!saving">
             <button type="button" class="btn btn-success" 
-                (click)="save_new_product(d);">
+                (click)="save(d);">
                 <i class="icon-check"></i>
                 Salvar
             </button>        

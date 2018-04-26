@@ -130,7 +130,7 @@ function getParticipationList(people) {
 
         app.post("/api/messages", connector.listen());        
         people_routes.configure_routes(app, pool);      
-        parameters_routes.configure_routes(app, pool);
+        parameters_routes.configure_routes(app, pool, appInsights);
         incidents_routes.configure_routes(app, pool);
         cards_routes.configure_routes(app, pool);
         financial_routes.configure_routes(app, pool);

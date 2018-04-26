@@ -263,6 +263,14 @@ export class BranchDetailPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  archive_branch_product(product) {
+    this.parameterService.archiveBranchProduct({
+      product
+    }).subscribe((data) => {
+      this.load_data();      
+    });
+  }
+
   private open_modal(content: any) {
     this.ngbModalService.open(content).result.then((result) => {
     }, (reason) => {      
