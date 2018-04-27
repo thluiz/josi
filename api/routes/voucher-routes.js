@@ -93,7 +93,7 @@ function configure_routes(app, connection_pool, appInsights) {
         }
         let duration = Date.now() - start;
         this.appInsights.defaultClient.trackMetric({ name: "update voucher", value: duration });
-        jobs.update_voucher_site();
+        //jobs.update_voucher_site();
         res.send({ sucess: true });
     }));
 }
