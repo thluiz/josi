@@ -100,7 +100,7 @@ export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
       this.person_list_sub.unsubscribe();
     }
 
-    this.person_list_sub = this.personService.getVoucherPeopleList(this.current_branch, this.search_name, this.current_voucher).subscribe(
+    this.person_list_sub = this.personService.getInvitedPeopleList(this.current_branch, this.search_name, this.current_voucher).subscribe(
       data => {                   
         this.all_people = data;
 

@@ -87,6 +87,10 @@ export class PersonService {
     return this.http.get(this.dataUrl + `/voucher_people?branch=${branch || 0}&name=${name || ""}&voucher=${voucher || 0}`);    
   }
 
+  getInvitedPeopleList(branch, name, voucher) {    
+    return this.http.get(this.dataUrl + `/invited_people?branch=${branch || 0}&name=${name || ""}&voucher=${voucher || 0}`);    
+  }
+
   getPeopleAwayList(branch, name) {    
     return this.http.get(this.dataUrl + `/people-away?branch=${branch || 0}&name=${name || ""}`);    
   }
