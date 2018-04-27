@@ -1,12 +1,17 @@
-let appInsights = null;
-
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
-} else {
-    appInsights = require("applicationinsights");
-    appInsights.setup(process.env.AZURE_APP_INSIGHTS);
-    appInsights.start();
 }
+
+let appInsights = require("applicationinsights");
+var winston = require('winston');
+var aiLogger = require('winston-azure-application-insights').AzureApplicationInsightsLogger;
+
+appInsights.setup(process.env.AZURE_APP_INSIGHTS);
+appInsights.start();
+
+winston.add(aiLogger, {
+	insights: appInsights
+});
 
 import { SecurityService, Permissions } from './domain/services/security_services';
 import * as sql from 'mssql';
@@ -46,8 +51,6 @@ passport.deserializeUser(async function(token, done) {
         done(err, user);
     });
 });
-
-
 
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
@@ -134,7 +137,7 @@ function getParticipationList(people) {
         incidents_routes.configure_routes(app, pool);
         cards_routes.configure_routes(app, pool);
         financial_routes.configure_routes(app, pool);
-        voucher_routes.configure_routes(app, pool, appInsights);
+        voucher_routes.configure_routes(app, pool, appInsights, winston);
         
         app.get("/api/hourly-jobs", async (request, response, next) => {            
             const jobs_service = new JobsService(pool, appInsights);                

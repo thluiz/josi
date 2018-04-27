@@ -11,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jobs_services_1 = require("./../../domain/services/jobs_services");
 const sql = require("mssql");
 const security_services_1 = require("../../domain/services/security_services");
-function configure_routes(app, connection_pool, appInsights) {
+function configure_routes(app, connection_pool, appInsights, winston) {
     const pool = connection_pool;
     let jobs = new jobs_services_1.JobsService(connection_pool, appInsights);
     app.post("/api/voucher", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -56,6 +56,7 @@ function configure_routes(app, connection_pool, appInsights) {
             const start = Date.now();
             const voucher = req.body.voucher;
             let result = null;
+            winston.info("Saving Voucher", voucher);
             if (voucher.id > 0) {
                 result = yield new sql.Request(pool)
                     .input('id', sql.Int, voucher.id)
@@ -93,13 +94,14 @@ function configure_routes(app, connection_pool, appInsights) {
                             values (@title, @url, @header_text, @final_text, @additional_question, 
                                     @initials, @confirm_button_text, @header_title)`);
             }
-            console.log(result);
+            winston.info("Saved Voucher", result);
             let duration = Date.now() - start;
             this.appInsights.defaultClient.trackMetric({ name: "update voucher", value: duration });
-            //jobs.update_voucher_site();
+            jobs.update_voucher_site();
             res.send({ sucess: true });
         }
         catch (error) {
+            winston.error("Error saving Voucher", error);
             res.status(500).json(error);
         }
     }));
