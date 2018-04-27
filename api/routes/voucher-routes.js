@@ -52,10 +52,10 @@ function configure_routes(app, connection_pool, appInsights, winston) {
         res.send(response[0].empty ? [] : response);
     }));
     app.post("/api/parameters/vouchers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const voucher = req.body.voucher;
+        let result = null;
         try {
             const start = Date.now();
-            const voucher = req.body.voucher;
-            let result = null;
             winston.info("Saving Voucher", voucher);
             if (voucher.id > 0) {
                 result = yield new sql.Request(pool)
@@ -102,7 +102,7 @@ function configure_routes(app, connection_pool, appInsights, winston) {
         }
         catch (error) {
             winston.error("Error saving Voucher", error);
-            res.status(500).json(error);
+            res.status(500).json({ error, voucher, result });
         }
     }));
 }

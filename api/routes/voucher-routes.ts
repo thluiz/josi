@@ -56,11 +56,13 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
 
     app.post("/api/parameters/vouchers", 
     SecurityService.ensureLoggedIn(),
-    async (req, res, next) => {                        
+    async (req, res, next) => {      
+        const voucher = req.body.voucher;
+        let result = null;
+
         try {
-            const start = Date.now();
-            const voucher = req.body.voucher;
-            let result = null;
+            const start = Date.now();            
+            
 
             winston.info("Saving Voucher", voucher);
             
@@ -111,8 +113,8 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
             res.send({ sucess: true});   
         } catch (error) {
             winston.error("Error saving Voucher", error);
-            
-            res.status(500).json(error);
+
+            res.status(500).json({ error, voucher, result });
         }        
     });
     
