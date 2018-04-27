@@ -102,7 +102,7 @@ function configure_routes(app, connection_pool, appInsights, winston) {
         }
         catch (error) {
             winston.error("Error saving Voucher", error);
-            res.status(500).json({ error, voucher, result });
+            res.status(500).json({ res, error, voucher, result });
         }
     }));
 }
