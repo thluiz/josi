@@ -94,6 +94,9 @@ function configure_routes(app, connection_pool, appInsights, winston) {
                             values (@title, @url, @header_text, @final_text, @additional_question, 
                                     @initials, @confirm_button_text, @header_title)`);
             }
+            winston.info("Saved Voucher", result);
+            let duration = Date.now() - start;
+            this.appInsights.defaultClient.trackMetric({ name: "update voucher", value: duration });
             res.send({ sucess: true });
         }
         catch (error) {
