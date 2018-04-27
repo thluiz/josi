@@ -14,8 +14,7 @@ const card_services_1 = require("./card_services");
 const axios_1 = require("axios");
 const sql = require('mssql');
 class JobsService {
-    constructor(sql_pool, appInsights) {
-        this.appInsights = appInsights;
+    constructor(sql_pool) {
         this.sql_pool = sql_pool;
         this.sumary_service = new sumary_services_1.SumaryService(sql_pool);
         this.person_service = new person_services_1.PersonService(sql_pool);
@@ -30,13 +29,12 @@ class JobsService {
             });
         }
         catch (ex) {
-            this.appInsights.trackException(ex, 'update_voucher_site');
+            console.log(ex);
         }
     }
     hourly_jobs() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let start = Date.now();
                 yield this.card_service.correct_card_out_of_parent_step();
                 yield this.person_service.generate_birthdate_incidents();
                 yield this.person_service.cancel_expired_people_scheduling();
@@ -47,13 +45,8 @@ class JobsService {
                 yield this.card_service.check_cards_has_overdue_cards();
                 yield this.sumary_service.consolidate_members_sumary();
                 yield this.sumary_service.consolidate_activity_sumary();
-                let duration = Date.now() - start;
-                this.appInsights.defaultClient.trackMetric({ name: "hourly jobs duration", value: duration });
             }
             catch (ex) {
-                if (this.appInsights) {
-                    this.appInsights.trackException(ex, 'hourly_jobs');
-                }
                 console.log(ex);
             }
         });

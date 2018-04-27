@@ -11,13 +11,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jobs_services_1 = require("./../../domain/services/jobs_services");
 const sql = require("mssql");
 const security_services_1 = require("../../domain/services/security_services");
-function configure_routes(app, connection_pool, appInsights, winston) {
+function configure_routes(app, connection_pool) {
     const pool = connection_pool;
-    let jobs = new jobs_services_1.JobsService(connection_pool, appInsights);
+    let jobs = new jobs_services_1.JobsService(connection_pool);
     app.post("/api/voucher", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        if (appInsights) {
-            appInsights.defaultClient.trackNodeHttpRequest({ request: req, response: res });
-        }
         try {
             const result = yield new sql.Request(pool)
                 .input('name', sql.VarChar(200), req.body.name)
@@ -32,9 +29,6 @@ function configure_routes(app, connection_pool, appInsights, winston) {
                 .execute(`CreatePersonFromVoucher`);
         }
         catch (error) {
-            if (appInsights) {
-                appInsights.trackException(error, "voucher");
-            }
             console.log(error);
         }
         res.send({ sucess: true });
@@ -56,7 +50,6 @@ function configure_routes(app, connection_pool, appInsights, winston) {
         let result = null;
         try {
             const start = Date.now();
-            winston.info("Saving Voucher", voucher);
             if (voucher.id > 0) {
                 result = yield new sql.Request(pool)
                     .input('id', sql.Int, voucher.id)
@@ -98,7 +91,6 @@ function configure_routes(app, connection_pool, appInsights, winston) {
             res.send({ sucess: true });
         }
         catch (error) {
-            winston.error("Error saving Voucher", error);
             res.status(500).json({ url: process.env.VOUCHER_SITE_UPDATE_URL, res, error, voucher, result });
         }
     }));

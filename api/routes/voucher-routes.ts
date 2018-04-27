@@ -2,16 +2,12 @@ import { JobsService } from './../../domain/services/jobs_services';
 import * as sql from 'mssql';
 import { SecurityService } from '../../domain/services/security_services';
 
-export function configure_routes(app: any, connection_pool: any, appInsights: any, winston: any) {
+export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;  
-    let jobs: JobsService = new JobsService(connection_pool, appInsights);
+    let jobs: JobsService = new JobsService(connection_pool);
     
     app.post("/api/voucher",
     async (req, res, next) => { 
-        if(appInsights) {
-            appInsights.defaultClient.trackNodeHttpRequest({request: req, response: res});
-        }
-
         try {                       
             const result = await new sql.Request(pool)            
             .input('name', sql.VarChar(200), req.body.name)  
@@ -25,10 +21,7 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
             .input('branch_map_id', sql.Int, req.body.schedule)             
             .execute(`CreatePersonFromVoucher`);
             
-        } catch (error) {
-            if(appInsights) {
-                appInsights.trackException(error, "voucher");  
-            }
+        } catch (error) {            
             console.log(error);
         }
         res.send({ sucess: true});   
@@ -62,9 +55,7 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
 
         try {
             const start = Date.now();            
-                        
-            winston.info("Saving Voucher", voucher);
-            
+
             if(voucher.id > 0) {
                 result = await new sql.Request(pool)            
                 .input('id', sql.Int, voucher.id)          
@@ -106,8 +97,6 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
 
             res.send({ sucess: true});   
         } catch (error) {
-            winston.error("Error saving Voucher", error);
-
             res.status(500).json({ url: process.env.VOUCHER_SITE_UPDATE_URL, res, error, voucher, result });
         }        
     });

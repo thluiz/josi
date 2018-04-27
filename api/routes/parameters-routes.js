@@ -11,9 +11,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
 const security_services_1 = require("../../domain/services/security_services");
 const jobs_services_1 = require("../../domain/services/jobs_services");
-function configure_routes(app, connection_pool, appInsights) {
+function configure_routes(app, connection_pool) {
     const pool = connection_pool;
-    let jobs = new jobs_services_1.JobsService(connection_pool, appInsights);
+    let jobs = new jobs_services_1.JobsService(connection_pool);
     app.get("/api/branches/:id?", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         if (!req.params.id) {
             const result = yield new sql.Request(pool)

@@ -13,7 +13,7 @@ export class JobsService {
     private person_service: PersonService;
     private card_service : CardService;
 
-    constructor(sql_pool, private appInsights: any) {
+    constructor(sql_pool) {
         this.sql_pool = sql_pool;
         this.sumary_service = new SumaryService(sql_pool);
         this.person_service = new PersonService(sql_pool);
@@ -29,14 +29,12 @@ export class JobsService {
                 console.log('voucher site updated!');
             });
         } catch (ex) {
-            this.appInsights.trackException(ex, 'update_voucher_site');
+            console.log(ex);
         } 
     }
     
     async hourly_jobs() {
-        try {
-            let start = Date.now();
-
+        try {            
             await this.card_service.correct_card_out_of_parent_step();
             await this.person_service.generate_birthdate_incidents();
             await this.person_service.cancel_expired_people_scheduling();
@@ -46,15 +44,8 @@ export class JobsService {
             await this.person_service.check_people_scheduling_status();                        
             await this.card_service.check_cards_has_overdue_cards();            
             await this.sumary_service.consolidate_members_sumary();
-            await this.sumary_service.consolidate_activity_sumary();
-
-            let duration = Date.now() - start;
-            this.appInsights.defaultClient.trackMetric({name: "hourly jobs duration", value: duration});
+            await this.sumary_service.consolidate_activity_sumary();            
         } catch(ex) {
-            if(this.appInsights) {
-                this.appInsights.trackException(ex, 'hourly_jobs');  
-            }
-
             console.log(ex);
         }
     }

@@ -2,17 +2,6 @@ if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
 }
 
-let appInsights = require("applicationinsights");
-var winston = require('winston');
-var aiLogger = require('winston-azure-application-insights').AzureApplicationInsightsLogger;
-
-appInsights.setup(process.env.AZURE_APP_INSIGHTS);
-appInsights.start();
-
-winston.add(aiLogger, {
-	insights: appInsights
-});
-
 import { SecurityService, Permissions } from './domain/services/security_services';
 import * as sql from 'mssql';
 import * as builder from 'botbuilder';
@@ -133,14 +122,14 @@ function getParticipationList(people) {
 
         app.post("/api/messages", connector.listen());        
         people_routes.configure_routes(app, pool);      
-        parameters_routes.configure_routes(app, pool, appInsights);
+        parameters_routes.configure_routes(app, pool);
         incidents_routes.configure_routes(app, pool);
         cards_routes.configure_routes(app, pool);
         financial_routes.configure_routes(app, pool);
-        voucher_routes.configure_routes(app, pool, appInsights, winston);
+        voucher_routes.configure_routes(app, pool);
         
         app.get("/api/hourly-jobs", async (request, response, next) => {            
-            const jobs_service = new JobsService(pool, appInsights);                
+            const jobs_service = new JobsService(pool);                
             await jobs_service.hourly_jobs();
 
             response.send({ sucess: true});

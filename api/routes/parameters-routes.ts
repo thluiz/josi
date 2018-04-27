@@ -2,10 +2,10 @@ import * as sql from 'mssql';
 import { SecurityService } from '../../domain/services/security_services';
 import { JobsService } from '../../domain/services/jobs_services';
 
-export function configure_routes(app: any, connection_pool: any, appInsights) {
+export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
 
-    let jobs: JobsService = new JobsService(connection_pool, appInsights);
+    let jobs: JobsService = new JobsService(connection_pool);
 
     app.get("/api/branches/:id?", 
     SecurityService.ensureLoggedIn(),
