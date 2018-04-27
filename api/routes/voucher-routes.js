@@ -52,6 +52,7 @@ function configure_routes(app, connection_pool, appInsights) {
         res.send(response[0].empty ? [] : response);
     }));
     app.post("/api/parameters/vouchers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let start = Date.now();
         const voucher = req.body.voucher;
         if (voucher.id > 0) {
             const result = yield new sql.Request(pool)
@@ -90,6 +91,8 @@ function configure_routes(app, connection_pool, appInsights) {
                         values (@title, @url, @header_text, @final_text, @additional_question, 
                                 @initials, @confirm_button_text, @header_title)`);
         }
+        let duration = Date.now() - start;
+        this.appInsights.defaultClient.trackMetric({ name: "update voucher", value: duration });
         jobs.update_voucher_site();
         res.send({ sucess: true });
     }));

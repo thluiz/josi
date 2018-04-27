@@ -28,7 +28,8 @@ class JobsService {
                 console.log('voucher site updated!');
             });
         }
-        catch (err) {
+        catch (ex) {
+            this.appInsights.trackException(ex, 'update_voucher_site');
         }
     }
     hourly_jobs() {

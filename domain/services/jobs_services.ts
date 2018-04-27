@@ -26,8 +26,8 @@ export class JobsService {
             .then(function (response) {
                 console.log('voucher site updated!')
             });
-        } catch (err) {
-            
+        } catch (ex) {
+            this.appInsights.trackException(ex, 'update_voucher_site');
         } 
     }
     

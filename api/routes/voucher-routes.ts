@@ -57,6 +57,8 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
     app.post("/api/parameters/vouchers", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {                        
+        let start = Date.now();
+
         const voucher = req.body.voucher;
 
         if(voucher.id > 0) {
@@ -95,6 +97,9 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
                         values (@title, @url, @header_text, @final_text, @additional_question, 
                                 @initials, @confirm_button_text, @header_title)`); 
         }     
+
+        let duration = Date.now() - start;
+        this.appInsights.defaultClient.trackMetric({name: "update voucher", value: duration});
 
         jobs.update_voucher_site();
 
