@@ -94,14 +94,12 @@ function configure_routes(app, connection_pool, appInsights, winston) {
                             values (@title, @url, @header_text, @final_text, @additional_question, 
                                     @initials, @confirm_button_text, @header_title)`);
             }
-            winston.info("Saved Voucher", result);
-            let duration = Date.now() - start;
-            this.appInsights.defaultClient.trackMetric({ name: "update voucher", value: duration });
+            jobs.update_voucher_site();
             res.send({ sucess: true });
         }
         catch (error) {
             winston.error("Error saving Voucher", error);
-            res.status(500).json({ res, error, voucher, result });
+            res.status(500).json({ url: process.env.VOUCHER_SITE_UPDATE_URL, res, error, voucher, result });
         }
     }));
 }

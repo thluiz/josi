@@ -26,11 +26,7 @@ export class JobsService {
 
             axios.get(process.env.VOUCHER_SITE_UPDATE_URL)
             .then(function (response) {
-                console.log('voucher site updated!')
-
-                
-                let duration = Date.now() - start;
-                this.appInsights.defaultClient.trackMetric({name: "site voucher updated", value: duration});
+                console.log('voucher site updated!');
             });
         } catch (ex) {
             this.appInsights.trackException(ex, 'update_voucher_site');
