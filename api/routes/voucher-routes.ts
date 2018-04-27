@@ -57,12 +57,12 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
     app.post("/api/parameters/vouchers", 
     SecurityService.ensureLoggedIn(),
     async (req, res, next) => {                        
-        let start = Date.now();
-
+        const start = Date.now();
         const voucher = req.body.voucher;
-
+        let result = null;
+                
         if(voucher.id > 0) {
-            const result = await new sql.Request(pool)            
+            result = await new sql.Request(pool)            
             .input('id', sql.Int, voucher.id)          
             .input('title', sql.VarChar(100), voucher.title)
             .input('url', sql.VarChar(100), voucher.url)
@@ -83,7 +83,7 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
                         header_title = @header_title
                     where id = @id`);    
         } else {
-            const result = await new sql.Request(pool)                        
+            result = await new sql.Request(pool)                        
             .input('title', sql.VarChar(100), voucher.title)
             .input('url', sql.VarChar(100), voucher.url)
             .input('initials', sql.VarChar(3), voucher.initials)
@@ -97,6 +97,8 @@ export function configure_routes(app: any, connection_pool: any, appInsights: an
                         values (@title, @url, @header_text, @final_text, @additional_question, 
                                 @initials, @confirm_button_text, @header_title)`); 
         }     
+
+        console.log(result);
 
         let duration = Date.now() - start;
         this.appInsights.defaultClient.trackMetric({name: "update voucher", value: duration});
