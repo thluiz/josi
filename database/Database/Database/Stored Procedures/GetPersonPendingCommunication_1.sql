@@ -1,4 +1,4 @@
-﻿CREATE procedure GetPersonPendingCommunication(  
+﻿CREATE procedure [dbo].[GetPersonPendingCommunication](  
  @person_id int  
 )  
 as  
@@ -32,7 +32,7 @@ select
    and not exists(  
     select 1 from [card] parent       
     where parent.id = c.parent_id  
-    and (closed_on = 1  
+    and (closed = 1  
      or cancelled = 1  
      or archived = 1)  
    )  
@@ -40,7 +40,7 @@ select
     select 1 from [card] parent  
     join [card] grand_parent on grand_parent.id = parent.parent_id       
     where parent.id = c.parent_id  
-    and (grand_parent.closed_on = 1  
+    and (grand_parent.closed = 1  
      or grand_parent.cancelled = 1  
      or grand_parent.archived = 1)  
    )  

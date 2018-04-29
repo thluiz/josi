@@ -10,6 +10,11 @@
     [association_minimal_value] DECIMAL (12, 2) NULL,
     [im_minimal_value]          DECIMAL (12, 2) NULL,
     [local_minimal_value]       DECIMAL (12, 2) NULL,
+    [category_id]               INT             NOT NULL,
+    [currency_id]               INT             DEFAULT ((1)) NOT NULL,
+    [archived]                  BIT             DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC)
 );
+
+
 

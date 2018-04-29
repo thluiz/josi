@@ -1,4 +1,4 @@
-﻿CREATE procedure GetOrganizations(@user int = null, @show_archived bit = 0,     
+﻿CREATE procedure [dbo].[GetOrganizations](@user int = null, @show_archived bit = 0,     
 @organization_id int = null, @include_childrens bit = 0)          
 as          
 begin          
@@ -21,9 +21,9 @@ begin
 	pc.position,      
 	cast((case when       
 	exists(select 1       
-		from [card] children       
-		join person_card pc on pc.card_id = children.id      
-		where children.parent_id = c.id and person_id = p.id)      
+		from [card] children       		
+		where children.parent_id = c.id and children.leader_id = p.id
+			and cancelled = 0 and archived = 0)      
 		then 1 else 0 end) as bit) has_tasks   
   from person_card pc          
    join vwPerson p on pc.person_id = p.id          

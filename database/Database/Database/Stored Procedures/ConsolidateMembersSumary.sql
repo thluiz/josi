@@ -71,15 +71,19 @@ begin
     select pp.id program_id, b.id branch_id,          
      (select count(1) 
 		from person p (nolock)           
-		where p.program_id = pp.id and p.branch_id = b.id) people,          
+		where p.program_id = pp.id and p.branch_id = b.id 
+			and p.is_active_member = 1) people,          
      (select count(1)           
 		from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id        
+			and p.is_active_member = 1
 			and financial_status > 0 and financial_status != 3 and free_financial = 0) financial,          
      (select count(1)           
-		from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id          
+		from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id 
+			and p.is_active_member = 1         
 			and scheduling_status > 0 and scheduling_status != 3 and free_scheduling = 0) scheduling,          
      (select count(1)           
-		from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id        
+		from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id  
+			and p.is_active_member = 1      
 			and comunication_status > 0 and comunication_status != 3) comunication          
     from program pp, branch b        
     where pp.id = isnull(@program, pp.id)              
@@ -104,16 +108,22 @@ begin
   join (        
     select pp.id program_id, b.id branch_id,          
      (select count(1) from person p (nolock)           
-     where p.program_id = pp.id and p.branch_id = b.id) people,          
+     where p.program_id = pp.id and p.branch_id = b.id
+	  and p.is_active_member = 1
+	 ) people,          
      (select count(1)           
-     from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id        
-   and financial_status > 0 and financial_status != 3 and free_financial = 0) financial,          
+     from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id
+		and p.is_active_member = 1        
+		and financial_status > 0 and financial_status != 3 and free_financial = 0) financial,          
      (select count(1)           
-     from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id          
-   and scheduling_status > 0 and scheduling_status != 3 and free_scheduling = 0) scheduling,          
+     from person p (nolock) where p.program_id = pp.id 
+		and p.branch_id = b.id          
+		and p.is_active_member = 1
+		and scheduling_status > 0 and scheduling_status != 3 and free_scheduling = 0) scheduling,          
      (select count(1)           
-     from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id        
-   and comunication_status > 0 and comunication_status != 3) comunication          
+     from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id   
+		and p.is_active_member = 1     
+		and comunication_status > 0 and comunication_status != 3) comunication          
     from program pp, branch b        
     where pp.id = isnull(@program, pp.id)              
     and b.id = isnull(@branch, b.id)        
@@ -138,16 +148,20 @@ begin
   join (        
     select pp.id program_id, b.id branch_id,          
      (select count(1) from person p (nolock)           
-     where p.program_id = pp.id and p.branch_id = b.id) people,          
+     where p.program_id = pp.id and p.branch_id = b.id
+		and p.is_active_member = 1) people,          
+     (select count(1)           
+     from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id
+		and p.is_active_member = 1        
+		and financial_status > 0 and financial_status != 3 and free_financial = 0) financial,          
+     (select count(1)           
+     from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id       
+		and p.is_active_member = 1   
+		and scheduling_status > 0 and scheduling_status != 3 and free_scheduling = 0) scheduling,          
      (select count(1)           
      from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id        
-   and financial_status > 0 and financial_status != 3 and free_financial = 0) financial,          
-     (select count(1)           
-     from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id          
-   and scheduling_status > 0 and scheduling_status != 3 and free_scheduling = 0) scheduling,          
-     (select count(1)           
-     from person p (nolock) where p.program_id = pp.id and p.branch_id = b.id        
-   and comunication_status > 0 and comunication_status != 3) comunication          
+		and comunication_status > 0 and comunication_status != 3
+		and p.is_active_member = 1) comunication          
     from program pp, branch b        
     where pp.id = isnull(@program, pp.id)              
     and b.id = isnull(@branch, b.id)        

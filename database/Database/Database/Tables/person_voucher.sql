@@ -5,9 +5,13 @@
     [branch_map_id]     INT            NOT NULL,
     [date_created]      DATETIME       DEFAULT (getdate()) NOT NULL,
     [additional_answer] NVARCHAR (MAX) NULL,
+    [person2_id]        INT            NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),
-    CONSTRAINT [fk_person_voucher] FOREIGN KEY ([person_id]) REFERENCES [dbo].[person] ([id])
+    CONSTRAINT [fk_person_voucher] FOREIGN KEY ([person_id]) REFERENCES [dbo].[person] ([id]),
+    CONSTRAINT [fk_person_voucher_person2] FOREIGN KEY ([person2_id]) REFERENCES [dbo].[person] ([id])
 );
+
+
 
 
 GO

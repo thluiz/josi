@@ -1,4 +1,4 @@
-﻿CREATE procedure CreatePersonFromVoucher(        
+﻿CREATE procedure [dbo].[CreatePersonFromVoucher](        
  @name varchar(200),        
  @email varchar(100),        
  @cpf varchar(11),        
@@ -23,8 +23,8 @@ begin
   join branch b on c.location_id = b.location_id      
  where c.card_template_id = 11 and b.id = @branch_id      
         
- insert into person([name], branch_id, identification2, scheduling_status)        
- values (@name, @branch_id, @cpf, 1)        
+ insert into person([name], branch_id, identification2, scheduling_status, is_interested)        
+ values (@name, @branch_id, @cpf, 1, 1)        
              
   
  declare @person_id int = @@Identity        

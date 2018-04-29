@@ -93,10 +93,7 @@ begin
 	is_associated_with_member, is_external_member                         
   from vwPerson  p                   
   where branch_active = 1                                                                          
-	and p.is_interested = 0
-	and p.is_service_provider = 0
-	and p.is_associated_with_member = 0 
-	and p.is_external_member = 0
+	and p.is_active_member = 1
 	and p.branch_id = isnull(@branch, p.branch_id)                                                             
                                                
                                               
@@ -125,6 +122,8 @@ begin
 					or p.is_service_provider = 1
 					or p.is_associated_with_member = 1 
 					or p.is_external_member = 1		
+					or p.is_inactive_member = 1
+					or p.is_leaving = 1					
 				) 
 			)
 		)                                               
@@ -182,10 +181,11 @@ begin
   from domain d                                                              
   join program p on d.program_id = p.id                                                                           
   where exists(select 1 from person p                                                    
- join person_incident i on i.person_id = p.id                                                                           
- where p.domain_id = d.id                                                              
-  and p.branch_id = isnull(@branch, p.branch_id))                              
- order by [order]                                                                              
+				join person_incident i on i.person_id = p.id                                                                           
+				where p.domain_id = d.id                                                              
+					and p.is_active_member = 1
+					and p.branch_id = isnull(@branch, p.branch_id))                              
+	order by [order]                                                                              
   for json path                                                               
  ) [domains],                              
  (                                                                                
