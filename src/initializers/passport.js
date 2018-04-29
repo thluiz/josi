@@ -25,7 +25,7 @@ function initialize(app) {
             cb(null, false);
             return;
         }
-        cb(user);
+        cb(null, user);
     })));
     passport.serializeUser(function (user, done) {
         done(null, user.token);
@@ -45,11 +45,22 @@ function initialize(app) {
             return user;
         });
     });
+    app.use(passport.initialize());
+    app.use(passport.session());
+    app.use(session({
+        secret: process.env.EXPRESS_SESSION_KEY,
+        resave: false,
+        maxAge: 6 * 60 * 60 * 1000,
+        saveUninitialized: true,
+        cookie: { secure: false }
+    }));
     app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
     app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login_error' }), function (req, res) {
+        console.log('a');
         res.redirect(process.env.SITE_URL);
     });
     app.get('/oauth/google/callback', passport.authenticate('google', { failureRedirect: '/login_error' }), function (req, res) {
+        console.log('e');
         res.redirect(process.env.SITE_URL);
     });
     app.get('/relogin', (req, res, next) => {
@@ -60,15 +71,6 @@ function initialize(app) {
         req.logout();
         res.send("Sessão encerrada");
     });
-    app.use(passport.initialize());
-    app.use(passport.session());
-    app.use(session({
-        secret: process.env.EXPRESS_SESSION_KEY,
-        resave: false,
-        maxAge: 6 * 60 * 60 * 1000,
-        saveUninitialized: true,
-        cookie: { secure: false }
-    }));
 }
 exports.initialize = initialize;
 //# sourceMappingURL=passport.js.map

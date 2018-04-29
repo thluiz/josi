@@ -18,9 +18,9 @@ app.use(helmet());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-passport.initialize(app);
 security_services_1.SecurityService.create_pool().then((pool) => {
     old_routes.initialize(app, pool);
+    passport.initialize(app);
     routes.initialize(app, "./src/routes");
     app.listen(port, function () {
         console.log(`server listening to ${port}`);
