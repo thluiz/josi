@@ -8,11 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const logger_service_1 = require("./../services/logger-service");
 const security_service_1 = require("../services/security-service");
 function routes(app) {
-    app.get("/api/users/current", (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/users/current", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
-            const userReq = yield security_service_1.SecurityService.getUserFromRequest(request);
+            logger_service_1.LoggerService.log('/api/users/current - request', req);
+            const userReq = yield security_service_1.SecurityService.getUserFromRequest(req);
             const user = yield security_service_1.SecurityService.serializeUser(userReq);
             res.send(user);
         }

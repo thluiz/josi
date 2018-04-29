@@ -39,7 +39,7 @@ function ensureHasPermission(permission) {
             });
         })
             .catch((error) => {
-            console.log(error);
+            logger_service_1.LoggerService.log('ensureHasPermission - error', error);
             res.status(503).json({
                 success: false,
                 message: 'sorry! something went wrong...'

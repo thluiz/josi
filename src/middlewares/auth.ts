@@ -42,8 +42,8 @@ export function ensureHasPermission(permission: Permissions) {
                 next();
             })
         })
-        .catch((error) => {
-            console.log(error);
+        .catch((error) => {             
+            LoggerService.log('ensureHasPermission - error', error);
             res.status(503).json({
                 success: false,
                 message: 'sorry! something went wrong...'

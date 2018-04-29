@@ -10,6 +10,9 @@ export enum Permissions {
 export class SecurityService {
     
     static async serializeUser(user: User) : Promise<any> {
+        if(user == null) 
+            return null;
+            
         if(!user.person || !user.person.default_page) {
             const UR = await DatabaseFacility.getRepository<User>(User);
             user = await UR.findOne(

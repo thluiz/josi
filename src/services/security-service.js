@@ -19,6 +19,8 @@ var Permissions;
 class SecurityService {
     static serializeUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (user == null)
+                return null;
             if (!user.person || !user.person.default_page) {
                 const UR = yield database_facility_1.DatabaseFacility.getRepository(User_1.User);
                 user = yield UR.findOne({ id: user.id }, { relations: ["person", "person.default_page"] });
