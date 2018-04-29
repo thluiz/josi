@@ -44,8 +44,7 @@ export function initialize(app) {
             return;
         }
     });
-    
-    /*
+        
     app.use(session({ 
             secret: process.env.EXPRESS_SESSION_KEY,
             resave: false,
@@ -56,15 +55,15 @@ export function initialize(app) {
             name: "myvtmiim", 
             accessKey: "oqLjHbNgQut2mWY0uWMyMUwmsGRlRTwY7xOejg3Nz21go7LHsdLlbw3D9V/FTyKk1eY/j0TyD7FRGXApOEWd2g==" 
         }) 
-    })); */
+    }));
     
-    app.use(session({
+    /*app.use(session({
         secret: process.env.EXPRESS_SESSION_KEY,
         resave: false,
         maxAge: 6 * 60 * 60 * 1000, // 6 hours
         saveUninitialized: true,
         cookie: { secure: false }
-    }));
+    })); */
 
     app.use(passport.initialize());
     app.use(passport.session());

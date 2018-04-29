@@ -37,14 +37,14 @@ export class SecurityService {
     }
 
     static async getUserFromRequest(req): Promise<User> {
-        /*if (process.env.LOAD_ENV === 'true') {
+        if (process.env.LOAD_ENV === 'true') {
             const UR = await DatabaseFacility.getRepository<User>(User);
             const user = await UR.findOne({ token: process.env.TOKEN_USER_DEV },
                 { relations: [ "person", "person.default_page" ] }
             );
 
             return user;
-        }*/
+        }
 
         return req.user;
     }

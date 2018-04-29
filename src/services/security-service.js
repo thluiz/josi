@@ -42,14 +42,11 @@ class SecurityService {
     }
     static getUserFromRequest(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            /*if (process.env.LOAD_ENV === 'true') {
-                const UR = await DatabaseFacility.getRepository<User>(User);
-                const user = await UR.findOne({ token: process.env.TOKEN_USER_DEV },
-                    { relations: [ "person", "person.default_page" ] }
-                );
-    
+            if (process.env.LOAD_ENV === 'true') {
+                const UR = yield database_facility_1.DatabaseFacility.getRepository(User_1.User);
+                const user = yield UR.findOne({ token: process.env.TOKEN_USER_DEV }, { relations: ["person", "person.default_page"] });
                 return user;
-            }*/
+            }
             return req.user;
         });
     }

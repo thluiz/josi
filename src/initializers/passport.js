@@ -46,25 +46,24 @@ function initialize(app) {
             }
         });
     });
-    /*
-    app.use(session({
-            secret: process.env.EXPRESS_SESSION_KEY,
-            resave: false,
-            maxAge: 6 * 60 * 60 * 1000, // 6 hours
-            saveUninitialized: true,
-            cookie: { secure: false },
-            store: new AzureSessionStore({
-            name: "myvtmiim",
-            accessKey: "oqLjHbNgQut2mWY0uWMyMUwmsGRlRTwY7xOejg3Nz21go7LHsdLlbw3D9V/FTyKk1eY/j0TyD7FRGXApOEWd2g=="
-        })
-    })); */
     app.use(session({
         secret: process.env.EXPRESS_SESSION_KEY,
         resave: false,
         maxAge: 6 * 60 * 60 * 1000,
         saveUninitialized: true,
-        cookie: { secure: false }
+        cookie: { secure: false },
+        store: new AzureSessionStore({
+            name: "myvtmiim",
+            accessKey: "oqLjHbNgQut2mWY0uWMyMUwmsGRlRTwY7xOejg3Nz21go7LHsdLlbw3D9V/FTyKk1eY/j0TyD7FRGXApOEWd2g=="
+        })
     }));
+    /*app.use(session({
+        secret: process.env.EXPRESS_SESSION_KEY,
+        resave: false,
+        maxAge: 6 * 60 * 60 * 1000, // 6 hours
+        saveUninitialized: true,
+        cookie: { secure: false }
+    })); */
     app.use(passport.initialize());
     app.use(passport.session());
     app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));

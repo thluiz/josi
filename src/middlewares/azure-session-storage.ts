@@ -1,24 +1,24 @@
 /* AzureSessionStore
     License: MIT
-    Description: An express session store using Azure Storage Tables.
+    Description: An express session store using Azure Storage Tables. 
+    Based on https://github.com/asilvas/express-session-azure
 */
 
-var
-    async = require("async"),
-    azure = require('azure-storage'),
-    util = require('util'),
-    Session = require('express-session');
-;
+import { AzureTableService } from './../services/azure-tables-service';
+
+const util = require('util'),
+    Session = require('express-session'),
+    tableName = 'AzureSessionStore';
 
 module.exports = AzureSessionStore;
 
-function AzureSessionStore(options) {
-    this.config = options || {};
+function AzureSessionStore(options) {    
     Session.Store.call(this, options);
-
-    //console.dir(this.config);
-    this.table = azure.createTableService(this.config.name, this.config.accessKey, this.config.host, this.config.authenticationProvider);
-    console.log(this.table);
+    
+    this.tableSvc = AzureTableService.createTableService();
+    AzureTableService.createTableIfNotExists(this.tableSvc, tableName, (err) => {
+        console.log(err);
+    });
 }
 
 util.inherits(AzureSessionStore, Session.Store);
@@ -30,101 +30,45 @@ p.reap = function (ms) {
     console.log("AzureSessionStore.reap: " + thresh.toString());
 };
 
-p.get = function (sid, cb) {
-    console.log("SID GET");
-    console.log(sid);
-
+p.get = function (sid, cb) {    
     var me = this;
-
-    this.table.retrieveEntity('AzureSessionStore', sid, '1', function (err, result) {
-        if (err) {
-            console.log("AzureSessionStore.get: " + err);            
-            if (err.code == "ResourceNotFound") {                
+    AzureTableService.retriveEntity(this.tableSvc, tableName, sid, function (err, result) {
+        if (err) {     
+            if (err.code == "ResourceNotFound") {
                 cb();
-            } else if (err.code == "TableNotFound") {
-                me.table.createTableIfNotExists('AzureSessionStore', function (err) {
-                    if (err) {
-                        console.log("AzureSessionStore.get.createTableIfNotExists: " + err);
-                    }
-                    me.get(sid, cb);
-                });
-            } else {
+            } else {                                
                 cb(err);
-            }
-        } else {
-            console.log("AzureSessionStore.get SUCCESS");
-            console.log("BEFORE PARSE")
-            console.dir(result);
+            }            
+        } else {            
             cb(null, result);
         }
     });
 }
 
-p.set = function (sid, session, cb) {
-    console.log("SID SET");
-    console.log("AzureSessionStore.set: ");
-    console.dir(session);
-        
-    console.log(sid);
-
-    let new_session = {
-        PartitionKey: sid,
-        RowKey: '1'
-    }
-
-    for (var k in session) {            
-        var v = session[k];
-        var t = typeof v;
-        console.log(k);
-        console.log(v);
-        console.log(t);
-
-        switch (t) {
-            case "string":
-            case "number":
-                new_session[k] = v;
-                break;
-            case "object":
-                new_session[k] = JSON.stringify(v);
-                break;
-        }
-    }
-
-    var me = this;
-    console.log("SET - SESSION");
-    console.log(session);
-    console.log("SET - NEW SESSION");
-    console.dir(new_session);
-    this.table.insertOrMergeEntity('AzureSessionStore', new_session, function (err, results) {
+p.set = function (sid, session, cb) {      
+    console.log(sid);  
+    const me = this;
+    let entity = AzureTableService.createEntity(sid, session);
+    console.log(entity);
+    AzureTableService.insertOrMergeEntity(this.tableSvc, tableName, entity, function (err, results) {
         if (err) {
-            console.log("AzureSessionStore.set: " + err);
-            if (err.code == "TableNotFound") {
-                me.table.createTableIfNotExists('AzureSessionStore', function (err) {
-                    if (err) {
-                        console.log("AzureSessionStore.set.createTableIfNotExists: " + err);
-                    }
-                    me.set(sid, session, cb);
-                });
-
-            } else {
-                cb(err.toString(), null);
-            }
-        } else {
-            console.dir(results);
-            console.log("AzureSessionStore.set SUCCESS");
-            console.dir(session);
-            cb(null, new_session);
+            console.log(err);
+            console.log("AzureSessionStore.set: " + err);            
+            cb(err.toString(), null);            
+        } else {            
+            cb(null, entity);
         }
     });
 }
 
-p.destroy = function (sid, cb) {
-    this.table.deleteEntity('AzureSessionStore', { PartitionKey: sid, RowKey: '1' }, function (err) {
+p.destroy = function (sid, cb) {    
+    this.table.deleteEntity('AzureSessionStore', sid, function (err, result) {
         if (err) {
             console.log("AzureSessionStore.destroy: " + err);
+            cb(err)
         }
 
-        cb();
+        cb(null, result);
     });
 }
 
