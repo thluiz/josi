@@ -10,6 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_facility_1 = require("../facilities/database-facility");
 const User_1 = require("../entity/User");
+const express = require('express');
+const AzureSessionStore = require('../middlewares/azure-session-storage');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
@@ -44,6 +46,18 @@ function initialize(app) {
             }
         });
     });
+    /*
+    app.use(session({
+            secret: process.env.EXPRESS_SESSION_KEY,
+            resave: false,
+            maxAge: 6 * 60 * 60 * 1000, // 6 hours
+            saveUninitialized: true,
+            cookie: { secure: false },
+            store: new AzureSessionStore({
+            name: "myvtmiim",
+            accessKey: ""
+        })
+    }));   */
     app.use(session({
         secret: process.env.EXPRESS_SESSION_KEY,
         resave: false,
@@ -60,6 +74,7 @@ function initialize(app) {
     });
     app.get('/oauth/google/callback', passport.authenticate('google', { failureRedirect: '/login_error' }), function (req, res) {
         console.log('e');
+        console.log(req.session);
         res.redirect(process.env.SITE_URL);
     });
     app.get('/relogin', (req, res, next) => {

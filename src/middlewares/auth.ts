@@ -5,10 +5,13 @@ import { User } from '../entity/User';
 
 export function ensureLoggedIn() {
     return function(req, res, next) {        
-        if(process.env.LOAD_ENV === 'true') {
+        /*if(process.env.LOAD_ENV === 'true') {
             next();
             return;
-        }
+        }*/
+
+        console.log(req.isAuthenticated());
+        console.log(req.session);
 
         if (!req.isAuthenticated || !req.isAuthenticated()) {
             res.status(401).json({

@@ -22,10 +22,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 SecurityService.create_pool().then((pool) => {
+    passport.initialize(app);
+    
     old_routes.initialize(app, pool);
     
-    passport.initialize(app);
-
     routes.initialize(app, "./src/routes");    
 
     app.listen(port, function () {

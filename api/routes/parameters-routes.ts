@@ -1,12 +1,10 @@
 import * as sql from 'mssql';
 import { SecurityService } from '../../domain/services/security_services';
-import { JobsService } from '../../domain/services/jobs_services';
 import * as auth from '../../src/middlewares/auth';
+import { JobsService } from '../../src/services/jobs-service';
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
-
-    let jobs: JobsService = new JobsService(connection_pool);
 
     app.get("/api/branches/:id?", 
     auth.ensureLoggedIn(),
@@ -362,10 +360,9 @@ export function configure_routes(app: any, connection_pool: any) {
         .query(`update branch_map set
                     active = 0                    
                 where id = @id`); 
-
-        jobs.update_voucher_site();
-
-        res.send({ sucess: true});   
+        
+        let result_site_update = await JobsService.update_voucher_site();
+        res.send(result_site_update);   
     });        
 
     app.post("/api/branch_products/:id", 
@@ -434,9 +431,8 @@ export function configure_routes(app: any, connection_pool: any) {
         .input("title", sql.VarChar(200), req.body.title)
         .execute(`SaveBranchMap`); 
         
-        jobs.update_voucher_site();
-
-        res.send({ sucess: true});   
+        let result_site_update = await JobsService.update_voucher_site();
+        res.send(result_site_update);   
     });
 
     app.post("/api/products/archive", 

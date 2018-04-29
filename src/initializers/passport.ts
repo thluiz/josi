@@ -1,6 +1,8 @@
 import { DatabaseFacility } from "../facilities/database-facility";
 import { User } from "../entity/User";
 
+const express = require('express');
+const AzureSessionStore = require('../middlewares/azure-session-storage');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
@@ -42,7 +44,20 @@ export function initialize(app) {
             return;
         }
     });
-    
+
+    /*
+    app.use(session({ 
+            secret: process.env.EXPRESS_SESSION_KEY,
+            resave: false,
+            maxAge: 6 * 60 * 60 * 1000, // 6 hours
+            saveUninitialized: true,
+            cookie: { secure: false },
+            store: new AzureSessionStore({ 
+            name: "myvtmiim", 
+            accessKey: "" 
+        }) 
+    }));   */ 
+
     app.use(session({
         secret: process.env.EXPRESS_SESSION_KEY,
         resave: false,
@@ -54,8 +69,7 @@ export function initialize(app) {
     app.use(passport.initialize());
     app.use(passport.session());
     
-    app.get('/auth/google',
-            passport.authenticate('google', { scope: ['profile', 'email'] }));
+    app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
     
     app.get('/auth/google/callback',
         passport.authenticate('google', { failureRedirect: '/login_error' }),
@@ -68,6 +82,7 @@ export function initialize(app) {
         passport.authenticate('google', { failureRedirect: '/login_error' }),
         function (req, res) {
             console.log('e');
+            console.log(req.session);
             res.redirect(process.env.SITE_URL);
         });
     
