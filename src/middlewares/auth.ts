@@ -11,10 +11,8 @@ export function ensureLoggedIn() {
             return;
         }*/
 
-        console.log(req.isAuthenticated());
-        console.log(req.session);
-
         LoggerService.log('ensureLoggedIn - session', req.session);
+        LoggerService.log('ensureLoggedIn - isAuthenticated', req.isAuthenticated());
 
         if (!req.isAuthenticated || !req.isAuthenticated()) {
             res.status(401).json({

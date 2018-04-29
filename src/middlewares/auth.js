@@ -8,9 +8,8 @@ function ensureLoggedIn() {
             next();
             return;
         }*/
-        console.log(req.isAuthenticated());
-        console.log(req.session);
         logger_service_1.LoggerService.log('ensureLoggedIn - session', req.session);
+        logger_service_1.LoggerService.log('ensureLoggedIn - isAuthenticated', req.isAuthenticated());
         if (!req.isAuthenticated || !req.isAuthenticated()) {
             res.status(401).json({
                 success: false,

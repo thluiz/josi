@@ -53,6 +53,8 @@ class SecurityService {
     }
     static checkUserHasPermission(user, permission) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (user == null || permission == null)
+                return false;
             let has_permission = false;
             switch (permission) {
                 case (Permissions.Operator):

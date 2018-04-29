@@ -47,6 +47,9 @@ export class SecurityService {
     }
 
     static async checkUserHasPermission(user: User, permission: Permissions): Promise<boolean> {
+        if(user == null || permission == null)
+            return false;
+
         let has_permission = false;
 
         switch (permission) {
