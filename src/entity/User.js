@@ -22,22 +22,36 @@ const Person_1 = require("./Person");
 const database_facility_1 = require("../facilities/database-facility");
 let User = User_1 = class User {
     is_director() {
-        return this.person.is_director;
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.ensurePersonLoaded();
+            return this.person.is_director;
+        });
     }
     is_manager() {
-        return this.person.is_manager;
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.ensurePersonLoaded();
+            return this.person.is_manager;
+        });
     }
     is_operator() {
-        return this.person.is_operator;
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.ensurePersonLoaded();
+            return this.person.is_operator;
+        });
     }
     getPersonId() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.person == null) {
-                const UR = yield database_facility_1.DatabaseFacility.getRepository(User_1);
-                let user = yield UR.findOne({ id: this.id }, { relations: ["person"] });
-                return user.person.id[0];
-            }
+            yield this.ensurePersonLoaded();
             return this.person.id[0];
+        });
+    }
+    ensurePersonLoaded() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.person != null)
+                return;
+            const UR = yield database_facility_1.DatabaseFacility.getRepository(User_1);
+            let user = yield UR.findOne({ id: this.id }, { relations: ["person"] });
+            this.person = user.person;
         });
     }
 };

@@ -53,6 +53,7 @@ export class AzureTableService {
         let new_data = {};
         if(!data)
             return null;
+            
         return JSON.parse(data.Content._);
     }
 }

@@ -24,28 +24,35 @@ export class User {
     @Column()
     token: string;
 
-    is_director() {
+    async is_director() {
+        await this.ensurePersonLoaded();
         return this.person.is_director;
     }
 
-    is_manager() {
+    async is_manager() {
+        await this.ensurePersonLoaded();
+
         return this.person.is_manager;
     }
 
-    is_operator() {
+    async is_operator() {
+        await this.ensurePersonLoaded();
+
         return this.person.is_operator;
     }
 
     async getPersonId() : Promise<number> {
-        if(this.person == null) {
-            const UR = await DatabaseFacility.getRepository<User>(User);
-            let user = await UR.findOne(
-                { id: this.id },
-                { relations: [ "person"] }
-            );
+        await this.ensurePersonLoaded();
 
-            return user.person.id[0];
-        }
         return this.person.id[0];
+    }
+
+    private async ensurePersonLoaded() {
+        if (this.person != null)
+            return;
+            
+        const UR = await DatabaseFacility.getRepository<User>(User);
+        let user = await UR.findOne({ id: this.id }, { relations: ["person"] });
+        this.person = user.person;        
     }
 }

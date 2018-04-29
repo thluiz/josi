@@ -57,13 +57,13 @@ class SecurityService {
             let has_permission = false;
             switch (permission) {
                 case (Permissions.Operator):
-                    has_permission = user.is_operator() || user.is_director() || user.is_manager();
+                    has_permission = ((yield user.is_operator()) || (yield user.is_director()) || (yield user.is_manager()));
                     break;
                 case (Permissions.Manager):
-                    has_permission = user.is_director() || user.is_manager();
+                    has_permission = ((yield user.is_director()) || (yield user.is_manager()));
                     break;
                 case (Permissions.Director):
-                    has_permission = user.is_director();
+                    has_permission = (yield user.is_director());
                     break;
             }
             return has_permission;

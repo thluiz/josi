@@ -51,10 +51,7 @@ export function initialize(app) {
             maxAge: 6 * 60 * 60 * 1000, // 6 hours
             saveUninitialized: true,
             cookie: { secure: false },
-            store: new AzureSessionStore({ 
-            name: "myvtmiim", 
-            accessKey: "oqLjHbNgQut2mWY0uWMyMUwmsGRlRTwY7xOejg3Nz21go7LHsdLlbw3D9V/FTyKk1eY/j0TyD7FRGXApOEWd2g==" 
-        }) 
+            store: new AzureSessionStore() 
     }));
     
     /*app.use(session({
@@ -72,16 +69,13 @@ export function initialize(app) {
     
     app.get('/auth/google/callback',
         passport.authenticate('google', { failureRedirect: '/login_error' }),
-        function (req, res) {
-            console.log('a');
+        function (req, res) {            
             res.redirect(process.env.SITE_URL);
         });
     
     app.get('/oauth/google/callback',
         passport.authenticate('google', { failureRedirect: '/login_error' }),
-        function (req, res) {
-            console.log('e');
-            console.log(req.session);
+        function (req, res) {            
             res.redirect(process.env.SITE_URL);
         });
     

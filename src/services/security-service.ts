@@ -57,13 +57,13 @@ export class SecurityService {
 
         switch (permission) {
             case (Permissions.Operator):
-                has_permission = user.is_operator() || user.is_director() || user.is_manager();
+                has_permission = (await user.is_operator() || await user.is_director() || await user.is_manager());
                 break;
             case (Permissions.Manager):
-                has_permission = user.is_director() || user.is_manager();
+                has_permission = (await user.is_director() || await user.is_manager());
                 break;
             case (Permissions.Director):
-                has_permission = user.is_director();
+                has_permission = (await user.is_director());
                 break;
         }
 
