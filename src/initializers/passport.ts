@@ -44,7 +44,7 @@ export function initialize(app) {
             return;
         }
     });
-
+    
     /*
     app.use(session({ 
             secret: process.env.EXPRESS_SESSION_KEY,
@@ -54,10 +54,10 @@ export function initialize(app) {
             cookie: { secure: false },
             store: new AzureSessionStore({ 
             name: "myvtmiim", 
-            accessKey: "" 
+            accessKey: "oqLjHbNgQut2mWY0uWMyMUwmsGRlRTwY7xOejg3Nz21go7LHsdLlbw3D9V/FTyKk1eY/j0TyD7FRGXApOEWd2g==" 
         }) 
-    }));   */ 
-
+    })); */
+    
     app.use(session({
         secret: process.env.EXPRESS_SESSION_KEY,
         resave: false,

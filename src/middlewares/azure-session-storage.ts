@@ -31,12 +31,15 @@ p.reap = function (ms) {
 };
 
 p.get = function (sid, cb) {
+    console.log("SID GET");
+    console.log(sid);
+
     var me = this;
 
     this.table.retrieveEntity('AzureSessionStore', sid, '1', function (err, result) {
         if (err) {
-            //console.log("AzureSessionStore.get: " + err);
-            if (err.code == "ResourceNotFound") {
+            console.log("AzureSessionStore.get: " + err);            
+            if (err.code == "ResourceNotFound") {                
                 cb();
             } else if (err.code == "TableNotFound") {
                 me.table.createTableIfNotExists('AzureSessionStore', function (err) {
@@ -49,38 +52,33 @@ p.get = function (sid, cb) {
                 cb(err);
             }
         } else {
-            //console.log("AzureSessionStore.get SUCCESS");
-            //console.dir(result);
-            delete result._; // from azure api, don't polute final session with it
-            for (var k in result) {
-                var v = result[k];
-                if (typeof v == "string" && v.indexOf("{") == 0) {
-                    try {
-                        result[k] = JSON.parse(v);
-                    } catch (ex) {
-                        console.log("AzureSessionStore.get.parse: " + ex.toString());
-                    }
-                }
-            }
+            console.log("AzureSessionStore.get SUCCESS");
+            console.log("BEFORE PARSE")
+            console.dir(result);
             cb(null, result);
         }
     });
 }
 
 p.set = function (sid, session, cb) {
-    //console.log("AzureSessionStore.set: ");
-    //console.dir(session);
+    console.log("SID SET");
+    console.log("AzureSessionStore.set: ");
+    console.dir(session);
+        
+    console.log(sid);
 
-    var new_session = {
+    let new_session = {
         PartitionKey: sid,
         RowKey: '1'
     }
 
-    for (var k in session) {
-        if (k.indexOf("_") == 0)
-            continue; // do not copy "private" properties
+    for (var k in session) {            
         var v = session[k];
         var t = typeof v;
+        console.log(k);
+        console.log(v);
+        console.log(t);
+
         switch (t) {
             case "string":
             case "number":
@@ -93,9 +91,13 @@ p.set = function (sid, session, cb) {
     }
 
     var me = this;
-    this.table.insertOrReplaceEntity('AzureSessionStore', new_session, function (err, results) {
+    console.log("SET - SESSION");
+    console.log(session);
+    console.log("SET - NEW SESSION");
+    console.dir(new_session);
+    this.table.insertOrMergeEntity('AzureSessionStore', new_session, function (err, results) {
         if (err) {
-            //console.log("AzureSessionStore.set: " + err);
+            console.log("AzureSessionStore.set: " + err);
             if (err.code == "TableNotFound") {
                 me.table.createTableIfNotExists('AzureSessionStore', function (err) {
                     if (err) {
@@ -108,9 +110,10 @@ p.set = function (sid, session, cb) {
                 cb(err.toString(), null);
             }
         } else {
-            //console.log("AzureSessionStore.set SUCCESS");
-            //console.dir(session);
-            cb(null, session);
+            console.dir(results);
+            console.log("AzureSessionStore.set SUCCESS");
+            console.dir(session);
+            cb(null, new_session);
         }
     });
 }

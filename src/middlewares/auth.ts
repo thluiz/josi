@@ -2,6 +2,7 @@ import { SecurityService } from './../services/security-service';
 import { DatabaseFacility } from './../facilities/database-facility';
 import { Permissions } from "../services/security-service";
 import { User } from '../entity/User';
+import { LoggerService } from '../services/logger-service';
 
 export function ensureLoggedIn() {
     return function(req, res, next) {        
@@ -12,6 +13,8 @@ export function ensureLoggedIn() {
 
         console.log(req.isAuthenticated());
         console.log(req.session);
+
+        LoggerService.log('ensureLoggedIn - session', req.session);
 
         if (!req.isAuthenticated || !req.isAuthenticated()) {
             res.status(401).json({

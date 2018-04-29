@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const security_service_1 = require("./../services/security-service");
+const logger_service_1 = require("../services/logger-service");
 function ensureLoggedIn() {
     return function (req, res, next) {
         /*if(process.env.LOAD_ENV === 'true') {
@@ -9,6 +10,7 @@ function ensureLoggedIn() {
         }*/
         console.log(req.isAuthenticated());
         console.log(req.session);
+        logger_service_1.LoggerService.log('ensureLoggedIn - session', req.session);
         if (!req.isAuthenticated || !req.isAuthenticated()) {
             res.status(401).json({
                 success: false,
