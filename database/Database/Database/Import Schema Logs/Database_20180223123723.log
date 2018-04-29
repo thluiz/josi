@@ -1,0 +1,82 @@
+22/02/2018 21:37:23	This log contains information about the import schema operation into project 'Database' on computer 'HERMES' by user 'conta'.
+22/02/2018 21:37:24	Import of database schema has started.
+22/02/2018 21:37:28	Gathering logins
+22/02/2018 21:40:48	Gathering database credentials
+22/02/2018 21:40:48	Gathering database options
+22/02/2018 21:40:48	Gathering generic database scoped configuration option
+22/02/2018 21:40:48	Gathering users
+22/02/2018 21:40:48	Gathering roles
+22/02/2018 21:40:48	Gathering application roles
+22/02/2018 21:40:48	Gathering role memberships
+22/02/2018 21:40:48	Gathering filegroups
+22/02/2018 21:40:48	Gathering full-text catalogs
+22/02/2018 21:40:48	Gathering assemblies
+22/02/2018 21:40:48	Gathering certificates
+22/02/2018 21:40:48	Gathering symmetric keys
+22/02/2018 21:40:48	Gathering encrypted symmetric keys
+22/02/2018 21:40:48	Gathering schemas
+22/02/2018 21:40:48	Gathering XML schema collections
+22/02/2018 21:40:48	Gathering user-defined data types
+22/02/2018 21:40:48	Gathering user-defined types
+22/02/2018 21:40:48	Gathering table types
+22/02/2018 21:40:48	Gathering unique keys for table types
+22/02/2018 21:40:48	Gathering primary keys for table types
+22/02/2018 21:40:48	Gathering indexes for table types
+22/02/2018 21:40:48	Gathering check constraints for table types
+22/02/2018 21:40:48	Gathering default constraints for table types
+22/02/2018 21:40:48	Gathering partition functions
+22/02/2018 21:40:48	Gathering partition schemes
+22/02/2018 21:40:48	Gathering functions
+22/02/2018 21:40:48	Gathering encrypted functions
+22/02/2018 21:40:48	Gathering aggregates
+22/02/2018 21:40:48	Gathering procedures
+22/02/2018 21:40:49	Gathering encrypted procedures
+22/02/2018 21:40:49	Gathering tables
+22/02/2018 21:40:53	Gathering primary keys
+22/02/2018 21:40:53	Gathering unique constraints
+22/02/2018 21:40:53	Gathering foreign keys
+22/02/2018 21:40:54	Gathering default constraints
+22/02/2018 21:40:54	Gathering check constraints
+22/02/2018 21:40:54	Gathering views
+22/02/2018 21:40:54	Gathering encrypted views
+22/02/2018 21:40:54	Gathering indexes
+22/02/2018 21:40:54	Gathering statistics
+22/02/2018 21:40:54	Gathering full-text index stoplists
+22/02/2018 21:40:54	Gathering search property lists
+22/02/2018 21:40:54	Gathering search properties
+22/02/2018 21:40:54	Gathering full-text indexes
+22/02/2018 21:40:54	Gathering column store indexes
+22/02/2018 21:40:54	Gathering spatial indexes
+22/02/2018 21:40:54	Gathering XML indexes
+22/02/2018 21:40:54	Gathering Selective XML indexes
+22/02/2018 21:40:54	Gathering encrypted triggers
+22/02/2018 21:40:54	Gathering triggers
+22/02/2018 21:40:54	Gathering encrypted and clr ddl triggers
+22/02/2018 21:40:54	Gathering ddl triggers
+22/02/2018 21:40:54	Gathering synonyms
+22/02/2018 21:40:54	Gathering defaults
+22/02/2018 21:40:54	Gathering data constraint uddt bindings
+22/02/2018 21:40:54	Gathering rules
+22/02/2018 21:40:54	Gathering data constraint uddt bindings
+22/02/2018 21:40:54	Gathering message types
+22/02/2018 21:40:54	Gathering queues
+22/02/2018 21:40:54	Gathering contracts
+22/02/2018 21:40:54	Gathering services
+22/02/2018 21:40:54	Gathering event notifications
+22/02/2018 21:40:54	Gathering remote service bindings
+22/02/2018 21:40:54	Gathering broker priorities
+22/02/2018 21:40:54	Gathering signatures
+22/02/2018 21:40:54	Gathering data compression options
+22/02/2018 21:40:54	Gathering sequence types
+22/02/2018 21:40:54	Gathering security policies
+22/02/2018 21:40:54	Gather column encryption keys
+22/02/2018 21:40:54	Gathering column master keys
+22/02/2018 21:40:54	Gathering external data sources
+22/02/2018 21:40:54	Gathering external tables
+22/02/2018 21:40:54	Gathering extended properties
+22/02/2018 21:41:16	Gathering logins
+22/02/2018 21:41:20	Scanning project for duplicate elements
+22/02/2018 21:41:21	Finished duplicate element processing
+22/02/2018 21:41:24	Finished importing database.
+22/02/2018 21:41:24	A summary of the import was saved to the following location: C:\VTGit\josi\database\Database\Database\Import Schema Logs\Database_20180223123723.log
+22/02/2018 21:41:24	Click Finish to continue...

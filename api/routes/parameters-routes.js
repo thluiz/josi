@@ -9,12 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
-const security_services_1 = require("../../domain/services/security_services");
 const jobs_services_1 = require("../../domain/services/jobs_services");
+const auth = require("../../src/middlewares/auth");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     let jobs = new jobs_services_1.JobsService(connection_pool);
-    app.get("/api/branches/:id?", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/branches/:id?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         if (!req.params.id) {
             const result = yield new sql.Request(pool)
                 .execute(`GetBranches`);
@@ -28,31 +28,31 @@ function configure_routes(app, connection_pool) {
             res.send(response[0].empty ? [] : response);
         }
     }));
-    app.get("/api/branch_maps/branch/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/branch_maps/branch/:id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input("branch_id", sql.Int, req.params.id)
             .execute(`GetBranchMap`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/branch_products/branch/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/branch_products/branch/:id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input("branch_id", sql.Int, req.params.id)
             .execute(`GetBranchProducts`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/domains", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/domains", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetDomains`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/programs", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/programs", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetPrograms`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/configurations", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/configurations", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield new sql.Request(pool)
                 .query(`select * from [configuration] for json path`);
@@ -63,7 +63,7 @@ function configure_routes(app, connection_pool) {
             res.status(500).json(error);
         }
     }));
-    app.get("/api/products", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/products", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield new sql.Request(pool)
                 .query(`select * from [vwProduct] where archived = 0 for json path`);
@@ -79,7 +79,7 @@ function configure_routes(app, connection_pool) {
             }
         }
     }));
-    app.get("/api/product_categories", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/product_categories", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield new sql.Request(pool)
                 .query(`select * from [product_category] for json path`);
@@ -95,62 +95,62 @@ function configure_routes(app, connection_pool) {
             }
         }
     }));
-    app.get("/api/countries", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/countries", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from [country] order by [order] for json path`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/kf_families", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/kf_families", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetKungFuFamilies`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/recurrence_types", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/recurrence_types", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetRecurrenceTypes`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/incident_types", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/incident_types", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetIncidentTypes`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/contact_types", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/contact_types", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetContactTypes`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/roles", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/roles", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetRoles`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/groups", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/groups", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from [group] where active = 1 order by [order] for json path`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/locations", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/locations", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from [location] where active = 1 order by [order] for json path`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/payment_methods", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/payment_methods", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from payment_method where active = 1 order by [order] for json path`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/acquirers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/acquirers", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from acquirer where active = 1 order by [order] for json path`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/currencies", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/currencies", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from currency for json path`);
         let response = result.recordset[0];
@@ -159,7 +159,7 @@ function configure_routes(app, connection_pool) {
     /**
      * UPDATES
      */
-    app.post("/api/branches", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/branches", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const branch = req.body.branch;
         const result = yield new sql.Request(pool)
             .input('id', sql.Int, branch.id)
@@ -173,7 +173,7 @@ function configure_routes(app, connection_pool) {
                 where id = @id`);
         res.send({ sucess: true });
     }));
-    app.post("/api/payment_methods", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/payment_methods", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const payment_method = req.body.payment_method;
         if (payment_method.id > 0) {
             const result = yield new sql.Request(pool)
@@ -194,7 +194,7 @@ function configure_routes(app, connection_pool) {
         }
         res.send({ sucess: true });
     }));
-    app.post("/api/acquirers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/acquirers", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const acquirer = req.body.acquirer;
         if (acquirer.id > 0) {
             const result = yield new sql.Request(pool)
@@ -215,7 +215,7 @@ function configure_routes(app, connection_pool) {
         }
         res.send({ sucess: true });
     }));
-    app.post("/api/product_categories", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/product_categories", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const product_category = req.body.product_category;
         if (product_category.id > 0) {
             const result = yield new sql.Request(pool)
@@ -233,7 +233,7 @@ function configure_routes(app, connection_pool) {
         }
         res.send({ sucess: true });
     }));
-    app.post("/api/currencies", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/currencies", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const currency = req.body.currency;
         if (currency.id > 0) {
             const result = yield new sql.Request(pool)
@@ -254,7 +254,7 @@ function configure_routes(app, connection_pool) {
         }
         res.send({ sucess: true });
     }));
-    app.post("/api/branch_maps/archive", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/branch_maps/archive", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('id', sql.Int, req.body.id)
             .query(`update branch_map set
@@ -263,7 +263,7 @@ function configure_routes(app, connection_pool) {
         jobs.update_voucher_site();
         res.send({ sucess: true });
     }));
-    app.post("/api/branch_products/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/branch_products/:id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input("id", sql.Int, req.body.id)
             .input("branch_id", sql.Int, req.params.id)
@@ -274,7 +274,7 @@ function configure_routes(app, connection_pool) {
             .execute(`SaveBranchProduct`);
         res.send({ sucess: true });
     }));
-    app.post("/api/branch_products/archive/:branch_id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/branch_products/archive/:branch_id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('id', sql.Int, req.body.product.id)
             .query(`update branch_product set
@@ -282,7 +282,7 @@ function configure_routes(app, connection_pool) {
                 where id = @id`);
         res.send({ sucess: true });
     }));
-    app.post("/api/branch_products", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/branch_products", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input("branch_id", sql.Int, req.body.branch_id)
             .input("product_id", sql.Int, req.body.product_id)
@@ -290,7 +290,7 @@ function configure_routes(app, connection_pool) {
             .execute(`AssociateBranchProduct`);
         res.send({ sucess: true });
     }));
-    app.post("/api/branch_maps", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/branch_maps", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const week_days = req.body.week_days
             .filter(wk => wk.selected)
             .map((wk) => {
@@ -312,7 +312,7 @@ function configure_routes(app, connection_pool) {
         jobs.update_voucher_site();
         res.send({ sucess: true });
     }));
-    app.post("/api/products/archive", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/products/archive", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const product = req.body.product;
         const result = yield new sql.Request(pool)
             .input('id', sql.Int, product.id)
@@ -321,7 +321,7 @@ function configure_routes(app, connection_pool) {
         where id = @id`);
         res.send({ sucess: true });
     }));
-    app.post("/api/products", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/products", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const product = req.body.product;
         if (product.id > 0) {
             const result = yield new sql.Request(pool)
@@ -368,7 +368,7 @@ function configure_routes(app, connection_pool) {
         }
         res.send({ sucess: true });
     }));
-    app.post("/api/branches_acquirers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/branches_acquirers", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('branch_id', sql.Int, req.body.branch_id)
             .input('acquirer_id', sql.Int, req.body.acquirer_id)

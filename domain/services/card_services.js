@@ -101,23 +101,6 @@ class CardService {
                 .execute(`SaveCardCommentary`);
         });
     }
-    /**
-     * JOBS
-     */
-    check_cards_has_overdue_cards() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield new sql.Request(this.sql_pool)
-                .execute(`CheckCardsHasOverdueCards`);
-            return result;
-        });
-    }
-    correct_card_out_of_parent_step() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield new sql.Request(this.sql_pool)
-                .execute(`CorrectCardOutOfParentStep`);
-            return result;
-        });
-    }
 }
 exports.CardService = CardService;
 //# sourceMappingURL=card_services.js.map

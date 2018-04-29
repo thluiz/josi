@@ -1,12 +1,13 @@
 import * as sql from 'mssql';
 import { SecurityService } from '../../domain/services/security_services';
 import { CardService } from '../../domain/services/card_services';
+import * as auth from '../../src/middlewares/auth';
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
 
     app.get("/api/financial/accounts/:branch_id?", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
 
         const result = await new sql.Request(pool)  
@@ -26,7 +27,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/financial_board/expected_payments/:account", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
 
         const result = await new sql.Request(pool)  
@@ -43,7 +44,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/financial_board/account_status/:account", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
 
         const result = await new sql.Request(pool)  
@@ -60,7 +61,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/financial_board/missing_payments/:account", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
 
         const result = await new sql.Request(pool)  
@@ -76,7 +77,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
 
     app.post("/api/financial/accounts", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
         const account = req.body.account;
 

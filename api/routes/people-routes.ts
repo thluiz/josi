@@ -1,6 +1,7 @@
 import * as sql from 'mssql';
 import { PersonService } from '../../domain/services/person_services';
-import { SecurityService } from '../../domain/services/security_services';
+import * as auth from '../../src/middlewares/auth';
+import { SecurityService } from '../../src/services/security-service';
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
@@ -8,7 +9,7 @@ export function configure_routes(app: any, connection_pool: any) {
     const person_service = new PersonService(pool);    
 
     app.get("/api/people/members", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {                        
         const result = await new sql.Request(pool)            
         .execute(`GetMembersList`);                
@@ -17,7 +18,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/people", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {                        
         const result = await new sql.Request(pool)            
         .execute(`GetPeopleList`);                
@@ -26,7 +27,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
     
     app.get("/api/people/:id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {                        
         const result = await new sql.Request(pool)
         .input('id', sql.Int, request.params.id)
@@ -36,7 +37,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/people/search/:name?", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {                        
         const result = await new sql.Request(pool)
         .input('names', sql.VarChar(sql.MAX), request.params.name)
@@ -46,7 +47,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
     
     app.post("/api/people", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {                        
         try {        
             const result = await person_service.update_person_data(
@@ -60,7 +61,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/person", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         try {        
             const result = await person_service.register_new_person(
@@ -74,7 +75,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/voucher_people", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                               
         const result = await new sql.Request(pool)        
         .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
@@ -90,7 +91,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/invited_people", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                               
         const result = await new sql.Request(pool)        
         .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
@@ -106,7 +107,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/interested", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                               
         const result = await new sql.Request(pool)        
         .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
@@ -121,7 +122,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/people-away", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                               
         const result = await new sql.Request(pool)        
         .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
@@ -136,7 +137,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/service-providers", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                               
         const result = await new sql.Request(pool)        
         .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
@@ -151,7 +152,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/people/:id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {                        
         const result = await new sql.Request(pool)
         .input('id', sql.Int, request.params.id)
@@ -162,7 +163,7 @@ export function configure_routes(app: any, connection_pool: any) {
     
 
     app.get("/api/person_address/:person_id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {                        
         const result = await new sql.Request(pool)
         .input('person_id', sql.Int, request.params.person_id)
@@ -174,7 +175,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/person_communication/pending/:person_id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {                        
         const result = await new sql.Request(pool)
         .input('person_id', sql.Int, request.params.person_id)
@@ -185,7 +186,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/person_financial/pending/:person_id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {                        
         const result = await new sql.Request(pool)
         .input('person_id', sql.Int, request.params.person_id)
@@ -196,7 +197,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/person_schedule/pending/:person_id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {                        
         const result = await new sql.Request(pool)
         .input('person_id', sql.Int, request.params.person_id)
@@ -207,7 +208,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/person_address", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {            
         let result = await person_service.save_address(request.body.address);            
 
@@ -215,7 +216,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/person_address/archive", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {            
         let result = await person_service.archive_address(request.body.person_address);            
 
@@ -227,7 +228,7 @@ export function configure_routes(app: any, connection_pool: any) {
      */
 
     app.post("/api/person_role/delete", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {            
         let result = await person_service.remove_role(
             request.body.person_id, 
@@ -238,7 +239,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/person_role", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {                        
         const result = await new sql.Request(pool)            
         .execute(`GetPeopleList`);                
@@ -248,7 +249,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
 
     app.post("/api/person_role", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {            
         let result = await person_service.add_role(
             request.body.person_id, 
@@ -259,7 +260,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/person_role/person/:id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {                                
         const result = await new sql.Request(pool)
         .input('person_id', sql.Int, request.params.id)
@@ -275,7 +276,7 @@ export function configure_routes(app: any, connection_pool: any) {
      */
 
     app.post("/api/people_alias/kf_name", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {            
         let result = await person_service.change_kf_name(
             request.body.person_id, 
@@ -291,7 +292,7 @@ export function configure_routes(app: any, connection_pool: any) {
     */
 
     app.post("/api/person_contact/remove", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {            
         let result = await person_service.remove_contact(
             request.body.contact_id,                 
@@ -301,7 +302,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/person_contact", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {   
         try {         
             let result = await person_service.save_contact({ 
@@ -320,7 +321,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/person_contact/person/:id/:only_principal?", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {  
         try {                      
             const result = await new sql.Request(pool)
@@ -338,7 +339,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/person/missing_data/:id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {  
         try {                      
             const result = await new sql.Request(pool)
@@ -359,7 +360,7 @@ export function configure_routes(app: any, connection_pool: any) {
      */
 
     app.get("/api/person_partnerships/person/:id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
         try {                                              
             const result = await new sql.Request(pool)   
@@ -382,7 +383,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/person_partnerships", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
         try {                          
             let partnership = req.body.partnership;
@@ -413,7 +414,7 @@ export function configure_routes(app: any, connection_pool: any) {
      */
 
     app.get("/api/person_external_units/person/:id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
         try {                                              
             const result = await new sql.Request(pool)   
@@ -436,7 +437,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/person_external_units", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
         try {                          
             let external_unit = req.body.external_unit;
@@ -466,7 +467,7 @@ export function configure_routes(app: any, connection_pool: any) {
      */
 
     app.get("/api/person_indications/person/:id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
         try {                                              
             const result = await new sql.Request(pool)   
@@ -489,7 +490,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/person_indications", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
         try {                          
             let indication = req.body.indication;
@@ -525,7 +526,7 @@ export function configure_routes(app: any, connection_pool: any) {
      */
 
     app.post("/api/person_schedule/delete", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => { 
         let result = await person_service.remove_schedule(
             request.body.id
@@ -535,7 +536,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/person_schedule/person/:id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => { 
         try {                     
             let result = await new sql.Request(pool)                
@@ -551,7 +552,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/person_schedule", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => { 
         let result = await person_service.save_schedule(
             request.body.schedule
@@ -565,7 +566,7 @@ export function configure_routes(app: any, connection_pool: any) {
      */
 
     app.get("/api/people_comments/about/:id/:show_archived?", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {  
         try {                      
             const result = await new sql.Request(pool)
@@ -583,7 +584,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/people_comments/about", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => { 
         let result = await person_service.save_comment_about(
             request.body.person_id,
@@ -594,7 +595,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/people_comments/archive", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => { 
         let result = await person_service.archive_comment(
             request.body.id

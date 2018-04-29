@@ -10,33 +10,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
 const person_services_1 = require("../../domain/services/person_services");
-const security_services_1 = require("../../domain/services/security_services");
+const auth = require("../../src/middlewares/auth");
+const security_service_1 = require("../../src/services/security-service");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     const person_service = new person_services_1.PersonService(pool);
-    app.get("/api/people/members", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/people/members", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetMembersList`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/people", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/people", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetPeopleList`);
         response.send(result.recordset[0]);
     }));
-    app.get("/api/people/:id", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/people/:id", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('id', sql.Int, request.params.id)
             .execute(`GetPersonData`);
         response.send(result.recordset[0][0]);
     }));
-    app.get("/api/people/search/:name?", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/people/search/:name?", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('names', sql.VarChar(sql.MAX), request.params.name)
             .execute(`GetPeopleByNameForTypeahead`);
         response.send(result.recordset[0]);
     }));
-    app.post("/api/people", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/people", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield person_service.update_person_data(request.body.person);
             res.send(result.recordset[0][0]);
@@ -45,16 +46,16 @@ function configure_routes(app, connection_pool) {
             res.status(500).json(error);
         }
     }));
-    app.post("/api/person", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/person", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
-            const result = yield person_service.register_new_person(req.body.person, security_services_1.SecurityService.getUserFromRequest(req));
+            const result = yield person_service.register_new_person(req.body.person, security_service_1.SecurityService.getUserFromRequest(req));
             res.send(result.recordset[0][0]);
         }
         catch (error) {
             res.status(500).json(error);
         }
     }));
-    app.get("/api/voucher_people", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/voucher_people", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
             .input('voucher', sql.Int, req.query.voucher > 0 ? req.query.voucher : null)
@@ -65,7 +66,7 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/invited_people", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/invited_people", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
             .input('voucher', sql.Int, req.query.voucher > 0 ? req.query.voucher : null)
@@ -76,7 +77,7 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/interested", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/interested", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
             .input('name', sql.VarChar(150), req.query.name)
@@ -86,7 +87,7 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/people-away", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/people-away", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
             .input('name', sql.VarChar(150), req.query.name)
@@ -96,7 +97,7 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/service-providers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/service-providers", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
             .input('name', sql.VarChar(150), req.query.name)
@@ -106,65 +107,65 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/people/:id", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/people/:id", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('id', sql.Int, request.params.id)
             .execute(`GetPersonData`);
         response.send(result.recordset[0][0]);
     }));
-    app.get("/api/person_address/:person_id", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/person_address/:person_id", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('person_id', sql.Int, request.params.person_id)
             .execute(`GetPersonAddress`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/person_communication/pending/:person_id", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/person_communication/pending/:person_id", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('person_id', sql.Int, request.params.person_id)
             .execute(`GetPersonPendingCommunication`);
         let response = result.recordset[0];
         res.send(response);
     }));
-    app.get("/api/person_financial/pending/:person_id", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/person_financial/pending/:person_id", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('person_id', sql.Int, request.params.person_id)
             .execute(`GetPersonPendingFinancial`);
         let response = result.recordset[0];
         res.send(response);
     }));
-    app.get("/api/person_schedule/pending/:person_id", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/person_schedule/pending/:person_id", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('person_id', sql.Int, request.params.person_id)
             .execute(`GetPersonPendingSchedule`);
         let response = result.recordset[0];
         res.send(response);
     }));
-    app.post("/api/person_address", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/person_address", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.save_address(request.body.address);
         response.send({ sucess: true });
     }));
-    app.post("/api/person_address/archive", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/person_address/archive", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.archive_address(request.body.person_address);
         response.send({ sucess: true });
     }));
     /**
      * ROLES
      */
-    app.post("/api/person_role/delete", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/person_role/delete", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.remove_role(request.body.person_id, request.body.role_id);
         response.send({ sucess: true });
     }));
-    app.get("/api/person_role", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/person_role", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetPeopleList`);
         response.send(result.recordset[0]);
     }));
-    app.post("/api/person_role", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/person_role", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.add_role(request.body.person_id, request.body.role_id);
         response.send({ sucess: true });
     }));
-    app.get("/api/person_role/person/:id", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/person_role/person/:id", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('person_id', sql.Int, request.params.id)
             .execute(`GetPersonRoles`);
@@ -174,18 +175,18 @@ function configure_routes(app, connection_pool) {
     /**
      * ALIAS
      */
-    app.post("/api/people_alias/kf_name", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/people_alias/kf_name", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.change_kf_name(request.body.person_id, request.body.kf_name, request.body.ideograms);
         response.send({ sucess: true });
     }));
     /**
      * CONTACTS
     */
-    app.post("/api/person_contact/remove", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/person_contact/remove", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.remove_contact(request.body.contact_id);
         response.send({ sucess: true });
     }));
-    app.post("/api/person_contact", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/person_contact", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             let result = yield person_service.save_contact({
                 person_id: request.body.person_id,
@@ -200,7 +201,7 @@ function configure_routes(app, connection_pool) {
             res.status(500).json(error);
         }
     }));
-    app.get("/api/person_contact/person/:id/:only_principal?", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/person_contact/person/:id/:only_principal?", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield new sql.Request(pool)
                 .input('person_id', sql.Int, request.params.id)
@@ -214,7 +215,7 @@ function configure_routes(app, connection_pool) {
             res.status(500).json(error);
         }
     }));
-    app.get("/api/person/missing_data/:id", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/person/missing_data/:id", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield new sql.Request(pool)
                 .input('person_id', sql.Int, request.params.id)
@@ -230,7 +231,7 @@ function configure_routes(app, connection_pool) {
     /**
      * PARTNERSHIP INDICATIONS
      */
-    app.get("/api/person_partnerships/person/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/person_partnerships/person/:id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield new sql.Request(pool)
                 .input("person", sql.Int, req.params.id)
@@ -250,7 +251,7 @@ function configure_routes(app, connection_pool) {
             }
         }
     }));
-    app.post("/api/person_partnerships", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/person_partnerships", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             let partnership = req.body.partnership;
             console.log(partnership);
@@ -277,7 +278,7 @@ function configure_routes(app, connection_pool) {
     /**
      * EXTERNAL UNIT INDICATIONS
      */
-    app.get("/api/person_external_units/person/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/person_external_units/person/:id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield new sql.Request(pool)
                 .input("person", sql.Int, req.params.id)
@@ -297,7 +298,7 @@ function configure_routes(app, connection_pool) {
             }
         }
     }));
-    app.post("/api/person_external_units", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/person_external_units", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             let external_unit = req.body.external_unit;
             const result = yield new sql.Request(pool)
@@ -323,7 +324,7 @@ function configure_routes(app, connection_pool) {
     /**
      * INDICATIONS
      */
-    app.get("/api/person_indications/person/:id", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/person_indications/person/:id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield new sql.Request(pool)
                 .input("person", sql.Int, req.params.id)
@@ -343,7 +344,7 @@ function configure_routes(app, connection_pool) {
             }
         }
     }));
-    app.post("/api/person_indications", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/person_indications", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             let indication = req.body.indication;
             const result = yield new sql.Request(pool)
@@ -375,11 +376,11 @@ function configure_routes(app, connection_pool) {
     /**
      * SCHEDULING
      */
-    app.post("/api/person_schedule/delete", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/person_schedule/delete", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.remove_schedule(request.body.id);
         response.send({ sucess: true });
     }));
-    app.get("/api/person_schedule/person/:id", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/person_schedule/person/:id", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             let result = yield new sql.Request(pool)
                 .input('person_id', sql.Int, request.params.id)
@@ -391,14 +392,14 @@ function configure_routes(app, connection_pool) {
             res.status(500).json(error);
         }
     }));
-    app.post("/api/person_schedule", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/person_schedule", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.save_schedule(request.body.schedule);
         response.send({ sucess: true });
     }));
     /**
      * COMMENTS
      */
-    app.get("/api/people_comments/about/:id/:show_archived?", security_services_1.SecurityService.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/people_comments/about/:id/:show_archived?", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield new sql.Request(pool)
                 .input('person_id', sql.Int, request.params.id)
@@ -412,11 +413,11 @@ function configure_routes(app, connection_pool) {
             res.status(500).json(error);
         }
     }));
-    app.post("/api/people_comments/about", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/people_comments/about", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.save_comment_about(request.body.person_id, request.body.comment);
         response.send({ sucess: true });
     }));
-    app.post("/api/people_comments/archive", security_services_1.SecurityService.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/people_comments/archive", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.archive_comment(request.body.id);
         response.send({ sucess: true });
     }));

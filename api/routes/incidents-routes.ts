@@ -1,6 +1,7 @@
 import * as sql from 'mssql';
 import { IncidentService } from '../../domain/services/incident_services';
-import { SecurityService } from '../../domain/services/security_services';
+import * as auth from '../../src/middlewares/auth';
+import { SecurityService } from '../../src/services/security-service';
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
@@ -8,43 +9,43 @@ export function configure_routes(app: any, connection_pool: any) {
 
     
     app.post("/api/incident/close", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, response, next) => {
         let user = await SecurityService.getUserFromRequest(req);
-        let result = await incident_service.close_incident(req.body.incident, user.person_id);
+        let result = await incident_service.close_incident(req.body.incident, await user.getPersonId());
 
         response.send({ sucess: true});
     });
 
     app.post("/api/incident/start", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, response, next) => {
         let user = await SecurityService.getUserFromRequest(req);
-        let result = await incident_service.start_incident(req.body.incident, user.person_id);
+        let result = await incident_service.start_incident(req.body.incident, await user.getPersonId());
 
         response.send({ sucess: true});
     });
 
     app.post("/api/incident/reopen", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, response, next) => {
         let user = await SecurityService.getUserFromRequest(req);
-        let result = await incident_service.reopen_incident(req.body.incident, user.person_id);
+        let result = await incident_service.reopen_incident(req.body.incident, await user.getPersonId());
 
         response.send({ sucess: true});
     });
 
     app.post("/api/incident/start/cancel", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, response, next) => {
         let user = await SecurityService.getUserFromRequest(req);
-        let result = await incident_service.cancel_start_incident(req.body.incident, user.person_id);
+        let result = await incident_service.cancel_start_incident(req.body.incident, await user.getPersonId());
 
         response.send({ sucess: true});
     }); 
  
     app.post("/api/incident/remove", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {            
         let result = await incident_service.remove_incident(request.body.incident);            
                     
@@ -52,7 +53,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/incident/reschedule", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {            
         let result = await incident_service.reschedule_incident(
             request.body.incident, 
@@ -64,7 +65,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/incident/register_incident", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {              
         let result = await incident_service.register_incident(
             request.body.incident
@@ -74,7 +75,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/incident/register_contact", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {            
         let result = await incident_service.register_contact_for_incident(
             request.body.incident, 
@@ -89,7 +90,7 @@ export function configure_routes(app: any, connection_pool: any) {
      */
 
     app.get("/api/incident_comments/incident/:id/:show_archived?", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {  
         try {                      
             const result = await new sql.Request(pool)
@@ -107,7 +108,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/incident_comments", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => { 
         let result = await incident_service.save_comment(
             request.body.incident_id,
@@ -118,7 +119,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/incident_comments/archive", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => { 
         let result = await incident_service.archive_comment(
             request.body.id

@@ -1,10 +1,10 @@
-import { JobsService } from './../../domain/services/jobs_services';
 import * as sql from 'mssql';
 import { SecurityService } from '../../domain/services/security_services';
+import * as auth from '../../src/middlewares/auth';
+import { JobsService } from '../../src/services/jobs-service';
 
 export function configure_routes(app: any, connection_pool: any) {
-    const pool = connection_pool;  
-    let jobs: JobsService = new JobsService(connection_pool);
+    const pool = connection_pool;
     
     app.post("/api/voucher",
     async (req, res, next) => { 
@@ -37,7 +37,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/parameters/vouchers", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         const result = await new sql.Request(pool)            
         .query(`select * from voucher order by title for json path`);                
@@ -48,7 +48,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/parameters/vouchers", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {      
         const voucher = req.body.voucher;
         let result = null;
@@ -93,11 +93,9 @@ export function configure_routes(app: any, connection_pool: any) {
                                     @initials, @confirm_button_text, @header_title)`); 
             }     
                             
-            jobs.update_voucher_site();
-
-            res.send({ sucess: true});   
+            res.send(await JobsService.update_voucher_site());
         } catch (error) {
-            res.status(500).json({ url: process.env.VOUCHER_SITE_UPDATE_URL, res, error, voucher, result });
+            res.status(500).json(error);
         }        
     });
     

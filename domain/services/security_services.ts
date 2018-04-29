@@ -1,10 +1,6 @@
-const sql = require('mssql')
+import * as NewSecurity from "../../src/services/security-service";
 
-export enum Permissions {
-    Operator,
-    Manager,
-    Director
-}
+const sql = require('mssql')
 
 export class User{ 
     id: number; 
@@ -88,75 +84,5 @@ export class SecurityService {
             callback(null, user);
             
         return user;
-    }
-
-    static ensureLoggedIn() {
-        return function(req, res, next) {
-            // isAuthenticated is set by `deserializeUser()`
-            if(process.env.LOAD_ENV === 'true') {
-                next();
-                return;
-            }
-
-            if (!req.isAuthenticated || !req.isAuthenticated()) {
-                res.status(401).json({
-                    success: false,
-                    message: 'You need to be authenticated to access this page!'
-                });
-            } else {
-                next();
-            }
-        }
-    }
-
-    static ensureHasPermission(permission: Permissions) {
-        return function (req, res, next) {
-            const userReq = SecurityService.getUserFromRequest(req);
-
-            userReq.then((user) => {                
-                let has_permission = false;
-
-                if(user) {
-                    switch(permission) {
-                        case(Permissions.Operator):
-                            has_permission = user.is_operator || user.is_director || user.is_manager;
-                            break;
-                        case(Permissions.Manager):
-                            has_permission = user.is_director || user.is_manager;
-                            break;
-                        case(Permissions.Director):
-                            has_permission = user.is_director;
-                            break;
-                    }
-                }
-    
-                if(!has_permission) {
-                    res.status(403).json({
-                        success: false,
-                        message: 'You don´t have the necessary permitions for this action!'
-                    });            
-                    return;
-                }     
-
-                next();
-
-            }).catch((error) => {
-                console.log(error);
-                res.status(503).json({
-                    success: false,
-                    message: 'sorry! something went wrong...'
-                });            
-                return;
-            });            
-        }
-    }
-
-    static async getUserFromRequest(req) : Promise<User> {
-        if(process.env.LOAD_ENV === 'true') {                        
-            let user = this.findUserByToken(process.env.TOKEN_USER_DEV, () => {});
-            return user;
-        }
-
-        return req.user;
     }
 }

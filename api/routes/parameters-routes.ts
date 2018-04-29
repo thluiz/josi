@@ -1,6 +1,7 @@
 import * as sql from 'mssql';
 import { SecurityService } from '../../domain/services/security_services';
 import { JobsService } from '../../domain/services/jobs_services';
+import * as auth from '../../src/middlewares/auth';
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
@@ -8,7 +9,7 @@ export function configure_routes(app: any, connection_pool: any) {
     let jobs: JobsService = new JobsService(connection_pool);
 
     app.get("/api/branches/:id?", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         if(!req.params.id) {
             const result = await new sql.Request(pool)            
@@ -27,7 +28,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/branch_maps/branch/:id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                                
         const result = await new sql.Request(pool)     
         .input("branch_id", sql.Int, req.params.id)       
@@ -39,7 +40,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/branch_products/branch/:id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                                
         const result = await new sql.Request(pool)     
         .input("branch_id", sql.Int, req.params.id)       
@@ -51,7 +52,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/domains", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {                        
         const result = await new sql.Request(pool)            
         .execute(`GetDomains`);                
@@ -60,7 +61,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/programs", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {                        
         const result = await new sql.Request(pool)            
         .execute(`GetPrograms`);                
@@ -69,7 +70,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/configurations", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {         
         try {
             const result = await new sql.Request(pool)            
@@ -84,7 +85,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/products", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {         
         try {
             const result = await new sql.Request(pool)            
@@ -103,7 +104,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/product_categories", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {         
         try {
             const result = await new sql.Request(pool)            
@@ -122,7 +123,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/countries", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, res, next) => {                        
         const result = await new sql.Request(pool)            
         .query(`select * from [country] order by [order] for json path`);                
@@ -133,7 +134,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/kf_families", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {                        
         const result = await new sql.Request(pool)            
         .execute(`GetKungFuFamilies`);                
@@ -142,7 +143,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/recurrence_types", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {                        
         const result = await new sql.Request(pool)            
         .execute(`GetRecurrenceTypes`);                
@@ -151,7 +152,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/incident_types", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {                        
         const result = await new sql.Request(pool)            
         .execute(`GetIncidentTypes`);                
@@ -160,7 +161,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/contact_types", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {                        
         const result = await new sql.Request(pool)            
         .execute(`GetContactTypes`);                
@@ -169,7 +170,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/roles", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (request, response, next) => {                        
         const result = await new sql.Request(pool)            
         .execute(`GetRoles`);                
@@ -178,7 +179,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/groups", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         const result = await new sql.Request(pool)            
         .query(`select * from [group] where active = 1 order by [order] for json path`);                
@@ -189,7 +190,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/locations", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         const result = await new sql.Request(pool)            
         .query(`select * from [location] where active = 1 order by [order] for json path`);                
@@ -200,7 +201,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/payment_methods", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         const result = await new sql.Request(pool)            
         .query(`select * from payment_method where active = 1 order by [order] for json path`);                
@@ -211,7 +212,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/acquirers", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         const result = await new sql.Request(pool)            
         .query(`select * from acquirer where active = 1 order by [order] for json path`);                
@@ -222,7 +223,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/currencies", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         const result = await new sql.Request(pool)            
         .query(`select * from currency for json path`);                
@@ -238,7 +239,7 @@ export function configure_routes(app: any, connection_pool: any) {
      */
 
     app.post("/api/branches", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         const branch = req.body.branch;
 
@@ -257,7 +258,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/payment_methods", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         const payment_method = req.body.payment_method;
 
@@ -282,7 +283,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/acquirers", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         const acquirer = req.body.acquirer;
 
@@ -307,7 +308,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/product_categories", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         const product_category = req.body.product_category;
 
@@ -329,7 +330,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/currencies", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         const currency = req.body.currency;
 
@@ -354,7 +355,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/branch_maps/archive", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {
         const result = await new sql.Request(pool)            
         .input('id', sql.Int, req.body.id)
@@ -368,7 +369,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });        
 
     app.post("/api/branch_products/:id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                                
         
         const result = await new sql.Request(pool)  
@@ -384,7 +385,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/branch_products/archive/:branch_id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                                
         
         const result = await new sql.Request(pool)            
@@ -397,7 +398,7 @@ export function configure_routes(app: any, connection_pool: any) {
     })
 
     app.post("/api/branch_products", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                                
         
         const result = await new sql.Request(pool)  
@@ -411,7 +412,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/branch_maps", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                             
         const week_days = req.body.week_days
                             .filter(wk => wk.selected)
@@ -439,7 +440,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/products/archive", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         const product = req.body.product;
 
@@ -453,7 +454,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/products", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                        
         const product = req.body.product;
 
@@ -504,7 +505,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/branches_acquirers", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {                                
         const result = await new sql.Request(pool)            
         .input('branch_id', sql.Int, req.body.branch_id)          

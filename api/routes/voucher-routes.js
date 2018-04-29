@@ -8,12 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const jobs_services_1 = require("./../../domain/services/jobs_services");
 const sql = require("mssql");
-const security_services_1 = require("../../domain/services/security_services");
+const auth = require("../../src/middlewares/auth");
+const jobs_service_1 = require("../../src/services/jobs-service");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
-    let jobs = new jobs_services_1.JobsService(connection_pool);
     app.post("/api/voucher", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield new sql.Request(pool)
@@ -39,13 +38,13 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response);
     }));
-    app.get("/api/parameters/vouchers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/parameters/vouchers", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from voucher order by title for json path`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.post("/api/parameters/vouchers", security_services_1.SecurityService.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/parameters/vouchers", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const voucher = req.body.voucher;
         let result = null;
         try {
@@ -87,11 +86,10 @@ function configure_routes(app, connection_pool) {
                             values (@title, @url, @header_text, @final_text, @additional_question, 
                                     @initials, @confirm_button_text, @header_title)`);
             }
-            jobs.update_voucher_site();
-            res.send({ sucess: true });
+            res.send(yield jobs_service_1.JobsService.update_voucher_site());
         }
         catch (error) {
-            res.status(500).json({ url: process.env.VOUCHER_SITE_UPDATE_URL, res, error, voucher, result });
+            res.status(500).json(error);
         }
     }));
 }

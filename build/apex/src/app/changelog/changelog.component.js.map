@@ -1,0 +1,1 @@
+{"version":3,"file":"changelog.component.js","sourceRoot":"","sources":["../../../../../apex/src/app/changelog/changelog.component.ts"],"names":[],"mappings":";;;;;;;;AAAA,sCAA0C;AAS1C;IAAA;IAEA,CAAC;IAFY,kBAAkB;QAN9B,gBAAS,CAAC;YACP,QAAQ,EAAE,eAAe;YACzB,WAAW,EAAE,4BAA4B;YACzC,SAAS,EAAE,CAAC,4BAA4B,CAAC;SAC5C,CAAC;OAEW,kBAAkB,CAE9B;IAAD,yBAAC;CAAA,AAFD,IAEC;AAFY,gDAAkB"}

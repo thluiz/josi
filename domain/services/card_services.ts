@@ -90,22 +90,4 @@ export class CardService {
         .input('responsible_id', sql.Int, responsible_id)
         .execute(`SaveCardCommentary`);
     }
-    
-
-    /**
-     * JOBS
-     */
-    async check_cards_has_overdue_cards() {        
-        const result = await new sql.Request(this.sql_pool)                               
-                                .execute(`CheckCardsHasOverdueCards`);
-
-        return result;  
-    }
-
-    async correct_card_out_of_parent_step() {        
-        const result = await new sql.Request(this.sql_pool)                               
-                                .execute(`CorrectCardOutOfParentStep`);
-
-        return result;  
-    }    
 }

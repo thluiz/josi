@@ -4,10 +4,13 @@
     "module": "commonjs",
     "watch": true,
     "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "types": ["node"]
   },
   "exclude": [
     "node_modules",    
-    "apex"
+    "apex",
+    "**/*.spec.ts"
   ]
 }

@@ -1,6 +1,7 @@
 import * as sql from 'mssql';
-import { SecurityService } from '../../domain/services/security_services';
 import { CardService } from '../../domain/services/card_services';
+import * as auth from '../../src/middlewares/auth';
+import { SecurityService } from '../../src/services/security-service';
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
@@ -8,7 +9,7 @@ export function configure_routes(app: any, connection_pool: any) {
     const card_service = new CardService(pool);    
 
     app.get("/api/cards/:id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
 
         const result = await new sql.Request(pool)   
@@ -22,7 +23,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/person_card_positions", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
 
         const result = await new sql.Request(pool)            
@@ -35,7 +36,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/operators", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
 
         const result = await new sql.Request(pool)            
@@ -51,7 +52,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/card_templates", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
 
         const result = await new sql.Request(pool)            
@@ -68,7 +69,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
     
     app.get("/api/organizations/flat", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
 
         const result = await new sql.Request(pool)          
@@ -80,7 +81,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/organizations/:id?/:include_childrens?", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
 
         const result = await new sql.Request(pool)  
@@ -95,7 +96,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/projects/:id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {          
         try {
             const result = await new sql.Request(pool)  
@@ -113,7 +114,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/person_cards", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
 
         let result = await card_service.save_person_card(req.body.person_card);
@@ -122,10 +123,10 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/cards", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {          
         let user = await SecurityService.getUserFromRequest(req);
-        let result = await card_service.save_card(req.body.card, user.person_id);
+        let result = await card_service.save_card(req.body.card, await user.getPersonId());
 
         let response = result.recordset[0];
 
@@ -134,7 +135,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/move_card", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {          
         let user = await SecurityService.getUserFromRequest(req);
 
@@ -142,7 +143,7 @@ export function configure_routes(app: any, connection_pool: any) {
             .input("card_id", sql.Int, req.body.card_id)                  
             .input("parent_id", sql.Int, req.body.parent_id)                  
             .input("step_id", sql.Int, req.body.step_id)                  
-            .input("responsible_id", sql.Int, user.person_id)                  
+            .input("responsible_id", sql.Int, await user.getPersonId())                  
         .execute(`MoveCard`);
 
         let response = result.recordset[0];
@@ -151,11 +152,11 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/cards_comments", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {          
         let user = await SecurityService.getUserFromRequest(req);
         let result = await card_service.save_card_comment(req.body.card, req.body.comment, 
-            req.body.commentary_type, user.person_id);
+            req.body.commentary_type, await user.getPersonId());
 
         let response = result.recordset[0];
 
@@ -163,7 +164,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.get("/api/cards_comments/:card_id", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
 
         const result = await new sql.Request(pool)  
@@ -177,10 +178,10 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/cards/steps", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {          
         let user = await SecurityService.getUserFromRequest(req);       
-        let result = await card_service.save_card_step(req.body.card_id, req.body.step_id, user.person_id);
+        let result = await card_service.save_card_step(req.body.card_id, req.body.step_id, await user.getPersonId());
 
         let response = result.recordset[0];
 
@@ -188,7 +189,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/cards/steps/card_order", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {          
         let result = await card_service.save_card_order(req.body.card_id, req.body.order);
 
@@ -196,7 +197,7 @@ export function configure_routes(app: any, connection_pool: any) {
     });
 
     app.post("/api/person_cards/delete", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {  
 
         let result = await card_service.remove_person_card(req.body.person_card);
@@ -205,10 +206,10 @@ export function configure_routes(app: any, connection_pool: any) {
     });
     
     app.post("/api/archive_card", 
-    SecurityService.ensureLoggedIn(),
+    auth.ensureLoggedIn(),
     async (req, res, next) => {   
         let user = await SecurityService.getUserFromRequest(req);       
-        let result = await card_service.toggle_card_archived(req.body.card, user.person_id);
+        let result = await card_service.toggle_card_archived(req.body.card, await user.getPersonId());
 
         let response = result.recordset[0];
 
