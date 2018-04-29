@@ -35,18 +35,15 @@ function initialize(app) {
             let ru = yield database_facility_1.DatabaseFacility.getRepository(User_1.User);
             let user = yield ru.findOne({ token: token });
             if (user == null && done) {
-                done("USER_NOT_FOUND");
+                done("USER_NOT_FOUND", false);
                 return;
             }
             if (done) {
                 done(null, user);
                 return;
             }
-            return user;
         });
     });
-    app.use(passport.initialize());
-    app.use(passport.session());
     app.use(session({
         secret: process.env.EXPRESS_SESSION_KEY,
         resave: false,
@@ -54,6 +51,8 @@ function initialize(app) {
         saveUninitialized: true,
         cookie: { secure: false }
     }));
+    app.use(passport.initialize());
+    app.use(passport.session());
     app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
     app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login_error' }), function (req, res) {
         console.log('a');
