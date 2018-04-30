@@ -142,7 +142,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   getMonitorData() {
     this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Week, this.current_week).subscribe(
       data => {    
-        const result = data as any;  
+        const result = data[0] as any;  
         console.log(result);
         
         this.branches = result.branches as any;

@@ -148,7 +148,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     }
     this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Day, this.current_week).subscribe(
       data => {    
-        const result = data as any;        
+        const result = data[0] as any;        
         
         this.branches = result.branches;
         this.current_branch_name = (this.current_branch > 0 ? 
