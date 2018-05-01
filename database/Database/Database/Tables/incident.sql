@@ -37,6 +37,8 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [idx_cancelled_incident]
     ON [dbo].[incident]([cancelled] ASC);
@@ -65,4 +67,10 @@ CREATE NONCLUSTERED INDEX [idx_incident_date]
 GO
 CREATE NONCLUSTERED INDEX [idx_incident_updated_at]
     ON [dbo].[incident]([updated_at] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [ix_incident_current_activity]
+    ON [dbo].[incident]([incident_type] ASC, [treated] ASC, [cancelled] ASC, [started_on] ASC)
+    INCLUDE([closed], [closed_on], [branch_id]);
 

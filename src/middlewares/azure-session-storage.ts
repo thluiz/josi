@@ -17,13 +17,17 @@ function AzureSessionStore(options) {
     
     this.tableSvc = AzureTableService.createTableService();
     AzureTableService.createTableIfNotExists(this.tableSvc, tableName, (err) => {
-        console.log(err);
+                
     });
 }
 
 util.inherits(AzureSessionStore, Session.Store);
 
 var p = AzureSessionStore.prototype;
+
+p.cleanup = function() {
+
+}
 
 p.reap = function (ms) {
     var thresh = Number(new Date(Number(new Date) - ms));
@@ -45,10 +49,9 @@ p.get = function (sid, cb) {
     });
 }
 
-p.set = function (sid, session, cb) {      
-    console.log(sid);  
+p.set = function (sid, session, cb) {          
     const me = this;
-    let entity = AzureTableService.createEntity(sid, session);
+    let entity = AzureTableService.buildEntity(sid, session);
     console.log(entity);
     AzureTableService.insertOrMergeEntity(this.tableSvc, tableName, entity, function (err, results) {
         if (err) {
@@ -62,7 +65,7 @@ p.set = function (sid, session, cb) {
 }
 
 p.destroy = function (sid, cb) {    
-    this.table.deleteEntity('AzureSessionStore', sid, function (err, result) {
+    AzureTableService.deleteEntity(this.tableSvc, tableName, sid, function (err, result) {
         if (err) {
             console.log("AzureSessionStore.destroy: " + err);
             cb(err)

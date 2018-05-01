@@ -38,7 +38,7 @@
     [next_incident_id]          INT           NULL,
     [is_service_provider]       BIT           DEFAULT ((0)) NOT NULL,
     [is_associated_with_member] BIT           DEFAULT ((0)) NOT NULL,
-    [default_page_id]           INT           NULL,
+    [default_page_id]           INT           CONSTRAINT [df_person_default_page_id] DEFAULT ((5)) NOT NULL,
     [is_external_member]        BIT           DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [FK_Person_Branch] FOREIGN KEY ([branch_id]) REFERENCES [dbo].[branch] ([id]),
@@ -46,6 +46,8 @@
     CONSTRAINT [fk_person_family] FOREIGN KEY ([family_id]) REFERENCES [dbo].[person] ([id]),
     CONSTRAINT [FK_person_program] FOREIGN KEY ([program_id]) REFERENCES [dbo].[program] ([id])
 );
+
+
 
 
 GO

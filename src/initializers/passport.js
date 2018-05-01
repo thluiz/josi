@@ -52,7 +52,12 @@ function initialize(app) {
         maxAge: 6 * 60 * 60 * 1000,
         saveUninitialized: true,
         cookie: { secure: false },
-        store: new AzureSessionStore()
+        store: new AzureSessionStore({
+            secret: process.env.EXPRESS_SESSION_KEY,
+            resave: false,
+            maxAge: 6 * 60 * 60 * 1000,
+            saveUninitialized: true
+        })
     }));
     app.use(passport.initialize());
     app.use(passport.session());

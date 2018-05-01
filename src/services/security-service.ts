@@ -30,6 +30,7 @@ export class SecurityService {
             person_id: user.person.id[0],
             email: user.email,
             token: user.token,
+            default_branch_id: user.default_branch_id,
             default_page_id: user.person.default_page.id[0],
             default_page: user.person.default_page.name,
             default_page_url: user.person.default_page.url

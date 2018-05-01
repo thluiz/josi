@@ -51,7 +51,12 @@ export function initialize(app) {
             maxAge: 6 * 60 * 60 * 1000, // 6 hours
             saveUninitialized: true,
             cookie: { secure: false },
-            store: new AzureSessionStore() 
+            store: new AzureSessionStore({
+                secret: process.env.EXPRESS_SESSION_KEY,
+                resave: false,
+                maxAge: 6 * 60 * 60 * 1000, // 6 hours
+                saveUninitialized: true
+            }) 
     }));
     
     app.use(passport.initialize());

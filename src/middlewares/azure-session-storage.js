@@ -12,11 +12,12 @@ function AzureSessionStore(options) {
     Session.Store.call(this, options);
     this.tableSvc = azure_tables_service_1.AzureTableService.createTableService();
     azure_tables_service_1.AzureTableService.createTableIfNotExists(this.tableSvc, tableName, (err) => {
-        console.log(err);
     });
 }
 util.inherits(AzureSessionStore, Session.Store);
 var p = AzureSessionStore.prototype;
+p.cleanup = function () {
+};
 p.reap = function (ms) {
     var thresh = Number(new Date(Number(new Date) - ms));
     console.log("AzureSessionStore.reap: " + thresh.toString());
@@ -38,9 +39,8 @@ p.get = function (sid, cb) {
     });
 };
 p.set = function (sid, session, cb) {
-    console.log(sid);
     const me = this;
-    let entity = azure_tables_service_1.AzureTableService.createEntity(sid, session);
+    let entity = azure_tables_service_1.AzureTableService.buildEntity(sid, session);
     console.log(entity);
     azure_tables_service_1.AzureTableService.insertOrMergeEntity(this.tableSvc, tableName, entity, function (err, results) {
         if (err) {
@@ -54,7 +54,7 @@ p.set = function (sid, session, cb) {
     });
 };
 p.destroy = function (sid, cb) {
-    this.table.deleteEntity('AzureSessionStore', sid, function (err, result) {
+    azure_tables_service_1.AzureTableService.deleteEntity(this.tableSvc, tableName, sid, function (err, result) {
         if (err) {
             console.log("AzureSessionStore.destroy: " + err);
             cb(err);

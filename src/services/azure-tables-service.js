@@ -11,25 +11,27 @@ class AzureTableService {
     static createTableIfNotExists(tableService, table, callback) {
         tableService.createTableIfNotExists(table, callback);
     }
-    static createEntity(id, data = {}) {
+    static buildEntity(id, data = {}, partition = 'principal') {
         const entGen = azure.TableUtilities.entityGenerator;
+        const date = new Date();
         return {
-            PartitionKey: entGen.String(id),
-            RowKey: entGen.String(this.rowKey),
+            PartitionKey: entGen.String(partition),
+            RowKey: entGen.String(id),
+            CreatedOn: Math.floor(Date.now() / 1000),
             Content: JSON.stringify(data)
         };
     }
     static insertOrMergeEntity(tableService, table, entity, callback) {
         tableService.insertOrReplaceEntity(table, entity, callback);
     }
-    static retriveEntity(tableService, table, id, callback) {
-        tableService.retrieveEntity(table, id, this.rowKey, (err, result, response) => {
+    static retriveEntity(tableService, table, id, callback, partition = 'principal') {
+        tableService.retrieveEntity(table, partition, id, (err, result, response) => {
             let data = this.treatDataRetrieved(result);
             callback(err, data, response);
         });
     }
     static deleteEntity(tableService, table, id, callback) {
-        tableService.deleteEntity(table, this.createEntity(id), function (error, response) {
+        tableService.deleteEntity(table, this.buildEntity(id), function (error, response) {
             callback(error, response);
         });
     }
@@ -46,6 +48,5 @@ class AzureTableService {
         return JSON.parse(data.Content._);
     }
 }
-AzureTableService.rowKey = "1";
 exports.AzureTableService = AzureTableService;
 //# sourceMappingURL=azure-tables-service.js.map

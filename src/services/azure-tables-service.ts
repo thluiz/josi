@@ -2,7 +2,6 @@ import * as azure from 'azure-storage';
 
 export class AzureTableService {    
     private static config;
-    private static rowKey = "1";
     
     static createTableService() {
         if(!this.config) {
@@ -16,11 +15,13 @@ export class AzureTableService {
         tableService.createTableIfNotExists(table, callback);        
     }
 
-    static createEntity(id, data :any = {}) : any {        
+    static buildEntity(id, data :any = {}, partition = 'principal') : any {        
         const entGen = azure.TableUtilities.entityGenerator;
+        const date = new Date();
         return { 
-            PartitionKey: entGen.String(id),
-            RowKey: entGen.String(this.rowKey),            
+            PartitionKey: entGen.String(partition),
+            RowKey: entGen.String(id),
+            CreatedOn: Math.floor( Date.now() / 1000 ),
             Content: JSON.stringify(data)
         };
     }
@@ -29,15 +30,15 @@ export class AzureTableService {
         tableService.insertOrReplaceEntity(table, entity, callback);
     }
 
-    static retriveEntity(tableService: azure.TableService, table: string, id: string, callback: (error, result, response) => void) {                
-        tableService.retrieveEntity(table, id, this.rowKey, (err, result, response) => {
+    static retriveEntity(tableService: azure.TableService, table: string, id: string, callback: (error, result, response) => void, partition = 'principal') {                
+        tableService.retrieveEntity(table, partition, id, (err, result, response) => {
             let data = this.treatDataRetrieved(result);
             callback(err, data, response);
         });
     }
 
     static deleteEntity(tableService: azure.TableService, table: string, id: string, callback: (error, response) => void) {
-        tableService.deleteEntity(table, this.createEntity(id), function(error, response){
+        tableService.deleteEntity(table, this.buildEntity(id), function(error, response){
             callback(error, response);
         });
     }
@@ -53,7 +54,7 @@ export class AzureTableService {
         let new_data = {};
         if(!data)
             return null;
-            
+
         return JSON.parse(data.Content._);
     }
 }
