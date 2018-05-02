@@ -128,16 +128,6 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     this.current_week += modifier;
     this.getMonitorData();    
   }
-    
-  updateMonitorData() {
-    this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Week, this.current_week).subscribe(
-    data => {    
-      const result = data as any;        
-      for(var w = 0; w < result.domains.length; w++) {
-        
-      }
-    });
-  }
 
   getMonitorData() {
     this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Week, this.current_week).subscribe(
