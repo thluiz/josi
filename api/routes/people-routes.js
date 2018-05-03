@@ -329,7 +329,7 @@ function configure_routes(app, connection_pool) {
             const result = yield new sql.Request(pool)
                 .input("person", sql.Int, req.params.id)
                 .query(`select * from vwPersonRelationships 
-                    where relationship_type = 10 and person_id = @person 
+                    where relationship_type in (10, 13) and person_id = @person 
                     for json path`);
             let response = result.recordset[0];
             res.send(response);
@@ -360,6 +360,9 @@ function configure_routes(app, connection_pool) {
                 .input("indication_contact_type", sql.Int, indication.indication_contact_type)
                 .input("branch_id", sql.Int, indication.branch_id)
                 .input("operator_id", sql.Int, indication.operator_id)
+                .input("age", sql.Int, indication.age)
+                .input('district', sql.VarChar(100), indication.district)
+                .input('occupation', sql.VarChar(100), indication.occupation)
                 .execute(`SaveNewIndication`);
             res.send({ success: true });
         }

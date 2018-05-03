@@ -56,10 +56,7 @@ export function configure_routes(app: any, connection_pool: any) {
         try {
             const start = Date.now();            
 
-            console.log('1')
-
-            if(voucher.id > 0) {
-                console.log('2')
+            if(voucher.id > 0) {                
                 result = await new sql.Request(pool)            
                 .input('id', sql.Int, voucher.id)          
                 .input('title', sql.VarChar(100), voucher.title)
@@ -80,8 +77,7 @@ export function configure_routes(app: any, connection_pool: any) {
                             confirm_button_text = @confirm_button_text,
                             header_title = @header_title
                         where id = @id`);    
-            } else {
-                console.log('3')
+            } else {                
                 result = await new sql.Request(pool)                        
                 .input('title', sql.VarChar(100), voucher.title)
                 .input('url', sql.VarChar(100), voucher.url)
@@ -97,12 +93,8 @@ export function configure_routes(app: any, connection_pool: any) {
                                     @initials, @confirm_button_text, @header_title)`); 
             }     
                      
-            console.log('4')
-
             let result_voucher = await JobsService.update_voucher_site();
             
-            console.log('6')
-
             res.send(result_voucher);
         } catch (error) {
             res.status(500).json(error);

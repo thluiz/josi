@@ -6,7 +6,8 @@ import { environment } from '../../environments/environment';
 import { Subject }    from 'rxjs/Subject';
 
 export enum Configurations {
-    MinimalIndicationsPerActiveMember = 1
+    MinimalDirectIndicationsPerActiveMember = 1,
+    MinimalIndirectIndicationsPerActiveMember = 2
 }
 
 @Injectable()

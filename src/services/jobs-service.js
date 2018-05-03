@@ -40,17 +40,12 @@ class JobsService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const start = Date.now();
-                console.log('5');
-                console.log(process.env.VOUCHER_SITE_UPDATE_URL);
                 let result = yield axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_URL);
-                console.log(result);
                 if (result.status == 200)
                     return result_1.Result.Ok();
-                console.log('8');
                 return result_1.Result.Fail(errors_codes_1.ErrorCode.ExternalRequestError, new Error(result.statusText), null);
             }
             catch (error) {
-                console.log('7');
                 return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
             }
         });

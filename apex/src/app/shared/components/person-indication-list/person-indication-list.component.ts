@@ -1,5 +1,5 @@
 import { CardService } from 'app/services/card-service';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 
 import { SecurityService } from 'app/services/security-service';
 import { ParameterService, Configurations } from 'app/services/parameter-service';
@@ -19,9 +19,13 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
 
   @Input() d:any;
   @Input() person:any;
-  @Input() showHeader = true; 
+  @Input() showHeader = true;   
+  @Input() navigateToIndication = false;
+  @Output() onNavigateToIndication = new EventEmitter<boolean>();
+
   saving = false;  
-  needed_indications = 0; 
+  needed_direct_indications = 0; 
+  needed_indirect_indications = 0; 
   new_indication = { name: "", 
     contact_type1: 0,
     contact1: "",
@@ -34,7 +38,10 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
     person_id: 0,
     branch_id: 0,
     operator_id: 0,
-    indication_contact_type: 0
+    indication_contact_type: 0,
+    occupation: '',
+    district: '',
+    age: ''
   };
   contact_types: any[];
   branches: any[];
@@ -67,19 +74,32 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
     this.indication_changes_subscriber.unsubscribe();
   }
 
+  navigateToPerson(person_id) {
+    this.person.id = person_id;
+    this.load_indications();
+    this.onNavigateToIndication.emit(person_id);
+  }
+
   load_indications() {    
     if(this.last_call != null && ((new Date()).getTime() - (this.last_call.getTime()) <= this.parameterService.getTimeReloadComponents()))  {
       return;
     }
     
     this.personService.getPersonIndications(this.person.id)
-    .subscribe((data : any) => { 
+    .subscribe((data : any[]) => { 
 
       this.parameterService.getConfigurations().subscribe((configs: any[]) => {        
-        var minimal = configs.find(d => d.id == Configurations.MinimalIndicationsPerActiveMember.toFixed());  
+        var minimal_direct = configs.find(d => d.id == Configurations.MinimalDirectIndicationsPerActiveMember.toFixed());  
+        var minimal_indirect = configs.find(d => d.id == Configurations.MinimalIndirectIndicationsPerActiveMember.toFixed());  
 
-        if(minimal.value > 0) {
-          this.needed_indications = minimal.value - data.length;
+        console.log(data.filter(d => d.relationship_type == 10));
+
+        if(minimal_direct.value > 0) {
+          this.needed_direct_indications = minimal_direct.value - (data.filter(d => d.relationship_type == 10).length);
+        }
+
+        if(minimal_indirect.value > 0) {
+          this.needed_indirect_indications = minimal_indirect.value - (data.filter(d => d.relationship_type == 13).length);
         }
       });
 
@@ -104,7 +124,10 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
       person_id: this.person.id,
       branch_id: this.person.branch_id,
       operator_id: 0,
-      indication_contact_type: 0
+      indication_contact_type: 0,
+      occupation: '',
+      district: '',
+      age: ''
     };  
 
     Observable.zip(
@@ -151,6 +174,14 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
 
     if(!this.new_indication.name || this.new_indication.name.length < 3) {
       this.errors.push("Informe o nome da pessoa");
+    }
+
+    if(!this.new_indication.district || this.new_indication.district.length < 3) {
+      this.errors.push("Informe o bairro da pessoa");
+    }
+
+    if(!this.new_indication.occupation || this.new_indication.occupation.length < 3) {
+      this.errors.push("Informe a profissão da pessoa");
     }
 
     if(this.new_indication.branch_id <= 0) {

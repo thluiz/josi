@@ -7,7 +7,7 @@ import { CardService } from './../../../services/card-service';
 import { Component, Input, AfterViewInit, QueryList, OnInit, OnDestroy, ViewChildren   } 
 from '@angular/core';
 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
 import { PersonService } from './../../../services/person-service';
@@ -67,6 +67,7 @@ export class PersonPageComponent implements OnInit, OnDestroy {
   countries = [];
   addresses = [];
   new_address: any;
+  sub_components_loaded = false;
   
   private subs: Subscription[];
 
@@ -74,33 +75,38 @@ export class PersonPageComponent implements OnInit, OnDestroy {
               private parameterService: ParameterService,
               private cardService: CardService,
               private route: ActivatedRoute, 
+              private router: Router,
               private modalService: NgbModal,
               private datePickerConfig: NgbDatepickerConfig) {      
   }  
 
-  public ngAfterViewInit() {
+  ngAfterViewInit() {
+    this.sub_components_loaded = true;
+  }
+
+  private loadSubComponents() {
     if(!this.subs) {
       this.subs = [];
     }
           
     this.subs.push(this.indicationsComponent.changes.subscribe((comps: QueryList <PersonIndicationListComponent>) => {        
-      comps.first.load_indications();
+      if(comps.first) comps.first.load_indications();
     }));
     
     this.subs.push(this.externalUnitsComponent.changes.subscribe((comps: QueryList <PersonExternalUnitListComponent>) => {        
-      comps.first.load_items();
+      if(comps.first) comps.first.load_items();
     }));
 
     this.subs.push(this.partnershipComponent.changes.subscribe((comps: QueryList <PersonPartnershipListComponent>) => {        
-      comps.first.load_items();
+      if(comps.first) comps.first.load_items();
     }));
 
     this.subs.push(this.contactListComponent.changes.subscribe((comps: QueryList <PersonContactListComponent>) => {        
-      comps.first.load_contacts();
+      if(comps.first) comps.first.load_contacts();      
     }));
 
     this.subs.push(this.commentListComponent.changes.subscribe((comps: QueryList <PersonCommentListComponent>) => {        
-      comps.first.load_comments();
+      if(comps.first) comps.first.load_comments();
     }));
   }
 
@@ -109,14 +115,9 @@ export class PersonPageComponent implements OnInit, OnDestroy {
       this.subs = [];
     }
 
-    this.subs.push(this.route.params.subscribe(params => {
-      this.id = +params['id'];      
-      
-      this.load_person_data();      
-      this.load_person_roles();  
-      this.load_person_scheduling();  
-      this.load_comments_about_person();
-      this.load_person_address();
+    this.subs.push(this.route.params.subscribe(params => {      
+      this.id = +params['id'];            
+      this.reloadData();
     }));
 
     this.subs.push(this.personService.personChanges$
@@ -129,11 +130,32 @@ export class PersonPageComponent implements OnInit, OnDestroy {
   }
   
   ngOnDestroy() {            
+    this.unsubscribeAll();
+  }
+  
+  changePerson(person_id) {    
+    this.id = person_id;      
+    this.reloadData();
+    this.router.navigateByUrl("/people/person/" + person_id);
+  }
+
+  private reloadData() {  
+    if(this.sub_components_loaded) {
+      this.loadSubComponents();      
+    }
+
+    this.load_person_data();
+    this.load_person_roles();
+    this.load_person_scheduling();
+    this.load_person_address();
+  }
+
+  private unsubscribeAll() {
     if(this.subs) {
       this.subs.forEach(s => s.unsubscribe());
     }
   }
-  
+
   open_schedule_modal(content) {    
     Observable.zip(this.parameterService.getActiveBranches(), 
                     this.parameterService.getIncidentTypes(),

@@ -36,23 +36,14 @@ export class JobsService {
         try {
             const start = Date.now();
 
-            console.log('5')
-            console.log(process.env.VOUCHER_SITE_UPDATE_URL);
             let result = await axios.get(process.env.VOUCHER_SITE_UPDATE_URL);
-
-            console.log(result);
 
             if(result.status == 200)
                 return Result.Ok();
 
-            console.log('8')
-
             return Result.Fail(ErrorCode.ExternalRequestError, new Error(result.statusText), null);
 
-        } catch (error) {
-
-            console.log('7')
-
+        } catch (error) {            
             return Result.Fail(ErrorCode.GenericError, error)
         }
     }

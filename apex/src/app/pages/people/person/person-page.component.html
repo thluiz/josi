@@ -274,17 +274,19 @@
                         </div>
                         <div class="col-12 col-sm-12 col-md-12 col-xl-6 pr-3">
                             <div class="row">
-                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
-                                    <person-indication-list                                    
+                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;" *ngIf="person.is_active_member">
+                                    <person-indication-list   
+                                    [navigateToIndication]="true" 
+                                    (onNavigateToIndication)="changePerson($event)"                                
                                     [person]="person">                                
                                     </person-indication-list>
                                 </div> 
-                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
+                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;" *ngIf="person.is_active_member">
                                     <person-partnership-list                                    
                                     [person]="person">                                
                                     </person-partnership-list>
                                 </div>
-                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
+                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;" *ngIf="person.is_active_member">
                                     <person-external-unit-list                                    
                                     [person]="person">                                
                                     </person-external-unit-list>
@@ -294,7 +296,7 @@
                                     [person]="person">                                
                                     </person-contact-list>
                                 </div>                     
-                                <div class="col-12 col-xl-12 col-md-6"  style="margin-bottom:30px;">
+                                <div class="col-12 col-xl-12 col-md-6"  style="margin-bottom:30px;" *ngIf="person.is_active_member">
                                     <div class="row" style="border-bottom: 1px solid black">
                                         <div class="col-10 col-xl-10 col-sm-9">
                                             <h6 style="padding:0;margin:0;font-weight:bold"><i class="ft-calendar"></i> Agendamento </h6>

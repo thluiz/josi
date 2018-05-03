@@ -1,30 +1,37 @@
 <div class="row" *ngIf="showHeader"
     style="border-bottom: 1px solid black;" >
     <div class="col-10">        
-        <h6 style="font-weight:bold;margin-bottom:0"> <i class="fas fa-hand-point-down"></i> Indicações </h6>
+        <h6 style="font-weight:bold;margin-bottom:0"> Convidados Indicados </h6>
     </div>
     <div class="col-2 text-right">
         <button type="button" class="btn btn-silver btn-sm" 
             style="margin:0;padding:2px;line-height:10px"
             (click)="open(new_indication_modal);">
-            <i class="ft-plus"></i>                                        
-            <i class="fas fa-hand-point-down"></i>
+            <i class="ft-plus"></i>               
         </button>
     </div>
 </div>
 
 <div class="row" *ngIf="!indications || indications.length == 0">
     <div class="col-12 text-center">
-        Nenhuma indicação encontrada
+        Nenhum Convite encontrado
     </div>    
 </div>
+
 <div class="row" *ngFor="let item of indications">
-    <div class="col-10" style="color:black">
+    <div class="col-8" *ngIf="navigateToIndication">        
         <a
-            [routerLink]="['/people/person', item.person2_id ]">
+            style="cursor:pointer;color:gray"
+            (click)="navigateToPerson(item.person2_id)">
             {{ item.indicated_name }}
         </a>           
     </div>
+    <div class="col-8" *ngIf="!navigateToIndication">                
+        {{ item.indicated_name }}        
+    </div>
+    <div class="col-2 text-center">                
+        {{ item.relationship_description.replace("Convite ", "") }}        
+    </div>    
     <div class="col-2 text-right" *ngIf="false">
         <button type="button" class="btn btn-silver btn-sm" 
             style="margin:0;padding:2px;line-height:10px"			                                        
@@ -46,19 +53,28 @@
         </button>                                    
     </div>
 </div>
-<div class="row" *ngIf="needed_indications > 0">
-    <div class="col-12 text-center" *ngIf="needed_indications > 1">        
-        É preciso fazer mais {{ needed_indications }} indicações
+<div class="row" *ngIf="needed_direct_indications > 0">
+    <div class="col-12 text-center" *ngIf="needed_direct_indications > 1">        
+        É preciso fazer mais {{ needed_direct_indications }} convites diretos
     </div>
-    <div class="col-12 text-center" *ngIf="needed_indications == 1">        
-        Falta apenas uma indicação
+    <div class="col-12 text-center" *ngIf="needed_direct_indications == 1">        
+        Falta apenas um convite indireto
+    </div>
+</div>
+
+<div class="row" *ngIf="needed_indirect_indications > 0">
+    <div class="col-12 text-center" *ngIf="needed_indirect_indications > 1">        
+        É preciso fazer mais {{ needed_indirect_indications }} convites indiretos
+    </div>
+    <div class="col-12 text-center" *ngIf="needed_indirect_indications == 1">        
+        Falta apenas mais uma convite indireto
     </div>
 </div>
 
 <ng-template #new_indication_modal let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h5 class="modal-title" style="font-weight: bold">
-            Indicar pessoa
+            Convidar pessoa
         </h5>
         <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
         <span aria-hidden="true">&times;</span>
@@ -81,7 +97,7 @@
                 <div class="form-group">
                     <label for="new_indication_name">Nome</label>
                     <input class="form-control" style="width:100%" 
-                        placeholder="Nome da pessoa a indicar"
+                        placeholder="Nome da pessoa convidada"
                         name="new_indication_name" 
                         (ngModelChange)="validate_new_indication()"
                         (keyup)="validate_new_indication()"
@@ -90,7 +106,7 @@
                         [(ngModel)]="new_indication.name" />
                 </div>
             </div>
-        </div>
+        </div>        
         <div class="form-group">
             <label for="new_indication_operator">Operador Responsável</label>
             <select id="new_indication_operator" 
@@ -102,15 +118,64 @@
                 <option *ngFor="let o of operators" [value]="o.id">{{o.name}}</option>
             </select>								
         </div>
-        <div class="form-group">            
-            <select id="new_indication_operator" 
-                [(ngModel)]="new_indication.indication_contact_type" 
-                (ngModelChange)="validate_new_indication()"																	
-                class="form-control"								
-                >			
-                <option value="0">O Núcleo fará o contato</option>			                
-                <option value="1">O Membro fará o contato</option>
-            </select>								
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">  
+                    <label for="new_indication_invitation_type">Convite</label>          
+                    <select id="new_indication_invitation_type" 
+                        [(ngModel)]="new_indication.indication_contact_type" 
+                        (ngModelChange)="validate_new_indication()"																	
+                        class="form-control"								
+                        >			
+                        <option value="0">Indireto</option>			                
+                        <option value="1">Direto</option>
+                    </select>								
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="new_indication_age">Idade</label>
+                    <input class="form-control" style="width:100%" 
+                        placeholder="Idade da pessoa"
+                        name="new_indication_age" 
+                        type="number"
+                        (ngModelChange)="validate_new_indication()"
+                        (keyup)="validate_new_indication()"
+                        (keypress)="validate_new_indication()"
+                        (keydown)="validate_new_indication()"
+                        [(ngModel)]="new_indication.age" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="new_indication_district">Bairro</label>
+                    <input class="form-control" style="width:100%" 
+                        placeholder="Bairro da pessoa convidada"
+                        name="new_indication_district" 
+                        (ngModelChange)="validate_new_indication()"
+                        (keyup)="validate_new_indication()"
+                        (keypress)="validate_new_indication()"
+                        (keydown)="validate_new_indication()"
+                        [(ngModel)]="new_indication.district"
+                        maxlength="100" />
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="new_indication_occupation">Profissão</label>
+                    <input class="form-control" style="width:100%" 
+                        placeholder="Profissão da pessoa convidada"
+                        name="new_indication_occupation" 
+                        (ngModelChange)="validate_new_indication()"
+                        (keyup)="validate_new_indication()"
+                        (keypress)="validate_new_indication()"
+                        (keydown)="validate_new_indication()"
+                        [(ngModel)]="new_indication.occupation"
+                        maxlength="100" />
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-12 col-md-4">
@@ -205,7 +270,7 @@
         <div class="row">
             <div class="col-12">                
                 <div class="form-group">
-                    <label for="new_indication_comment">Comentários</label>
+                    <label for="new_indication_comment">Comentários Gerais</label>
                     <textarea class="form-control" 
                     name="new_indication_comment" id="new_indication_comment"                    
                     [(ngModel)]="new_indication.comment"		

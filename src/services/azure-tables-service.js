@@ -18,6 +18,7 @@ class AzureTableService {
             PartitionKey: entGen.String(partition),
             RowKey: entGen.String(id),
             CreatedOn: Math.floor(Date.now() / 1000),
+            Test: process.env.LOAD_ENV === 'true',
             Content: JSON.stringify(data)
         };
     }
@@ -34,6 +35,17 @@ class AzureTableService {
         tableService.deleteEntity(table, this.buildEntity(id), function (error, response) {
             callback(error, response);
         });
+    }
+    static retrieveEntities(tableService, table, query, parameters, callback) {
+        var azure_query = new azure.TableQuery().where(query, parameters);
+        tableService.queryEntities(table, azure_query, null, function (error, result, response) {
+            if (error) {
+                callback(error, null);
+            }
+            console.log(result);
+            console.log(response);
+        });
+        callback(null, true);
     }
     static loadConfig() {
         return {

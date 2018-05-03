@@ -83,8 +83,8 @@
                     <ngb-timepicker [spinners]="false" [(ngModel)]="new_incident.time"></ngb-timepicker>					
                 </div>
             </div>
-            <div class="row" *ngIf="this.new_incident.type && this.new_incident.type.need_to_be_started">				
-                <div class="col-12">                                        
+            <div class="row" *ngIf="this.new_incident.type">				
+                <div class="col-6" *ngIf="this.new_incident.type.need_to_be_started">                                        
                     <label for="new_incident_start_activity"
                             style="font-weight: bold">
                         Atividade em Andamento
@@ -96,6 +96,21 @@
                             >			
                             <option [ngValue]="0">Não</option>			
                             <option [ngValue]="1">Sim</option>
+                        </select>								
+                    </div>
+                </div>				
+                <div class="col-6">                                        
+                    <label for="new_incident_close_activity"
+                            style="font-weight: bold">
+                        Atividade já Finalizada
+                    </label>		
+                    <div class="form-group">
+                        <select id="new_incident_close_activity" 
+                            [(ngModel)]="new_incident.close_activity"                             
+                            class="form-control"								
+                            >			
+                            <option [ngValue]="0">Não</option>			
+                            <option [ngValue]="1">Sim</option>                            
                         </select>								
                     </div>
                 </div>

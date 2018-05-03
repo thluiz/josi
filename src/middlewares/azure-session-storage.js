@@ -17,6 +17,19 @@ function AzureSessionStore(options) {
 util.inherits(AzureSessionStore, Session.Store);
 var p = AzureSessionStore.prototype;
 p.cleanup = function () {
+    return new Promise((resolve, reject) => {
+        console.log('AzureSessionStore.cleaning...');
+        var current_date = (Date.now() / 1000);
+        var expiration = current_date - ((parseFloat(process.env.SESSION_DURATION_MINUTES) || 3600) * 60);
+        console.log(expiration);
+        azure_tables_service_1.AzureTableService.retrieveEntities(this.tableSvc, tableName, "CreatedOn le ?", [expiration.toString()], (err, result) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(result);
+        });
+    });
 };
 p.reap = function (ms) {
     var thresh = Number(new Date(Number(new Date) - ms));

@@ -49,9 +49,7 @@ function configure_routes(app, connection_pool) {
         let result = null;
         try {
             const start = Date.now();
-            console.log('1');
             if (voucher.id > 0) {
-                console.log('2');
                 result = yield new sql.Request(pool)
                     .input('id', sql.Int, voucher.id)
                     .input('title', sql.VarChar(100), voucher.title)
@@ -74,7 +72,6 @@ function configure_routes(app, connection_pool) {
                         where id = @id`);
             }
             else {
-                console.log('3');
                 result = yield new sql.Request(pool)
                     .input('title', sql.VarChar(100), voucher.title)
                     .input('url', sql.VarChar(100), voucher.url)
@@ -89,9 +86,7 @@ function configure_routes(app, connection_pool) {
                             values (@title, @url, @header_text, @final_text, @additional_question, 
                                     @initials, @confirm_button_text, @header_title)`);
             }
-            console.log('4');
             let result_voucher = yield jobs_service_1.JobsService.update_voucher_site();
-            console.log('6');
             res.send(result_voucher);
         }
         catch (error) {

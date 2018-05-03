@@ -5,7 +5,18 @@ const logger_service_1 = require("../services/logger-service");
 function ensureLoggedIn() {
     return function (req, res, next) {
         if (process.env.LOAD_ENV === 'true') {
-            next();
+            if (!req.isAuthenticated || !req.isAuthenticated()) {
+                security_service_1.SecurityService.getUserFromRequest(req).then(user => {
+                    req.login(user, function (err) {
+                        if (err)
+                            return next(err);
+                        next();
+                    });
+                });
+            }
+            else {
+                next();
+            }
             return;
         }
         if (!req.isAuthenticated || !req.isAuthenticated()) {

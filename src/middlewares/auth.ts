@@ -7,8 +7,19 @@ import { LoggerService } from '../services/logger-service';
 export function ensureLoggedIn() {
     return function(req, res, next) {        
         if(process.env.LOAD_ENV === 'true') {
-            next();
-            return;
+            if(!req.isAuthenticated || !req.isAuthenticated()) {                
+                SecurityService.getUserFromRequest(req).then(user => {
+                    req.login(user, function(err){
+                        if(err) return next(err);      
+                        
+                        next();
+                    });                    
+                });                        
+            } else {
+                next(); 
+            }      
+
+            return; 
         }
 
         if (!req.isAuthenticated || !req.isAuthenticated()) {

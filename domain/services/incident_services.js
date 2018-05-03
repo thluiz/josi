@@ -78,6 +78,7 @@ class IncidentService {
                     .input('branch', sql.Int, incident.branch_id)
                     .input('value', sql.Decimal(12, 2), incident.value)
                     .input('start_activity', sql.Int, incident.start_activity ? 1 : 0)
+                    .input('register_closed', sql.Int, incident.close_activity ? 1 : 0)
                     .input('new_people', sql.VarChar(sql.MAX), incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(","))
                     .execute(`RegisterNewIncident`);
                 return result;
