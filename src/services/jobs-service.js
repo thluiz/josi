@@ -39,11 +39,13 @@ class JobsService {
     static update_voucher_site() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const start = Date.now();
-                let result = yield axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_URL);
-                if (result.status == 200)
-                    return result_1.Result.Ok();
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.ExternalRequestError, new Error(result.statusText), null);
+                let result_voucher = yield axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_URL);
+                if (result_voucher.status != 200)
+                    return result_1.Result.Fail(errors_codes_1.ErrorCode.ExternalRequestError, new Error(result_voucher.statusText), null);
+                let result_invites = yield axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_INVITES_URL);
+                if (result_invites.status != 200)
+                    return result_1.Result.Fail(errors_codes_1.ErrorCode.ExternalRequestError, new Error(result_invites.statusText), null);
+                return result_1.Result.Ok();
             }
             catch (error) {
                 return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);

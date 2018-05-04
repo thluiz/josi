@@ -34,15 +34,17 @@ export class JobsService {
 
     static async update_voucher_site(): Promise<Result<AxiosResponse>> {
         try {
-            const start = Date.now();
+            let result_voucher = await axios.get(process.env.VOUCHER_SITE_UPDATE_URL);
 
-            let result = await axios.get(process.env.VOUCHER_SITE_UPDATE_URL);
+            if(result_voucher.status != 200)                    
+                return Result.Fail(ErrorCode.ExternalRequestError, new Error(result_voucher.statusText), null);
 
-            if(result.status == 200)
-                return Result.Ok();
+            let result_invites = await axios.get(process.env.VOUCHER_SITE_UPDATE_INVITES_URL);
 
-            return Result.Fail(ErrorCode.ExternalRequestError, new Error(result.statusText), null);
+            if(result_invites.status != 200)                    
+                return Result.Fail(ErrorCode.ExternalRequestError, new Error(result_invites.statusText), null);
 
+            return Result.Ok();
         } catch (error) {            
             return Result.Fail(ErrorCode.GenericError, error)
         }

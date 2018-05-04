@@ -38,6 +38,12 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response);
     }));
+    app.get("/api/voucher/invites", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .execute(`GetInvitesForVoucher`);
+        let response = result.recordset[0];
+        res.send(response);
+    }));
     app.get("/api/parameters/vouchers", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from voucher order by title for json path`);

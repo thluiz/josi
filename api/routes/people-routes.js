@@ -360,7 +360,7 @@ function configure_routes(app, connection_pool) {
                 .input("indication_contact_type", sql.Int, indication.indication_contact_type)
                 .input("branch_id", sql.Int, indication.branch_id)
                 .input("operator_id", sql.Int, indication.operator_id)
-                .input("age", sql.Int, indication.age)
+                .input("age", sql.Int, indication.age > 0 ? indication.age : 0)
                 .input('district', sql.VarChar(100), indication.district)
                 .input('occupation', sql.VarChar(100), indication.occupation)
                 .execute(`SaveNewIndication`);
@@ -368,6 +368,7 @@ function configure_routes(app, connection_pool) {
         }
         catch (error) {
             if (error.code = 'EJSON') {
+                console.log(error);
                 res.send([]);
             }
             else {
