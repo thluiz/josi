@@ -32,26 +32,14 @@
     <div class="col-2 text-center">                
         {{ item.relationship_description.replace("Convite ", "") }}        
     </div>    
-    <div class="col-2 text-right" *ngIf="false">
-        <button type="button" class="btn btn-silver btn-sm" 
-            style="margin:0;padding:2px;line-height:10px"			                                        
-            *ngIf="!item.remove_contact"
-            (click)="item.remove_contact = true">
-            <i class="ft-trash-2"></i>                                        
-        </button>                                    
-        <button type="button" class="btn btn-danger btn-sm" 
-            *ngIf="item.remove_indication"
-            style="margin:0;padding:2px;line-height:10px"			                                        
-            (click)="remove_indication(item)">
-            <i class="ft-trash-2"></i>                                        
-        </button>
-        <button type="button" class="btn btn-secondary btn-sm" 
-            *ngIf="item.remove_indication"
-            style="margin:0;padding:2px;line-height:10px"			                                        
-            (click)="ct.remove_contact = false">
-            <i class="icon-action-undo"></i>                                        
-        </button>                                    
-    </div>
+    <div class="col-2 text-center">    
+        <a
+            style="cursor:pointer;color:gray"
+            target="_blank"
+            href="http://myvtmi.im/voucher/membros2/{{ item.identifier.substring(0, 5) }}">            
+            {{ item.identifier.substring(0, 5) }}        
+        </a>
+    </div>     
 </div>
 <div class="row" *ngIf="needed_direct_indications > 0">
     <div class="col-12 text-center" *ngIf="needed_direct_indications > 1">        
