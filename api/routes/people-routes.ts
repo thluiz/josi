@@ -74,25 +74,10 @@ export function configure_routes(app: any, connection_pool: any) {
         }
     });
 
-    app.get("/api/voucher_people", 
-    auth.ensureLoggedIn(),
-    async (req, res, next) => {                               
-        const result = await new sql.Request(pool)        
-        .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
-        .input('voucher', sql.Int, req.query.voucher > 0 ? req.query.voucher : null)
-        .input('name', sql.VarChar(150), req.query.name)
-        .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)        
-        .input('page', sql.Int, req.query.page > 1 ? req.query.page : 1)
-        .execute(`GetPeopleFromVouchers`);                
-
-        let response = result.recordset[0];
-
-        res.send(response[0].empty ? [] : response);
-    });
-
     app.get("/api/invited_people", 
     auth.ensureLoggedIn(),
-    async (req, res, next) => {                               
+    async (req, res, next) => {      
+        console.log(req.query.voucher)                            ;                         
         const result = await new sql.Request(pool)        
         .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
         .input('voucher', sql.Int, req.query.voucher > 0 ? req.query.voucher : null)

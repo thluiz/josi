@@ -27,6 +27,9 @@
 		style="cursor:pointer">												
 			<i class="fas fa-user"
 			style="color:red"></i>
+	</span>	
+	<span *ngFor="let v of person.vouchers" [title]="v.voucher">		
+		{{ v.voucher_initials}}
 	</span>		
 	<span *ngIf="person.has_birthday_this_month">
 		&#160;
@@ -64,7 +67,10 @@
 		style="cursor:pointer">												
 			<i class="fas fa-user"
 			style="color:red"></i>
-	</span>		
+	</span>	
+	<span *ngFor="let v of person.vouchers" [title]="v.voucher">		
+		{{ v.voucher_initials}}
+	</span>			
 	<span *ngIf="person.has_birthday_this_month">
 		&#160;
 		<i  class="icon-present"

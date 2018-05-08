@@ -51,13 +51,12 @@ export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
       
       this.load_voucher_list();
     });     
-
-    /*
+    
     this.interested_added_subscriber = this.personService.personActions$     
     .filter((p) => p.data != null && p.data.is_interested && (!this.current_branch || p.data.branch_id == this.current_branch))   
     .subscribe((next) => {      
       this.load_voucher_list();
-    }); */
+    });
 
   }
   
@@ -99,6 +98,7 @@ export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
     if(this.person_list_sub) {
       this.person_list_sub.unsubscribe();
     }
+    console.log('aqui');
 
     this.person_list_sub = this.personService.getInvitedPeopleList(this.current_branch, this.search_name, this.current_voucher).subscribe(
       data => {                   

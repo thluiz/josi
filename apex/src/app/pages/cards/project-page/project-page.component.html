@@ -56,7 +56,7 @@
                         class="project step"                                                                                   
                         *ngIf="project.childrens && project.childrens.length > 0"
                         >   
-                            <h5 class="ignore-item">Caixa de Entrada</h5>
+                            <h5 class="ignore-item">Caixa de Entrada ({{project.childrens.length}})</h5>
                             <div class="container"
                             [dragula]='"childrens"'
                             [attr.data-parent]="'inbox'"
@@ -71,7 +71,13 @@
                         <td
                             class="project step"                                                                   
                             *ngFor="let step of project.steps, let k=index">                        
-                            <h5 class="ignore-item">{{ step.name }}</h5>
+                            <h5 class="ignore-item">
+                                {{ step.name }}
+                                
+                                <ng-template [ngIf]="step.childrens.length > 0">
+                                    ({{ step.childrens.length }})
+                                </ng-template>
+                            </h5>
                             <div class="container"
                             [dragula]='"childrens"'  
                             [attr.data-parent]="step.id"
