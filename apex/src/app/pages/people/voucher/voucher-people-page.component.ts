@@ -1,3 +1,4 @@
+import { CardService } from 'app/services/card-service';
 import { ParameterService } from './../../../services/parameter-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 import { Subscription } from 'rxjs/Subscription';
@@ -31,6 +32,7 @@ export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private router: Router, 
     private parameterService: ParameterService,
+    private cardService: CardService,
     private modalService: ModalService) {      
   
   }  
@@ -92,6 +94,12 @@ export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
 
   open_new_person_modal() {
     this.modalService.open(ModalType.AddPerson, null);
+  }
+
+  open_card_details(card_id) {
+    this.cardService.getCardData(card_id).subscribe((card) => {      
+      this.modalService.open(ModalType.DetailTask, card[0]);
+    });    
   }
 
   load_voucher_list() {    
