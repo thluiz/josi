@@ -458,7 +458,7 @@ export function configure_routes(app: any, connection_pool: any) {
             const result = await new sql.Request(pool)   
             .input("person", sql.Int, req.params.id)                   
             .query(`select * from vwPersonRelationships 
-                    where relationship_type in (10, 13) and person_id = @person 
+                    where relationship_type in (10, 13, 14) and person_id = @person 
                     for json path`);                
             
             let response = result.recordset[0];

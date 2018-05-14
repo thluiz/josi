@@ -67,10 +67,12 @@ function configure_routes(app, connection_pool) {
                     .input('final_text', sql.VarChar(sql.MAX), voucher.final_text)
                     .input('confirm_button_text', sql.VarChar(35), voucher.confirm_button_text)
                     .input('header_title', sql.VarChar(40), voucher.header_title)
+                    .input('anonymous_header_text', sql.VarChar(sql.MAX), voucher.anonymous_header_text)
                     .query(`update voucher set
                             title = @title,
                             [url] = @url,
                             header_text = @header_text,
+                            anonymous_header_text = @anonymous_header_text,
                             final_text = @final_text,
                             additional_question = @additional_question,
                             initials = @initials,
@@ -88,10 +90,11 @@ function configure_routes(app, connection_pool) {
                     .input('final_text', sql.VarChar(sql.MAX), voucher.final_text)
                     .input('confirm_button_text', sql.VarChar(35), voucher.confirm_button_text)
                     .input('header_title', sql.VarChar(40), voucher.header_title)
+                    .input('anonymous_header_text', sql.VarChar(sql.MAX), voucher.anonymous_header_text)
                     .query(`insert into voucher (title, [url], header_text, final_text, 
-                        additional_question, initials, confirm_button_text, header_title)
+                        additional_question, initials, confirm_button_text, header_title, @anonymous_header_text)
                             values (@title, @url, @header_text, @final_text, @additional_question, 
-                                    @initials, @confirm_button_text, @header_title)`);
+                                    @initials, @confirm_button_text, @header_title, @anonymous_header_text)`);
             }
             let result_voucher = yield jobs_service_1.JobsService.update_voucher_site();
             res.send(result_voucher);

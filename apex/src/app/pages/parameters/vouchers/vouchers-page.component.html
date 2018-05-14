@@ -109,6 +109,19 @@
         </div>
         <div class="row">
             <div class="col-12">
+                <label for="item_anonymous_header_text">Texto do topo - Anônimo </label>                                                									
+                <div class="input-group">							
+                    <textarea class="form-control"
+                    id="item_anonymous_header_text"
+                    name="item_anonymous_header_text"
+                    autocomplete="off"
+                    [(ngModel)]="current_item.anonymous_header_text" 		
+                    rows="4"></textarea>                                   
+                </div>
+            </div>                       
+        </div>
+        <div class="row">
+            <div class="col-12">
                 <label for="item_additional_question">Pergunta Adicional</label>                                                									
                 <div class="input-group">							
                     <input class="form-control"

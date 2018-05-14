@@ -176,14 +176,6 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
       this.errors.push("Informe o nome da pessoa");
     }
 
-    if(!this.new_indication.district || this.new_indication.district.length < 3) {
-      this.errors.push("Informe o bairro da pessoa");
-    }
-
-    if(!this.new_indication.occupation || this.new_indication.occupation.length < 3) {
-      this.errors.push("Informe a profissão da pessoa");
-    }
-
     if(this.new_indication.branch_id <= 0) {
       this.errors.push("Informe o núcleo para indicação");
     }
