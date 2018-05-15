@@ -96,6 +96,15 @@
                                 >{{ p.current_step }}</a>
                                 <span *ngIf="!p.monitoring_card_id"
                                 >{{ p.current_step }}</span>
+                                <ng-template [ngIf]="p.relationship_identifier != null && p.relationship_identifier.length > 0">
+                                    <br />                                
+                                    <a
+                                        style="cursor:pointer;color:gray"
+                                        target="_blank"                                    
+                                        href="http://myvtmi.im/voucher/membros2/{{ p.relationship_identifier.substring(0, 5) }}">            
+                                        {{ p.relationship_identifier.substring(0, 5) }}        
+                                    </a>
+                                </ng-template>
                             </td>
                             <td> {{ p.last_activity_description }} </td>
                             <td>                                 

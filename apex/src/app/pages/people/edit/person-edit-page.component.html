@@ -199,6 +199,24 @@
                                                 </div>                                               
                                             </div>                                                
                                         </div>
+                                        <div class="col-12 col-sm-12 col-md-12 col-lg-6" *ngIf="person.is_interested">
+                                            <h4 class="form-section"><i class="ft-user" style="color: red"></i> Interessado </h4>
+                                            <div class="row">                                        
+                                                <div class="col-12 col-md-6 col-xl-4">
+                                                    <div class="form-group">
+                                                        <label for="person_branch">Núcleo</label>                                                									
+                                                        <div class="input-group">							
+                                                            <select id="person_branch" name="person_branch" 
+                                                                class="form-control"                                                                 
+                                                                [(ngModel)]="person.branch_id">	
+                                                                <option></option>					
+                                                                <option *ngFor="let b of branches" [value]="b.id">{{ b.abrev.replace("Núcleo", "") }}</option>
+                                                            </select>																															                                                    
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="col-12 col-sm-12 col-md-12 col-lg-6"> 
                                             <h4 class="form-section" *ngIf="person.is_disciple"><i class="ft-user" style="color: darkorange"></i> Discípulo </h4>
                                             <div class="row" *ngIf="person.is_disciple">   

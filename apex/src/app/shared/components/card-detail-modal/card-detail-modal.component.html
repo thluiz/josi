@@ -25,10 +25,21 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12" style="margin-bottom:20px;">                
+            <div class="col-12" style="margin-bottom:10px;">                
                 <markdown [data]="card.description"></markdown>				        
             </div>
-        </div>    
+        </div>          		
+        <div class="row" *ngFor="let r of card.relationships">	
+            <div class="col-12" style="margin-bottom:10px;">
+                <b>{{ r.relationship_description }}:</b>
+                <a
+                    style="cursor:pointer;color:gray"
+                    target="_blank"
+                    href="http://myvtmi.im/voucher/membros2/{{ r.identifier.substring(0, 5) }}">            
+                    {{ r.identifier.substring(0, 5) }}        
+                </a>
+			</div>
+		</div>  
         <div class="row">
             <div class="col-12">                    
                 <div class="row" 

@@ -42,4 +42,5 @@ export class Card {
     organization_id: number;
     automatically_generated: boolean;    
     supporters: any[];
+    relationships: { indicator: string, relationship_type: number, relationship_description: string, identifier : string }[];
 }

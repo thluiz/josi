@@ -262,6 +262,30 @@
                                         </div>   
                                     </div>                                    
                                 </div>
+                                <div class="col-12"
+                                style="margin-bottom:30px"
+                                *ngIf="person.is_interested">
+                                    <div class="row" style="border-bottom: 1px solid black;">
+                                        <div class="col-12">
+                                            <h6 style="font-weight:bold;margin-bottom:6px"> Interessado </h6>
+                                        </div>
+                                    </div>
+                                    <div class="row">                                
+                                        <div class="col-3">
+                                            <label for="branch"
+                                            class="label-member-data">Núcleo</label> 
+                                            <span id="branch"
+                                                *ngIf="person.branch_abrev">
+                                                {{ person.branch_abrev.replace("Núcleo", '') }}                                    
+                                            </span>
+                                            <span id="branch"
+                                                *ngIf="!person.branch_abrev"
+                                                style="color:red">
+                                                Não definido
+                                            </span>                            
+                                        </div>  
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">    
                                 <div class="col-12" 

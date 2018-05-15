@@ -153,7 +153,8 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
         if(!(this.person.is_active_member 
           || this.person.is_disciple 
           || this.person.is_leaving 
-          || this.person.is_inactive_member))
+          || this.person.is_inactive_member
+          || this.person.is_interested))
           return;
 
         this.parameterService.getActiveBranches().subscribe((data) => this.branches = data);
