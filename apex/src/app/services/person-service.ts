@@ -143,7 +143,8 @@ export class PersonService {
   }
 
   changeIndicationType(indication, new_type) {
-    return this.http.post(this.dataUrl + `/invitations/change_type`, { id: indication.id, type: new_type }).do((d) => {
+    return this.http.post(this.dataUrl + `/invitations/change_type`, { id: indication.id, type: new_type })
+    .do((d) => {
       this.indication_actions.next(indication);
     });    
   }

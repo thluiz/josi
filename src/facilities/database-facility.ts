@@ -1,4 +1,4 @@
-import { Connection, EntitySchema, Repository } from "typeorm";
+import { Connection, EntitySchema, Repository, QueryRunner } from "typeorm";
 import "reflect-metadata";
 import {createConnection} from "typeorm";
 import to from 'await-to-js';
@@ -12,6 +12,27 @@ export class DatabaseFacility {
         let connection = await this.getConnection();
 
         return await connection.getRepository(type);
+    }
+
+    static async ExecuteWithinTransaction<T>(fun: (queryRunner: QueryRunner) => Promise<Result<T>>): Promise<Result<T>> {        
+        const conn = await DatabaseFacility.getConnection();
+        const queryRunner = conn.createQueryRunner(); 
+
+        try {            
+            
+            await queryRunner.startTransaction();            
+
+            let result = await fun(queryRunner);
+            
+            await queryRunner.commitTransaction();
+
+            return result;
+
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+
+            return Result.Fail(ErrorCode.GenericError, error);
+        }
     }
 
     static async ExecuteSPNoResults(procedure: string, ...parameters: any[]) : Promise<Result<void>> {

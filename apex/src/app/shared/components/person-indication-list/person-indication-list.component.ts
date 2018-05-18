@@ -129,13 +129,17 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
   changeIndicationType(close_action) {
     this.saving = true;
 
-    this.personService.changeIndicationType(this.current_indication, this.new_indication_type).subscribe((data) => {
+    this.personService
+    .changeIndicationType(this.current_indication, this.new_indication_type)
+    .subscribe((data) => {
+      console.log(data);
       this.saving = false;
 
       if(close_action) {
-        close_action();
+        close_action('indication type changed!');
       }
       this.load_indications();
+      console.log('aqui');
     });
   }
 

@@ -12,27 +12,19 @@ const EnumRelationshipType_1 = require("./../entity/EnumRelationshipType");
 const PersonRelationship_1 = require("./../entity/PersonRelationship");
 const database_facility_1 = require("./../facilities/database-facility");
 const result_1 = require("../helpers/result");
-const errors_codes_1 = require("../helpers/errors-codes");
 class InvitationsService {
     static change_invite_type(invite_id, new_type) {
         return __awaiter(this, void 0, void 0, function* () {
-            const conn = yield database_facility_1.DatabaseFacility.getConnection();
-            const queryRunner = conn.createQueryRunner();
-            try {
-                yield queryRunner.startTransaction();
-                const invite = yield queryRunner.manager.findOne(PersonRelationship_1.PersonRelationship, { id: invite_id });
+            return this.DBF.ExecuteWithinTransaction((qr) => __awaiter(this, void 0, void 0, function* () {
+                const invite = yield qr.manager.findOne(PersonRelationship_1.PersonRelationship, { id: invite_id });
                 let relationship_type = new_type == 0 ? 13 : new_type == 1 ? 10 : 14;
-                invite.relationship_type = yield queryRunner.manager.findOne(EnumRelationshipType_1.EnumRelationshipType, { id: relationship_type });
-                yield queryRunner.manager.save(invite);
-                yield queryRunner.commitTransaction();
+                invite.relationship_type = yield qr.manager.findOne(EnumRelationshipType_1.EnumRelationshipType, { id: relationship_type });
+                yield qr.manager.save(invite);
                 return result_1.Result.Ok();
-            }
-            catch (error) {
-                yield queryRunner.rollbackTransaction();
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
-            }
+            }));
         });
     }
 }
+InvitationsService.DBF = database_facility_1.DatabaseFacility;
 exports.InvitationsService = InvitationsService;
 //# sourceMappingURL=invitations-service.js.map

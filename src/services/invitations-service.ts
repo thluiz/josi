@@ -1,3 +1,4 @@
+import { QueryRunner } from 'typeorm';
 import { EnumRelationshipType } from './../entity/EnumRelationshipType';
 import { PersonRelationship } from './../entity/PersonRelationship';
 import { DatabaseParameterFacility } from './../facilities/database-parameter-facility';
@@ -6,26 +7,17 @@ import { Result } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
 
 export class InvitationsService {
-    static async change_invite_type(invite_id: number, new_type: number): Promise<Result> {
-        const conn = await DatabaseFacility.getConnection();
-        const queryRunner = conn.createQueryRunner(); 
-
-        try {            
-            await queryRunner.startTransaction();
-
-            const invite = await queryRunner.manager.findOne(PersonRelationship, {id: invite_id});            
+    static DBF = DatabaseFacility;
+    
+    static async change_invite_type(invite_id: number, new_type: number): Promise<Result<any>> {
+        return this.DBF.ExecuteWithinTransaction(async (qr : QueryRunner) => {
+            const invite = await qr.manager.findOne(PersonRelationship, {id: invite_id});            
             let relationship_type = new_type == 0 ? 13 : new_type == 1 ? 10 : 14;                        
 
-            invite.relationship_type = await queryRunner.manager.findOne(EnumRelationshipType, {id: relationship_type});
-            await queryRunner.manager.save(invite);
-            
-            await queryRunner.commitTransaction();
+            invite.relationship_type = await qr.manager.findOne(EnumRelationshipType, {id: relationship_type});
+            await qr.manager.save(invite);
 
             return Result.Ok();
-        } catch (error) {
-            await queryRunner.rollbackTransaction();
-
-            return Result.Fail(ErrorCode.GenericError, error);
-        }                        
+        });                       
     }
 }

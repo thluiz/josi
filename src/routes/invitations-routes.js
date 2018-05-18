@@ -12,10 +12,10 @@ const auth = require("../../src/middlewares/auth");
 const invitations_service_1 = require("../services/invitations-service");
 function routes(app) {
     app.post("/api/invitations/change_type", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        const indication_id = this.body.id;
-        const new_type = this.body.type;
-        let result = invitations_service_1.InvitationsService.change_invite_type(indication_id, new_type);
-        res.render(result);
+        const indication_id = req.body.id;
+        const new_type = req.body.type;
+        let result = yield invitations_service_1.InvitationsService.change_invite_type(indication_id, new_type);
+        res.send(result);
     }));
 }
 exports.routes = routes;

@@ -20,6 +20,22 @@ class DatabaseFacility {
             return yield connection.getRepository(type);
         });
     }
+    static ExecuteWithinTransaction(fun) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const conn = yield DatabaseFacility.getConnection();
+            const queryRunner = conn.createQueryRunner();
+            try {
+                yield queryRunner.startTransaction();
+                let result = yield fun(queryRunner);
+                yield queryRunner.commitTransaction();
+                return result;
+            }
+            catch (error) {
+                yield queryRunner.rollbackTransaction();
+                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+            }
+        });
+    }
     static ExecuteSPNoResults(procedure, ...parameters) {
         return __awaiter(this, void 0, void 0, function* () {
             let [conn_error, connection] = yield await_to_js_1.default(this.getConnection());
