@@ -1,3 +1,4 @@
+import { EnumRelationshipType } from './../entity/EnumRelationshipType';
 import { PersonRelationship } from './../entity/PersonRelationship';
 import { DatabaseParameterFacility } from './../facilities/database-parameter-facility';
 import { DatabaseFacility } from './../facilities/database-facility';
@@ -13,10 +14,11 @@ export class InvitationsService {
             await queryRunner.startTransaction();
 
             const invite = await queryRunner.manager.findOne(PersonRelationship, {id: invite_id});            
-            invite.relationship_type.id = new_type == 0 ? 13 : new_type == 1 ? 10 : 14;                        
+            let relationship_type = new_type == 0 ? 13 : new_type == 1 ? 10 : 14;                        
+
+            invite.relationship_type = await queryRunner.manager.findOne(EnumRelationshipType, {id: relationship_type});
             await queryRunner.manager.save(invite);
             
-
             await queryRunner.commitTransaction();
 
             return Result.Ok();

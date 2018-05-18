@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const EnumRelationshipType_1 = require("./../entity/EnumRelationshipType");
 const PersonRelationship_1 = require("./../entity/PersonRelationship");
 const database_facility_1 = require("./../facilities/database-facility");
 const result_1 = require("../helpers/result");
@@ -20,7 +21,8 @@ class InvitationsService {
             try {
                 yield queryRunner.startTransaction();
                 const invite = yield queryRunner.manager.findOne(PersonRelationship_1.PersonRelationship, { id: invite_id });
-                invite.relationship_type.id = new_type == 0 ? 13 : new_type == 1 ? 10 : 14;
+                let relationship_type = new_type == 0 ? 13 : new_type == 1 ? 10 : 14;
+                invite.relationship_type = yield queryRunner.manager.findOne(EnumRelationshipType_1.EnumRelationshipType, { id: relationship_type });
                 yield queryRunner.manager.save(invite);
                 yield queryRunner.commitTransaction();
                 return result_1.Result.Ok();
