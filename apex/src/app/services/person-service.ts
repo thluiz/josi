@@ -111,7 +111,11 @@ export class PersonService {
   getPersonExternalUnits(person_id) {
     return this.http.get(this.dataUrl + `/person_external_units/person/${person_id}`);    
   }
-    
+      
+  getPersonRelationships(person_id) {
+    return this.http.get(this.dataUrl + `/relationships/person/${person_id}`);    
+  }
+
   getPersonIndications(person_id) {
     return this.http.get(this.dataUrl + `/person_indications/person/${person_id}`);    
   }
@@ -134,6 +138,12 @@ export class PersonService {
 
   saveIndication(indication) {
     return this.http.post(this.dataUrl + `/person_indications`, { indication }).do((d) => {
+      this.indication_actions.next(indication);
+    });    
+  }
+
+  changeIndicationType(indication, new_type) {
+    return this.http.post(this.dataUrl + `/invitations/change_type`, { id: indication.id, type: new_type }).do((d) => {
       this.indication_actions.next(indication);
     });    
   }

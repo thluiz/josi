@@ -451,6 +451,8 @@ export function configure_routes(app: any, connection_pool: any) {
      * INDICATIONS
      */
 
+
+
     app.get("/api/person_indications/person/:id", 
     auth.ensureLoggedIn(),
     async (req, res, next) => {  

@@ -7,14 +7,14 @@ import { ErrorCode } from "../helpers/errors-codes";
 
 export class DatabaseFacility {    
     private static _connection: Connection;    
-        
+
     static async getRepository<T>(type: string | Function | (new () => any) | EntitySchema<T> )  : Promise<Repository<T>> {
         let connection = await this.getConnection();
 
         return await connection.getRepository(type);
     }
 
-    static async ExecuteSPNoResults(procedure: string, parameters?: any[]) : Promise<Result<void>> {
+    static async ExecuteSPNoResults(procedure: string, ...parameters: any[]) : Promise<Result<void>> {
         let [conn_error, connection] = await to<Connection>(this.getConnection());
 
         if(conn_error) return Result.Fail(ErrorCode.FailedGetConnection, conn_error);        

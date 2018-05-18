@@ -118,7 +118,8 @@ export class CardService {
           id: step_description.id,
           name: step_description.name,
           childrens: [],
-          order: step_description.order      
+          order: step_description.order,
+          automatically_move: step_description.automatically_move     
         };
 
         step.childrens = project.childrens.filter(ch => ch.current_step_id == step.id);

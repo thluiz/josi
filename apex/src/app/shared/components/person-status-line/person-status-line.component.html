@@ -4,7 +4,7 @@
 		style="cursor:pointer">												
 			<i class="fas fa-bullhorn"
 			style="color:red"></i>
-	</span>                               
+	</span>     	
 	<span *ngIf="person.scheduling_status > 0 && !hideScheduleStatus"
 		(click)="begin_person_schedule_treatment()"
 		[title]="person.scheduling_description"
@@ -46,7 +46,7 @@
 		style="cursor:pointer">												
 			<i class="fas fa-user"
 			style="color:red"></i>
-	</span>                               
+	</span>     	                  
 	<span *ngIf="person.scheduling_status > 0 && !hideScheduleStatus"
 		(click)="begin_person_schedule_treatment()"
 		[title]="person.scheduling_description"

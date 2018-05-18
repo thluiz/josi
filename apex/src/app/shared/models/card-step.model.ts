@@ -1,8 +1,9 @@
 import { Card } from 'app/shared/models/card.model';
 
 export class CardStep {
-    public id: number;    
-    public name: string;        
-    public order: number; 
-    public childrens: Card[];    
+    id: number;    
+    name: string;        
+    order: number; 
+    childrens: Card[];   
+    automatically_move: boolean;
 }

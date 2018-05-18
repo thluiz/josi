@@ -24,9 +24,6 @@ export class Person {
     @Column({name: "branch_id"})
     branch_id: number
 
-    @Column({name: "branch_id"})
-    default_branch_id: number
-
     @ManyToOne(type => Url)
     @JoinColumn({ name: "default_page_id" })
     default_page: Url;

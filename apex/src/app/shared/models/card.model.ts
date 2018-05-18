@@ -29,7 +29,7 @@ export class Card {
     childrens: Card[];     
     steps: CardStep[]; 
     is_task: boolean; 
-    steps_description: { id: number, name: string, is_blocking_step : boolean, childrens: number, order: number }[];
+    steps_description: { id: number, name: string, is_blocking_step : boolean, childrens: number, order: number, automatically_move: boolean }[];
     tmp_person: any;
     is_subproject: boolean;
     group: Group;

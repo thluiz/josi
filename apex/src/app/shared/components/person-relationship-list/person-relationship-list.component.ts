@@ -20,8 +20,8 @@ export class PersonRelationshipListComponent implements OnInit, OnDestroy {
   @Input() d:any;
   @Input() person:any;
   @Input() showHeader = true;   
-  @Input() navigateToIndication = false;
-  @Output() onNavigateToIndication = new EventEmitter<boolean>();
+  @Input() navigateToRelationship = false;
+  @Output() onNavigateToRelationship = new EventEmitter<boolean>();
 
   saving = false;  
   needed_direct_indications = 0; 
@@ -64,10 +64,10 @@ export class PersonRelationshipListComponent implements OnInit, OnDestroy {
     this.indication_changes_subscriber = this.personService.indicationChanges$
       .filter((data) => data != null && data.person_id == this.person.id)
       .subscribe((data) => {            
-        this.load_indications();      
+        this.load_items();      
       });
     
-    this.load_indications();
+    this.load_items();
   }
 
   ngOnDestroy() {
@@ -76,34 +76,18 @@ export class PersonRelationshipListComponent implements OnInit, OnDestroy {
 
   navigateToPerson(person_id) {
     this.person.id = person_id;
-    this.load_indications();
-    this.onNavigateToIndication.emit(person_id);
+    this.load_items();
+    this.onNavigateToRelationship.emit(person_id);
   }
 
-  load_indications() {    
+  load_items() {    
     if(this.last_call != null && ((new Date()).getTime() - (this.last_call.getTime()) <= this.parameterService.getTimeReloadComponents()))  {
       return;
     }
     
-    this.personService.getPersonIndications(this.person.id)
-    .subscribe((data : any[]) => { 
-
-      this.parameterService.getConfigurations().subscribe((configs: any[]) => {        
-        var minimal_direct = configs.find(d => d.id == Configurations.MinimalDirectIndicationsPerActiveMember.toFixed());  
-        var minimal_indirect = configs.find(d => d.id == Configurations.MinimalIndirectIndicationsPerActiveMember.toFixed());  
-
-        console.log(data.filter(d => d.relationship_type == 10));
-
-        if(minimal_direct.value > 0) {
-          this.needed_direct_indications = minimal_direct.value - (data.filter(d => d.relationship_type == 10).length);
-        }
-
-        if(minimal_indirect.value > 0) {
-          this.needed_indirect_indications = minimal_indirect.value - (data.filter(d => d.relationship_type == 13).length);
-        }
-      });
-
-      this.items = data;
+    this.personService.getPersonRelationships(this.person.id)
+    .subscribe((result : any) => { 
+      this.items = result.data;
     });
 
     this.last_call = new Date();

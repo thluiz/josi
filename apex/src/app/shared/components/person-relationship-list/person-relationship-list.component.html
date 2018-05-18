@@ -18,20 +18,19 @@
     </div>    
 </div>
 
-<div class="row" *ngFor="let item of items">
-    <div class="col-8" *ngIf="navigateToIndication">        
+<div class="row" *ngFor="let item of items">    
+    <div class="col-12" >
+        {{ item.relationship_type.masculine_treatment }}        
         <a
             style="cursor:pointer;color:gray"
-            (click)="navigateToPerson(item.person2_id)">
-            {{ item.indicated_name }}
+            (click)="navigateToPerson(item.parent_person.id)"
+            *ngIf="navigateToRelationship">
+            {{ item.parent_person.name }}
         </a>           
-    </div>
-    <div class="col-8" *ngIf="!navigateToIndication">                
-        {{ item.indicated_name }}        
-    </div>
-    <div class="col-2 text-center">                
-        {{ item.relationship_description.replace("Convite ", "") }}        
-    </div>
+        <ng-template [ngIf]="!navigateToRelationship">
+            {{ item.parent_person.name }}        
+        </ng-template>
+    </div>  
 </div>
 
 <ng-template #new_indication_modal let-c="close" let-d="dismiss">

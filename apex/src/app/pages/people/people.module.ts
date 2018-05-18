@@ -1,3 +1,4 @@
+import { PersonRelationshipListModule } from './../../shared/components/person-relationship-list/person-relationship-list.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -62,7 +63,8 @@ import { PersonExternalUnitListModule } from 'app/pages/people/shared/components
         FloatActionCenterModule,
         PersonIndicationListModule,
         PersonPartnershipListModule,
-        PersonExternalUnitListModule         
+        PersonExternalUnitListModule ,
+        PersonRelationshipListModule        
     ],
     declarations: [       
         MembersPanelPageComponent,

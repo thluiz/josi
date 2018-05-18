@@ -43,10 +43,15 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
     district: '',
     age: ''
   };
+  
+  indication_types = [{id: 0, description: 'Indireto'}, {id: 1, description: 'Direto'}, {id: 2, description: 'Anônimo'}];
+
   contact_types: any[];
   branches: any[];
   operators: any[];
   errors :string[] = [];
+  current_indication: any;
+  new_indication_type: number;
   private last_call : Date;
   
   private indication_changes_subscriber: Subscription;
@@ -99,7 +104,9 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
         }
 
         if(minimal_indirect.value > 0) {
-          this.needed_indirect_indications = minimal_indirect.value - (data.filter(d => d.relationship_type == 13).length);
+          this.needed_indirect_indications = minimal_indirect.value 
+                                        - (data.filter(d => d.relationship_type == 13).length)
+                                        - (data.filter(d => d.relationship_type == 14).length);
         }
       });
 
@@ -108,7 +115,30 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
 
     this.last_call = new Date();
   }
-       
+  
+  openChangeIndicationType(indication, content) {
+    this.new_indication_type = -1;
+    this.current_indication = indication;
+    this.modalService.open(content).result.then((result) => {                                  
+  
+    }, (reason) => {
+      console.log(reason);
+    });
+  }
+
+  changeIndicationType(close_action) {
+    this.saving = true;
+
+    this.personService.changeIndicationType(this.current_indication, this.new_indication_type).subscribe((data) => {
+      this.saving = false;
+
+      if(close_action) {
+        close_action();
+      }
+      this.load_indications();
+    });
+  }
+
   open(content){  
     this.saving = false;
 
@@ -158,7 +188,7 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
 
       if(close_action) {
         close_action();
-      }
+      }      
     });
   } 
 

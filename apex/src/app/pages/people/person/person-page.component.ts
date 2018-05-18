@@ -1,3 +1,4 @@
+import { PersonRelationshipListComponent } from './../../../shared/components/person-relationship-list/person-relationship-list.component';
 import { PersonCommentListComponent } from './../shared/components/person-comment-list/person-comment-list.component';
 import { PersonPartnershipListComponent } from './../shared/components/person-partnership-list/person-partnership-list.component';
 import { PersonContactListComponent } from './../shared/components/person-contact-list/person-contact-list.component';
@@ -108,6 +109,10 @@ export class PersonPageComponent implements OnInit, OnDestroy {
     this.subs.push(this.commentListComponent.changes.subscribe((comps: QueryList <PersonCommentListComponent>) => {        
       if(comps.first) comps.first.load_comments();
     }));
+
+    this.subs.push(this.commentListComponent.changes.subscribe((comps: QueryList <PersonRelationshipListComponent>) => {        
+      if(comps.first) comps.first.load_items();
+    }))
   }
 
   ngOnInit() {

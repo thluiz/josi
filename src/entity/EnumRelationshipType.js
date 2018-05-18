@@ -10,44 +10,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-const Url_1 = require("./Url");
-let Person = class Person {
+let EnumRelationshipType = class EnumRelationshipType {
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn(),
     __metadata("design:type", Number)
-], Person.prototype, "id", void 0);
+], EnumRelationshipType.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
-], Person.prototype, "name", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", Boolean)
-], Person.prototype, "is_operator", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", Boolean)
-], Person.prototype, "is_director", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", Boolean)
-], Person.prototype, "is_manager", void 0);
+], EnumRelationshipType.prototype, "name", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
-], Person.prototype, "avatar_img", void 0);
+], EnumRelationshipType.prototype, "feminine_treatment", void 0);
 __decorate([
-    typeorm_1.Column({ name: "branch_id" }),
-    __metadata("design:type", Number)
-], Person.prototype, "branch_id", void 0);
-__decorate([
-    typeorm_1.ManyToOne(type => Url_1.Url),
-    typeorm_1.JoinColumn({ name: "default_page_id" }),
-    __metadata("design:type", Url_1.Url)
-], Person.prototype, "default_page", void 0);
-Person = __decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], EnumRelationshipType.prototype, "masculine_treatment", void 0);
+EnumRelationshipType = __decorate([
     typeorm_1.Entity()
-], Person);
-exports.Person = Person;
-//# sourceMappingURL=Person.js.map
+], EnumRelationshipType);
+exports.EnumRelationshipType = EnumRelationshipType;
+//# sourceMappingURL=EnumRelationshipType.js.map

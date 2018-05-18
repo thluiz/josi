@@ -20,7 +20,7 @@ class DatabaseFacility {
             return yield connection.getRepository(type);
         });
     }
-    static ExecuteSPNoResults(procedure, parameters) {
+    static ExecuteSPNoResults(procedure, ...parameters) {
         return __awaiter(this, void 0, void 0, function* () {
             let [conn_error, connection] = yield await_to_js_1.default(this.getConnection());
             if (conn_error)
