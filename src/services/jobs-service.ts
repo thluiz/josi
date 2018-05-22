@@ -21,7 +21,7 @@ export class JobsService {
         results.push(await PeopleService.check_people_scheduling_status());
         results.push(await CardsService.correct_card_out_of_parent_step());
         results.push(await CardsService.check_cards_has_overdue_cards());
-        results.push(await this.consolidate_activity_sumary());
+        results.push(await this.consolidate_members_sumary());
         results.push(await this.consolidate_activity_sumary());
 
         console.log('...finished jobs!');

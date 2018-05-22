@@ -27,7 +27,7 @@ class JobsService {
             results.push(yield people_service_1.PeopleService.check_people_scheduling_status());
             results.push(yield cards_service_1.CardsService.correct_card_out_of_parent_step());
             results.push(yield cards_service_1.CardsService.check_cards_has_overdue_cards());
-            results.push(yield this.consolidate_activity_sumary());
+            results.push(yield this.consolidate_members_sumary());
             results.push(yield this.consolidate_activity_sumary());
             console.log('...finished jobs!');
             let err = results.find(r => !r.success);
