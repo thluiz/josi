@@ -11,7 +11,7 @@ from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
-import { PersonService } from './../../../services/person-service';
+import { PersonService, ActivityType } from './../../../services/person-service';
 import { ParameterService } from './../../../services/parameter-service';
 
 import { FormControl, FormsModule, ReactiveFormsModule,
@@ -69,6 +69,9 @@ export class PersonPageComponent implements OnInit, OnDestroy {
   addresses = [];
   new_address: any;
   sub_components_loaded = false;
+  financial_history = [];
+  trainning_history = [];
+  contact_history = [];
   
   private subs: Subscription[];
 
@@ -222,6 +225,18 @@ export class PersonPageComponent implements OnInit, OnDestroy {
   load_person_data() {   
     this.personService.getData(this.id).subscribe((data) => {
       this.person = data;  
+    });
+
+    this.personService.getIncidentHistory(this.id, ActivityType.Financial).subscribe((result : any) => {
+      this.financial_history = result.data;  
+    });
+
+    this.personService.getIncidentHistory(this.id, ActivityType.Contact).subscribe((result : any) => {
+      this.contact_history = result.data;  
+    });
+
+    this.personService.getIncidentHistory(this.id, ActivityType.Trainning).subscribe((result : any) => {
+      this.trainning_history = result.data;  
     });
   }
 

@@ -295,7 +295,62 @@
                                     </person-comment-list>
                                 </div>                                                            
                             </div>
+                            <div class="row">    
+                                <div class="col-6" 
+                                    style="margin-bottom:30px">
+                                    <div class="row" style="border-bottom: 1px solid black">
+                                        <div class="col-10 col-xl-10 col-sm-9">
+                                            <h6 style="padding:0;margin:0;font-weight:bold"> Histórico de Contatos </h6>
+                                        </div>
+                                        <div class="col-2 col-sm-3 col-xl-2 text-right">
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngFor="let item of contact_history"> 
+                                        <div class="col-12">                                            
+                                            <incident-agenda-listitem [incident]="item" [hideName]="true"
+                                            [hideStatus]="true" [hideActions]="true" [forceCompact]="true"></incident-agenda-listitem>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6" 
+                                style="margin-bottom:30px">
+                                    <div class="row" style="border-bottom: 1px solid black">
+                                        <div class="col-10 col-xl-10 col-sm-9">
+                                            <h6 style="padding:0;margin:0;font-weight:bold"> Histórico Financeiro </h6>
+                                        </div>
+                                        <div class="col-2 col-sm-3 col-xl-2 text-right">
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngFor="let item of financial_history"> 
+                                        <div class="col-12">
+                                            <incident-financial-listitem [incident]="item" [hideName]="true"></incident-financial-listitem>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">    
+                                <div class="col-12" 
+                                    style="margin-bottom:30px">
+                                    <div class="row" style="border-bottom: 1px solid black">
+                                        <div class="col-10 col-xl-10 col-sm-9">
+                                            <h6 style="padding:0;margin:0;font-weight:bold"> Histórico de Treino </h6>
+                                        </div>
+                                        <div class="col-2 col-sm-3 col-xl-2 text-right">
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngFor="let item of trainning_history"> 
+                                        <div class="col-12">                                            
+                                            <incident-agenda-listitem [incident]="item" [hideName]="true"
+                                                [hideStatus]="true" [hideActions]="true"></incident-agenda-listitem>
+                                        </div>
+                                    </div>
+                                </div>                                
+                            </div>
                         </div>
+
                         <div class="col-12 col-sm-12 col-md-12 col-xl-6 pr-3">
                             <div class="row">
                                 <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">

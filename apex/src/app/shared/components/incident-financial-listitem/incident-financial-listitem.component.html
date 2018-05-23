@@ -11,7 +11,7 @@
         <span style="width:60px;display:inline-table;text-align:right;padding-right:10px">
             {{ incident.final_value }}
         </span>
-        {{ incident.person }}
+        <span *ngIf="!hideName">{{ incident.person }}</span>
     </div>
     
     <div class="col-9 d-block d-md-none"         
@@ -24,7 +24,7 @@
                 <span style="width:45px;display:inline-table;">{{ incident.small_date }}</span>
                 <span style="width:40px;display:inline-table;">{{ incident.abrev }}</span>
             </div>
-            <div class="col-12 p-0 pl-2">												
+            <div class="col-12 p-0 pl-2" *ngIf="!hideName">												
                 {{ incident.person }}
             </div>
         </div>										

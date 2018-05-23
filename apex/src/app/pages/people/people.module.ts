@@ -1,3 +1,5 @@
+import { IncidentAgendaListitemModule } from 'app/shared/components/incident-agenda-listitem/incident-agenda-listitem.module';
+import { IncidentFinancialListitemModule } from './../../shared/components/incident-financial-listitem/incident-financial-listitem.module';
 import { PersonRelationshipListModule } from './../../shared/components/person-relationship-list/person-relationship-list.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
@@ -63,8 +65,10 @@ import { PersonExternalUnitListModule } from 'app/pages/people/shared/components
         FloatActionCenterModule,
         PersonIndicationListModule,
         PersonPartnershipListModule,
-        PersonExternalUnitListModule ,
-        PersonRelationshipListModule        
+        PersonExternalUnitListModule,
+        PersonRelationshipListModule,
+        IncidentFinancialListitemModule,
+        IncidentAgendaListitemModule
     ],
     declarations: [       
         MembersPanelPageComponent,

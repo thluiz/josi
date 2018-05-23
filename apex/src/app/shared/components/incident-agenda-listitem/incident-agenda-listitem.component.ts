@@ -15,6 +15,9 @@ export class IncidentAgendaListitemComponent {
     @Input() forceCompact = false;
     @Input() showDate = false;
     @Input() hideName = false;
+    @Input() hideStatus = false;
+    @Input() hideActions = false;
+    @Input() showTitle = false;
 
     constructor(private incidentService: IncidentService,
               private modalService: ModalService) {

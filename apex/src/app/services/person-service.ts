@@ -36,6 +36,12 @@ export interface IPersonEvent {
   data: any
 }
 
+export enum ActivityType {
+  Trainning = 16,
+  Financial = 17,
+  Contact = 18
+}
+
 @Injectable()
 export class PersonService {  
   private dataUrl = environment.api_url;    
@@ -207,6 +213,11 @@ export class PersonService {
   getData(id) {    
     return this.http
         .get(this.dataUrl + `/people/${id}`);
+  }
+
+  getIncidentHistory(id, type: ActivityType, page = 1) {    
+    return this.http
+        .get(this.dataUrl + `/incidents/history/${id}/${type.toFixed(0)}/${page}`);
   }
 
   getPersonRoles(id) {    

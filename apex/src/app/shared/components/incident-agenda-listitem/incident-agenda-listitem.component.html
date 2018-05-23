@@ -9,6 +9,7 @@
         <span style="width:45px;display:inline-table;" *ngIf="incident.need_start_hour_minute">{{ incident.started_on_hour || incident.start_hour }}</span>
         <span style="width:40px;display:inline-table;">{{ incident.abrev }}</span> 
         <span *ngIf="!hideName">{{ incident.person }}</span>
+        <span *ngIf="!showTitle">{{ incident.title }}</span>
     </div>
     
     <div class="col-8 d-block d-md-none"         
@@ -28,10 +29,13 @@
             <div class="col-12 p-0 pl-2" *ngIf="!hideName">												
                 {{ incident.person }}
             </div>
+            <div class="col-12 p-0 pl-2" *ngIf="showTitle">												
+                {{ incident.title }}
+            </div>
         </div>										
     </div>
         
-    <div class="col-1 d-none d-md-block">
+    <div class="col-1 d-none d-md-block" *ngIf="!hideActions">
         <button type="button" 
         class="btn btn-silver btn-sm btn-action" 										
         title="Iniciar Atividade"									
@@ -66,14 +70,14 @@
             <i class="fas fa-stop"></i>
         </button>
     </div>
-    <div class="col-3 d-none d-md-block">        
+    <div class="col-3 d-none d-md-block" *ngIf="!hideStatus">        
         <person-status-line	
             *ngIf="incident.person_data"										
             [person]="incident.person_data[0]"            
         >
         </person-status-line>
     </div>	
-    <div class="col-4 d-block d-md-none">
+    <div class="col-4 d-block d-md-none" *ngIf="!hideActions">
         <div class="row">
             <div class="col-12">
                 <div class="row">
