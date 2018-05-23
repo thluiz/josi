@@ -309,7 +309,8 @@
                                     <div class="row" *ngFor="let item of contact_history"> 
                                         <div class="col-12">                                            
                                             <incident-agenda-listitem [incident]="item" [hideName]="true"
-                                            [hideStatus]="true" [hideActions]="true" [forceCompact]="true"></incident-agenda-listitem>
+                                            [showCloseText]="true" [hideStatus]="true" [hideActions]="true" 
+                                            [showDate]="true" [forceCompact]="true"></incident-agenda-listitem>
                                         </div>
                                     </div>
                                 </div>
@@ -335,7 +336,7 @@
                                     style="margin-bottom:30px">
                                     <div class="row" style="border-bottom: 1px solid black">
                                         <div class="col-10 col-xl-10 col-sm-9">
-                                            <h6 style="padding:0;margin:0;font-weight:bold"> Histórico de Treino </h6>
+                                            <h6 style="padding:0;margin:0;font-weight:bold"> Histórico de Pratica </h6>
                                         </div>
                                         <div class="col-2 col-sm-3 col-xl-2 text-right">
                                             
@@ -344,7 +345,8 @@
                                     <div class="row" *ngFor="let item of trainning_history"> 
                                         <div class="col-12">                                            
                                             <incident-agenda-listitem [incident]="item" [hideName]="true"
-                                                [hideStatus]="true" [hideActions]="true"></incident-agenda-listitem>
+                                            [showCloseText]="true" [hideStatus]="true" [hideActions]="true"
+                                            [showDate]="true" [forceCompact]="true"></incident-agenda-listitem>
                                         </div>
                                     </div>
                                 </div>                                
