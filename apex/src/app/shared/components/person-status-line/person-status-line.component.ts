@@ -17,6 +17,7 @@ export class PersonStatusLineComponent implements OnInit {
   @Input() hideCommunicationStatus = false;
   @Input() hideScheduleStatus = false;
   @Input() hideFinancialStatus = false;
+  @Input() hideDataStatus = false;
 
   private person_changes_subscriber: Subscription;  
 

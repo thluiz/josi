@@ -9,6 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_facility_1 = require("./../facilities/database-facility");
+const result_1 = require("../helpers/result");
+const errors_codes_1 = require("../helpers/errors-codes");
+const Person_1 = require("../entity/Person");
 class PeopleService {
     static check_people_comunication_status() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -38,6 +41,22 @@ class PeopleService {
     static cancel_expired_people_scheduling() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield database_facility_1.DatabaseFacility.ExecuteSPNoResults("CancelExpiredPeopleScheduling");
+        });
+    }
+    static save_avatar_image(person_id, blob_image) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const PR = yield database_facility_1.DatabaseFacility.getRepository(Person_1.Person);
+                const person = yield PR.findOne({ id: person_id });
+                person.avatar_img = blob_image;
+                yield PR.save(person);
+                //TODO: Validar tamanho da imagem
+                return result_1.Result.Ok(person);
+            }
+            catch (error) {
+                //TODO: Remove file from blob
+                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+            }
         });
     }
 }

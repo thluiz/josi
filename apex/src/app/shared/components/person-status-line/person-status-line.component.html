@@ -21,7 +21,7 @@
 			style="color:red"													
 			[title]="person.financial_description"></i>
 	</span>
-	<span *ngIf="person.data_status == 1" 
+	<span *ngIf="person.data_status == 1 && !hideDataStatus" 
 		[title]="person.data_status_description"
 		(click)="begin_person_data_treatment()"
 		style="cursor:pointer">												
@@ -61,7 +61,7 @@
 			<i class="icon-wallet" 
 			style="color:red"></i>
 	</span>
-	<span *ngIf="person.data_status == 1" 
+	<span *ngIf="person.data_status == 1 && !hideDataStatus" 
 		[title]="person.data_status_description"	
 		(click)="begin_person_data_treatment()"
 		style="cursor:pointer">												

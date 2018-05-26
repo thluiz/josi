@@ -5,26 +5,7 @@ import { JobsService } from '../../src/services/jobs-service';
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
-
-    app.get("/api/branches/:id?", 
-    auth.ensureLoggedIn(),
-    async (req, res, next) => {                        
-        if(!req.params.id) {
-            const result = await new sql.Request(pool)            
-            .execute(`GetBranches`);                
-
-            res.send(result.recordset[0]);
-        } else {
-            const result = await new sql.Request(pool)   
-            .input("branch", sql.Int, req.params.id)                   
-            .query(`select * from vwBranch where id = @branch for json path`);                
-            
-            let response = result.recordset[0];
-
-            res.send(response[0].empty ? [] : response);
-        }
-    });
-
+    
     app.get("/api/branch_maps/branch/:id", 
     auth.ensureLoggedIn(),
     async (req, res, next) => {                                

@@ -13,20 +13,6 @@ const auth = require("../../src/middlewares/auth");
 const jobs_service_1 = require("../../src/services/jobs-service");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
-    app.get("/api/branches/:id?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        if (!req.params.id) {
-            const result = yield new sql.Request(pool)
-                .execute(`GetBranches`);
-            res.send(result.recordset[0]);
-        }
-        else {
-            const result = yield new sql.Request(pool)
-                .input("branch", sql.Int, req.params.id)
-                .query(`select * from vwBranch where id = @branch for json path`);
-            let response = result.recordset[0];
-            res.send(response[0].empty ? [] : response);
-        }
-    }));
     app.get("/api/branch_maps/branch/:id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input("branch_id", sql.Int, req.params.id)

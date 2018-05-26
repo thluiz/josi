@@ -48,6 +48,14 @@ class DatabaseFacility {
             return result_1.Result.Ok();
         });
     }
+    static ExecuteJsonSQL(sql, parameters) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let connection = yield this.getConnection();
+            ;
+            const result = yield connection.query(sql, parameters);
+            return JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]);
+        });
+    }
     static ExecuteJsonSP(procedure, parameters) {
         return __awaiter(this, void 0, void 0, function* () {
             let connection = yield this.getConnection();

@@ -49,12 +49,20 @@ export class DatabaseFacility {
         return Result.Ok();
     } 
 
+    static async ExecuteJsonSQL<T>(sql: string, parameters?: any[]) : Promise<T> {
+        let connection = await this.getConnection();        ;
+    
+        const result = await connection.query(sql, parameters);
+                          
+        return JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]) as T;
+    }
+
     static async ExecuteJsonSP<T>(procedure: string, parameters?: any[]) : Promise<T> {
         let connection = await this.getConnection();
         let {query, values} = this.buildSPParameters(procedure, parameters);
     
         const result = await connection.query(query, values);
-                          
+                                  
         return JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]) as T;
     }
 
@@ -71,7 +79,7 @@ export class DatabaseFacility {
             .forEach(p => values.push(p));
         }  
 
-        return { query, values};
+        return { query, values };
     }
 
     static async getConnection() : Promise<Connection> {

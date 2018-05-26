@@ -42,6 +42,7 @@ import { VoucherPeoplePageComponent } from './voucher/voucher-people-page.compon
 import { PersonIndicationListModule } from 'app/shared/components/person-indication-list/person-indication-list.module';
 import { PersonPartnershipListModule } from 'app/pages/people/shared/components/person-partnership-list/person-partnership-list.module';
 import { PersonExternalUnitListModule } from 'app/pages/people/shared/components/person-external-unit-list/person-external-unit-list.module';
+import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-image/person-avatar-image.module';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import { PersonExternalUnitListModule } from 'app/pages/people/shared/components
         PersonExternalUnitListModule,
         PersonRelationshipListModule,
         IncidentFinancialListitemModule,
-        IncidentAgendaListitemModule
+        IncidentAgendaListitemModule,
+        PersonAvatarImageModule
     ],
     declarations: [       
         MembersPanelPageComponent,

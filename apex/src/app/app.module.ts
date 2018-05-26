@@ -31,6 +31,7 @@ import { UtilsService } from 'app/services/utils-service';
 import { AddCommentModalModule } from 'app/shared/components/add-comment-modal/add-comment-modal.module';
 import { CardDetailModalModule } from 'app/shared/components/card-detail-modal/card-detail-modal.module';
 import { CardEditModalModule } from 'app/shared/components/card-edit-modal/card-edit-modal.module';
+import { FileUploadModalModule } from 'app/shared/components/file-upload-modal/file-upload-modal.module';
 import { IncidentCommentsListModalModule } from 'app/shared/components/incident-comments-list-modal/incident-comments-list-modal.module';
 import { IncidentTreatmentModalModule } from 'app/shared/components/incident-treatment-modal/incident-treatment-modal.module';
 import { NewCardModalModule } from './shared/components/new-card-modal/new-card-modal.module';
@@ -65,6 +66,7 @@ import { PersonScheduleTreatmentModalModule } from 'app/shared/components/person
         CardDetailModalModule,
         CardEditModalModule,  
         MoveCardModalModule, 
+        FileUploadModalModule,
         PersonFinancialTreatmentModalModule, 
         PersonScheduleTreatmentModalModule,            
         ApplicationInsightsModule.forRoot({

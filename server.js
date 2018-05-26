@@ -22,7 +22,12 @@ security_services_1.SecurityService.create_pool().then((pool) => {
     passport.initialize(app);
     old_routes.initialize(app, pool);
     routes.initialize(app, "./src/routes");
-    app.listen(port, function () {
+    app.get(/^((?!\.).)*$/, (req, res) => {
+        var path = "index.html";
+        res.sendfile(path, { root: "./apex/public" });
+    });
+    app.use(express.static("./apex/public"));
+    app.listen(port, () => {
         console.log(`server listening to ${port}`);
     });
 });

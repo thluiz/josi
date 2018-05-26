@@ -4,6 +4,7 @@
         <table class="table table-hover table-striped" style="width:100%">            
             <thead>
                 <th>Nome</th>
+                <th style="text-align:center">Categoria</th>
                 <th>Abreviação</th>
                 <th style="text-align:center">Iniciais</th>
                 <th width="30px"></th>                
@@ -14,6 +15,10 @@
                     [routerLink]="['/parameters/branch', item.id]">
                         {{ item["name"] }}
                     </td>
+                    <td class="cursor_pointer text-center"
+                    [routerLink]="['/parameters/branch', item.id]">
+                        {{ item["category_abrev"] }}
+                    </td>                    
                     <td class="cursor_pointer"
                     [routerLink]="['/parameters/branch', item.id]">
                         {{ item["abrev"] }}
@@ -24,21 +29,30 @@
                         {{ item["initials"] }}
                     </td> 
                     <td>
-                        <a (click)="edit(edit_modal, item)">
+                        <a (click)="edit(form_modal, item)">
                             <i class="fas fa-edit cursor_pointer"></i>
                         </a>
                     </td>                   
                 </tr>
             </tbody>
         </table>
+
+        <button type="button" class="btn btn-silver"             
+            (click)="open_new_form_branch(form_modal);">
+            <i class="fas fa-plus-circle"></i>
+            Novo
+        </button>
     </div>
 </div>
 
 
-<ng-template #edit_modal let-c="close" let-d="dismiss">
+<ng-template #form_modal let-c="close" let-d="dismiss">
         <div class="modal-header">
-            <h5 class="modal-title" style="font-weight: bold">
-                Editar
+            <h5 class="modal-title" style="font-weight: bold" *ngIf="current_item.id > 0">
+                Editar - {{ current_item.name }}
+            </h5>
+            <h5 class="modal-title" style="font-weight: bold" *ngIf="!current_item.id">
+                Cadastrar Núcleo
             </h5>
             <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
             <span aria-hidden="true">&times;</span>
@@ -59,6 +73,34 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col-6">
+                    <label for="item_category">Categoria</label>                                                									
+                    <div class="input-group">							
+                        <select [(ngModel)]="current_item.category_id" 								                            
+                            class="form-control form-control-sm"
+                            *ngIf="!current_item.id"
+                            [ngModelOptions]="{standalone: true}">			                                                        			                            
+                            <option value="1">Núcleo da Gestão Integrada</option>
+                            <option value="2">Unidade Externa</option>
+                            <option value="3">Núcleo Externo</option>
+                        </select> 
+                        <span *ngIf="current_item.id > 0" style="padding-top:10px">
+                            {{ current_item.category }}
+                        </span>
+                    </div>
+                </div>                            
+                <div class="col-6">
+                    <label for="item_initials">Iniciais</label>                                                									
+                    <div class="input-group">							
+                        <input class="form-control"
+                        [(ngModel)]="current_item.initials"                        
+                        autocomplete="off"
+                        id="item_initials"
+                        name="item_initials"/>                                    
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-12">
                     <label for="item_abrev">Abreviação</label>                                                									
                     <div class="input-group">							
@@ -71,22 +113,10 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12">
-                    <label for="item_initials">Título</label>                                                									
-                    <div class="input-group">							
-                        <input class="form-control"
-                        [(ngModel)]="current_item.initials"                        
-                        autocomplete="off"
-                        id="item_initials"
-                        name="item_initials"/>                                    
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="modal-footer" *ngIf="saving">        
-                <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
-            </div>
+            <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+        </div>
         <div class="modal-footer" *ngIf="!saving">
             <button type="button" class="btn btn-success" 
                 (click)="save(d);">

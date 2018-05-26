@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
 import { Subject } from 'rxjs/Subject';
+import { Result } from 'app/shared/models/result';
 
 export enum DailyMonitorDisplayType {
     Week = 0,
@@ -28,12 +29,14 @@ export interface IIndication {
 export enum PersonActions {
   ADD,
   ADD_ADDRESS,
-  ARCHIVE_ADDRESS
+  ARCHIVE_ADDRESS,
+  CHANGE_AVATAR
 }
 
 export interface IPersonEvent {
   type: PersonActions,
-  data: any
+  data? : any,
+  result: Result
 }
 
 export enum ActivityType {
@@ -197,6 +200,10 @@ export class PersonService {
         }).do((data) => {          
           this.person_actions.next({ 
             type: PersonActions.ADD,
+            result: {
+              success: true,
+              data
+            },
             data
           });
         });
@@ -270,6 +277,21 @@ export class PersonService {
         });
   }
 
+  save_avatar_img(person_id: number, image : File) {
+    let form = new FormData();
+    form.append('id', person_id.toString())
+    form.append('avatar', image, image.name);
+
+    return this.http
+      .post(this.dataUrl + `/people/avatar_image`, form)
+      .do((result : Result) => {          
+        this.person_actions.next({
+          type: PersonActions.CHANGE_AVATAR,
+          result
+        });
+      });
+  }
+
   save_schedule(schedule) {
     return this.http
         .post(this.dataUrl + `/person_schedule`, {
@@ -294,6 +316,10 @@ export class PersonService {
     return this.http.post(this.dataUrl + `/person_address`, { address }).do((data) => {          
       this.person_actions.next({ 
         type: PersonActions.ADD_ADDRESS,
+        result: {
+          success: true,
+          data
+        },
         data
       });
     });
@@ -303,6 +329,10 @@ export class PersonService {
     return this.http.post(this.dataUrl + `/person_address/archive`, { person_address }).do((data) => {          
       this.person_actions.next({ 
         type: PersonActions.ARCHIVE_ADDRESS,
+        result: {
+          success: true,
+          data
+        },
         data
       });
     });

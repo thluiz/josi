@@ -166,18 +166,6 @@ function getParticipationList(people) {
                         }
                     });
                 }); });
-                app.get("/api/users/current", function (request, response, next) { return __awaiter(_this, void 0, void 0, function () {
-                    var user;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0: return [4 /*yield*/, security_services_1.SecurityService.getUserFromRequest(request)];
-                            case 1:
-                                user = _a.sent();
-                                response.send(user);
-                                return [2 /*return*/];
-                        }
-                    });
-                }); });
                 app.get("/api/agenda/:branch?/:date?", security_services_1.SecurityService.ensureLoggedIn(), function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
                     var result, response, error_2;
                     return __generator(this, function (_a) {

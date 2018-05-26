@@ -8,41 +8,12 @@
         </button>
     </div>
     <div class="modal-body">			
-        <div class="row" *ngIf="contacts && contacts.length > 0" style="margin-bottom:10px;">            
-            <div class="col-12" *ngIf="show_only_principal_contacts">                                
-                <div *ngFor="let ct of principal_contacts, let k = index" style="display:inline-block"> 
-                    <span *ngIf="k != 0">, </span>
-                    <contact-listitem [contact]="ct"></contact-listitem>
-                    <div *ngIf="ct.show_details" style="display:inline-block">({{ ct.details }})</div>
-                </div>
-                <a *ngIf="has_aditional_contacts" (click)="show_only_principal_contacts = false">
-                    <i class="ft-chevrons-right"></i>
-                </a>
-                <button class="btn btn-fab btn-sm btn-silver" 
-                    style="padding:1px"
-                    title="Adicionar Contato"   
-                    style="margin-left:10px;padding:0 3px;margin:0;line-height:10px"
-                    (click)="open_new_contact(new_contact_modal)">
-                    <i class="ft-plus"></i>    
-                </button>
-            </div>
-            <div class="col-12" *ngIf="!show_only_principal_contacts">                
-                <div *ngFor="let ct of contacts, let k = index" style="display:inline-block"> 
-                    <span *ngIf="k != 0">, </span>
-                    <contact-listitem [contact]="ct"></contact-listitem>
-                    <div *ngIf="ct.show_details" style="display:inline-block">({{ ct.details }})</div>
-                </div>
-                <a *ngIf="has_aditional_contacts" (click)="show_only_principal_contacts = true">
-                    <i class="ft-chevrons-left"></i>
-                </a>
-                <button class="btn btn-fab btn-sm btn-silver" 
-                    style="padding:1px"
-                    title="Adicionar Contato"   
-                    style="margin-left:10px;padding:0 3px;margin:0;line-height:10px"
-                    (click)="open_new_contact(new_contact_modal)">
-                    <i class="ft-plus"></i>    
-                </button>
-            </div>
+        <div class="row" style="margin-bottom:10px;">            
+            <div class="col-12" *ngIf="show_only_principal_contacts">
+                <person-card [person]="person" 
+                    [hideDataStatus]="true"
+                    [editAvatarOnClick]="true"></person-card>
+            </div>                                                
         </div>
         <div class="row" *ngFor="let ms of missing_data">
             <div class="col-12" *ngIf="ms.missing_code == 'NO_BRANCH_DEFINED'">
@@ -101,7 +72,7 @@
                         </div>
                     </div>
                 </div>                 
-            </div>
+            </div>            
             <div class="col-12" *ngIf="ms.missing_code == 'NO_ADMISSION_DATE'">
                 <div class="row">
                     <div class="col-10">
@@ -261,6 +232,13 @@
                 <button class="btn btn-primary" 
                     (click)="open_new_contact(new_contact_principal_modal)">
                     Adicionar Dados de Contato Principal
+                </button>
+            </div>
+            
+            <div class="col-12 text-center" *ngIf="ms.missing_code == 'NO_MEMBER_CARD_IMAGE'">
+                <button class="btn btn-primary" 
+                    (click)="open_send_member_card_image()">
+                    Enviar Imagem para Cartão de Membro
                 </button>
             </div>
         </div>

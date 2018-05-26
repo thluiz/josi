@@ -19,7 +19,8 @@ export enum ModalType{
     PersonComunicationTreatment,
     MoveCard,
     PersonFinancialTreatment,
-    PersonScheduleTreatment
+    PersonScheduleTreatment,
+    FileUpload
 }
 
 export interface IModalOpening {

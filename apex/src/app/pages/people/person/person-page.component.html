@@ -10,13 +10,11 @@
             <div class="col-12">
                 <div class="card" style="padding:1%">
                     <div class="row">
-                        <div class="col-1 p-0 d-none d-md-block" *ngIf="person.avatar_img && person.avatar_img.length > 0">
+                        <div class="col-1 p-0 d-none d-md-block">
                             <div class="text-center">                                
-                                <img alt="{{ person.name }}"
-                                    class="img-border" 
-                                    src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
-                                    style="min-width:50px;width:100%;" 
-                                    *ngIf="person.avatar_img && person.avatar_img.length > 0" />	                                                                    
+                                <person-avatar-image [person]="person"
+                                [editAvatarOnClick]="true"
+                                ></person-avatar-image>
                             </div>
                         </div>
                         <div class="col-12 col-sm-9 col-md-8">

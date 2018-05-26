@@ -1,3 +1,4 @@
+import { ModalService, ModalType } from 'app/services/modal-service';
 import { Observable } from 'rxjs/Observable';
 import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 
@@ -56,6 +57,7 @@ export class PersonDataTreatmentModalComponent implements OnInit {
     private parameterService: ParameterService,
     private utilsService: UtilsService,    
     private ngbModalService: NgbModal,
+    private modalService: ModalService,
     private datePickerConfig: NgbDatepickerConfig) {
    
       datePickerConfig.firstDayOfWeek = 7
@@ -115,6 +117,10 @@ export class PersonDataTreatmentModalComponent implements OnInit {
         this.open_modal(this.data_treatment_modal, true);
 
       }).subscribe();              
+  }
+  
+  open_send_member_card_image() {
+    
   }
 
   open_new_contact(content) {

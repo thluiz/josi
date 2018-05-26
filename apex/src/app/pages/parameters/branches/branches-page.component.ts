@@ -38,8 +38,20 @@ export class BranchesPageComponent implements OnInit {
     });
   }
 
+  open_new_form_branch(content) {
+    this.current_item = {
+      id: 0
+    };
+    
+    this.open_form_modal(content);
+  }
+
   edit(content, item) {
     this.current_item = item;
+    this.open_form_modal(content);
+  }
+
+  private open_form_modal(content) {
     this.ngbModalService.open(content).result.then((result) => {                                  
         
     }, (reason) => {

@@ -1,3 +1,4 @@
+import { PersonCardModule } from 'app/shared/components/person-card/person-card.module';
 import { PersonIndicationListModule } from 'app/shared/components/person-indication-list/person-indication-list.module';
 import { NewContactFormModule } from 'app/shared/components/new-contact-form/new-contact-form.module';
 import { ContactListitemModule } from 'app/shared/components/contact-listitem/contact-listitem.module';
@@ -9,7 +10,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { NgbDatepickerModule, NgbTimepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-
 @NgModule({
     imports: [
         CommonModule,
@@ -20,7 +20,8 @@ import { NgbDatepickerModule, NgbTimepickerModule, NgbModule } from '@ng-bootstr
         NgbModule,
         ContactListitemModule,
         NewContactFormModule,
-        PersonIndicationListModule
+        PersonIndicationListModule,
+        PersonCardModule        
     ],
     declarations: [       
         PersonDataTreatmentModalComponent
