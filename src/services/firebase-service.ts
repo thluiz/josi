@@ -12,7 +12,7 @@ try {
                 "type": "service_account",
                 "project_id": process.env.FIREBASE_PROJECT_ID,
                 "private_key_id": process.env.FIREBASE_PRIVATE_KEY_ID,
-                "private_key": process.env.FIREBASE_PRIVATE_KEY.replace("\\n", "\n"),
+                "private_key": process.env.FIREBASE_PRIVATE_KEY.split("\\n").join("\n"),
                 "client_email": process.env.FIREBASE_CLIENT_EMAIL,
                 "client_id": process.env.FIREBASE_CLIENT_ID,
                 "auth_uri": "https://accounts.google.com/o/oauth2/auth",
@@ -27,6 +27,7 @@ try {
 } catch(error) {
     console.log("ERROR TRYING TO CONNECT TO FIREBASE!");
     console.log(error);
+    console.log(process.env.FIREBASE_PRIVATE_KEY.split("\\n").join("\n"));
     let tbl = "ERROR";
     let tableSvc = AzureTableService.createTableService();
     AzureTableService.createTableIfNotExists(tableSvc, tbl, (err) => {
@@ -35,7 +36,7 @@ try {
 
     let entity = AzureTableService.buildEntity(
         new Date().getTime().toString(), 
-        { error, k: process.env.FIREBASE_PRIVATE_KEY.replace("\\n", "\n") 
+        { error, k: process.env.FIREBASE_PRIVATE_KEY.split("\\n").join("\n") 
     }, "ERROR");
 
     AzureTableService.insertOrMergeEntity(tableSvc, tbl, entity, function (err, results) {

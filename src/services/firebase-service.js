@@ -11,7 +11,7 @@ try {
             "type": "service_account",
             "project_id": process.env.FIREBASE_PROJECT_ID,
             "private_key_id": process.env.FIREBASE_PRIVATE_KEY_ID,
-            "private_key": process.env.FIREBASE_PRIVATE_KEY.replace("\\n", "\n"),
+            "private_key": process.env.FIREBASE_PRIVATE_KEY.split("\\n").join("\n"),
             "client_email": process.env.FIREBASE_CLIENT_EMAIL,
             "client_id": process.env.FIREBASE_CLIENT_ID,
             "auth_uri": "https://accounts.google.com/o/oauth2/auth",
@@ -25,11 +25,12 @@ try {
 catch (error) {
     console.log("ERROR TRYING TO CONNECT TO FIREBASE!");
     console.log(error);
+    console.log(process.env.FIREBASE_PRIVATE_KEY.split("\\n").join("\n"));
     let tbl = "ERROR";
     let tableSvc = azure_tables_service_1.AzureTableService.createTableService();
     azure_tables_service_1.AzureTableService.createTableIfNotExists(tableSvc, tbl, (err) => {
     });
-    let entity = azure_tables_service_1.AzureTableService.buildEntity(new Date().getTime().toString(), { error, k: process.env.FIREBASE_PRIVATE_KEY.replace("\\n", "\n")
+    let entity = azure_tables_service_1.AzureTableService.buildEntity(new Date().getTime().toString(), { error, k: process.env.FIREBASE_PRIVATE_KEY.split("\\n").join("\n")
     }, "ERROR");
     azure_tables_service_1.AzureTableService.insertOrMergeEntity(tableSvc, tbl, entity, function (err, results) {
         if (err) {
