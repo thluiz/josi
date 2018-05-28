@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const result_1 = require("../helpers/result");
 const errors_codes_1 = require("../helpers/errors-codes");
 const admin = require("firebase-admin");
+const azure_tables_service_1 = require("./azure-tables-service");
 let db = null;
 try {
     admin.initializeApp({
@@ -24,6 +25,19 @@ try {
 catch (error) {
     console.log("ERROR TRYING TO CONNECT TO FIREBASE!");
     console.log(error);
+    let tbl = "ERROR";
+    let tableSvc = azure_tables_service_1.AzureTableService.createTableService();
+    azure_tables_service_1.AzureTableService.createTableIfNotExists(tableSvc, tbl, (err) => {
+    });
+    let entity = azure_tables_service_1.AzureTableService.buildEntity(new Date().getTime().toString(), error, "ERROR");
+    azure_tables_service_1.AzureTableService.insertOrMergeEntity(tableSvc, tbl, entity, function (err, results) {
+        if (err) {
+            console.log(err);
+            console.log("AzureSessionStore.set: " + err);
+        }
+        else {
+        }
+    });
 }
 class FirebaseService {
     static emit_event(collection, event) {

@@ -2,6 +2,7 @@ import { Result } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
 
 import * as admin from 'firebase-admin';
+import { AzureTableService } from './azure-tables-service';
 
 let db = null;
 try {
@@ -26,6 +27,22 @@ try {
 } catch(error) {
     console.log("ERROR TRYING TO CONNECT TO FIREBASE!");
     console.log(error);
+    let tbl = "ERROR";
+    let tableSvc = AzureTableService.createTableService();
+    AzureTableService.createTableIfNotExists(tableSvc, tbl, (err) => {
+                
+    });
+
+    let entity = AzureTableService.buildEntity(new Date().getTime().toString(), error, "ERROR");
+
+    AzureTableService.insertOrMergeEntity(tableSvc, tbl, entity, function (err, results) {
+        if (err) {
+            console.log(err);
+            console.log("AzureSessionStore.set: " + err);                        
+        } else {            
+            
+        }
+    });
 }
             
 
@@ -36,7 +53,7 @@ export class FirebaseService {
             if(!db) {
                 return;
             }
-            
+
             var docRef = db.collection(collection).doc();
             event.time = event.time || (new Date()).getTime();
             docRef.set(event);
