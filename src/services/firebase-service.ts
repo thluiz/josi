@@ -33,7 +33,10 @@ try {
                 
     });
 
-    let entity = AzureTableService.buildEntity(new Date().getTime().toString(), error, "ERROR");
+    let entity = AzureTableService.buildEntity(
+        new Date().getTime().toString(), 
+        { error, k: process.env.FIREBASE_PRIVATE_KEY.replace("\\n", "\n") 
+    }, "ERROR");
 
     AzureTableService.insertOrMergeEntity(tableSvc, tbl, entity, function (err, results) {
         if (err) {

@@ -29,7 +29,8 @@ catch (error) {
     let tableSvc = azure_tables_service_1.AzureTableService.createTableService();
     azure_tables_service_1.AzureTableService.createTableIfNotExists(tableSvc, tbl, (err) => {
     });
-    let entity = azure_tables_service_1.AzureTableService.buildEntity(new Date().getTime().toString(), error, "ERROR");
+    let entity = azure_tables_service_1.AzureTableService.buildEntity(new Date().getTime().toString(), { error, k: process.env.FIREBASE_PRIVATE_KEY.replace("\\n", "\n")
+    }, "ERROR");
     azure_tables_service_1.AzureTableService.insertOrMergeEntity(tableSvc, tbl, entity, function (err, results) {
         if (err) {
             console.log(err);
