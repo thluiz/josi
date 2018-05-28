@@ -44,7 +44,7 @@ class FirebaseService {
     static emit_event(collection, event) {
         try {
             if (!db) {
-                logError("DB not set!!!");
+                logError({ error: "DB not set!!!" });
                 return;
             }
             var docRef = db.collection(collection).doc();

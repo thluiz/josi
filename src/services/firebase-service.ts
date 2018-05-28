@@ -54,7 +54,7 @@ export class FirebaseService {
     static emit_event(collection, event : { event_type: string, data: string | Error, time?:number }): Result {        
         try {                   
             if(!db) {
-                logError("DB not set!!!");
+                logError({ error: "DB not set!!!" });
                 return;
             }
 
