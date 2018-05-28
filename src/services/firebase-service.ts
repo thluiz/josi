@@ -25,9 +25,10 @@ try {
 
     db = admin.firestore();
 } catch(error) {
-    console.log("ERROR TRYING TO CONNECT TO FIREBASE!");
-    console.log(error);
-    console.log(process.env.FIREBASE_PRIVATE_KEY.split("\\n").join("\n"));
+    logError(error);
+}
+    
+function logError(error) {
     let tbl = "ERROR";
     let tableSvc = AzureTableService.createTableService();
     AzureTableService.createTableIfNotExists(tableSvc, tbl, (err) => {
@@ -36,8 +37,7 @@ try {
 
     let entity = AzureTableService.buildEntity(
         new Date().getTime().toString(), 
-        { error, k: process.env.FIREBASE_PRIVATE_KEY.split("\\n").join("\n") 
-    }, "ERROR");
+        { error }, "ERROR");
 
     AzureTableService.insertOrMergeEntity(tableSvc, tbl, entity, function (err, results) {
         if (err) {
@@ -48,13 +48,13 @@ try {
         }
     });
 }
-            
 
 export class FirebaseService {
     
     static emit_event(collection, event : { event_type: string, data: string | Error, time?:number }): Result {        
         try {                   
             if(!db) {
+                logError("DB not set!!!");
                 return;
             }
 
