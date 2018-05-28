@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const result_1 = require("../helpers/result");
 const errors_codes_1 = require("../helpers/errors-codes");
 const admin = require("firebase-admin");
+let db = null;
 try {
     admin.initializeApp({
         credential: admin.credential.cert({
@@ -18,15 +19,18 @@ try {
             "client_x509_cert_url": process.env.FIREBASE_CLIENT_CERT_URL
         })
     });
+    db = admin.firestore();
 }
 catch (error) {
     console.log("ERROR TRYING TO CONNECT TO FIREBASE!");
     console.log(error);
 }
-const db = admin.firestore();
 class FirebaseService {
     static emit_event(collection, event) {
         try {
+            if (!db) {
+                return;
+            }
             var docRef = db.collection(collection).doc();
             event.time = event.time || (new Date()).getTime();
             docRef.set(event);
