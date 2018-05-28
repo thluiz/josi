@@ -3,6 +3,7 @@ import { ErrorCode } from '../helpers/errors-codes';
 
 import * as admin from 'firebase-admin';
 
+try {
 admin.initializeApp({
     credential: admin.credential.cert(
         {
@@ -19,6 +20,10 @@ admin.initializeApp({
         } as any
     )
 });
+} catch(error) {
+    console.log("ERROR TRYING TO CONNECT TO FIREBASE!");
+    console.log(error);
+}
             
 const db = admin.firestore();
 
