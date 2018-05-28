@@ -1,9 +1,11 @@
+
+import {tap} from 'rxjs/operators';
 import { UtilsService } from 'app/services/utils-service';
 import {Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Observable, ReplaySubject} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
-import { Subject }    from 'rxjs/Subject';
+import { Subject }    from 'rxjs';
 
 export enum Configurations {
     MinimalDirectIndicationsPerActiveMember = 1,
@@ -42,6 +44,10 @@ export class ParameterService {
 
     getTimeReloadComponents() {
         return 200;
+    }
+
+    getServerTime() {
+        return this.http.get(this.dataUrl + `/current_time`);
     }
 
     getConfigurations(forceRefresh?: boolean) {        
@@ -140,9 +146,9 @@ export class ParameterService {
         return this.http
         .post(this.dataUrl + `/branches`, {
           branch
-        }).do((data : any) => {          
+        }).pipe(tap((data : any) => {          
           this.getActiveBranches(true).subscribe();
-        });
+        }));
     }
 
     associateBranchProduct(branch_product) {
@@ -169,56 +175,56 @@ export class ParameterService {
         return this.http
         .post(this.dataUrl + `/products/archive`, {
             product 
-        }).do((data : any) => {      
+        }).pipe(tap((data : any) => {      
           console.log("refreshing objects...")    
           this.getProducts(true).subscribe();
-        });
+        }));
     }
     
     saveProduct(product) {        
         return this.http
         .post(this.dataUrl + `/products`, {
             product 
-        }).do((data : any) => {      
+        }).pipe(tap((data : any) => {      
           console.log("refreshing objects...")    
           this.getProducts(true).subscribe();
-        });
+        }));
     }
 
     savePaymentMethod(payment_method) {
         return this.http
         .post(this.dataUrl + `/payment_methods`, {
             payment_method
-        }).do((data : any) => {          
+        }).pipe(tap((data : any) => {          
           this.getPaymentMethods(true).subscribe();
-        });
+        }));
     }
 
     saveAcquirer(acquirer) {
         return this.http
         .post(this.dataUrl + `/acquirers`, {
             acquirer
-        }).do((data : any) => {          
+        }).pipe(tap((data : any) => {          
             this.getAcquirers(true).subscribe();
-        });
+        }));
     }
 
     saveCurrency(currency) {
         return this.http
         .post(this.dataUrl + `/currencies`, {
             currency
-        }).do((data : any) => {          
+        }).pipe(tap((data : any) => {          
             this.getCurrencies(true).subscribe();
-        });
+        }));
     }
 
     saveProductCategory(product_category) {
         return this.http
         .post(this.dataUrl + `/product_categories`, {
             product_category
-        }).do((data : any) => {          
+        }).pipe(tap((data : any) => {          
             this.getProductCategories(true).subscribe();
-        });
+        }));
     }
     
     saveVoucher(voucher) {

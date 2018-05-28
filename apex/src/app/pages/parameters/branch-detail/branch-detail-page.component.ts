@@ -1,4 +1,5 @@
-import { Observable } from 'rxjs';
+
+import {zip as observableZip,  Observable } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParameterService } from 'app/services/parameter-service';
@@ -184,7 +185,7 @@ export class BranchDetailPageComponent implements OnInit, OnDestroy {
     this.current_product = product;
     this.current_product.name = product.product;    
 
-    Observable.zip(
+    observableZip(
       this.parameterService.getProductCategories(),      
       this.parameterService.getCurrencies(),
       (categories, currencies) => {
@@ -200,7 +201,7 @@ export class BranchDetailPageComponent implements OnInit, OnDestroy {
     this.saving = false;    
     this.current_product = {};
 
-    Observable.zip(
+    observableZip(
       this.parameterService.getProductCategories(),      
       this.parameterService.getCurrencies(),
       (categories, currencies) => {
@@ -216,7 +217,7 @@ export class BranchDetailPageComponent implements OnInit, OnDestroy {
     this.current_product_association = { valid: false};
     this.saving = false;
 
-    Observable.zip(
+    observableZip(
       this.parameterService.getProductCategories(),
       this.parameterService.getProducts(),
       (categories, products) => {
@@ -279,7 +280,7 @@ export class BranchDetailPageComponent implements OnInit, OnDestroy {
   } 
   
   private load_data(callback = () => { }) {
-    Observable.zip(
+    observableZip(
       this.parameterService.getBranch(this.id),
       this.parameterService.getBranchMap(this.id),  
       this.parameterService.getIncidentTypes(),

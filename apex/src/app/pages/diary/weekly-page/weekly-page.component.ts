@@ -20,8 +20,7 @@ import { OnInit, OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
 import { IntervalObservable } from "rxjs/observable/IntervalObservable";
 
-import { Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { Subscription ,  Observable } from 'rxjs';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -84,14 +83,6 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     if(this.current_week_day < 0) {
       this.current_week_day = 6;
     }
-
-    this.incident_added_subscriber = incidentService.incidentAdd$.subscribe((next) => {      
-      this.getMonitorData();
-    });  
-    
-    this.incident_changes_subscriber = incidentService.incidentsChanges$.subscribe((next) => {      
-      this.getMonitorData();
-    }); 
   }
   
   ngOnInit() {    

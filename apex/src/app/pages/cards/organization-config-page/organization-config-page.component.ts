@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { ParameterService } from 'app/services/parameter-service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CardService } from 'app/services/card-service';

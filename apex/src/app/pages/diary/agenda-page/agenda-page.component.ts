@@ -3,45 +3,49 @@ import { Component, Input, ViewChild, AfterViewInit, OnInit, OnDestroy } from '@
 
 import { PersonService, DailyMonitorDisplayType } from 'app/services/person-service';
 import { ParameterService } from 'app/services/parameter-service';
-import { IncidentService } from 'app/services/incident-service';
+import { 
+  IncidentService, 
+  IncidentAction, 
+  INCIDENT_ADDED, 
+  INCIDENT_CANCELLED 
+} from 'app/services/incident-service';
 import { FormControl, FormsModule, ReactiveFormsModule,
         FormGroup, Validators, NgForm } from '@angular/forms';
 
-import { NgbModal, 
-  NgbDateStruct, 
-  NgbDatepickerI18n, 
+import { NgbModal,
+  NgbDateStruct,
+  NgbDatepickerI18n,
   NgbDatepickerModule,
-  NgbCalendar, 
-  NgbTimeStruct,      
-  ModalDismissReasons, 
+  NgbCalendar,
+  NgbTimeStruct,
+  ModalDismissReasons,
   NgbActiveModal,
   NgbDatepickerConfig,
   NgbDateParserFormatter
 } from '@ng-bootstrap/ng-bootstrap';
 
-import { Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { Subscription ,  Observable } from 'rxjs';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/delay';
 
-import { debounceTime } from 'rxjs/operators';
-import { delay } from 'rxjs/operators';
+
+
+import { debounceTime ,  delay, filter } from 'rxjs/operators';
 import { CurrentActivitiesComponent } from 'app/shared/components/current-activities/current-activities.component';
+import { Result } from 'app/shared/models/result';
+import { isArray } from 'util';
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './agenda-page.component.html',
   styleUrls: ['../diary.component.scss'],
   providers: [DatePickerI18n,
-    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
+    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter},
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
 export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
-  
+
   agenda;
-  original_agenda: any[];
   show_change_branch;
   current_week = 0;
   current_incident;
@@ -53,18 +57,15 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
   current_date;
   manual_incident_types;
 
-  @ViewChild(CurrentActivitiesComponent) 
-  private current_activities : CurrentActivitiesComponent; 
+  @ViewChild(CurrentActivitiesComponent)
+  private current_activities : CurrentActivitiesComponent;
 
-  private update_agenda_timer;  
-  private incident_changes_subscriber: Subscription;
-  private incident_added_subscriber: Subscription;
-  private person_changes_subscriber: Subscription;  
+  private incidents_subscriber : Subscription;  
 
-  constructor(private personService: PersonService, 
-              private incidentService: IncidentService, 
+  constructor(private personService: PersonService,
+              private incidentService: IncidentService,
               private parameterService: ParameterService,
-              private modalService: NgbModal, 
+              private modalService: NgbModal,
               private datePickerConfig: NgbDatepickerConfig,
               private securityService: SecurityService) {
 
@@ -75,62 +76,58 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear()
-    }
-  }  
- 
-  ngAfterViewInit(): void {    
+    }        
   }
 
-  ngOnInit() {    
-    this.parameterService.getActiveBranches().subscribe(data => {    
-      const result = data;   
+  ngAfterViewInit(): void {
+  }
+
+  ngOnInit() {
+    this.parameterService.getActiveBranches().subscribe(data => {
+      const result = data;
       this.branches = result;
-    },
-    err => console.error(err));
+    }, err => console.error(err));
 
-    this.parameterService.getIncidentTypes().subscribe(data => {    
-      const result = data;   
+    this.parameterService.getIncidentTypes().subscribe(data => {
+      const result = data;
       this.manual_incident_types = result.filter(i => !i.automatically_generated);
-    },
-    err => console.error(err));
-    
-    this.incident_changes_subscriber = this.incidentService.incidentsChanges$
-      .debounceTime(1000)
-      .delay(1000)            
-      .subscribe((next) => {      
-        this.getAgendaData();
-      });
+    }, err => console.error(err));
 
-    this.incident_added_subscriber = this.incidentService.incidentAdd$        
-    .subscribe((next) => {      
-      this.getAgendaData();
-    });   
-          
-      
     this.securityService.getCurrentUserData().subscribe((user) => {
-      this.current_branch = user.default_branch_id || 0;      
+      this.current_branch = user.default_branch_id || 0;
       this.getAgendaData();
-    }); 
+    });
+
+    this.incidents_subscriber = this.incidentService
+    .incidentsActions$    
+    .pipe(filter(
+      (action : IncidentAction) => { 
+        if(action.type != INCIDENT_ADDED && action.type != INCIDENT_CANCELLED) {
+          return false;
+        }
+
+        return true;
+      }
+    ))    
+    .subscribe((data) => {      
+      this.getAgendaData();
+    });
   }
 
-  ngOnDestroy() {    
-    if(this.update_agenda_timer) {    
-      clearTimeout(this.update_agenda_timer);
-    }    
-    
-    this.incident_added_subscriber.unsubscribe();        
-    this.incident_changes_subscriber.unsubscribe();        
+  ngOnDestroy() {
+    if(this.incidents_subscriber) {
+      this.incidents_subscriber.unsubscribe();
+    }
   }
 
   change_current_date(date) {
     this.getAgendaData();
   }
 
-  branchSelected(id) {      
-    this.current_branch = id;  
-    this.filter_incidents();
+  branchSelected(id) {
+    this.current_branch = id;
     this.show_change_branch = false;
-     
+
     this.current_activities.filter_activities(this.current_branch);
 
     if(this.current_branch == 0) {
@@ -138,49 +135,26 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
-    const current = this.branches.find((b) => b.id == this.current_branch);    
-    this.current_branch_name = current.name;   
+    const current = this.branches.find((b) => b.id == this.current_branch);
+    this.current_branch_name = current.name;
   }
 
-  filter_incidents() {  
-    this.agenda = [];  
-    this.original_agenda.forEach((original_schedule : any) => {
-        let schedule = original_schedule;      
-        schedule.current_incidents = original_schedule.incidents
-                                      .filter((i) => this.current_branch == 0 || i.branch_id == this.current_branch);
-        this.agenda[this.agenda.length] = schedule;
-    });
-  }
-  
   open(content, incident) {
-    this.current_incident = incident;            
-    this.modalService.open(content).result.then((result) => {          
-        this.current_incident = null;                              
+    this.current_incident = incident;
+    this.modalService.open(content).result.then((result) => {
+        this.current_incident = null;
     }, (reason) => {
         console.log(reason);
     });
   }
-  
-  getAgendaData() {    
+
+  getAgendaData() {
     this.personService.getDailyAgenda(0, this.current_date).subscribe(
-      data => {    
-        const result = data as any;           
-        this.original_agenda = result;
+      (result : Result<any>) => {
+        this.agenda = isArray(result.data) ? result.data : [];
         
-        this.branchSelected(this.current_branch);        
-      } 
+        this.branchSelected(this.current_branch);
+      }
     );
-
-    var d = new Date();
-    var hours = d.getHours();
-    
-    const update_interval = hours >= 22 || hours < 6 ? 1800000 : 120000;
-
-    if(this.update_agenda_timer) {
-      clearTimeout(this.update_agenda_timer);
-    }
-
-    this.update_agenda_timer = setTimeout(() => { this.getAgendaData() }, update_interval);
   }
-   
 }

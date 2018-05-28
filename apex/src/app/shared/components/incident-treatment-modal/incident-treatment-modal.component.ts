@@ -1,11 +1,10 @@
 import { ModalService, ModalType } from 'app/services/modal-service';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  Subscription } from 'rxjs';
 import { Component, Input, OnInit, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription } from 'rxjs';
 
 import { CardService } from 'app/services/card-service';
 import { IncidentService } from 'app/services/incident-service';
@@ -25,9 +24,7 @@ export class IncidentTreatmentModalComponent implements OnInit {
   current_incident : any;  
 
   @ViewChild('content') incident_treatment_modal: ElementRef;
-
-  private comment_changes_subscriber: Subscription;  
-
+  
   constructor(private datePickerConfig: NgbDatepickerConfig,     
     private incidentService: IncidentService, 
     private ngbModalService: NgbModal,
@@ -39,26 +36,24 @@ export class IncidentTreatmentModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.comment_changes_subscriber = this.incidentService.commentChanges$
-      .filter((i) => i != null 
-                  && this.current_incident != null 
-                  && i.id == this.current_incident.id)
-      .subscribe((data) => {                   
-        this.current_incident = data;        
-      });
+
   }
 
-  ngOnDestroy() {
-    this.comment_changes_subscriber.unsubscribe();
+  ngOnDestroy() {    
   }
 
-  open(incident) {    
-    this.current_incident = incident;
-    this.ngbModalService.open(this.incident_treatment_modal).result.then((result) => {                                  
+  open(incident) {        
+    this.incidentService.getIncidentDetails(incident.id).subscribe((result : any) => {
       
-    }, (reason) => {        
-        console.log(reason);
-    });         
+      this.current_incident = result.data[0];
+
+      this.ngbModalService.open(this.incident_treatment_modal)
+      .result.then((result) => {                                  
+      
+      }, (reason) => {        
+          console.log(reason);
+      });         
+    });    
   }  
 
   begin_remove_incident(incident) {

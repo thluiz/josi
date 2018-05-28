@@ -1,6 +1,8 @@
+
+import {filter} from 'rxjs/operators';
 import { ParameterService } from './../../../services/parameter-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PersonService } from 'app/services/person-service';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
@@ -46,8 +48,8 @@ export class InterestedPanelPageComponent implements OnInit, OnDestroy {
       this.load_interested_list();
     });     
 
-    this.interested_added_subscriber = this.personService.personActions$     
-    .filter((p) => p.data != null && p.data.is_interested && (!this.current_branch || p.data.branch_id == this.current_branch))   
+    this.interested_added_subscriber = this.personService.personActions$.pipe(     
+    filter((p) => p.data != null && p.data.is_interested && (!this.current_branch || p.data.branch_id == this.current_branch)))   
     .subscribe((next) => {      
       this.load_interested_list();
     });

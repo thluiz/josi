@@ -1,9 +1,12 @@
+
+import {zip as observableZip,  Observable } from 'rxjs';
+
+import {filter} from 'rxjs/operators';
 import { CardCommentary } from 'app/shared/models/card-commentary.model';
 import { CardService, CARD_COMMENT_ADDED } from 'app/services/card-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 import { Card } from 'app/shared/models/card.model';
 import { ParameterService } from './../../../services/parameter-service';
-import { Observable } from 'rxjs/Observable';
 import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
@@ -50,8 +53,8 @@ export class CardDetailModalComponent implements OnInit {
   ngOnInit() {  
     this.reset_form();
     
-    this.card_actions = this.cardService.cardChanges$    
-    .filter((ca: any) => ca.type == CARD_COMMENT_ADDED && this.card && ca.payload.card.id == this.card.id)
+    this.card_actions = this.cardService.cardChanges$.pipe(    
+    filter((ca: any) => ca.type == CARD_COMMENT_ADDED && this.card && ca.payload.card.id == this.card.id))
     .subscribe((action) => {
       if(!this.card)
         return; 
@@ -94,7 +97,7 @@ export class CardDetailModalComponent implements OnInit {
       this.card.locations = [];
     }
     
-    Observable.zip(      
+    observableZip(      
       this.parameterService.getActiveBranches(),
       this.cardService.getCardCommentaries(this.card),
       (branches, commentaries: CardCommentary[]) => {                

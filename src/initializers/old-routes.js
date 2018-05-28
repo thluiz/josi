@@ -28,19 +28,6 @@ function initialize(app, pool) {
     cards_routes.configure_routes(app, pool);
     financial_routes.configure_routes(app, pool);
     voucher_routes.configure_routes(app, pool);
-    app.get("/api/agenda/:branch?/:date?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        try {
-            let result = yield new sql.Request(pool)
-                .input('branch', sql.Int, req.params.branch > 0 ? req.params.branch : null)
-                .input('date', sql.VarChar(10), req.params.date || null)
-                .execute(`GetAgenda`);
-            let response = result.recordset[0];
-            res.send(response[0].empty ? [] : response);
-        }
-        catch (error) {
-            res.status(500).json({ error: error });
-        }
-    }));
     app.get("/api/current_activities/:branch?", auth.ensureLoggedIn(), auth.ensureHasPermission(security_service_1.Permissions.Operator), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             let result = yield new sql.Request(pool)
@@ -56,12 +43,8 @@ function initialize(app, pool) {
     }));
     app.get("/api/daily/:branch?/:display?/:display_modifier?", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         try {
-            let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetDailyMonitor", [
-                { "branch": request.params.branch > 0 ? request.params.branch : null },
-                { "display_modifier": request.params.display_modifier || 0 },
-                { "display": request.params.display || 0 }
-            ]);
-            response.send(result);
+            let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetDailyMonitor", { "branch": request.params.branch > 0 ? request.params.branch : null }, { "display_modifier": request.params.display_modifier || 0 }, { "display": request.params.display || 0 });
+            response.send(result.data);
         }
         catch (error) {
             response.status(500);

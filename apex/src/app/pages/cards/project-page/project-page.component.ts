@@ -1,3 +1,5 @@
+
+import {filter} from 'rxjs/operators';
 import { CardCommentary } from 'app/shared/models/card-commentary.model';
 import { DragulaService } from 'ng2-dragula';
 import { Subscription } from 'rxjs';
@@ -60,14 +62,14 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
       this.load_project();
     });    
 
-    this.card_actions = this.cardService.cardChanges$
-    .filter((ca: any) => 
+    this.card_actions = this.cardService.cardChanges$.pipe(
+    filter((ca: any) => 
         (ca.type == CARD_ADDED || ca.type == CARD_ARCHIVED || ca.type == CARD_COMMENT_ADDED || ca.type == CARD_MOVED) 
         && this.project 
         && ((ca.payload.parent && ca.payload.parent.id == this.project.id)
             || (ca.payload.parent_id == this.project.id))
             || (ca.payload && (this.project.id == ca.payload.old_parent_id || this.project.id == ca.payload.new_parent_id))
-            || (ca.payload.card && ca.payload.card.id == this.project.id))
+            || (ca.payload.card && ca.payload.card.id == this.project.id)))
     .subscribe((action) => {         
       if(action.type == CARD_COMMENT_ADDED) {
         this.commentaries = action.payload.commentaries.sort(ca => ca.id);

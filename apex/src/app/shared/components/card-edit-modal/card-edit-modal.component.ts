@@ -1,10 +1,11 @@
+
+import {zip as observableZip,  Observable } from 'rxjs';
 import { CardCommentary } from 'app/shared/models/card-commentary.model';
 import { CardService, CARD_COMMENT_ADDED } from 'app/services/card-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 import { Card } from 'app/shared/models/card.model';
 import { Location } from 'app/shared/models/location.model';
 import { ParameterService } from './../../../services/parameter-service';
-import { Observable } from 'rxjs/Observable';
 import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
@@ -82,7 +83,7 @@ export class CardEditModalComponent implements OnInit {
     this.original = JSON.parse(JSON.stringify(this.card));
 
 
-    Observable.zip(      
+    observableZip(      
       this.parameterService.getActiveBranches(),
       this.cardService.getOperators(),
       this.parameterService.getLocations(),

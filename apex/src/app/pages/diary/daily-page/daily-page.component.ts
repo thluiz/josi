@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { LateralSummaryComponent } from './../../../shared/components/lateral-summary/lateral-summary.component';
 import { Component, ViewChild, QueryList, ViewChildren } from '@angular/core';
 
@@ -5,6 +6,8 @@ import { PersonService, DailyMonitorDisplayType } from 'app/services/person-serv
 import { IncidentService } from 'app/services/incident-service';
 import { FormControl, FormsModule, ReactiveFormsModule,
         FormGroup, Validators, NgForm } from '@angular/forms';
+
+import { INCIDENT_ADDED } from 'app/services/incident-service';
 
 import { NgbModal, 
   NgbDateStruct, 
@@ -19,8 +22,7 @@ import { NgbModal,
 } from '@ng-bootstrap/ng-bootstrap';
 import { OnInit, OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
-import { Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { Subscription ,  Observable } from 'rxjs';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -30,7 +32,7 @@ import { SecurityService } from 'app/services/security-service';
   selector: 'app-full-layout-page',
   templateUrl: './daily-page.component.html',
   styleUrls: ['../diary.component.scss'],
-  providers: [PersonService, IncidentService, DatePickerI18n,
+  providers: [DatePickerI18n,
     {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
@@ -65,8 +67,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
 
   private update_members_timer;
   private update_summary_timer;
-  private incident_added_subscriber : Subscription;
-  private incident_changes_subscriber: Subscription;
+  private incidents_subscriber : Subscription;  
 
   constructor(private personService: PersonService, 
               private incidentService: IncidentService, 
@@ -82,21 +83,20 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     
     if(this.current_week_day < 0) {
       this.current_week_day = 6;
-    }
-        
-    this.incident_added_subscriber = incidentService.incidentAdd$.subscribe((next) => {      
-      this.getMonitorData();
-    });  
-    
-    this.incident_changes_subscriber = incidentService.incidentsChanges$.subscribe((next) => {      
-      this.getMonitorData();
-    }); 
+    }        
   }
 
   ngOnInit() {               
     this.securityService.getCurrentUserData().subscribe((user) => {
       this.current_branch = user.default_branch_id || 0;      
       this.getMonitorData();  
+    });
+
+    this.incidents_subscriber = this.incidentService.incidentsActions$    
+    //.filter((data) => data.type == INCIDENT_ADDED)    
+    .subscribe((data) => {
+      console.log(data);
+      this.getMonitorData();
     });
   }
 
@@ -108,12 +108,9 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     if(this.update_summary_timer) {    
       clearTimeout(this.update_summary_timer);
     }
-    if(this.incident_added_subscriber) {
-      this.incident_added_subscriber.unsubscribe();
-    }
-
-    if(this.incident_changes_subscriber) {
-      this.incident_changes_subscriber.unsubscribe();
+    
+    if(this.incidents_subscriber) {
+      this.incidents_subscriber.unsubscribe();
     }
   }
     

@@ -1,5 +1,8 @@
+
+import {zip as observableZip,  Observable ,  of ,  Subscription } from 'rxjs';
+
+import {filter,  debounceTime ,  delay ,  map ,  distinctUntilChanged ,  catchError ,  tap ,  switchMap } from 'rxjs/operators';
 import { Card } from 'app/shared/models/card.model';
-import { Observable } from 'rxjs/Observable';
 import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
@@ -8,26 +11,7 @@ import { IncidentService } from 'app/services/incident-service';
 import { UtilsService } from 'app/services/utils-service';
 
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/delay';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/switchMap';
-
-import { debounceTime } from 'rxjs/operators';
-import { delay } from 'rxjs/operators';
-import { map } from 'rxjs/operators';
-import { distinctUntilChanged } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
-import { catchError } from 'rxjs/operators';
-import { tap } from 'rxjs/operators';
-import { switchMap } from 'rxjs/operators';
 import { ParameterService } from 'app/services/parameter-service';
-import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -73,14 +57,9 @@ export class PersonComunicationTreatmentModalComponent implements OnInit {
   }
 
   ngOnInit() {    
-    this.person_changes_subscriber = this.personService.personChanges$
-    .filter((data) => data != null && data.id == this.person_id())
+    this.person_changes_subscriber = this.personService.personChanges$.pipe(
+    filter((data) => data != null && data.id == this.person_id()))
     .subscribe((data) => {                       
-      this.load_data();
-    });
-
-    //TODO: filter incidents
-    this.incident_changes_subscriber = this.incidentService.incidentsChanges$.subscribe((data) => {
       this.load_data();
     });
   }  
@@ -92,11 +71,13 @@ export class PersonComunicationTreatmentModalComponent implements OnInit {
 
   open(person) {    
     this.person = person;
-    Observable.zip(
+    observableZip(
+      this.personService.getData(this.person_id()),
       this.personService.getPendingCommunication(this.person_id()),
       this.personService.getPersonContacts(this.person_id()),
       this.parameterService.getActiveBranches(),
-      (pending_data: any, contacts, branches) => {        
+      (person_data, pending_data: any, contacts, branches) => {        
+        this.person = person_data;
         this.pending = pending_data.pending[0];
         this.person = this.pending.person[0];
         this.load_contacts(contacts);

@@ -1,3 +1,5 @@
+
+import {filter} from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,8 +29,8 @@ export class OrganizationCardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {    
-    this.card_actions = this.cardService.cardChanges$
-    .filter(ca => ca.type == CARD_ADDED)
+    this.card_actions = this.cardService.cardChanges$.pipe(
+    filter(ca => ca.type == CARD_ADDED))
     .subscribe((next) => {      
       this.updateOrganization();
     });

@@ -1,4 +1,6 @@
 
+import {filter} from 'rxjs/operators';
+
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 
 import { ParameterService } from 'app/services/parameter-service';
@@ -30,10 +32,10 @@ export class PersonCommentListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.comment_changes_subscriber = this.personService.commentChanges$
-      .filter((data) => {         
+    this.comment_changes_subscriber = this.personService.commentChanges$.pipe(
+      filter((data) => {         
         return data != null && data.person.id == this.person.id
-      })
+      }))
       .subscribe((data) => {            
         this.load_comments();      
       });

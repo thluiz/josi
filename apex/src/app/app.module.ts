@@ -1,3 +1,4 @@
+import { FirebaseService } from './services/firebase-service';
 import { AppInsightsService, ApplicationInsightsModule } from '@markpieszak/ng-application-insights';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -15,6 +16,7 @@ import { AuthGuard } from './shared/auth/auth-guard.service';
 import { HttpModule } from '@angular/http';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SecurityHttpInterceptor } from './httpinterceptor'
+import { environment } from '../environments/environment';
 
 import * as $ from 'jquery';
 
@@ -42,6 +44,12 @@ import { PersonComunicationTreatmentModalModule } from 'app/shared/components/pe
 import { PersonDataTreatmentModalModule } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.module';
 import { PersonFinancialTreatmentModalModule } from 'app/shared/components/person-financial-treatment-modal/person-financial-treatment-modal.module';
 import { PersonScheduleTreatmentModalModule } from 'app/shared/components/person-schedule-treatment-modal/person-schedule-treatment-modal.module';
+
+import { AngularFireModule } from 'angularfire2';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFireStorageModule } from 'angularfire2/storage';
+import { AngularFireAuthModule } from 'angularfire2/auth';
+
 
 @NgModule({
     declarations: [
@@ -71,7 +79,11 @@ import { PersonScheduleTreatmentModalModule } from 'app/shared/components/person
         PersonScheduleTreatmentModalModule,            
         ApplicationInsightsModule.forRoot({
             instrumentationKey: 'afcbdd7f-c599-45cd-8555-812c83b75ae6'
-        })            
+        }),
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFirestoreModule,
+        AngularFireAuthModule, 
+        AngularFireStorageModule,             
         //BrowserModule,
         //FormsModule, 
         //JsonpModule
@@ -91,8 +103,9 @@ import { PersonScheduleTreatmentModalModule } from 'app/shared/components/person
         ModalService,
         SecurityService,
         CardService,
-        FinancialService,
-        AppInsightsService                  
+        FinancialService,        
+        AppInsightsService,        
+        FirebaseService                 
     ],
     bootstrap: [AppComponent]
 })

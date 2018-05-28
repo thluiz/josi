@@ -1,3 +1,5 @@
+
+import {filter} from 'rxjs/operators';
 import { ModalType } from './../../../services/modal-service';
 import { ModalService } from 'app/services/modal-service';
 import { PersonService, PersonActions } from 'app/services/person-service';
@@ -21,12 +23,12 @@ export class PersonAvatarImageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.person_changes_subscriber = this.personService.personActions$
-    .filter((event) => 
+    this.person_changes_subscriber = this.personService.personActions$.pipe(
+    filter((event) => 
         event.type == PersonActions.CHANGE_AVATAR        
         && event.result
         && event.result.success
-        && event.result.data.id == this.person.id)
+        && event.result.data.id == this.person.id))
     .subscribe((event) => {      
       console.log(event);                  
       this.person = event.result.data

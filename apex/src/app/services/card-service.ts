@@ -1,10 +1,13 @@
+
+import {forkJoin as observableForkJoin,  Subject } from 'rxjs';
+
+import {map, tap} from 'rxjs/operators';
 import { Card } from 'app/shared/models/card.model';
 import { UtilsService } from './utils-service';
 import {Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Observable, ReplaySubject} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
-import { Subject }    from 'rxjs/Subject';
 import { CardCommentary } from 'app/shared/models/card-commentary.model';
 import { CardStep } from 'app/shared/models/card-step.model';
 
@@ -73,23 +76,23 @@ export class CardService {
     clone.parent.steps = null
     clone.parent.steps_description = null;
 
-    return this.http.post(this.dataUrl + `/cards`, { card: clone })
-    .do((data : Card) => this.card_changes.next(new CardAddedAction(data[0])));
+    return this.http.post(this.dataUrl + `/cards`, { card: clone }).pipe(
+    tap((data : Card) => this.card_changes.next(new CardAddedAction(data[0]))));
   }
 
   updateCard(card : Card) {
-    return this.http.post(this.dataUrl + `/cards`, { card: card })
-    .do((data : Card) => this.card_changes.next(new CardChangedAction(data[0])));
+    return this.http.post(this.dataUrl + `/cards`, { card: card }).pipe(
+    tap((data : Card) => this.card_changes.next(new CardChangedAction(data[0]))));
   }
   
   archiveCard(card : Card) {
-    return this.http.post(this.dataUrl + `/archive_card`, { card: card })
-    .do((data : Card) => this.card_changes.next(new CardArchivedAction(data)));
+    return this.http.post(this.dataUrl + `/archive_card`, { card: card }).pipe(
+    tap((data : Card) => this.card_changes.next(new CardArchivedAction(data))));
   }
 
   saveCardStep(card_id: number, step_id: number) {
-    return this.http.post(this.dataUrl + `/cards/steps`, { card_id, step_id })
-    .do((data : Card) => this.card_changes.next(new CardChangedAction(data)));
+    return this.http.post(this.dataUrl + `/cards/steps`, { card_id, step_id }).pipe(
+    tap((data : Card) => this.card_changes.next(new CardChangedAction(data))));
   }
 
   getCardData(id) {
@@ -109,7 +112,7 @@ export class CardService {
   }
 
   getProject(id) {
-    return this.http.get(this.dataUrl + `/projects/${id}`).map((project : Card) => {  
+    return this.http.get(this.dataUrl + `/projects/${id}`).pipe(map((project : Card) => {  
       if(!project.childrens || project.childrens.length < 0) {
         project.childrens = [];
       }    
@@ -130,7 +133,7 @@ export class CardService {
       project.childrens = project.childrens.filter(ch => !ch.current_step_id);
 
       return project;
-    });
+    }));
   }  
 
   getOperators(forceRefresh = false) {
@@ -147,13 +150,13 @@ export class CardService {
   moveCard(card: Card, parent_id, step_id) {
     return this.http.post(this.dataUrl + `/move_card`, { 
       card_id: card.id, parent_id, step_id
-    })
-    .do((data) => { 
+    }).pipe(
+    tap((data) => { 
       var old_parent_id = card.parent_id;
       var result = data[0] as Card;
 
       this.card_changes.next(new CardMovedAction({ card: result, old_parent_id, new_parent_id: card.parent_id }));       
-    });
+    }));
   }  
 
   removeOperator(card_id, person_id) {
@@ -179,7 +182,7 @@ export class CardService {
       requests[requests.length] = this.http.post(this.dataUrl + `/person_cards/`, person_card);
     }
 
-    return Observable.forkJoin(requests);
+    return observableForkJoin(requests);
   }
 
   saveProjectStepOrder(child_ordering : {card_id:number, order: number}[]) {
@@ -188,7 +191,7 @@ export class CardService {
       requests[requests.length] = this.http.post(this.dataUrl + `/cards/steps/card_order`, child_ordering[i]);
     }
 
-    return Observable.forkJoin(requests);
+    return observableForkJoin(requests);
   }
 
   saveComment(card: Card, comment: string, commentary_type) {
@@ -200,8 +203,8 @@ export class CardService {
     clone.steps = null; 
     clone.steps_description = null;
 
-    return this.http.post(this.dataUrl + `/cards_comments`, { card: clone, comment, commentary_type })
-    .do((data : CardCommentary[]) => this.card_changes.next(new CardCommentAddedAction({card: card, commentaries: data})));
+    return this.http.post(this.dataUrl + `/cards_comments`, { card: clone, comment, commentary_type }).pipe(
+    tap((data : CardCommentary[]) => this.card_changes.next(new CardCommentAddedAction({card: card, commentaries: data}))));
   }
 
   getCardCommentaries(card: Card) {

@@ -1,3 +1,7 @@
+
+import {zip as observableZip,  Subscription, Observable } from 'rxjs';
+
+import {filter} from 'rxjs/operators';
 import { CardService } from 'app/services/card-service';
 import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 
@@ -5,8 +9,6 @@ import { SecurityService } from 'app/services/security-service';
 import { ParameterService, Configurations } from 'app/services/parameter-service';
 import { PersonService } from 'app/services/person-service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
-import { Subscription, Observable } from 'rxjs';
 
 @Component({
   selector: 'person-relationship-list',
@@ -61,8 +63,8 @@ export class PersonRelationshipListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {      
     
-    this.indication_changes_subscriber = this.personService.indicationChanges$
-      .filter((data) => data != null && data.person_id == this.person.id)
+    this.indication_changes_subscriber = this.personService.indicationChanges$.pipe(
+      filter((data) => data != null && data.person_id == this.person.id))
       .subscribe((data) => {            
         this.load_items();      
       });
@@ -114,7 +116,7 @@ export class PersonRelationshipListComponent implements OnInit, OnDestroy {
       age: ''
     };  
 
-    Observable.zip(
+    observableZip(
       this.securityService.getCurrentUserData(),
       this.parameterService.getContactTypes(),
       this.parameterService.getActiveBranches(),

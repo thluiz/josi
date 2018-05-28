@@ -13,6 +13,13 @@ function routes(app) {
     app.get("/api/hourly-jobs", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         res.send(yield jobs_service_1.JobsService.execute_hourly_jobs());
     }));
+    app.get("/api/current_time", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const dt = new Date();
+        res.send({
+            milliseconds: dt.getTime(),
+            date: dt
+        });
+    }));
 }
 exports.routes = routes;
 //# sourceMappingURL=jobs-routes.js.map

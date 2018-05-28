@@ -1,3 +1,4 @@
+import { FirebaseService } from './services/firebase-service';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 
@@ -17,6 +18,8 @@ import { NewCardModalComponent, CardType } from 'app/shared/components/new-card-
 import { PersonFinancialTreatmentModalComponent } from 'app/shared/components/person-financial-treatment-modal/person-financial-treatment-modal.component';
 import { PersonScheduleTreatmentModalComponent } from 'app/shared/components/person-schedule-treatment-modal/person-schedule-treatment-modal.component';
 
+import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 @Component({
     selector: 'app-root',
@@ -41,8 +44,9 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild(PersonScheduleTreatmentModalComponent) personScheduleTreatmentModal : PersonScheduleTreatmentModalComponent;
     @ViewChild(FileUploadModalComponent) fileUploadModal : FileUploadModalComponent;
     
-    constructor(private modalService: ModalService) {
-
+    constructor(private modalService: ModalService, 
+        private firebaseService: FirebaseService) {
+        
     }
 
     ngAfterViewInit() {

@@ -1,3 +1,7 @@
+
+import {zip as observableZip,  Subscription, Observable } from 'rxjs';
+
+import {filter} from 'rxjs/operators';
 import { CardService } from 'app/services/card-service';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 
@@ -5,8 +9,6 @@ import { SecurityService } from 'app/services/security-service';
 import { ParameterService, Configurations } from 'app/services/parameter-service';
 import { PersonService } from 'app/services/person-service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
-import { Subscription, Observable } from 'rxjs';
 
 @Component({
   selector: 'person-partnership-list',
@@ -47,8 +49,8 @@ export class PersonPartnershipListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {      
     
-    this.changes_subscriber = this.personService.partnershipChanges$
-      .filter((data) => data != null && data.person_id == this.person.id)
+    this.changes_subscriber = this.personService.partnershipChanges$.pipe(
+      filter((data) => data != null && data.person_id == this.person.id))
       .subscribe((data) => {            
         this.load_items();      
       });
@@ -85,7 +87,7 @@ export class PersonPartnershipListComponent implements OnInit, OnDestroy {
       indication_contact_type: 0
     };  
 
-    Observable.zip(
+    observableZip(
       this.securityService.getCurrentUserData(),      
       this.parameterService.getActiveBranches(),
       this.cardService.getOperators(),

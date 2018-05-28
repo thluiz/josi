@@ -10,9 +10,9 @@ export function routes(app) {
                 await DatabaseFacility.ExecuteJsonSP(`GetBranches`)
                 : await DatabaseFacility.ExecuteJsonSQL(
                         `select * from vwBranch where id = @0 for json path`, 
-                        [ req.params.id ]);   
+                        req.params.id);   
 
-            res.send(result);            
+            res.send(result.data);            
         } catch (error) {
             res.status(500).json({ error });
         }                            

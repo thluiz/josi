@@ -9,7 +9,7 @@ export class Result<T = any> {
         return new Result<T>(false, data, error, message);
     }
 
-    private constructor(public success: boolean, public data: T, public error?: Error, public message?: string) {
+    private constructor(public success: boolean, public data: T|Error, public error?: Error, public message?: string) {
         
     }
 }

@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { Component, Input, OnInit } from '@angular/core';
 import { PersonService } from 'app/services/person-service';

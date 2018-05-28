@@ -11,46 +11,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
 const incident_services_1 = require("../../domain/services/incident_services");
 const auth = require("../../src/middlewares/auth");
-const security_service_1 = require("../../src/services/security-service");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     const incident_service = new incident_services_1.IncidentService(pool);
-    app.post("/api/incident/close", auth.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let user = yield security_service_1.SecurityService.getUserFromRequest(req);
-        let result = yield incident_service.close_incident(req.body.incident, yield user.getPersonId());
-        response.send({ sucess: true });
-    }));
-    app.post("/api/incident/start", auth.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let user = yield security_service_1.SecurityService.getUserFromRequest(req);
-        let result = yield incident_service.start_incident(req.body.incident, yield user.getPersonId());
-        response.send({ sucess: true });
-    }));
-    app.post("/api/incident/reopen", auth.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let user = yield security_service_1.SecurityService.getUserFromRequest(req);
-        let result = yield incident_service.reopen_incident(req.body.incident, yield user.getPersonId());
-        response.send({ sucess: true });
-    }));
-    app.post("/api/incident/start/cancel", auth.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let user = yield security_service_1.SecurityService.getUserFromRequest(req);
-        let result = yield incident_service.cancel_start_incident(req.body.incident, yield user.getPersonId());
-        response.send({ sucess: true });
-    }));
-    app.post("/api/incident/remove", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield incident_service.remove_incident(request.body.incident);
-        response.send({ sucess: true });
-    }));
-    app.post("/api/incident/reschedule", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield incident_service.reschedule_incident(request.body.incident, request.body.new_incident, request.body.contact.contact_text);
-        response.send({ sucess: true });
-    }));
-    app.post("/api/incident/register_incident", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield incident_service.register_incident(request.body.incident);
-        response.send({ sucess: true });
-    }));
-    app.post("/api/incident/register_contact", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield incident_service.register_contact_for_incident(request.body.incident, request.body.contact.contact_text);
-        response.send({ sucess: true });
-    }));
     /**
      * COMMENTS
      */

@@ -1,4 +1,6 @@
 
+import {filter} from 'rxjs/operators';
+
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 
 import { ParameterService } from 'app/services/parameter-service';
@@ -32,8 +34,8 @@ export class PersonContactListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.contact_changes_subscriber = this.personService.contactChanges$
-      .filter((data) => data != null && data.person_id == this.person.id)
+    this.contact_changes_subscriber = this.personService.contactChanges$.pipe(
+      filter((data) => data != null && data.person_id == this.person.id))
       .subscribe((data) => {            
         this.load_contacts();      
       });

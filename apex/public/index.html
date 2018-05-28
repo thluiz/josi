@@ -1,4 +1,21 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sistema...</title><base href="/"><link rel="icon" type="image/x-icon" href="assets/favicon-myvt.ico"><link href="assets/fonts/feather/style.min.css" rel="stylesheet"><link href="assets/fonts/simple-line-icons/style.css" rel="stylesheet"><link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900|Montserrat:300,400,500,600,700,800,900" rel="stylesheet" type="text/css"><link rel="stylesheet" href="assets/vendor/pace/themes/black/pace-theme-flash.css"/><style type="text/css">.modal .modal-content {
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sistema... </title>
+  <base href="/">
+  <link rel="icon" type="image/x-icon" href="assets/favicon-myvt.ico">  
+  <link href="assets/fonts/feather/style.min.css" rel="stylesheet">
+  <link href="assets/fonts/simple-line-icons/style.css" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900|Montserrat:300,400,500,600,700,800,900'
+    rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="assets/vendor/pace/themes/black/pace-theme-flash.css"/>
+  <style type="text/css">    
+  
+    .modal .modal-content {
         border-bottom: 3px solid darkgrey;
         box-shadow: 0 10px 5px grey !important;
     }
@@ -31,7 +48,22 @@
     app-root:empty ~ .page-loading {
       opacity: 1;
       z-index: 1;
-    }</style><script src="assets/vendor/pace/pace.min.js"></script><script defer="defer" src="https://use.fontawesome.com/releases/v5.0.2/js/all.js"></script><script type="text/javascript">(function (window) {
+    }
+  </style>
+
+  <!-- ANGULAR 6 POLYFILL-->
+  <script>
+    var global = global || window;
+    var Buffer = Buffer || [];
+    var process = process || {
+      env: { DEBUG: undefined },
+      version: []
+    };
+  </script>
+  <script src="assets/vendor/pace/pace.min.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.2/js/all.js"></script>
+  <script type="text/javascript">
+    (function (window) {
       // Polyfills DOM4 MouseEvent only on IE11
       // Fixes ngx-charts line-chart hover
       // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent#Polyfill
@@ -59,4 +91,13 @@
           trackMethods: [ 'POST','GET']
         }
       };
-    })(window);</script><link href="styles.624bcc2923d8db027971.bundle.css" rel="stylesheet"/></head><body style="overflow:hidden"><app-root></app-root><div class="page-loading"><img src="assets/img/oval.svg" class="loading-icon"/></div><script type="text/javascript" src="inline.89c3992afae4ca692806.bundle.js"></script><script type="text/javascript" src="polyfills.d60fbe596ccbaaa6a46e.bundle.js"></script><script type="text/javascript" src="scripts.f5bcca9042bb3631df57.bundle.js"></script><script type="text/javascript" src="main.c5c106ee2f1d06c33a4b.bundle.js"></script></body></html>
+    })(window);
+  </script>
+<link rel="stylesheet" href="styles.24baa85b8ff4fea25706.css"></head>
+<body style="overflow:hidden">
+  <app-root></app-root>  
+  <div class="page-loading">
+    <img src="assets/img/oval.svg" class="loading-icon" />
+  </div>  
+<script type="text/javascript" src="runtime.dbd3a24a56ce7fcebf8e.js"></script><script type="text/javascript" src="polyfills.735131417be5eb45b505.js"></script><script type="text/javascript" src="scripts.f5bcca9042bb3631df57.js"></script><script type="text/javascript" src="main.ca86745f3e2d0e12e424.js"></script></body>
+</html>

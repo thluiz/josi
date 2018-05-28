@@ -1,4 +1,6 @@
 
+import {filter} from 'rxjs/operators';
+
 import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef } 
 from '@angular/core';
 
@@ -32,17 +34,7 @@ export class IncidentCommentsListModalComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnInit() {
-    this.comment_changes_subscriber = this.incidentService.commentChanges$
-      .filter((data) => {         
-        return data != null 
-                && this.incident != null 
-                && data.id == this.incident.id
-      })
-      .subscribe((data) => {            
-        this.load_comments();      
-      });
-
+  ngOnInit() {    
     this.markdownService.renderer.paragraph = (text: string) => {
       const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
       return `<p style="margin-bottom:0">${text}</p>`;

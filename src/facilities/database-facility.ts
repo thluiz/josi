@@ -49,21 +49,47 @@ export class DatabaseFacility {
         return Result.Ok();
     } 
 
-    static async ExecuteJsonSQL<T>(sql: string, parameters?: any[]) : Promise<T> {
-        let connection = await this.getConnection();        ;
-    
-        const result = await connection.query(sql, parameters);
-                          
-        return JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]) as T;
+    static async ExecuteJsonSQL<T>(sql: string, ...parameters: any[]) : Promise<Result<T>> {
+        try {
+            let connection = await this.getConnection();        ;
+        
+            const result = await connection.query(sql, parameters);
+                              
+            return Result.Ok(JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]) as T);            
+        } catch (error) {
+            if(error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
+                return Result.Ok({} as T);                
+            }
+
+            return Result.Fail(ErrorCode.GenericError, error);
+        }
     }
 
-    static async ExecuteJsonSP<T>(procedure: string, parameters?: any[]) : Promise<T> {
-        let connection = await this.getConnection();
-        let {query, values} = this.buildSPParameters(procedure, parameters);
-    
-        const result = await connection.query(query, values);
-                                  
-        return JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]) as T;
+    static async ExecuteJsonStringSP<T>(procedure: string, ...parameters: any[]) : Promise<Result<string>> {
+        return this.ExecuteSP<string>(procedure, false, parameters);
+    }
+
+    static async ExecuteJsonSP<T>(procedure: string, ...parameters: any[]) : Promise<Result<T>> {
+        return this.ExecuteSP<T>(procedure, true, parameters);
+    }
+
+    private static async ExecuteSP<T>(procedure: string, parseResults: boolean, parameters?: any[]) : Promise<Result<T>> {
+        try {
+            let connection = await this.getConnection();
+            let {query, values} = this.buildSPParameters(procedure, parameters);
+            
+            const result = await connection.query(query, values);
+            const data = result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"];                   
+            
+            return parseResults ?  
+                    Result.Ok(JSON.parse(data)) : Result.Ok(data);            
+        } catch (error) {
+            if(error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
+                return Result.Ok({} as T);                
+            }
+
+            return Result.Fail(ErrorCode.GenericError, error);
+        }
     }
 
     private static buildSPParameters(procedure: string, parameters: any[]) : { query: string, values: any[]} {

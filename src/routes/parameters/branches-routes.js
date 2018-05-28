@@ -15,8 +15,8 @@ function routes(app) {
         try {
             const result = !req.params.id ?
                 yield database_facility_1.DatabaseFacility.ExecuteJsonSP(`GetBranches`)
-                : yield database_facility_1.DatabaseFacility.ExecuteJsonSQL(`select * from vwBranch where id = @0 for json path`, [req.params.id]);
-            res.send(result);
+                : yield database_facility_1.DatabaseFacility.ExecuteJsonSQL(`select * from vwBranch where id = @0 for json path`, req.params.id);
+            res.send(result.data);
         }
         catch (error) {
             res.status(500).json({ error });

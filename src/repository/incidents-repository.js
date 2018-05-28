@@ -9,22 +9,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_facility_1 = require("../facilities/database-facility");
-const result_1 = require("../helpers/result");
-const errors_codes_1 = require("../helpers/errors-codes");
 class IncidentsRepository {
     static getPersonIncidentsHistory(person_id, activity_type, page = 1, pagesize = 10) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetPersonIncidentHistory", [
-                    { "page": page },
-                    { "person_id": person_id },
-                    { "activity_type": activity_type }
-                ]);
-                return result_1.Result.Ok(result);
-            }
-            catch (error) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.FailedGetConnection, error);
-            }
+            let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetPersonIncidentHistory", { "page": page }, { "person_id": person_id }, { "activity_type": activity_type });
+            return result;
+        });
+    }
+    static getIncidentDetails(incident_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetIncidentDetails", { "id": incident_id });
+            return result;
+        });
+    }
+    static getAgenda(branch_id, date) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetAgenda2", { "branch_id": branch_id }, { "date": date });
+            return result;
         });
     }
 }

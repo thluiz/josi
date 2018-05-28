@@ -1,9 +1,11 @@
+
+import {tap} from 'rxjs/operators';
 import { IContact } from './person-service';
 import {Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { Result } from 'app/shared/models/result';
 
 export enum DailyMonitorDisplayType {
@@ -146,28 +148,28 @@ export class PersonService {
   }
 
   saveIndication(indication) {
-    return this.http.post(this.dataUrl + `/person_indications`, { indication }).do((d) => {
+    return this.http.post(this.dataUrl + `/person_indications`, { indication }).pipe(tap((d) => {
       this.indication_actions.next(indication);
-    });    
+    }));    
   }
 
   changeIndicationType(indication, new_type) {
-    return this.http.post(this.dataUrl + `/invitations/change_type`, { id: indication.id, type: new_type })
-    .do((d) => {
+    return this.http.post(this.dataUrl + `/invitations/change_type`, { id: indication.id, type: new_type }).pipe(
+    tap((d) => {
       this.indication_actions.next(indication);
-    });    
+    }));    
   }
 
   savePartnership(partnership) {
-    return this.http.post(this.dataUrl + `/person_partnerships`, { partnership }).do((d) => {
+    return this.http.post(this.dataUrl + `/person_partnerships`, { partnership }).pipe(tap((d) => {
       this.partnership_actions.next(partnership);
-    });    
+    }));    
   }
 
   saveExternalUnit(external_unit) {
-    return this.http.post(this.dataUrl + `/person_external_units`, { external_unit }).do((d) => {
+    return this.http.post(this.dataUrl + `/person_external_units`, { external_unit }).pipe(tap((d) => {
       this.external_unit_actions.next(external_unit);
-    });    
+    }));    
   }
 
   savePersonContact(person_id, contact_type, contact, details, principal) {
@@ -179,25 +181,25 @@ export class PersonService {
       principal
     };
 
-    return this.http.post(this.dataUrl + `/person_contact`, contact_data).do((d) => {
+    return this.http.post(this.dataUrl + `/person_contact`, contact_data).pipe(tap((d) => {
       this.contact_changes.next(contact_data);
-    });    
+    }));    
   }
 
   savePersonData(person) {          
     return this.http
         .post(this.dataUrl + `/people`, {
           person
-        }).do((data) => {          
+        }).pipe(tap((data) => {          
           this.person_changes.next(data);
-        });
+        }));
   }
 
   registerPerson(person) {          
     return this.http
         .post(this.dataUrl + `/person`, {
           person
-        }).do((data) => {          
+        }).pipe(tap((data) => {          
           this.person_actions.next({ 
             type: PersonActions.ADD,
             result: {
@@ -206,15 +208,15 @@ export class PersonService {
             },
             data
           });
-        });
+        }));
   }
 
   removePersonContact(person_id, contact_id) {
     return this.http.post(this.dataUrl + `/person_contact/remove`, {
       contact_id
-    }).do((data) => {
+    }).pipe(tap((data) => {
       this.contact_changes.next({ person_id } as IContact);
-    });    
+    }));    
   }
 
   getData(id) {    
@@ -283,13 +285,13 @@ export class PersonService {
     form.append('avatar', image, image.name);
 
     return this.http
-      .post(this.dataUrl + `/people/avatar_image`, form)
-      .do((result : Result) => {          
+      .post(this.dataUrl + `/people/avatar_image`, form).pipe(
+      tap((result : Result) => {          
         this.person_actions.next({
           type: PersonActions.CHANGE_AVATAR,
           result
         });
-      });
+      }));
   }
 
   save_schedule(schedule) {
@@ -307,13 +309,13 @@ export class PersonService {
     return this.http
         .post(this.dataUrl + `/people_comments/archive`, {
           id: comment.id
-        }).do((data) => {          
+        }).pipe(tap((data) => {          
           this.comment_changes.next({ person });
-        });
+        }));
   }
 
   saveAddress(address) {
-    return this.http.post(this.dataUrl + `/person_address`, { address }).do((data) => {          
+    return this.http.post(this.dataUrl + `/person_address`, { address }).pipe(tap((data) => {          
       this.person_actions.next({ 
         type: PersonActions.ADD_ADDRESS,
         result: {
@@ -322,11 +324,11 @@ export class PersonService {
         },
         data
       });
-    });
+    }));
   }
 
   archiveAddress(person_address) {
-    return this.http.post(this.dataUrl + `/person_address/archive`, { person_address }).do((data) => {          
+    return this.http.post(this.dataUrl + `/person_address/archive`, { person_address }).pipe(tap((data) => {          
       this.person_actions.next({ 
         type: PersonActions.ARCHIVE_ADDRESS,
         result: {
@@ -335,7 +337,7 @@ export class PersonService {
         },
         data
       });
-    });
+    }));
   }
 
   saveCommentAboutPerson(person, comment) {    
@@ -343,9 +345,9 @@ export class PersonService {
         .post(this.dataUrl + `/people_comments/about`, {
           person_id: person.id,
           comment
-        }).do((data) => {          
+        }).pipe(tap((data) => {          
           this.comment_changes.next({ person });
-        });
+        }));
   }
 }
 

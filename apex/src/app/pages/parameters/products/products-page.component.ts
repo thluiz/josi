@@ -1,7 +1,10 @@
+
+import {zip as observableZip,  Observable } from 'rxjs';
+
+import {delay} from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParameterService } from 'app/services/parameter-service';
 import { Component, OnInit } from "@angular/core";
-import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -34,7 +37,7 @@ export class ProductsPageComponent implements OnInit {
   }
 
   private load_data() {
-    Observable.zip(      
+    observableZip(      
       this.parameterService.getProductCategories(),
       this.parameterService.getProducts(true),
       this.parameterService.getCurrencies(),
@@ -53,8 +56,8 @@ export class ProductsPageComponent implements OnInit {
 
   save(close_action) {
     this.saving = true;
-    this.parameterService.saveProduct(this.current_item)       
-    .delay(500) 
+    this.parameterService.saveProduct(this.current_item).pipe(       
+    delay(500)) 
     .subscribe((data) => {      
       if(close_action) {
         close_action();
@@ -66,8 +69,8 @@ export class ProductsPageComponent implements OnInit {
 
   archive_product(product) {
     this.saving = true;
-    this.parameterService.archiveProduct(product)      
-    .delay(500)      
+    this.parameterService.archiveProduct(product).pipe(      
+    delay(500))      
     .subscribe((data) => {            
       this.saving = false;      
       this.load_data();      

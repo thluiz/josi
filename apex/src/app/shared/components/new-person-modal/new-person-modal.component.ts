@@ -1,7 +1,8 @@
+
+import {zip as observableZip,  Observable ,  of } from 'rxjs';
 import { UtilsService } from 'app/services/utils-service';
 import { ModalType } from './../../../services/modal-service';
 import { ModalService } from 'app/services/modal-service';
-import { Observable } from 'rxjs/Observable';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Component, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 
@@ -13,23 +14,16 @@ import { IncidentService } from 'app/services/incident-service';
 
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/delay';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/switchMap';
 
-import { debounceTime } from 'rxjs/operators';
-import { delay } from 'rxjs/operators';
-import { map } from 'rxjs/operators';
-import { distinctUntilChanged } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
-import { catchError } from 'rxjs/operators';
-import { tap } from 'rxjs/operators';
-import { switchMap } from 'rxjs/operators';
+
+
+
+
+
+
+
+
+import { debounceTime ,  delay ,  map ,  distinctUntilChanged ,  catchError ,  tap ,  switchMap } from 'rxjs/operators';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
 
 @Component({
@@ -71,7 +65,7 @@ export class NewPersonModalComponent implements OnInit {
   open(initial_state = {}) {   
     this.saving = false;
     this.reset_person(initial_state);
-    Observable.zip(
+    observableZip(
       this.parameterService.getActiveBranches(),      
       this.parameterService.getRoles(), 
       this.parameterService.getIncidentTypes(),     

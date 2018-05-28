@@ -1,3 +1,4 @@
+import { FirebaseService } from './../services/firebase-service';
 import { DatabaseFacility } from './../facilities/database-facility';
 import * as sql from 'mssql';
 import * as OldSecurityService from "../../domain/services/security_services";
@@ -24,24 +25,7 @@ export function initialize(app, pool) {
     cards_routes.configure_routes(app, pool);
     financial_routes.configure_routes(app, pool);
     voucher_routes.configure_routes(app, pool);
-
-    app.get("/api/agenda/:branch?/:date?",
-        auth.ensureLoggedIn(),
-        async (req, res, next) => {
-            try {
-                let result = await new sql.Request(pool)
-                    .input('branch', sql.Int, req.params.branch > 0 ? req.params.branch : null)
-                    .input('date', sql.VarChar(10), req.params.date || null)
-                    .execute(`GetAgenda`);
-
-                let response = result.recordset[0];
-                res.send(response[0].empty ? [] : response);
-
-            } catch (error) {
-                res.status(500).json({ error: error });
-            }
-        });
-
+    
     app.get("/api/current_activities/:branch?",
         auth.ensureLoggedIn(),
         auth.ensureHasPermission(Permissions.Operator),
@@ -63,14 +47,14 @@ export function initialize(app, pool) {
         auth.ensureLoggedIn(),
         async (request, response, next) => {
             try {                                         
-                let result = await DatabaseFacility.ExecuteJsonSP("GetDailyMonitor", [
+                let result = await DatabaseFacility.ExecuteJsonSP("GetDailyMonitor", 
                     { "branch": request.params.branch > 0 ? request.params.branch : null },
                     { "display_modifier":  request.params.display_modifier || 0 },
                     { "display": request.params.display || 0 }
-                ]);                    
+                );                    
 
 
-                response.send(result);
+                response.send(result.data);
             } catch (error) {
                 response.status(500);
                 response.json({ error: error });

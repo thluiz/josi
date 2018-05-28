@@ -1,3 +1,7 @@
+
+import {zip as observableZip,  Observable ,  Subscription } from 'rxjs';
+
+import {filter} from 'rxjs/operators';
 import { PersonRelationshipListComponent } from './../../../shared/components/person-relationship-list/person-relationship-list.component';
 import { PersonCommentListComponent } from './../shared/components/person-comment-list/person-comment-list.component';
 import { PersonPartnershipListComponent } from './../shared/components/person-partnership-list/person-partnership-list.component';
@@ -9,7 +13,6 @@ import { Component, Input, AfterViewInit, QueryList, OnInit, OnDestroy, ViewChil
 from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 
 import { PersonService, ActivityType } from './../../../services/person-service';
 import { ParameterService } from './../../../services/parameter-service';
@@ -25,7 +28,6 @@ NgbDatepickerI18n,
 NgbDatepickerConfig
 } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
-import { Subscription } from 'rxjs/Subscription';
 import { PersonIndicationListComponent } from '../../../shared/components/person-indication-list/person-indication-list.component';
 
 @Component({
@@ -128,8 +130,8 @@ export class PersonPageComponent implements OnInit, OnDestroy {
       this.reloadData();
     }));
 
-    this.subs.push(this.personService.personChanges$
-    .filter((data) => data != null && data.id == this.id)
+    this.subs.push(this.personService.personChanges$.pipe(
+    filter((data) => data != null && data.id == this.id))
     .subscribe((data) => {                       
       this.person = data;      
     }));
@@ -165,7 +167,7 @@ export class PersonPageComponent implements OnInit, OnDestroy {
   }
 
   open_schedule_modal(content) {    
-    Observable.zip(this.parameterService.getActiveBranches(), 
+    observableZip(this.parameterService.getActiveBranches(), 
                     this.parameterService.getIncidentTypes(),
                     this.parameterService.getRecurrenceTypes(),
       (branches, incident_types, recurrence_types) => {        
@@ -380,7 +382,7 @@ export class PersonPageComponent implements OnInit, OnDestroy {
       state: 'Rio de Janeiro',
       person_id: this.id
     };
-    Observable.zip(this.parameterService.getCountries(),
+    observableZip(this.parameterService.getCountries(),
       (countries, incident_types, recurrence_types) => {        
         this.countries = countries;        
       }).subscribe(() => {        

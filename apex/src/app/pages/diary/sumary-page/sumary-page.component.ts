@@ -14,7 +14,7 @@ import { NgbDateStruct,
 
 import { OnInit, OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-full-layout-page',

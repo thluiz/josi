@@ -14,11 +14,7 @@ import { SecurityService } from 'app/services/security-service';
 })
 export class CurrentActivitiesComponent implements OnInit, OnDestroy {    
     activities: any = [];
-    @Input() branch = 0;
-    private update_activities_timer;
-    private incident_changes_subscriber: Subscription;
-    private incident_added_subscriber: Subscription;
-    private person_changes_subscriber: Subscription;
+    @Input() branch = 0;        
 
     constructor(private incidentService: IncidentService, 
       private modalService: ModalService, 
@@ -32,33 +28,10 @@ export class CurrentActivitiesComponent implements OnInit, OnDestroy {
         this.branch = user.default_branch_id || 0;
         this.getCurrentActivities();
       });      
-
-      this.incident_changes_subscriber = this.incidentService.incidentsChanges$
-      .delay(1000)
-      .subscribe((next) => {      
-        this.getCurrentActivities();
-      });
-
-
-      this.incident_added_subscriber = this.incidentService.incidentAdd$
-      .delay(1000)
-      .subscribe((next) => {      
-        this.getCurrentActivities();
-      });
-
-      this.person_changes_subscriber = this.personService.personChanges$
-      .delay(1000).subscribe((next) => {      
-        this.getCurrentActivities();
-      });
     }
 
     ngOnDestroy() {      
-      if(this.update_activities_timer) {
-        clearTimeout(this.update_activities_timer);
-      }
-      this.incident_added_subscriber.unsubscribe();
-      this.incident_changes_subscriber.unsubscribe();
-      this.person_changes_subscriber.unsubscribe();
+      
     }
 
     show_incident_details(incident) {
@@ -73,32 +46,16 @@ export class CurrentActivitiesComponent implements OnInit, OnDestroy {
     private getCurrentActivities() {      
       this.incidentService.getCurrentActivities(this.branch || 0).subscribe((data) => {
         this.activities = data;
-      });
-
-      if(this.update_activities_timer) {
-        clearTimeout(this.update_activities_timer);
-      }
-  
-      this.update_activities_timer = setTimeout(() => { this.getCurrentActivities() }, 90000);
+      });      
     }
 
-    start_incident(incident) {
-      let date = new Date();    
-      incident.started_on_hour = date.getHours() + ":" + date.getMinutes();
-  
+    start_incident(incident) {      
       this.incidentService.start_incident(incident)
-      .toPromise()    
-      .catch((reason) => {
-        console.log(reason);
-      }); 
+      .subscribe();
     }
   
-    close_incident(incident) {
-      incident.closed = true;        
-  
+    close_incident(incident) {      
       this.incidentService.close_incident(incident)
-      .toPromise().catch((reason) => {
-        console.log(reason);
-      }); 
+      .subscribe(); 
     }
 }

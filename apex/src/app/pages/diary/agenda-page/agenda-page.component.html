@@ -1,74 +1,74 @@
 <float-action-center [branch]="current_branch"></float-action-center>
 
 <div class="row">
-	<div class="col-12">		
+	<div class="col-12">
 		<div class="card">
 			<div class="card-header" style="background-color:white;width:100%;padding:10px">
 				<diary-header panel="members"></diary-header>
 				<div class="row">
-					<div class="col-12">						
+					<div class="col-12">
 						<div class="row">
 							<div class="col-12 col-xl-6 col-lg-6 col-md-12">
 								<diary-change-branch
 								[branch]="current_branch"
 								(onChangeBranch)="branchSelected($event)"
 								></diary-change-branch>
-							</div>	
+							</div>
 							<div class="col-12 col-xl-2 col-lg-2 col-md-4 col-sm-12">
-								<diary-change-view initial_display="agenda"></diary-change-view>	
+								<diary-change-view initial_display="agenda"></diary-change-view>
 							</div>
 							<div class="col-9 col-xl-3 col-lg-3 col-md-6">
-								<div class="form-group">													
+								<div class="form-group">
 									<div class="input-group">
-										<input class="form-control text-center" 										
+										<input class="form-control text-center"
 										placeholder="dd/mm/aaaa"
-										name="current_date" 
-										[(ngModel)]="current_date" 
+										name="current_date"
+										[(ngModel)]="current_date"
 										(ngModelChange)="change_current_date($event)"
 										ngbDatepicker #dpCurrentDate="ngbDatepicker" />
 										<div class="input-group-addon" (click)="dpCurrentDate.toggle()">
 											<i class="ft-calendar" style="cursor: pointer;"></i>
-										</div>		
+										</div>
 									</div>
 								</div>
-							</div>													
-						</div>						
-					</div>					
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
-			<div class="card-body">	
+			<div class="card-body">
 				<div class="row d-block d-lg-none">
 					<div class="col-12">
 						<current-activities></current-activities>
 					</div>
 				</div>
-				<div class="row">					
+				<div class="row">
 					<div class="col-12 col-sm-12 col-lg-7">
-						<div class="row" *ngFor="let schedule of agenda">					
-							<div class="col-12" 
-							style="border:1px solid silver;margin-bottom:10px;border-bottom:0;" 
-							*ngIf="schedule.current_incidents && schedule.current_incidents.length > 0">	
-								<h4 *ngIf="schedule.schedule_group <= 0"></h4>																									
-								<h4 *ngIf="schedule.schedule_group > 0" style="margin-top:12px">{{ ('00' + schedule.schedule_group).slice(-2) }}:00</h4>																									
-								<div class="row" *ngFor="let incident of schedule.current_incidents, let k = index">
-									<div class="col-12" 
+						<div class="row" *ngFor="let schedule of agenda">
+							<div class="col-12"
+							style="border:1px solid silver;margin-bottom:10px;border-bottom:0;"
+							*ngIf="schedule.incidents && schedule.incidents.length > 0">
+								<h4 *ngIf="schedule.schedule_group <= 0"></h4>
+								<h4 *ngIf="schedule.schedule_group > 0" style="margin-top:12px">{{ ('00' + schedule.schedule_group).slice(-2) }}:00</h4>
+								<div class="row" *ngFor="let incident of schedule.incidents, let k = index">
+									<div class="col-12"
 										style="line-height:2em;border:1px solid silver;border-left:0;border-right:0"
 										*ngIf="current_branch <= 0 || incident.branch_id == current_branch"
 										[style.border-top]="k != 0 ? '0' : '1px solid silver'">
 
 										<incident-agenda-listitem [incident]="incident"></incident-agenda-listitem>
-										
-									</div>																										
-								</div>					
-							</div>							
-						</div>		
-					</div>	
-					<div class="col-5 col-lg-5 d-none d-lg-block">							
-						<current-activities> 							
-						</current-activities>						
+
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
-				</div>			
+					<div class="col-5 col-lg-5 d-none d-lg-block">
+						<current-activities>
+						</current-activities>
+					</div>
+				</div>
 			</div>
-		</div>		
+		</div>
 	</div>
 </div>

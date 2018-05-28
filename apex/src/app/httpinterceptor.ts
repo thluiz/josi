@@ -1,9 +1,11 @@
+
+import {tap} from 'rxjs/operators';
 import { Injectable, Injector } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse, HttpResponse } 
 from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
-import 'rxjs/add/observable/throw'
-import 'rxjs/add/operator/catch';
+
+
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 
@@ -18,7 +20,7 @@ export class SecurityHttpInterceptor implements HttpInterceptor {
         // const authReq = req.clone({ headers: req.headers.set("headerName", "headerValue")});        
         // console.log("Sending request with new header now ...");
         
-        return next.handle(req).do((event: HttpEvent<any>) => {
+        return next.handle(req).pipe(tap((event: HttpEvent<any>) => {
             if (event instanceof HttpResponse) {
               // do stuff with response if you want
               if(environment.production) {
@@ -35,6 +37,6 @@ export class SecurityHttpInterceptor implements HttpInterceptor {
                 }
               }
             }
-        });                 
+        }));                 
     }
 }

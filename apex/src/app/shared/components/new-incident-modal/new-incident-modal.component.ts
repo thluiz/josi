@@ -1,5 +1,6 @@
+
+import {zip as observableZip,  Observable ,  of } from 'rxjs';
 import { ParameterService } from 'app/services/parameter-service';
-import { Observable } from 'rxjs/Observable';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Component, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 
@@ -8,23 +9,7 @@ import { PersonService } from 'app/services/person-service';
 import { IncidentService } from 'app/services/incident-service';
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/delay';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/switchMap';
-
-import { debounceTime } from 'rxjs/operators';
-import { delay } from 'rxjs/operators';
-import { map } from 'rxjs/operators';
-import { distinctUntilChanged } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
-import { catchError } from 'rxjs/operators';
-import { tap } from 'rxjs/operators';
-import { switchMap } from 'rxjs/operators';
+import { debounceTime ,  delay ,  map ,  distinctUntilChanged ,  catchError ,  tap ,  switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'new-incident-modal',
@@ -69,7 +54,7 @@ export class NewInicidentModalComponent implements OnInit {
 
   open(initial_state = { }) {      
     this.reset_new_incident(initial_state);    
-    Observable.zip(
+    observableZip(
       this.parameterService.getActiveBranches(),            
       this.parameterService.getIncidentTypes(),     
       (branches, incident_types : any[]) => {
@@ -145,21 +130,21 @@ export class NewInicidentModalComponent implements OnInit {
   }
 
   search_people = (text$: Observable<string>) =>
-    text$
-      .debounceTime(300)
-      .distinctUntilChanged()
-      .do(() => this.searching_people = true)
-      .switchMap(term =>
-        this.personService.search(term)
-          .map(response =>  {             
+    text$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => this.searching_people = true),
+      switchMap(term =>
+        this.personService.search(term).pipe(
+          map(response =>  {             
             return <string[]>response; 
-          })
-          .do(() => this.search_failed = false)
-          .catch(() => {
+          }),
+          tap(() => this.search_failed = false),
+          catchError(() => {
             this.search_failed = true;
-            return Observable.of([]);
-          }))
-      .do(() => this.searching_people = false)
+            return of([]);
+          }),)),
+      tap(() => this.searching_people = false),)
 
 
       
@@ -191,8 +176,8 @@ export class NewInicidentModalComponent implements OnInit {
   }
 
   register_new_incident() {         
-    this.incidentService.register_new_incident(this.new_incident)    
-    .do((next) => this.reset_new_incident())    
+    this.incidentService.register_new_incident(this.new_incident).pipe(    
+    tap((next) => this.reset_new_incident()))    
     .subscribe();        
   } 
 

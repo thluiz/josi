@@ -1,6 +1,6 @@
 import { ModalService, ModalType } from 'app/services/modal-service';
 import { IncidentService } from 'app/services/incident-service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 
 import { PersonService } from 'app/services/person-service';

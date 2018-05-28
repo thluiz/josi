@@ -48,20 +48,48 @@ class DatabaseFacility {
             return result_1.Result.Ok();
         });
     }
-    static ExecuteJsonSQL(sql, parameters) {
+    static ExecuteJsonSQL(sql, ...parameters) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this.getConnection();
-            ;
-            const result = yield connection.query(sql, parameters);
-            return JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]);
+            try {
+                let connection = yield this.getConnection();
+                ;
+                const result = yield connection.query(sql, parameters);
+                return result_1.Result.Ok(JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]));
+            }
+            catch (error) {
+                if (error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
+                    return result_1.Result.Ok({});
+                }
+                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+            }
         });
     }
-    static ExecuteJsonSP(procedure, parameters) {
+    static ExecuteJsonStringSP(procedure, ...parameters) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this.getConnection();
-            let { query, values } = this.buildSPParameters(procedure, parameters);
-            const result = yield connection.query(query, values);
-            return JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]);
+            return this.ExecuteSP(procedure, false, parameters);
+        });
+    }
+    static ExecuteJsonSP(procedure, ...parameters) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.ExecuteSP(procedure, true, parameters);
+        });
+    }
+    static ExecuteSP(procedure, parseResults, parameters) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let connection = yield this.getConnection();
+                let { query, values } = this.buildSPParameters(procedure, parameters);
+                const result = yield connection.query(query, values);
+                const data = result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"];
+                return parseResults ?
+                    result_1.Result.Ok(JSON.parse(data)) : result_1.Result.Ok(data);
+            }
+            catch (error) {
+                if (error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
+                    return result_1.Result.Ok({});
+                }
+                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+            }
         });
     }
     static buildSPParameters(procedure, parameters) {

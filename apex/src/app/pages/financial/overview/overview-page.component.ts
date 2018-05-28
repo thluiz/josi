@@ -1,7 +1,8 @@
+
+import {zip as observableZip,  Subscription ,  Observable } from 'rxjs';
 import { ParameterService } from 'app/services/parameter-service';
 import { CardCommentary } from 'app/shared/models/card-commentary.model';
 import { DragulaService } from 'ng2-dragula';
-import { Subscription } from 'rxjs';
 import { ModalType } from './../../../services/modal-service';
 import { ModalService } from 'app/services/modal-service';
 import { Card } from './../../../shared/models/card.model';
@@ -10,7 +11,6 @@ import { CardService, CARD_CHANGED, CARD_ADDED, CARD_ARCHIVED, CARD_COMMENT_ADDE
 import { ActivatedRoute, Router } from '@angular/router';
 import { FinancialService } from 'app/services/financial-service';
 import { SecurityService } from 'app/services/security-service';
-import { Observable } from 'rxjs/Observable';
 
 const PROJECT_BAG_NAME = 'childrens';
 
@@ -36,7 +36,7 @@ export class OverviewPageComponent implements OnInit, OnDestroy {
   }  
 
   ngOnInit() {  
-    Observable.zip(
+    observableZip(
       this.parameterService.getActiveBranches(),
       this.securityService.getCurrentUserData(),
       this.route.params,
