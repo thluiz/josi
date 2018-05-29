@@ -42,7 +42,10 @@ export function routes(app) {
     auth.ensureLoggedIn(),
     async (req, response, next) => {
         let user = await SecurityService.getUserFromRequest(req);
-        let result = await IncidentsService.close_incident({ id: req.body.id }, await user.getPersonId());
+        let result = await IncidentsService.close_incident({ 
+            id: req.body.id, 
+            close_text: req.body.close_text 
+        }, await user.getPersonId());
 
         response.send(result); 
     });

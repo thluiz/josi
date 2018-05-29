@@ -28,7 +28,10 @@ function routes(app) {
     }));
     app.post("/api/incident/close", auth.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
         let user = yield security_service_1.SecurityService.getUserFromRequest(req);
-        let result = yield incidents_service_1.IncidentsService.close_incident({ id: req.body.id }, yield user.getPersonId());
+        let result = yield incidents_service_1.IncidentsService.close_incident({
+            id: req.body.id,
+            close_text: req.body.close_text
+        }, yield user.getPersonId());
         response.send(result);
     }));
     app.post("/api/incident/start", auth.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {

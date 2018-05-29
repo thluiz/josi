@@ -20,23 +20,13 @@ export const INCIDENT_RESCHEDULED = "INCIDENT_RESCHEDULED";
 export class IncidentAddedAction {
   public type = INCIDENT_ADDED;
 
-  constructor(public payload: LightIncident) {
+  constructor(public payload: LightIncident[]) {
 
   } 
 }
 
-export class IncidentTreatedAction {
-  public type = INCIDENT_TREATED;
-
-  constructor(public payload: LightIncident) {
-
-  } 
-}
-
-export class IncidentCancelledAction {
-  public type = INCIDENT_CANCELLED;
-
-  constructor(public payload: LightIncident) {
+export class GenericIncidentAction {  
+  constructor(public type: string, public payload: LightIncident) {
 
   } 
 }
@@ -44,42 +34,14 @@ export class IncidentCancelledAction {
 export class IncidentRescheduledAction {
   public type = INCIDENT_RESCHEDULED;
 
-  constructor(public payload: LightIncident) {
+  constructor(public original:LightIncident, public new_incident: LightIncident) {
 
   } 
 }
 
-export class IncidentStartedAction {
-  public type = INCIDENT_STARTED;
-
-  constructor(public payload: LightIncident) {
-
-  } 
-}
-
-export class IncidentEndedAction {
-  public type = INCIDENT_ENDED;
-
-  constructor(public payload: LightIncident) {
-
-  } 
-}
-
-export class IncidentChangedAction {
-  public type = INCIDENT_CHANGED;
-
-  constructor(public payload: LightIncident) {
-
-  } 
-}
-
-export type IncidentAction = IncidentAddedAction 
-                            | IncidentStartedAction 
-                            | IncidentChangedAction
+export type IncidentAction = IncidentAddedAction                             
                             | IncidentRescheduledAction
-                            | IncidentTreatedAction 
-                            | IncidentCancelledAction
-                            | IncidentEndedAction;
+                            | GenericIncidentAction;
 
 @Injectable()
 export class IncidentService {
@@ -93,9 +55,9 @@ export class IncidentService {
 
   }  
 
-  emit_event(data : { event_type: string, data: string }[]) {
+  emit_event(data : { type: string, data: string }[]) {
     data.forEach(dt => {
-      switch (dt.event_type) {
+      switch (dt.type) {
         case INCIDENT_ADDED:                    
           this.incidents_actions.next(
             new IncidentAddedAction(
@@ -103,32 +65,25 @@ export class IncidentService {
             )
           );      
           break;
+        case INCIDENT_RESCHEDULED:
+          let incidents = JSON.parse(dt.data);
+          this.incidents_actions.next(            
+            new IncidentRescheduledAction(
+              incidents[0], incidents[1]
+            )
+          );      
+          break;
         case INCIDENT_STARTED: 
-          this.incidents_actions.next(
-            new IncidentStartedAction(
-              JSON.parse(dt.data)
-          ));      
-          break;
         case INCIDENT_ENDED: 
-          this.incidents_actions.next(
-            new IncidentEndedAction(
-              JSON.parse(dt.data)
-          ));      
-          break;
         case INCIDENT_CHANGED: 
-          this.incidents_actions.next(
-            new IncidentChangedAction(
-              JSON.parse(dt.data)
-          ));      
-          break; 
         case INCIDENT_CANCELLED: 
           this.incidents_actions.next(
-            new IncidentCancelledAction(
-              JSON.parse(dt.data)
+            new GenericIncidentAction(
+              dt.type, JSON.parse(dt.data)
           ));      
-          break;          
+          break;
       }
-    });    
+    }); 
   }
 
   getSumary(branch, month, week, date) {
@@ -147,7 +102,8 @@ export class IncidentService {
 
   close_incident(incident) {
     return this.http.post(this.dataUrl + '/incident/close', { 
-      id: incident.id
+      id: incident.id,
+      close_description: incident.close_text
     })
   }
 

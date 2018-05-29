@@ -1,3 +1,4 @@
+import { GenericIncidentAction } from './../../../services/incident-service';
 import { OnInit, OnDestroy } from '@angular/core';
 import { IncidentService, IncidentAction } from 'app/services/incident-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
@@ -34,15 +35,9 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
       this.incidents_subscriber = this.incidentService
       .incidentsActions$    
       .pipe(filter(
-        (action : IncidentAction) => {                     
-          if(action.payload[0].id != this.incident.id) {
-            return false;
-          }
-
-          return true;
-        }
-      ))    
-      .subscribe((data) => {      
+        (action : GenericIncidentAction) =>  !action.payload 
+        || action.payload[0].id == this.incident.id)
+      ).subscribe((data) => {      
         this.incident = data.payload[0];
       });
     }

@@ -8,11 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const jobs_service_1 = require("../services/jobs-service");
+const auth = require("../../../src/middlewares/auth");
+const firebase_service_1 = require("../../services/firebase-service");
 function routes(app) {
-    app.get("/api/hourly-jobs", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        res.send(yield jobs_service_1.JobsService.execute_hourly_jobs());
+    app.get("/api/firebase/token", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield firebase_service_1.FirebaseService.get_token();
+        res.send(result);
+    }));
+    app.get("/api/firebase/current_time", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const dt = new Date();
+        res.send({
+            milliseconds: dt.getTime(),
+            date: dt
+        });
     }));
 }
 exports.routes = routes;
-//# sourceMappingURL=jobs-routes.js.map
+//# sourceMappingURL=firebase-routes.js.map

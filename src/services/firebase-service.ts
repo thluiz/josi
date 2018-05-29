@@ -2,7 +2,7 @@ import { Result } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
 
 import * as admin from 'firebase-admin';
-import { AzureTableService } from './azure-tables-service';
+import { LoggerService, ErrorOrigins } from './logger-service';
 
 let db = null;
 try {
@@ -24,37 +24,27 @@ try {
     });
 
     db = admin.firestore();
-} catch(error) {
-    logError(error);
+} catch(error) {        
+    LoggerService.error(ErrorOrigins.Firebase, error, "Initializing");
 }
     
-function logError(error) {
-    let tbl = "ERROR";
-    let tableSvc = AzureTableService.createTableService();
-    AzureTableService.createTableIfNotExists(tableSvc, tbl, (err) => {
-                
-    });
-
-    let entity = AzureTableService.buildEntity(
-        new Date().getTime().toString(), 
-        { error }, "ERROR");
-
-    AzureTableService.insertOrMergeEntity(tableSvc, tbl, entity, function (err, results) {
-        if (err) {
-            console.log(err);
-            console.log("AzureSessionStore.set: " + err);                        
-        } else {            
-            
-        }
-    });
-}
-
 export class FirebaseService {
-    
-    static emit_event(collection, event : { event_type: string, data: string | Error, time?:number }): Result {        
-        try {                   
-            if(!db) {
-                logError({ error: "DB not set!!!" });
+    static async get_token() : Promise<Result<string>> {
+        try {
+            let customToken = await admin.auth().createCustomToken(process.env.FIREBASE_UID);    
+
+            return Result.Ok(customToken);
+        } catch (error) {
+            LoggerService.error(ErrorOrigins.Firebase, error, "Getting Token");
+            return Result.Fail(ErrorCode.GenericError, error);
+        }    
+    }
+
+    static emit_event(collection, event : { type: string, data: string | Error, time?:number }): Result {        
+        try {       
+            console.log('emitting');            
+            if(!db) {                
+                LoggerService.error(ErrorOrigins.Firebase, new Error("DB not set!!!"));                
                 return;
             }
 
@@ -62,8 +52,11 @@ export class FirebaseService {
             event.time = event.time || (new Date()).getTime();
             docRef.set(event);
 
+            console.log('emitted!');            
+
             return Result.Ok();    
-        } catch (error) {
+        } catch (error) {            
+            LoggerService.error(ErrorOrigins.Firebase, error, "Emitting event");
             return Result.Fail(ErrorCode.GenericError, error);   
         }        
     }
