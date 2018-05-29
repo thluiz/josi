@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_facility_1 = require("./../facilities/database-facility");
 const sql = require("mssql");
-const security_service_1 = require("../services/security-service");
 const auth = require("../middlewares/auth");
 const people_routes = require("../../api/routes/people-routes");
 const parameters_routes = require("../../api/routes/parameters-routes");
@@ -28,19 +27,6 @@ function initialize(app, pool) {
     cards_routes.configure_routes(app, pool);
     financial_routes.configure_routes(app, pool);
     voucher_routes.configure_routes(app, pool);
-    app.get("/api/current_activities/:branch?", auth.ensureLoggedIn(), auth.ensureHasPermission(security_service_1.Permissions.Operator), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
-        try {
-            let result = yield new sql.Request(pool)
-                .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
-                .execute(`GetCurrentActivities`);
-            let response = result.recordset[0];
-            res.send(response[0].empty ? [] : response);
-        }
-        catch (error) {
-            res.status(500)
-                .json({ error: error });
-        }
-    }));
     app.get("/api/daily/:branch?/:display?/:display_modifier?", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetDailyMonitor", { "branch": request.params.branch > 0 ? request.params.branch : null }, { "display_modifier": request.params.display_modifier || 0 }, { "display": request.params.display || 0 });

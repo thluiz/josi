@@ -1,22 +1,31 @@
-import { IncidentsRepository } from './../repository/incidents-repository';
+import { IncidentsRepository } from '../repositories/incidents-repository';
 
 import * as auth from '../../src/middlewares/auth';
 import { InvitationsService } from '../services/invitations-service';
-import { DatabaseFacility } from '../facilities/database-facility';
 import { SecurityService } from '../services/security-service';
 import { IncidentsService } from '../services/incidents-service';
 
 const IR = IncidentsRepository;
 
 export function routes(app) {
+    app.get("/api/current_activities/:branch?",
+    auth.ensureLoggedIn(),        
+    async (req, res, next) => {
+        console.log('a');
+
+        let result = await IR.getCurrentActivities(req.params.branch > 0 ? req.params.branch : null);
+
+        res.send(result);        
+    });
+
     app.get("/api/incidents/history/:person/:activity_type/:page?",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {          
-        let result = await IR.getPersonIncidentsHistory( request.params.person,
-            request.params.activity_type, 
-            request.params.page > 0 ? request.params.page : 1)
+    async (req, res, next) => {          
+        let result = await IR.getPersonIncidentsHistory( req.params.person,
+            req.params.activity_type, 
+            req.params.page > 0 ? req.params.page : 1)
         
-        response.send(result);
+        res.send(result);
     });
 
     app.get("/api/incidents/:id",

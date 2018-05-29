@@ -10,6 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_facility_1 = require("../facilities/database-facility");
 class IncidentsRepository {
+    static getCurrentActivities(branch_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetCurrentActivities", { "branch_id": branch_id });
+            return result;
+        });
+    }
     static getPersonIncidentsHistory(person_id, activity_type, page = 1, pagesize = 10) {
         return __awaiter(this, void 0, void 0, function* () {
             let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetPersonIncidentHistory", { "page": page }, { "person_id": person_id }, { "activity_type": activity_type });

@@ -8,15 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const incidents_repository_1 = require("./../repository/incidents-repository");
+const incidents_repository_1 = require("../repositories/incidents-repository");
 const auth = require("../../src/middlewares/auth");
 const security_service_1 = require("../services/security-service");
 const incidents_service_1 = require("../services/incidents-service");
 const IR = incidents_repository_1.IncidentsRepository;
 function routes(app) {
-    app.get("/api/incidents/history/:person/:activity_type/:page?", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield IR.getPersonIncidentsHistory(request.params.person, request.params.activity_type, request.params.page > 0 ? request.params.page : 1);
-        response.send(result);
+    app.get("/api/current_activities/:branch?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        console.log('a');
+        let result = yield IR.getCurrentActivities(req.params.branch > 0 ? req.params.branch : null);
+        res.send(result);
+    }));
+    app.get("/api/incidents/history/:person/:activity_type/:page?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield IR.getPersonIncidentsHistory(req.params.person, req.params.activity_type, req.params.page > 0 ? req.params.page : 1);
+        res.send(result);
     }));
     app.get("/api/incidents/:id", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield IR.getIncidentDetails(request.params.id);

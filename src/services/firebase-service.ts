@@ -39,9 +39,8 @@ export class FirebaseService {
 
     @trylog()
     static emit_event(collection, event : { type: string, data: string | Error, time?:number }): Result {                
-        if(!db) {                
-            LoggerService.error(ErrorOrigins.Firebase, new Error("DB not set!!!"));                
-            return Result.Fail(ErrorCode.GenericError, new Error('Error emitting event'));
+        if(!db) {
+            return Result.Fail(ErrorCode.GenericError, new Error('DB not set- Error emitting event'));
         }
 
         var docRef = db.collection(collection).doc();

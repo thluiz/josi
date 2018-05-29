@@ -25,24 +25,7 @@ export function initialize(app, pool) {
     cards_routes.configure_routes(app, pool);
     financial_routes.configure_routes(app, pool);
     voucher_routes.configure_routes(app, pool);
-    
-    app.get("/api/current_activities/:branch?",
-        auth.ensureLoggedIn(),
-        auth.ensureHasPermission(Permissions.Operator),
-        async (request, res, next) => {
-            try {
-                let result = await new sql.Request(pool)
-                    .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
-                    .execute(`GetCurrentActivities`);
-
-                let response = result.recordset[0];
-                res.send(response[0].empty ? [] : response);
-            } catch (error) {
-                res.status(500)
-                    .json({ error: error });
-            }
-        });
-
+        
     app.get("/api/daily/:branch?/:display?/:display_modifier?",
         auth.ensureLoggedIn(),
         async (request, response, next) => {
