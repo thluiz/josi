@@ -1,4 +1,13 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -12,6 +21,7 @@ const result_1 = require("../helpers/result");
 const errors_codes_1 = require("../helpers/errors-codes");
 const admin = require("firebase-admin");
 const logger_service_1 = require("./logger-service");
+const trylog_decorator_1 = require("../decorators/trylog-decorator");
 let db = null;
 try {
     admin.initializeApp({
@@ -36,34 +46,32 @@ catch (error) {
 class FirebaseService {
     static get_token() {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                let customToken = yield admin.auth().createCustomToken(process.env.FIREBASE_UID);
-                return result_1.Result.Ok(customToken);
-            }
-            catch (error) {
-                logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.Firebase, error, "Getting Token");
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
-            }
+            let customToken = yield admin.auth().createCustomToken(process.env.FIREBASE_UID);
+            return result_1.Result.Ok(customToken);
         });
     }
     static emit_event(collection, event) {
-        try {
-            console.log('emitting');
-            if (!db) {
-                logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.Firebase, new Error("DB not set!!!"));
-                return;
-            }
-            var docRef = db.collection(collection).doc();
-            event.time = event.time || (new Date()).getTime();
-            docRef.set(event);
-            console.log('emitted!');
-            return result_1.Result.Ok();
+        if (!db) {
+            logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.Firebase, new Error("DB not set!!!"));
+            return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, new Error('Error emitting event'));
         }
-        catch (error) {
-            logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.Firebase, error, "Emitting event");
-            return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
-        }
+        var docRef = db.collection(collection).doc();
+        event.time = event.time || (new Date()).getTime();
+        docRef.set(event);
+        return result_1.Result.Ok();
     }
 }
+__decorate([
+    trylog_decorator_1.trylog(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], FirebaseService, "get_token", null);
+__decorate([
+    trylog_decorator_1.trylog(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", result_1.Result)
+], FirebaseService, "emit_event", null);
 exports.FirebaseService = FirebaseService;
 //# sourceMappingURL=firebase-service.js.map

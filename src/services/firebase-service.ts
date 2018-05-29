@@ -3,6 +3,7 @@ import { ErrorCode } from '../helpers/errors-codes';
 
 import * as admin from 'firebase-admin';
 import { LoggerService, ErrorOrigins } from './logger-service';
+import { trylog } from '../decorators/trylog-decorator';
 
 let db = null;
 try {
@@ -29,35 +30,24 @@ try {
 }
     
 export class FirebaseService {
-    static async get_token() : Promise<Result<string>> {
-        try {
-            let customToken = await admin.auth().createCustomToken(process.env.FIREBASE_UID);    
+    @trylog()
+    static async get_token() : Promise<Result<string>> {        
+        let customToken = await admin.auth().createCustomToken(process.env.FIREBASE_UID);    
 
-            return Result.Ok(customToken);
-        } catch (error) {
-            LoggerService.error(ErrorOrigins.Firebase, error, "Getting Token");
-            return Result.Fail(ErrorCode.GenericError, error);
-        }    
+        return Result.Ok(customToken);        
     }
 
-    static emit_event(collection, event : { type: string, data: string | Error, time?:number }): Result {        
-        try {       
-            console.log('emitting');            
-            if(!db) {                
-                LoggerService.error(ErrorOrigins.Firebase, new Error("DB not set!!!"));                
-                return;
-            }
+    @trylog()
+    static emit_event(collection, event : { type: string, data: string | Error, time?:number }): Result {                
+        if(!db) {                
+            LoggerService.error(ErrorOrigins.Firebase, new Error("DB not set!!!"));                
+            return Result.Fail(ErrorCode.GenericError, new Error('Error emitting event'));
+        }
 
-            var docRef = db.collection(collection).doc();
-            event.time = event.time || (new Date()).getTime();
-            docRef.set(event);
-
-            console.log('emitted!');            
-
-            return Result.Ok();    
-        } catch (error) {            
-            LoggerService.error(ErrorOrigins.Firebase, error, "Emitting event");
-            return Result.Fail(ErrorCode.GenericError, error);   
-        }        
+        var docRef = db.collection(collection).doc();
+        event.time = event.time || (new Date()).getTime();
+        docRef.set(event);
+        
+        return Result.Ok();                    
     }
 }
