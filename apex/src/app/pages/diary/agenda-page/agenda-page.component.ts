@@ -8,7 +8,8 @@ import { ParameterService } from 'app/services/parameter-service';
 import { 
   IncidentService, 
   INCIDENT_ADDED, 
-  INCIDENT_CANCELLED 
+  INCIDENT_CANCELLED, 
+  INCIDENT_RESCHEDULED
 } from 'app/services/incident-service';
 
 import { FormControl, FormsModule, ReactiveFormsModule,
@@ -101,9 +102,21 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.incidents_subscriber = this.eventManager
     .event$     
     .pipe(filter(
-      (result : Result<LightIncident[]>) => result.type == INCIDENT_ADDED
+      (result : Result<LightIncident[]>) => 
+        result.type == INCIDENT_ADDED || result.type == INCIDENT_RESCHEDULED
     ))    
-    .subscribe((data) => {            
+    .subscribe((result : Result<LightIncident[]>) => {    
+      if(result.type == INCIDENT_RESCHEDULED) {
+        const new_incident_date = new Date(result.data[1].date);
+        const date = new Date();
+
+        if(new_incident_date.getDate() != date.getDate()
+          || new_incident_date.getMonth() != date.getMonth()
+          || new_incident_date.getFullYear() != date.getFullYear()) {
+            return;
+        }
+      }        
+
       this.getAgendaData();
     });
   }
