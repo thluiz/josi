@@ -11,8 +11,6 @@ export function routes(app) {
     app.get("/api/current_activities/:branch?",
     auth.ensureLoggedIn(),        
     async (req, res, next) => {
-        console.log('a');
-
         let result = await IR.getCurrentActivities(req.params.branch > 0 ? req.params.branch : null);
 
         res.send(result);        

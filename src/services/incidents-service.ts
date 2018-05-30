@@ -4,7 +4,7 @@ import { ErrorCode } from '../helpers/errors-codes';
 import { FirebaseService } from './firebase-service';
 import { LoggerService, ErrorOrigins } from './logger-service';
 import { trylog } from '../decorators/trylog-decorator';
-import { firebaseEmitter, firebaseMultipleEmitter } from '../decorators/firebase-emitter-decorator';
+import { firebaseEmitter } from '../decorators/firebase-emitter-decorator';
 
 export const EVENTS_COLLECTION = "incident-events";
 export const INCIDENT_ADDED = "INCIDENT_ADDED";
@@ -18,9 +18,11 @@ export const INCIDENT_RESCHEDULED = "INCIDENT_RESCHEDULED";
 export class IncidentsService {
     
     @trylog()
-    @firebaseEmitter(EVENTS_COLLECTION, INCIDENT_STARTED)
+    @firebaseEmitter(EVENTS_COLLECTION)
     static async start_incident(incident, responsible_id) : Promise<Result> {        
-        let execution = await DatabaseFacility.ExecuteJsonSP("StartIncident",
+        let execution = await DatabaseFacility
+        .ExecuteTypedJsonSP(INCIDENT_STARTED, 
+            "StartIncident",
             {"incident" : incident.id},
             {"responsible_id": responsible_id }
         );    
@@ -29,9 +31,11 @@ export class IncidentsService {
     }
 
     @trylog()
-    @firebaseEmitter(EVENTS_COLLECTION, INCIDENT_STARTED)
+    @firebaseEmitter(EVENTS_COLLECTION)
     static async reopen_incident(incident, responsible_id) : Promise<Result> {        
-        let execution = await DatabaseFacility.ExecuteJsonSP("ReopenIncident",
+        let execution = await DatabaseFacility.ExecuteTypedJsonSP(
+            INCIDENT_STARTED,
+            "ReopenIncident",
             {"incident" : incident.id},
             {"responsible_id": responsible_id }
         );    
@@ -40,9 +44,12 @@ export class IncidentsService {
     }
 
     @trylog()
-    @firebaseEmitter(EVENTS_COLLECTION, INCIDENT_CHANGED)
+    @firebaseEmitter(EVENTS_COLLECTION)
     static async cancel_start_incident(incident, responsible_id) : Promise<Result> {        
-        let execution = await DatabaseFacility.ExecuteJsonSP("CancelIncidentStart",
+        let execution = await DatabaseFacility
+        .ExecuteTypedJsonSP(
+            INCIDENT_CHANGED,
+            "CancelIncidentStart",
             {"incident" : incident.id},
             {"responsible_id": responsible_id }
         );    
@@ -51,9 +58,11 @@ export class IncidentsService {
     }
     
     @trylog()
-    @firebaseEmitter(EVENTS_COLLECTION, INCIDENT_ENDED)
+    @firebaseEmitter(EVENTS_COLLECTION)
     static async close_incident(incident, responsible_id) : Promise<Result> {        
-        let execution = await DatabaseFacility.ExecuteJsonSP("CloseIncident",
+        let execution = await DatabaseFacility.ExecuteTypedJsonSP(
+            INCIDENT_ENDED,
+            "CloseIncident",
             {"incident" : incident.id},
             {"close_description" :  incident.closing_text || ""},
             {"responsible_id": responsible_id }
@@ -63,9 +72,11 @@ export class IncidentsService {
     }
 
     @trylog()
-    @firebaseEmitter(EVENTS_COLLECTION, INCIDENT_CANCELLED)
+    @firebaseEmitter(EVENTS_COLLECTION)
     static async remove_incident(incident, responsible_id) : Promise<Result> {                        
-        let execution = await DatabaseFacility.ExecuteJsonSP("RemoveIncident",
+        let execution = await DatabaseFacility.ExecuteTypedJsonSP(
+            INCIDENT_CANCELLED,
+            "RemoveIncident",
             {"incident" : incident.id},
             {"responsible_id": responsible_id }
         );    
@@ -74,14 +85,16 @@ export class IncidentsService {
     }
 
     @trylog() 
-    @firebaseEmitter(EVENTS_COLLECTION, INCIDENT_ADDED)   
+    @firebaseEmitter(EVENTS_COLLECTION)   
     static async register_incident(incident, responsible_id) : Promise<Result> {
         let date = `${incident.date.year}-${incident.date.month}-${incident.date.day}`;
         if(incident.time) {
             date += ` ${incident.time.hour}:${incident.time.minute}`;
         }        
 
-        let execution = await DatabaseFacility.ExecuteJsonSP<any[]>(
+        let execution = await DatabaseFacility
+        .ExecuteTypedJsonSP<any[]>(
+            INCIDENT_ADDED,
             "RegisterNewIncident",
             {"description" : incident.description},
             {"responsible_id": responsible_id },
@@ -100,9 +113,11 @@ export class IncidentsService {
     }
 
     @trylog()
-    @firebaseEmitter(EVENTS_COLLECTION, INCIDENT_RESCHEDULED)
+    @firebaseEmitter(EVENTS_COLLECTION)
     static async reschedule_incident(incident, new_incident, contact, responsible_id) : Promise<Result> {        
-        let execution = await DatabaseFacility.ExecuteJsonSP("RescheduleIncident",
+        let execution = await DatabaseFacility.ExecuteTypedJsonSP(
+            INCIDENT_RESCHEDULED,
+            "RescheduleIncident",
             {"incident" : incident.id},
             {"contact" :  contact},
             {"new_date" : new_incident.date + ' ' + new_incident.start_hour },
@@ -113,9 +128,11 @@ export class IncidentsService {
     }
     
     @trylog()
-    @firebaseEmitter(EVENTS_COLLECTION, INCIDENT_TREATED)
+    @firebaseEmitter(EVENTS_COLLECTION)
     static async register_contact_for_incident(incident, contact, responsible_id) : Promise<Result> {        
-        let execution = await DatabaseFacility.ExecuteJsonSP("RegisterContactForIncident",
+        let execution = await DatabaseFacility.ExecuteTypedJsonSP(
+            INCIDENT_TREATED,
+            "RegisterContactForIncident",
             {"incident" : incident.id},
             {"contact" :  contact},                
             {"responsible_id": responsible_id }

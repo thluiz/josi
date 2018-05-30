@@ -47,7 +47,7 @@ class FirebaseService {
     static get_token() {
         return __awaiter(this, void 0, void 0, function* () {
             let customToken = yield admin.auth().createCustomToken(process.env.FIREBASE_UID);
-            return result_1.Result.Ok(customToken);
+            return result_1.Result.GeneralOk(customToken);
         });
     }
     static emit_event(collection, event) {
@@ -56,8 +56,9 @@ class FirebaseService {
         }
         var docRef = db.collection(collection).doc();
         event.time = event.time || (new Date()).getTime();
+        event.data = JSON.stringify(event.data);
         docRef.set(event);
-        return result_1.Result.Ok();
+        return result_1.Result.GeneralOk();
     }
 }
 __decorate([

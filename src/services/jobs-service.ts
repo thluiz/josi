@@ -29,7 +29,7 @@ export class JobsService {
         let err = results.find(r => !r.success);
         if(err) return err;
 
-        return Result.Ok();       
+        return Result.GeneralOk();       
     }
 
     static async update_voucher_site(): Promise<Result<AxiosResponse>> {
@@ -44,7 +44,7 @@ export class JobsService {
             if(result_invites.status != 200)                    
                 return Result.Fail(ErrorCode.ExternalRequestError, new Error(result_invites.statusText), null);
 
-            return Result.Ok();
+            return Result.GeneralOk();
         } catch (error) {            
             return Result.Fail(ErrorCode.GenericError, error)
         }

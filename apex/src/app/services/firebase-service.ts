@@ -1,3 +1,5 @@
+import { isArray } from 'util';
+import { ApplicationEventService } from 'app/services/application-event-service';
 import { Observable } from 'rxjs/Rx';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -16,7 +18,7 @@ export class FirebaseService {
 
     constructor(private afs: AngularFirestore,
       private afsec: AngularFireAuth,
-      private incidentService: IncidentService,
+      private eventManager: ApplicationEventService,      
       private parameterService: ParameterService,
       private http: HttpClient
     ) {
@@ -25,11 +27,23 @@ export class FirebaseService {
         let sign_in = await afsec.auth.signInWithCustomToken(token);
 
         this.listener_to_collection(serverTime.milliseconds, 
-            'incident-events', (dt) => { 
-              this.incidentService.emit_event(dt);
+            'incident-events', (dt) => {               
+              
+              if(!isArray(dt) || dt.length <= 0) {
+                return;
+              }
+
+              let result: Result = null;
+              try {
+                result = JSON.parse(dt[0].data);  
+              } catch (error) {
+                result = Result.Fail(error);
+              }
+              (result as any).origin = "FIREBASE";
+              this.eventManager.emit(result);
             }
-        );
-        
+        );        
+
       });      
     }
 

@@ -17,7 +17,7 @@ export class InvitationsService {
             invite.relationship_type = await qr.manager.findOne(EnumRelationshipType, {id: relationship_type});
             await qr.manager.save(invite);
 
-            return Result.Ok();
+            return Result.GeneralOk();
         });                       
     }
 }

@@ -1,15 +1,22 @@
 import { ErrorCode } from "./errors-codes";
+import * as uuid from "uuid/v4";
 
 export class Result<T = any> {
-    public static Ok<T>(data?: T): Result<T> {
-        return new Result<T>(true, data);
+    public id : string;
+    
+    public static GeneralOk<T>(data?: T): Result<T> {
+        return new Result<T>(true, "GENERIC_ACTION", data);
+    }
+
+    public static Ok<T>(type:string, data?: T): Result<T> {
+        return new Result<T>(true, type, data);
     }
 
     public static Fail<T>(code: ErrorCode, error: Error, message?: string, data?: T): Result<T> {
-        return new Result<T>(false, data, error, message);
+        return new Result<T>(false, 'Fail', data, error, message);
     }
 
-    private constructor(public success: boolean, public data: T|Error, public error?: Error, public message?: string) {
-        
+    private constructor(public success: boolean, public type:string, public data: T|Error, public error?: Error, public message?: string) {        
+        this.id = uuid();
     }
 }

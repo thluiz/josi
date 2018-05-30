@@ -1,3 +1,5 @@
+import { LightIncident } from 'app/shared/models/incident-model';
+import { ApplicationEventService } from 'app/services/application-event-service';
 import { SecurityService } from 'app/services/security-service';
 import { Component, Input, ViewChild, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
 
@@ -5,10 +7,10 @@ import { PersonService, DailyMonitorDisplayType } from 'app/services/person-serv
 import { ParameterService } from 'app/services/parameter-service';
 import { 
   IncidentService, 
-  IncidentAction, 
   INCIDENT_ADDED, 
   INCIDENT_CANCELLED 
 } from 'app/services/incident-service';
+
 import { FormControl, FormsModule, ReactiveFormsModule,
         FormGroup, Validators, NgForm } from '@angular/forms';
 
@@ -24,13 +26,10 @@ import { NgbModal,
   NgbDateParserFormatter
 } from '@ng-bootstrap/ng-bootstrap';
 
-import { Subscription ,  Observable } from 'rxjs';
+import { Subscription,  Observable } from 'rxjs';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 
-
-
-
-import { debounceTime ,  delay, filter } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { CurrentActivitiesComponent } from 'app/shared/components/current-activities/current-activities.component';
 import { Result } from 'app/shared/models/result';
 import { isArray } from 'util';
@@ -67,6 +66,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
               private parameterService: ParameterService,
               private modalService: NgbModal,
               private datePickerConfig: NgbDatepickerConfig,
+              private eventManager: ApplicationEventService,
               private securityService: SecurityService) {
 
     datePickerConfig.firstDayOfWeek = 7
@@ -98,18 +98,12 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.getAgendaData();
     });
 
-    this.incidents_subscriber = this.incidentService
-    .incidentsActions$    
+    this.incidents_subscriber = this.eventManager
+    .event$     
     .pipe(filter(
-      (action : IncidentAction) => { 
-        if(action.type != INCIDENT_ADDED && action.type != INCIDENT_CANCELLED) {
-          return false;
-        }
-
-        return true;
-      }
+      (result : Result<LightIncident[]>) => result.type == INCIDENT_ADDED
     ))    
-    .subscribe((data) => {      
+    .subscribe((data) => {            
       this.getAgendaData();
     });
   }
@@ -124,11 +118,13 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getAgendaData();
   }
 
-  branchSelected(id) {
+  branchSelected(id, on_start = false) {
     this.current_branch = id;
     this.show_change_branch = false;
 
-    this.current_activities.filter_activities(this.current_branch);
+    if(!on_start) {
+      this.current_activities.filter_activities(this.current_branch);
+    }
 
     if(this.current_branch == 0) {
       this.current_branch_name = "Todos os Núcleos";
@@ -153,7 +149,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
       (result : Result<any>) => {
         this.agenda = isArray(result.data) ? result.data : [];
         
-        this.branchSelected(this.current_branch);
+        this.branchSelected(this.current_branch, true);
       }
     );
   }

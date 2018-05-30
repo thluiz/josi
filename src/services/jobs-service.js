@@ -33,7 +33,7 @@ class JobsService {
             let err = results.find(r => !r.success);
             if (err)
                 return err;
-            return result_1.Result.Ok();
+            return result_1.Result.GeneralOk();
         });
     }
     static update_voucher_site() {
@@ -45,7 +45,7 @@ class JobsService {
                 let result_invites = yield axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_INVITES_URL);
                 if (result_invites.status != 200)
                     return result_1.Result.Fail(errors_codes_1.ErrorCode.ExternalRequestError, new Error(result_invites.statusText), null);
-                return result_1.Result.Ok();
+                return result_1.Result.GeneralOk();
             }
             catch (error) {
                 return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);

@@ -37,5 +37,6 @@ export class IncidentsRepository{
         );       
 
         return result;        
+                
     }
 }

@@ -1,6 +1,6 @@
 import { AzureTableService } from './azure-tables-service';
 
-const LOG_TABLE = "Logs";
+const LOG_TABLE = "ServerLogs";
 const ERROR_TABLE = "Errors";
 
 export enum LogLevel {
@@ -41,7 +41,7 @@ export class LoggerService {
             data, level.toString());
     
         AzureTableService.insertOrMergeEntity(this.get_table_service(level == LogLevel.Info ? LOG_TABLE : ERROR_TABLE), 
-            origin.toString(), 
+            level == LogLevel.Info ? LOG_TABLE : ERROR_TABLE, 
             entity, (err, results) => {
             if (err) {
                 console.log(err);
@@ -50,12 +50,13 @@ export class LoggerService {
         });
     }
 
-    private static get_table_service(tbl) {   
+    private static get_table_service(tbl) {           
         if (this.tableService == null) {
             let tableSvc = AzureTableService.createTableService();
+
             AzureTableService.createTableIfNotExists(tableSvc, tbl, (err) => {
-                        
-            });
+                
+            });    
 
             this.tableService = tableSvc;
         }

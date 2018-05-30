@@ -27,7 +27,7 @@ class RelationshipService {
                     .where(`(pr.person_id = :id or pr.person2_id = :id) ${exclude_indications}`, { id: person_id })
                     .getMany();
                 console.log(entities);
-                return result_1.Result.Ok(entities);
+                return result_1.Result.GeneralOk(entities);
             }
             catch (error) {
                 return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);

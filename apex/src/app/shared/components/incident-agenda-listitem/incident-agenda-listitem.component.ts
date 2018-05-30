@@ -1,11 +1,14 @@
-import { GenericIncidentAction } from './../../../services/incident-service';
+import { LightIncident } from './../../models/incident-model';
+import { ApplicationEventService } from 'app/services/application-event-service';
+
 import { OnInit, OnDestroy } from '@angular/core';
-import { IncidentService, IncidentAction } from 'app/services/incident-service';
+import { IncidentService, INCIDENT_ACTION_PREFIX } from 'app/services/incident-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'incident-agenda-listitem',
@@ -27,18 +30,21 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
     private incidents_subscriber : Subscription;
 
     constructor(private incidentService: IncidentService,
+              private eventManager: ApplicationEventService,
               private modalService: ModalService) {
             
     }  
 
     ngOnInit() {  
-      this.incidents_subscriber = this.incidentService
-      .incidentsActions$    
-      .pipe(filter(
-        (action : GenericIncidentAction) =>  !action.payload 
-        || action.payload[0].id == this.incident.id)
-      ).subscribe((data) => {      
-        this.incident = data.payload[0];
+      this.incidents_subscriber = this.eventManager
+      .event$
+      .pipe(
+        filter((result : Result<LightIncident[]>) =>  
+        result.data && result.data.length > 0
+        && result.data[0].id == this.incident.id
+        && result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1)
+      ).subscribe((result) => {      
+        this.incident = result.data[0];
       });
     }
   

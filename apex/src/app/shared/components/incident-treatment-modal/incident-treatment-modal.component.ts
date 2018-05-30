@@ -1,3 +1,4 @@
+import { ApplicationEventService } from 'app/services/application-event-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 import { Observable ,  Subscription } from 'rxjs';
 import { Component, Input, OnInit, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
@@ -7,8 +8,11 @@ import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from '
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { CardService } from 'app/services/card-service';
-import { IncidentService } from 'app/services/incident-service';
+import { IncidentService, INCIDENT_ACTION_PREFIX } from 'app/services/incident-service';
 import { PersonService } from 'app/services/person-service';
+import { filter } from 'rxjs/operators';
+import { Result } from 'app/shared/models/result';
+import { LightIncident } from 'app/shared/models/incident-model';
 
 
 @Component({
@@ -25,21 +29,37 @@ export class IncidentTreatmentModalComponent implements OnInit {
 
   @ViewChild('content') incident_treatment_modal: ElementRef;
   
+  private incidents_subscriber : Subscription;
+
   constructor(private datePickerConfig: NgbDatepickerConfig,     
     private incidentService: IncidentService, 
     private ngbModalService: NgbModal,
     private modalService: ModalService,
     private personService: PersonService,
+    private eventManager: ApplicationEventService,
     private cardService: CardService) {
    
       datePickerConfig.firstDayOfWeek = 7
   }
 
   ngOnInit() {
-
+    this.incidents_subscriber = this.eventManager
+    .event$
+    .pipe(
+      filter((result : Result<LightIncident[]>) =>  
+      result.data && result.data.length > 0
+      && this.current_incident
+      && result.data[0].id == this.current_incident.id
+      && result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1)
+    ).subscribe((result) => {      
+      this.current_incident = result.data[0];
+    });
   }
 
   ngOnDestroy() {    
+    if(this.incidents_subscriber) {
+      this.incidents_subscriber.unsubscribe();
+    }
   }
 
   open(incident) {        
@@ -113,24 +133,16 @@ export class IncidentTreatmentModalComponent implements OnInit {
       return;
     }
 
-    incident.closed = true;        
-
     this.incidentService.close_incident(incident)
-    .toPromise()
-    .catch((reason) => {      
-      console.log(reason);      
-    });      
-
-    if(close_action) {
-      close_action();
-    }
+    .subscribe(data => {
+      if(close_action) {
+        close_action();
+      }
+    });          
   }
 
   remove_incident(incident) {
-    this.incidentService.remove_incident(incident)
-    .toPromise().catch((reason) => {
-      console.log(reason);
-    });
+    this.incidentService.remove_incident(incident).subscribe();
   }
 
   reschedule_incident(incident) {
@@ -151,9 +163,7 @@ export class IncidentTreatmentModalComponent implements OnInit {
     
     this.incidentService.reschedule_incident(incident, new_incident, { 
       contact_text: incident.contact_text 
-    }).toPromise().catch((reason) => {
-      console.log(reason);
-    }); 
+    }).subscribe(); 
   }
   
   validade_treatment_contact_text(incident) {
@@ -170,32 +180,20 @@ export class IncidentTreatmentModalComponent implements OnInit {
 
   start_incident(incident, close_modal_action) {
     this.incidentService.start_incident(incident)
-      .toPromise()
-      .then((value) => close_modal_action())
-      .catch((reason) => {
-        console.log(reason);
-      }); 
+      .subscribe((value) => close_modal_action()); 
   }
 
   reopen_incident(incident, close_modal_action) {
     this.incidentService.reopen_incident(incident)
-      .toPromise()
-      .then((value) => close_modal_action())
-      .catch((reason) => {
-        console.log(reason);
-      }); 
+      .subscribe((value) => close_modal_action()); 
   }  
 
   cancel_start_incident(incident, close_modal_action) {
     this.incidentService.cancel_start_incident(incident)
-      .toPromise()
-      .then((value) => { 
-        close_modal_action()
-        incident.cancelling_start = false;
-      })
-      .catch((reason) => {
-        console.log(reason);
-      }); 
+    .subscribe((value) => { 
+      close_modal_action()
+      incident.cancelling_start = false;
+    }); 
   }
 
   open_card_detail(card_id) {
@@ -211,9 +209,7 @@ export class IncidentTreatmentModalComponent implements OnInit {
 
     this.incidentService.register_contact_for_incident(incident, { 
       contact_text: incident.contact_text 
-    }).toPromise().then((value) => close_modal_action()).catch((reason) => {
-      console.log(reason);
-    });            
+    }).subscribe((data) => close_modal_action());            
   }  
 
   add_comment() {    

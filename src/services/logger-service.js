@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const azure_tables_service_1 = require("./azure-tables-service");
-const LOG_TABLE = "Logs";
+const LOG_TABLE = "ServerLogs";
 const ERROR_TABLE = "Errors";
 var LogLevel;
 (function (LogLevel) {
@@ -31,7 +31,7 @@ class LoggerService {
             data.message = message;
         }
         let entity = azure_tables_service_1.AzureTableService.buildEntity(new Date().getTime().toString(), data, level.toString());
-        azure_tables_service_1.AzureTableService.insertOrMergeEntity(this.get_table_service(level == LogLevel.Info ? LOG_TABLE : ERROR_TABLE), origin.toString(), entity, (err, results) => {
+        azure_tables_service_1.AzureTableService.insertOrMergeEntity(this.get_table_service(level == LogLevel.Info ? LOG_TABLE : ERROR_TABLE), level == LogLevel.Info ? LOG_TABLE : ERROR_TABLE, entity, (err, results) => {
             if (err) {
                 console.log(err);
                 console.log("AzureSessionStore.set: " + err);

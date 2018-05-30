@@ -1,3 +1,4 @@
+import { ApplicationEventService } from 'app/services/application-event-service';
 import { filter } from 'rxjs/operators';
 import { LateralSummaryComponent } from './../../../shared/components/lateral-summary/lateral-summary.component';
 import { Component, ViewChild, QueryList, ViewChildren } from '@angular/core';
@@ -73,6 +74,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
               private incidentService: IncidentService, 
               private securityService: SecurityService,
               private modalService: NgbModal, 
+              private eventManager: ApplicationEventService,
               private datePickerConfig: NgbDatepickerConfig,
               private route: ActivatedRoute,
               private router: Router) {
@@ -86,16 +88,15 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     }        
   }
 
-  ngOnInit() {               
+  ngOnInit() {                
     this.securityService.getCurrentUserData().subscribe((user) => {
       this.current_branch = user.default_branch_id || 0;      
       this.getMonitorData();  
     });
 
-    this.incidents_subscriber = this.incidentService.incidentsActions$    
-    //.filter((data) => data.type == INCIDENT_ADDED)    
-    .subscribe((data) => {
-      console.log(data);
+    this.incidents_subscriber = this.eventManager.event$    
+    .filter((data) => data.type == INCIDENT_ADDED)    
+    .subscribe((data) => {      
       this.getMonitorData();
     });
   }

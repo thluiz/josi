@@ -31,31 +31,33 @@ exports.INCIDENT_RESCHEDULED = "INCIDENT_RESCHEDULED";
 class IncidentsService {
     static start_incident(incident, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let execution = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("StartIncident", { "incident": incident.id }, { "responsible_id": responsible_id });
+            let execution = yield database_facility_1.DatabaseFacility
+                .ExecuteTypedJsonSP(exports.INCIDENT_STARTED, "StartIncident", { "incident": incident.id }, { "responsible_id": responsible_id });
             return execution;
         });
     }
     static reopen_incident(incident, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let execution = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("ReopenIncident", { "incident": incident.id }, { "responsible_id": responsible_id });
+            let execution = yield database_facility_1.DatabaseFacility.ExecuteTypedJsonSP(exports.INCIDENT_STARTED, "ReopenIncident", { "incident": incident.id }, { "responsible_id": responsible_id });
             return execution;
         });
     }
     static cancel_start_incident(incident, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let execution = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("CancelIncidentStart", { "incident": incident.id }, { "responsible_id": responsible_id });
+            let execution = yield database_facility_1.DatabaseFacility
+                .ExecuteTypedJsonSP(exports.INCIDENT_CHANGED, "CancelIncidentStart", { "incident": incident.id }, { "responsible_id": responsible_id });
             return execution;
         });
     }
     static close_incident(incident, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let execution = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("CloseIncident", { "incident": incident.id }, { "close_description": incident.closing_text || "" }, { "responsible_id": responsible_id });
+            let execution = yield database_facility_1.DatabaseFacility.ExecuteTypedJsonSP(exports.INCIDENT_ENDED, "CloseIncident", { "incident": incident.id }, { "close_description": incident.closing_text || "" }, { "responsible_id": responsible_id });
             return execution;
         });
     }
     static remove_incident(incident, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let execution = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("RemoveIncident", { "incident": incident.id }, { "responsible_id": responsible_id });
+            let execution = yield database_facility_1.DatabaseFacility.ExecuteTypedJsonSP(exports.INCIDENT_CANCELLED, "RemoveIncident", { "incident": incident.id }, { "responsible_id": responsible_id });
             return execution;
         });
     }
@@ -65,75 +67,76 @@ class IncidentsService {
             if (incident.time) {
                 date += ` ${incident.time.hour}:${incident.time.minute}`;
             }
-            let execution = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("RegisterNewIncident", { "description": incident.description }, { "responsible_id": responsible_id }, { "people": incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(",") }, { "date": date }, { "type": incident.type.id }, { "branch": incident.branch_id }, { "value": incident.value }, { "start_activity": incident.start_activity ? 1 : 0 }, { "register_closed": incident.close_activity == 1 ? 1 : 0 }, { "register_treated": incident.close_activity == 2 ? 1 : 0 }, { "new_people": incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(",") });
+            let execution = yield database_facility_1.DatabaseFacility
+                .ExecuteTypedJsonSP(exports.INCIDENT_ADDED, "RegisterNewIncident", { "description": incident.description }, { "responsible_id": responsible_id }, { "people": incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(",") }, { "date": date }, { "type": incident.type.id }, { "branch": incident.branch_id }, { "value": incident.value }, { "start_activity": incident.start_activity ? 1 : 0 }, { "register_closed": incident.close_activity == 1 ? 1 : 0 }, { "register_treated": incident.close_activity == 2 ? 1 : 0 }, { "new_people": incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(",") });
             return execution;
         });
     }
     static reschedule_incident(incident, new_incident, contact, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let execution = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("RescheduleIncident", { "incident": incident.id }, { "contact": contact }, { "new_date": new_incident.date + ' ' + new_incident.start_hour }, { "responsible_id": responsible_id });
+            let execution = yield database_facility_1.DatabaseFacility.ExecuteTypedJsonSP(exports.INCIDENT_RESCHEDULED, "RescheduleIncident", { "incident": incident.id }, { "contact": contact }, { "new_date": new_incident.date + ' ' + new_incident.start_hour }, { "responsible_id": responsible_id });
             return execution;
         });
     }
     static register_contact_for_incident(incident, contact, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let execution = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("RegisterContactForIncident", { "incident": incident.id }, { "contact": contact }, { "responsible_id": responsible_id });
+            let execution = yield database_facility_1.DatabaseFacility.ExecuteTypedJsonSP(exports.INCIDENT_TREATED, "RegisterContactForIncident", { "incident": incident.id }, { "contact": contact }, { "responsible_id": responsible_id });
             return execution;
         });
     }
 }
 __decorate([
     trylog_decorator_1.trylog(),
-    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION, exports.INCIDENT_STARTED),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService, "start_incident", null);
 __decorate([
     trylog_decorator_1.trylog(),
-    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION, exports.INCIDENT_STARTED),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService, "reopen_incident", null);
 __decorate([
     trylog_decorator_1.trylog(),
-    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION, exports.INCIDENT_CHANGED),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService, "cancel_start_incident", null);
 __decorate([
     trylog_decorator_1.trylog(),
-    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION, exports.INCIDENT_ENDED),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService, "close_incident", null);
 __decorate([
     trylog_decorator_1.trylog(),
-    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION, exports.INCIDENT_CANCELLED),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService, "remove_incident", null);
 __decorate([
     trylog_decorator_1.trylog(),
-    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION, exports.INCIDENT_ADDED),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService, "register_incident", null);
 __decorate([
     trylog_decorator_1.trylog(),
-    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION, exports.INCIDENT_RESCHEDULED),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService, "reschedule_incident", null);
 __decorate([
     trylog_decorator_1.trylog(),
-    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION, exports.INCIDENT_TREATED),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)

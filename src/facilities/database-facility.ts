@@ -46,7 +46,7 @@ export class DatabaseFacility {
 
         if(err) return Result.Fail(ErrorCode.GenericError, err);                
 
-        return Result.Ok();
+        return Result.GeneralOk();
     } 
 
     static async ExecuteJsonSQL<T>(sql: string, ...parameters: any[]) : Promise<Result<T>> {
@@ -55,25 +55,25 @@ export class DatabaseFacility {
         
             const result = await connection.query(sql, parameters);
                               
-            return Result.Ok(JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]) as T);            
+            return Result.GeneralOk(JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]) as T);            
         } catch (error) {
             if(error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
-                return Result.Ok({} as T);                
+                return Result.GeneralOk({} as T);                
             }
 
             return Result.Fail(ErrorCode.GenericError, error);
         }
     }
 
-    static async ExecuteJsonStringSP<T>(procedure: string, ...parameters: any[]) : Promise<Result<string>> {
-        return this.ExecuteSP<string>(procedure, false, parameters);
+    static async ExecuteTypedJsonSP<T>(result_type: string, procedure: string, ...parameters: any[]) : Promise<Result<T>> {
+        return this.ExecuteSP<T>(result_type, procedure, true, parameters);
     }
 
     static async ExecuteJsonSP<T>(procedure: string, ...parameters: any[]) : Promise<Result<T>> {
-        return this.ExecuteSP<T>(procedure, true, parameters);
+        return this.ExecuteSP<T>("GENERIC_ACTION", procedure, true, parameters);
     }
 
-    private static async ExecuteSP<T>(procedure: string, parseResults: boolean, parameters?: any[]) : Promise<Result<T>> {
+    private static async ExecuteSP<T>(result_type: string, procedure: string, parseResults: boolean, parameters?: any[]) : Promise<Result<T>> {
         try {
             let connection = await this.getConnection();
             let {query, values} = this.buildSPParameters(procedure, parameters);
@@ -82,10 +82,10 @@ export class DatabaseFacility {
             const data = result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"];                   
             
             return parseResults ?  
-                    Result.Ok(JSON.parse(data)) : Result.Ok(data);            
+                    Result.Ok(result_type, JSON.parse(data)) : Result.Ok(data);            
         } catch (error) {
             if(error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
-                return Result.Ok({} as T);                
+                return Result.Ok(result_type, {} as T);                
             }
 
             return Result.Fail(ErrorCode.GenericError, error);

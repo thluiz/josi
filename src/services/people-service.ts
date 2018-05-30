@@ -38,7 +38,7 @@ export class PeopleService {
 
             //TODO: Validar tamanho da imagem
     
-            return Result.Ok(person);            
+            return Result.GeneralOk(person);            
         } catch (error) {
             //TODO: Remove file from blob
             return Result.Fail(ErrorCode.GenericError, error);            

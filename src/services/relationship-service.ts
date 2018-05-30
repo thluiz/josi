@@ -22,7 +22,7 @@ export class RelationshipService {
 
             console.log(entities);
 
-            return Result.Ok(entities);
+            return Result.GeneralOk(entities);
         } catch (error) {
             return Result.Fail(ErrorCode.GenericError, error);   
         }

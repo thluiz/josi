@@ -202,10 +202,7 @@ export class PersonService {
         }).pipe(tap((data) => {          
           this.person_actions.next({ 
             type: PersonActions.ADD,
-            result: {
-              success: true,
-              data
-            },
+            result: Result.Ok(data),
             data
           });
         }));
@@ -318,10 +315,7 @@ export class PersonService {
     return this.http.post(this.dataUrl + `/person_address`, { address }).pipe(tap((data) => {          
       this.person_actions.next({ 
         type: PersonActions.ADD_ADDRESS,
-        result: {
-          success: true,
-          data
-        },
+        result: Result.Ok(data),
         data
       });
     }));
@@ -331,10 +325,7 @@ export class PersonService {
     return this.http.post(this.dataUrl + `/person_address/archive`, { person_address }).pipe(tap((data) => {          
       this.person_actions.next({ 
         type: PersonActions.ARCHIVE_ADDRESS,
-        result: {
-          success: true,
-          data
-        },
+        result: Result.Ok(data),
         data
       });
     }));

@@ -15,7 +15,6 @@ const incidents_service_1 = require("../services/incidents-service");
 const IR = incidents_repository_1.IncidentsRepository;
 function routes(app) {
     app.get("/api/current_activities/:branch?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        console.log('a');
         let result = yield IR.getCurrentActivities(req.params.branch > 0 ? req.params.branch : null);
         res.send(result);
     }));

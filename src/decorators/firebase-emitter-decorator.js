@@ -9,16 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const firebase_service_1 = require("../services/firebase-service");
-function firebaseEmitter(collection, type) {
+function firebaseEmitter(collection) {
     return function (target, method, descriptor) {
         var originalMethod = descriptor.value;
         descriptor.value = function (...args) {
             return __awaiter(this, void 0, void 0, function* () {
                 let result = yield originalMethod.apply(this, args);
-                console.log(result);
                 if (result.success) {
                     firebase_service_1.FirebaseService.emit_event(collection, {
-                        type, data: JSON.stringify(result.data)
+                        id: result.id,
+                        data: result
                     });
                 }
                 return result;
@@ -28,24 +28,4 @@ function firebaseEmitter(collection, type) {
     };
 }
 exports.firebaseEmitter = firebaseEmitter;
-function firebaseMultipleEmitter(collection, type) {
-    return function (target, method, descriptor) {
-        var originalMethod = descriptor.value;
-        descriptor.value = function (...args) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let result = yield originalMethod.apply(this, args);
-                if (result.success) {
-                    result.data.forEach(element => {
-                        firebase_service_1.FirebaseService.emit_event(collection, {
-                            type, data: JSON.stringify(result.data)
-                        });
-                    });
-                }
-                return result;
-            });
-        };
-        return descriptor;
-    };
-}
-exports.firebaseMultipleEmitter = firebaseMultipleEmitter;
 //# sourceMappingURL=firebase-emitter-decorator.js.map

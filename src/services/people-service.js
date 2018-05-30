@@ -51,7 +51,7 @@ class PeopleService {
                 person.avatar_img = blob_image;
                 yield PR.save(person);
                 //TODO: Validar tamanho da imagem
-                return result_1.Result.Ok(person);
+                return result_1.Result.GeneralOk(person);
             }
             catch (error) {
                 //TODO: Remove file from blob

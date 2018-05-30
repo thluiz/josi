@@ -34,19 +34,20 @@ export class FirebaseService {
     static async get_token() : Promise<Result<string>> {        
         let customToken = await admin.auth().createCustomToken(process.env.FIREBASE_UID);    
 
-        return Result.Ok(customToken);        
+        return Result.GeneralOk(customToken);        
     }
 
     @trylog()
-    static emit_event(collection, event : { type: string, data: string | Error, time?:number }): Result {                
+    static emit_event<T>(collection, event : { id: string, data: Result<T> | Error, time?:number }): Result {                
         if(!db) {
             return Result.Fail(ErrorCode.GenericError, new Error('DB not set- Error emitting event'));
         }
-
+        
         var docRef = db.collection(collection).doc();
         event.time = event.time || (new Date()).getTime();
-        docRef.set(event);
-        
-        return Result.Ok();                    
+        event.data = JSON.stringify(event.data) as any;
+        docRef.set(event);            
+
+        return Result.GeneralOk();                    
     }
 }
