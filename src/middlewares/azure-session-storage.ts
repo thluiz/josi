@@ -73,8 +73,10 @@ p.set = function (sid, session, cb) {
             console.log("AzureSessionStore.set: " + err);            
             cb(err.toString(), null);            
         } else {            
+            
             cb(null, entity);
-        }
+
+        } 
     });
 }
 
