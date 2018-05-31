@@ -56,6 +56,7 @@ p.set = function (sid, session, cb) {
         || !session.cookie
         || !session.cookie.passport
         || !session.cookie.passport.user) {
+        cb();
         return;
     }
     let entity = azure_tables_service_1.AzureTableService.buildEntity(sid, session);

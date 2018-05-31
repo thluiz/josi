@@ -70,7 +70,7 @@ p.set = function (sid, session, cb) {
         || !session.cookie 
         || !session.cookie.passport 
         || !session.cookie.passport.user) {
-
+        cb();
         return;
     }
 
