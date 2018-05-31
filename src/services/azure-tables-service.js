@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const azure = require("azure-storage");
 class AzureTableService {
@@ -17,8 +25,8 @@ class AzureTableService {
         return {
             PartitionKey: entGen.String(partition),
             RowKey: entGen.String(id),
-            CreatedOn: Math.floor(Date.now() / 1000),
-            Test: process.env.LOAD_ENV === 'true',
+            CreatedOn: entGen.Int64(Math.floor(Date.now() / 1000)),
+            Test: entGen.Boolean(process.env.LOAD_ENV === 'true'),
             Content: JSON.stringify(data)
         };
     }
@@ -36,16 +44,33 @@ class AzureTableService {
             callback(error, response);
         });
     }
-    static retrieveEntities(tableService, table, query, parameters, callback) {
+    static createTableBatch() {
+        return new azure.TableBatch();
+    }
+    static executeBatch(tableService, table, batch) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                tableService.executeBatch(table, batch, function (error, result) {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    resolve(result);
+                });
+            });
+        });
+    }
+    static retrieveEntities(tableService, table, query, parameters, callback, limit = 0) {
         var azure_query = new azure.TableQuery().where(query, parameters);
+        if (limit > 0) {
+            azure_query = azure_query.top(limit);
+        }
         tableService.queryEntities(table, azure_query, null, function (error, result, response) {
             if (error) {
                 callback(error, null);
             }
-            console.log(result);
-            console.log(response);
+            callback(null, result);
         });
-        callback(null, true);
     }
     static loadConfig() {
         return {

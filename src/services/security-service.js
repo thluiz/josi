@@ -44,8 +44,12 @@ class SecurityService {
     static getUserFromRequest(req) {
         return __awaiter(this, void 0, void 0, function* () {
             if (process.env.LOAD_ENV === 'true') {
-                const UR = yield database_facility_1.DatabaseFacility.getRepository(User_1.User);
-                const user = yield UR.findOne({ token: process.env.TOKEN_USER_DEV }, { relations: ["person", "person.default_page"] });
+                const connection = yield database_facility_1.DatabaseFacility.getConnection();
+                const user = yield connection
+                    .createQueryBuilder(User_1.User, "user")
+                    .where("user.token = :token", { token: process.env.TOKEN_USER_DEV })
+                    .cache(3000)
+                    .getOne();
                 return user;
             }
             return req.user;

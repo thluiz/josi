@@ -14,6 +14,10 @@ function routes(app) {
         let result = yield jobs_service_1.JobsService.execute_hourly_jobs();
         res.send(result);
     }));
+    app.get("/api/cleanup-sessions", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield jobs_service_1.JobsService.cleanup_sessions();
+        res.send(result);
+    }));
 }
 exports.routes = routes;
 //# sourceMappingURL=jobs-routes.js.map

@@ -6,5 +6,11 @@ export function routes(app) {
         let result = await JobsService.execute_hourly_jobs();
         
         res.send(result);
-    });    
+    }); 
+    
+    app.get("/api/cleanup-sessions", async (req, res, next) => {                
+        let result = await JobsService.cleanup_sessions();
+        
+        res.send(result);
+    }); 
 }

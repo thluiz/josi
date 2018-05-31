@@ -1,3 +1,5 @@
+import { LoggerService, ErrorOrigins } from './../services/logger-service';
+
 /* AzureSessionStore
     License: MIT
     Description: An express session store using Azure Storage Tables. 
@@ -5,6 +7,7 @@
 */
 
 import { AzureTableService } from './../services/azure-tables-service';
+import { Result } from '../helpers/result';
 
 const util = require('util'),
     Session = require('express-session'),
@@ -25,20 +28,79 @@ util.inherits(AzureSessionStore, Session.Store);
 
 var p = AzureSessionStore.prototype;
 
-p.cleanup = function() {
-    return new Promise((resolve, reject) => {
-        console.log('AzureSessionStore.cleaning...');
-        var current_date = (Date.now() / 1000);
-        var expiration = current_date - ((parseFloat(process.env.SESSION_DURATION_MINUTES) || 3600) * 60)        
-
-        AzureTableService.retrieveEntities(this.tableSvc, tableName, "CreatedOn le ?", [ expiration.toString() ], 
-        (err, result) => {            
-            if(err) {
-                reject(err);
-                return;
+function _retriveEntites(self, query, parameters) {
+    return new Promise((resolve, reject) => {        
+        AzureTableService.retrieveEntities(self.tableSvc, tableName, 
+            query, parameters, 
+            (err, result) => {            
+                if(err) {
+                    reject(err);
+                    return; 
+                }
+            
+                resolve(result.entries);
             }
-            resolve(result);
-        });        
+        );
+    });
+}
+
+async function retriveOldEntites(self) {
+    var current_date = Math.floor(Date.now() / 1000);
+    var expiration = current_date - ((parseFloat(process.env.SESSION_DURATION_MINUTES) || 3600) * 60)        
+
+    return await _retriveEntites(self, "CreatedOn le ?", expiration);
+}
+
+async function retriveTestEntites(self) {    
+    return await _retriveEntites(self, "Test eq ?", true);
+}
+
+function deleteEntity(self, sid) {
+    return new Promise((resolve, reject) => {
+        AzureTableService.deleteEntity(
+            self.tableSvc, tableName, sid, 
+
+            (errDel, result) => {
+                if(errDel) {                
+                    LoggerService.error(
+                        ErrorOrigins.SessionControl, errDel 
+                    );
+                    return;                    
+                }
+                
+                resolve(Result.GeneralOk());
+            }
+        );                                      
+    });
+}
+
+p.cleanup = function() {
+    let self = this;
+
+    return new Promise(async (resolve, reject) => {
+        console.log('AzureSessionStore.cleaning...');
+        
+        const old_entries = await retriveOldEntites(self) as any[];
+        const test_entries = await retriveTestEntites(self) as any[];
+
+        let entries = old_entries.concat(test_entries);
+
+        let batch = AzureTableService.createTableBatch();
+        for(let i = 0; i < entries.length; i++) {                                               
+            batch.deleteEntity(entries[i]);
+
+            if(i > 0 && i % 100 == 0) {
+                let result = await AzureTableService.executeBatch(self.tableSvc, tableName, batch);                
+                batch = AzureTableService.createTableBatch();
+            }
+        }
+
+        if(batch.operations.length > 0) {
+            await AzureTableService.executeBatch(self.tableSvc, tableName, batch);            
+        }
+        
+        console.log("AzureSessionStore.end_session_cleaning");
+        resolve(Result.GeneralOk());  
     });
 };
 
@@ -69,7 +131,6 @@ p.set = function (sid, session, cb) {
     
     AzureTableService.insertOrMergeEntity(this.tableSvc, tableName, entity, (err, results) => {
         if (err) {
-            console.log(err);
             console.log("AzureSessionStore.set: " + err);            
             cb(err.toString(), null);            
         } else {            
@@ -81,14 +142,8 @@ p.set = function (sid, session, cb) {
 }
 
 p.destroy = function (sid, cb) {    
-    AzureTableService.deleteEntity(this.tableSvc, tableName, sid, (err, result) => {
-        if (err) {
-            console.log("AzureSessionStore.destroy: " + err);
-            cb(err)
-        }
-
-        cb(null, result);
-    });
+    deleteEntity(this, sid)
+    .then(result => cb(null, result));        
 }
 
 p.on = function (cmd) {

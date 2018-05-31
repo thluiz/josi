@@ -21,8 +21,8 @@ export class AzureTableService {
         return { 
             PartitionKey: entGen.String(partition),
             RowKey: entGen.String(id),
-            CreatedOn: Math.floor( Date.now() / 1000 ),
-            Test: process.env.LOAD_ENV === 'true',
+            CreatedOn: entGen.Int64(Math.floor( Date.now() / 1000 )),
+            Test: entGen.Boolean(process.env.LOAD_ENV === 'true'),
             Content: JSON.stringify(data)
         };
     }
@@ -38,25 +38,43 @@ export class AzureTableService {
         });
     }
 
-    static deleteEntity(tableService: azure.TableService, table: string, id: string, callback: (error, response) => void) {
+    static deleteEntity(tableService: azure.TableService, table : string,  id: string, callback: (error, response) => void) {
         tableService.deleteEntity(table, this.buildEntity(id), function(error, response){
             callback(error, response);
         });
     }
 
-    static retrieveEntities(tableService: azure.TableService, table: string, query: string, parameters: string[], callback: (error, response) => void) {        
+    static createTableBatch() {
+        return new azure.TableBatch();
+    }
+
+    static async executeBatch(tableService: azure.TableService, table: string, batch : azure.TableBatch) {
+        return new Promise((resolve, reject) => {
+            tableService.executeBatch(table, batch, function(error, result) {
+                if(error) {
+                    reject(error);
+                    return;
+                }
+                resolve(result);
+            });
+        });        
+    }
+
+    static retrieveEntities(tableService: azure.TableService,         
+        table: string, query: string, parameters: string[], 
+        callback: (error, result) => void, limit : number = 0) {        
         var azure_query = new azure.TableQuery().where(query, parameters);
+
+        if(limit > 0) {
+            azure_query = azure_query.top(limit);
+        }
 
         tableService.queryEntities(table, azure_query, null, function(error, result, response) {
             if(error) {
               callback(error, null)
             }
-
-            console.log(result);
-            console.log(response);
+            callback(null, result);
         });
-
-        callback(null, true);
     }
 
     private static loadConfig() {

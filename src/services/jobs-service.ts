@@ -31,6 +31,7 @@ export class JobsService {
         results.push(await CardsService.check_cards_has_overdue_cards());
         results.push(await this.consolidate_members_sumary());
         results.push(await this.consolidate_activity_sumary());
+        results.push(await this.cleanup_sessions());
 
         let end_time = new Date().getTime();
 
@@ -47,6 +48,16 @@ export class JobsService {
         if(err) return err;
         
         return Result.GeneralOk();       
+    }
+
+    @trylog()
+    static async cleanup_sessions(): Promise<Result<any>> {       
+        const AzureSessionStore = require('../middlewares/azure-session-storage');
+        const storage = new AzureSessionStore();
+
+        let results = await storage.cleanup();        
+
+        return Result.GeneralOk();
     }
 
     @trylog()

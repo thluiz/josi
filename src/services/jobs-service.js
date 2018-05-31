@@ -45,6 +45,7 @@ class JobsService {
             results.push(yield cards_service_1.CardsService.check_cards_has_overdue_cards());
             results.push(yield this.consolidate_members_sumary());
             results.push(yield this.consolidate_activity_sumary());
+            results.push(yield this.cleanup_sessions());
             let end_time = new Date().getTime();
             logger_service_1.LoggerService.benchmark(key, exports.HOURLY_JOB_EXECUTION, {
                 start_time,
@@ -56,6 +57,14 @@ class JobsService {
             let err = results.find(r => !r.success);
             if (err)
                 return err;
+            return result_1.Result.GeneralOk();
+        });
+    }
+    static cleanup_sessions() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const AzureSessionStore = require('../middlewares/azure-session-storage');
+            const storage = new AzureSessionStore();
+            let results = yield storage.cleanup();
             return result_1.Result.GeneralOk();
         });
     }
@@ -87,6 +96,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], JobsService, "execute_hourly_jobs", null);
+__decorate([
+    trylog_decorator_1.trylog(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], JobsService, "cleanup_sessions", null);
 __decorate([
     trylog_decorator_1.trylog(),
     __metadata("design:type", Function),

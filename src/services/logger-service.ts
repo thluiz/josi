@@ -17,7 +17,8 @@ export enum LogOrigins {
 export enum ErrorOrigins {    
     Incidents,
     Firebase,
-    UnhandledRejection
+    UnhandledRejection,
+    SessionControl
 }
 
 export class LoggerService {

@@ -39,10 +39,13 @@ export class SecurityService {
 
     static async getUserFromRequest(req): Promise<User> {
         if (process.env.LOAD_ENV === 'true') {
-            const UR = await DatabaseFacility.getRepository<User>(User);
-            const user = await UR.findOne({ token: process.env.TOKEN_USER_DEV },
-                { relations: [ "person", "person.default_page" ] }
-            );
+            const connection = await DatabaseFacility.getConnection();
+
+            const user = await connection
+            .createQueryBuilder(User, "user")
+            .where("user.token = :token", { token: process.env.TOKEN_USER_DEV })
+            .cache(3000)
+            .getOne();
 
             return user;
         }
