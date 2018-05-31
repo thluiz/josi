@@ -1,13 +1,13 @@
 
-import {zip as observableZip,  Observable ,  Subscription } from 'rxjs';
+import { zip as observableZip,  Observable ,  Subscription } from 'rxjs';
 
-import {filter} from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { PersonRelationshipListComponent } from './../../../shared/components/person-relationship-list/person-relationship-list.component';
 import { PersonCommentListComponent } from './../shared/components/person-comment-list/person-comment-list.component';
 import { PersonPartnershipListComponent } from './../shared/components/person-partnership-list/person-partnership-list.component';
 import { PersonContactListComponent } from './../shared/components/person-contact-list/person-contact-list.component';
 import { PersonExternalUnitListComponent } from './../shared/components/person-external-unit-list/person-external-unit-list.component';
-import { CardService } from './../../../services/card-service';
+import { CardService } from 'app/services/card-service';
 
 import { Component, Input, AfterViewInit, QueryList, OnInit, OnDestroy, ViewChildren   } 
 from '@angular/core';
@@ -54,6 +54,9 @@ export class PersonPageComponent implements OnInit, OnDestroy {
 
   @ViewChildren(PersonCommentListComponent) 
   commentListComponent : QueryList<PersonCommentListComponent>;
+
+  @ViewChildren(PersonRelationshipListComponent) 
+  relationShipListComponent : QueryList<PersonRelationshipListComponent>;
 
   id: number;
   person: any;   
@@ -115,7 +118,7 @@ export class PersonPageComponent implements OnInit, OnDestroy {
       if(comps.first) comps.first.load_comments();
     }));
 
-    this.subs.push(this.commentListComponent.changes.subscribe((comps: QueryList <PersonRelationshipListComponent>) => {        
+    this.subs.push(this.relationShipListComponent.changes.subscribe((comps: QueryList <PersonRelationshipListComponent>) => {        
       if(comps.first) comps.first.load_items();
     }))
   }
@@ -229,8 +232,7 @@ export class PersonPageComponent implements OnInit, OnDestroy {
       this.person = data;  
     });
 
-    this.personService.getIncidentHistory(this.id, ActivityType.Financial).subscribe((result : any) => {            
-      
+    this.personService.getIncidentHistory(this.id, ActivityType.Financial).subscribe((result : any) => {      
       this.financial_history = result.data;  
     });
 

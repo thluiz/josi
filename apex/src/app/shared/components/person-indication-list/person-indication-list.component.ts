@@ -98,9 +98,7 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
       this.parameterService.getConfigurations().subscribe((configs: any[]) => {        
         var minimal_direct = configs.find(d => d.id == Configurations.MinimalDirectIndicationsPerActiveMember.toFixed());  
         var minimal_indirect = configs.find(d => d.id == Configurations.MinimalIndirectIndicationsPerActiveMember.toFixed());  
-
-        console.log(data.filter(d => d.relationship_type == 10));
-
+        
         if(minimal_direct.value > 0) {
           this.needed_direct_indications = minimal_direct.value - (data.filter(d => d.relationship_type == 10).length);
         }
@@ -133,15 +131,13 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
 
     this.personService
     .changeIndicationType(this.current_indication, this.new_indication_type)
-    .subscribe((data) => {
-      console.log(data);
+    .subscribe((data) => {      
       this.saving = false;
 
       if(close_action) {
         close_action('indication type changed!');
       }
-      this.load_indications();
-      console.log('aqui');
+      this.load_indications();      
     });
   }
 
