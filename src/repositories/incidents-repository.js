@@ -60,6 +60,12 @@ class IncidentsRepository {
 __decorate([
     trylog_decorator_1.trylog(),
     __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository, "getCurrentActivities", null);
+__decorate([
+    trylog_decorator_1.trylog(),
+    __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository, "getPeopleSummary", null);

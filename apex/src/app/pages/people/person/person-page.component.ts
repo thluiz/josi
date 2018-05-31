@@ -229,7 +229,8 @@ export class PersonPageComponent implements OnInit, OnDestroy {
       this.person = data;  
     });
 
-    this.personService.getIncidentHistory(this.id, ActivityType.Financial).subscribe((result : any) => {
+    this.personService.getIncidentHistory(this.id, ActivityType.Financial).subscribe((result : any) => {            
+      
       this.financial_history = result.data;  
     });
 

@@ -86,7 +86,7 @@ class DatabaseFacility {
             }
             catch (error) {
                 if (error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
-                    return result_1.Result.Ok(result_type, {});
+                    return result_1.Result.Ok(result_type, new Array());
                 }
                 return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
             }
