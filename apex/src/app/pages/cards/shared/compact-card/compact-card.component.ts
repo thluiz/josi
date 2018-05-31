@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs/subscription';
+import { Subscription } from 'rxjs/subscription'; 
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -18,7 +18,7 @@ export class CompactCardComponent implements OnInit, OnDestroy {
   @Input() card : Card;  
   
   private card_actions : Subscription;
-
+  
   constructor(private parameterService: ParameterService,
               private cardService: CardService,
               private modalService: ModalService) {

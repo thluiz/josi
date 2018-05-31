@@ -24,58 +24,5 @@ export function initialize(app, pool) {
     incidents_routes.configure_routes(app, pool);
     cards_routes.configure_routes(app, pool);
     financial_routes.configure_routes(app, pool);
-    voucher_routes.configure_routes(app, pool);
-        
-    app.get("/api/daily/:branch?/:display?/:display_modifier?",
-        auth.ensureLoggedIn(),
-        async (request, response, next) => {
-            try {                                         
-                let result = await DatabaseFacility.ExecuteJsonSP("GetDailyMonitor", 
-                    { "branch": request.params.branch > 0 ? request.params.branch : null },
-                    { "display_modifier":  request.params.display_modifier || 0 },
-                    { "display": request.params.display || 0 }
-                );                    
-
-
-                response.send(result.data);
-            } catch (error) {
-                response.status(500);
-                response.json({ error: error });
-            }
-        });
-
-    app.get("/api/people_summary/:branch?/:week?",
-        auth.ensureLoggedIn(),
-        async (request, response, next) => {
-            try {
-                let result = await new sql.Request(pool)
-                    .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
-                    .input('week_modifier', sql.Int, request.params.week || 0)
-                    .input('date', sql.VarChar(10), request.params.date)
-                    .execute(`GetPeopleSummary`);
-
-                response.send((result.recordset[0]));
-            } catch (error) {
-                response.status(500);
-                response.json({ error: error });
-            }
-        });
-
-    app.get("/api/sumary/:branch?/:month?/:week?/:date?",
-        auth.ensureLoggedIn(),
-        async (request, response, next) => {
-            try {
-                let result = await new sql.Request(pool)
-                    .input('branch', sql.Int, request.params.branch > 0 ? request.params.branch : null)
-                    .input('month_modifier', sql.Int, request.params.month || 0)
-                    .input('week_modifier', sql.Int, request.params.week || 0)
-                    .input('date', sql.VarChar(10), request.params.date)
-                    .execute(`GetSumary`);
-
-                response.send(result.recordset[0][0]);
-            } catch (error) {
-                response.status(500);
-                response.json('error', { error: error });
-            }
-        });
+    voucher_routes.configure_routes(app, pool);            
 }

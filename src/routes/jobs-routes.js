@@ -11,7 +11,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jobs_service_1 = require("../services/jobs-service");
 function routes(app) {
     app.get("/api/hourly-jobs", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        res.send(yield jobs_service_1.JobsService.execute_hourly_jobs());
+        let result = yield jobs_service_1.JobsService.execute_hourly_jobs();
+        res.send(result);
     }));
 }
 exports.routes = routes;

@@ -1,13 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+let appInsights = require("applicationinsights");
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
 }
+else {
+    appInsights.setup(process.env.AZURE_APP_INSIGHTS);
+    appInsights.start();
+}
+const logger_service_1 = require("./src/services/logger-service");
 require("reflect-metadata");
 const security_services_1 = require("./domain/services/security_services");
 const old_routes = require("./src/initializers/old-routes");
 const passport = require("./src/initializers/passport");
 const routes = require("./src/initializers/routes");
+process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+    let error = new Error('Unhandled Rejection');
+    logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.UnhandledRejection, error, { reason, p });
+});
 const express = require('express');
 const helmet = require('helmet');
 const app = express();

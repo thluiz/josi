@@ -1,13 +1,25 @@
+let appInsights = require("applicationinsights");
+
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
+} else {
+    appInsights.setup(process.env.AZURE_APP_INSIGHTS);
+    appInsights.start();
 }
 
+import { LoggerService, ErrorOrigins } from './src/services/logger-service';
 import "reflect-metadata";
 import { DatabaseFacility } from './src/facilities/database-facility';
 import { SecurityService } from './domain/services/security_services';
 import * as old_routes from './src/initializers/old-routes';
 import * as passport  from './src/initializers/passport';
 import * as routes  from './src/initializers/routes';
+
+process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+    let error = new Error('Unhandled Rejection');
+    LoggerService.error(ErrorOrigins.UnhandledRejection, error, { reason, p});
+});
 
 const express = require('express');
 const helmet = require('helmet');
@@ -39,4 +51,3 @@ SecurityService.create_pool().then((pool) => {
         console.log(`server listening to ${port}`); 
     });    
 });
-

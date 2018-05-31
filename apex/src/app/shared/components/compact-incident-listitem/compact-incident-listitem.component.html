@@ -1,7 +1,7 @@
 <div class="text-left incident_button" *ngIf="incident">																											
     <a (click)="begin_incident_treatment(incident)"         														
         style="color:rgb(182, 221, 202)"
-        [style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on_hour ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "
+        [style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "
         *ngIf="incident.type != 30 && incident.type != 31"
         style="font-size:12px">
         <b *ngIf="incident.type != 2">{{ incident.abrev }}</b> 
@@ -17,6 +17,6 @@
         class="icon-present"
         [style.color]="incident.past ? 'silver' : 'goldenrod'"
         *ngIf="incident.type == 30 || incident.type == 31"
-        [title]="'Aniversário' + ( incident.type == 31 ? 'Kung Fu' : '')">
+        [title]="'Aniversário ' + ( incident.type == 31 ? 'Kung Fu' : '')">
     </i>																						
 </div>

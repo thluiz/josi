@@ -21,7 +21,6 @@ p.cleanup = function () {
         console.log('AzureSessionStore.cleaning...');
         var current_date = (Date.now() / 1000);
         var expiration = current_date - ((parseFloat(process.env.SESSION_DURATION_MINUTES) || 3600) * 60);
-        console.log(expiration);
         azure_tables_service_1.AzureTableService.retrieveEntities(this.tableSvc, tableName, "CreatedOn le ?", [expiration.toString()], (err, result) => {
             if (err) {
                 reject(err);
@@ -53,9 +52,14 @@ p.get = function (sid, cb) {
 };
 p.set = function (sid, session, cb) {
     const me = this;
+    if (!session.cookie
+        || !session.cookie
+        || !session.cookie.passport
+        || !session.cookie.passport.user) {
+        return;
+    }
     let entity = azure_tables_service_1.AzureTableService.buildEntity(sid, session);
-    console.log(entity);
-    azure_tables_service_1.AzureTableService.insertOrMergeEntity(this.tableSvc, tableName, entity, function (err, results) {
+    azure_tables_service_1.AzureTableService.insertOrMergeEntity(this.tableSvc, tableName, entity, (err, results) => {
         if (err) {
             console.log(err);
             console.log("AzureSessionStore.set: " + err);
@@ -67,7 +71,7 @@ p.set = function (sid, session, cb) {
     });
 };
 p.destroy = function (sid, cb) {
-    azure_tables_service_1.AzureTableService.deleteEntity(this.tableSvc, tableName, sid, function (err, result) {
+    azure_tables_service_1.AzureTableService.deleteEntity(this.tableSvc, tableName, sid, (err, result) => {
         if (err) {
             console.log("AzureSessionStore.destroy: " + err);
             cb(err);

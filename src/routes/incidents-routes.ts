@@ -45,6 +45,43 @@ export function routes(app) {
         res.send(result);        
     });
 
+    app.get("/api/daily/:branch?/:display?/:display_modifier?",
+    auth.ensureLoggedIn(),
+    async (request, response, next) => {        
+        let result = await IR.getDailyMonitor(
+            request.params.branch > 0 ? request.params.branch : null,
+            request.params.display || 0,
+            request.params.display_modifier || 0
+        );
+
+        response.send(result);        
+    });
+
+    app.get("/api/people_summary/:branch?/:week?",
+    auth.ensureLoggedIn(),
+    async (req, res, next) => {        
+        let result = await IR.getPeopleSummary(
+            req.params.branch > 0 ? req.params.branch : null,
+            req.params.week || 0,
+            req.params.date
+        )            
+
+        res.send(result);        
+    });
+
+    app.get("/api/sumary/:branch?/:month?/:week?/:date?",
+    auth.ensureLoggedIn(),
+    async (req, res, next) => {
+        let result = await IR.getSummary(
+            req.params.branch > 0 ? req.params.branch : null,
+            req.params.month || 0,
+            req.params.week || 0,
+            req.params.date
+        );            
+
+        res.send(result);
+    });
+
     app.post("/api/incident/close", 
     auth.ensureLoggedIn(),
     async (req, response, next) => {

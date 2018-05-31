@@ -1,7 +1,7 @@
 import { ApplicationEventService } from 'app/services/application-event-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 import { Observable ,  Subscription } from 'rxjs';
-import { Component, Input, OnInit, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 
@@ -24,7 +24,7 @@ import { LightIncident } from 'app/shared/models/incident-model';
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
 
-export class IncidentTreatmentModalComponent implements OnInit {    
+export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {    
   current_incident : any;  
 
   @ViewChild('content') incident_treatment_modal: ElementRef;

@@ -5,17 +5,19 @@ const ERROR_TABLE = "Errors";
 
 export enum LogLevel {
     Info,    
-    Error
+    Error,
+    Benchmark
 }
 
 export enum LogOrigins {
     General, 
-    Debug
+    Debug    
 }
 
 export enum ErrorOrigins {    
     Incidents,
-    Firebase
+    Firebase,
+    UnhandledRejection
 }
 
 export class LoggerService {
@@ -25,7 +27,17 @@ export class LoggerService {
         this.log(error, origin);
     }
 
-    static log(obj, origin: ErrorOrigins | LogOrigins, level : LogLevel | string = LogLevel.Info, message?: string, details? :any) {   
+    static info(message?: string, details? :any) {
+        this.log({}, LogOrigins.General, LogLevel.Info, message, details);
+    }
+
+    static benchmark(operation_key : string, message?: string, details? :any) {
+        this.log({}, LogOrigins.General, LogLevel.Benchmark, message, details, operation_key);
+    }
+
+    static log(obj, origin: ErrorOrigins | LogOrigins, level : LogLevel | string = LogLevel.Info, 
+        message?: string, details? :any, customKey? : number | string) {   
+
         let data : any = { object: obj }
         
         if(details) {
@@ -37,11 +49,12 @@ export class LoggerService {
         }
         
         let entity = AzureTableService.buildEntity(
-            new Date().getTime().toString(), 
+            customKey || new Date().getTime().toString(), 
             data, level.toString());
     
-        AzureTableService.insertOrMergeEntity(this.get_table_service(level == LogLevel.Info ? LOG_TABLE : ERROR_TABLE), 
-            level == LogLevel.Info ? LOG_TABLE : ERROR_TABLE, 
+        AzureTableService.insertOrMergeEntity(
+            this.get_table_service(level == LogLevel.Info || LogLevel.Benchmark ? LOG_TABLE : ERROR_TABLE), 
+            level == LogLevel.Info || LogLevel.Benchmark ? LOG_TABLE : ERROR_TABLE, 
             entity, (err, results) => {
             if (err) {
                 console.log(err);

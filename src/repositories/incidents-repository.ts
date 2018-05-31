@@ -1,42 +1,66 @@
 import { DatabaseFacility } from "../facilities/database-facility";
 import { Result } from "../helpers/result";
 import { ErrorCode } from "../helpers/errors-codes";
+import { trylog } from "../decorators/trylog-decorator";
 
 export class IncidentsRepository{
-    static async getCurrentActivities(branch_id) {
-        let result = await DatabaseFacility.ExecuteJsonSP("GetCurrentActivities",
-            { "branch_id":  branch_id }
-        );               
 
-        return result;        
+    @trylog()
+    static async getCurrentActivities(branch_id) : Promise<Result<any>> {
+        return await DatabaseFacility.ExecuteJsonSP("GetCurrentActivities",
+            { "branch_id":  branch_id }
+        );
     }
 
-    static async getPersonIncidentsHistory(person_id, activity_type, page = 1, pagesize = 10) : Promise<Result<any>> {        
+    @trylog()
+    static async getPeopleSummary(branch_id, week_modifier, date) : Promise<Result<any>> {        
+        return await DatabaseFacility.ExecuteJsonSP("GetPeopleSummary",
+            { "branch":  branch_id },
+            { "week_modifier":  week_modifier },
+            { "date":  date }
+        );
+    }
 
-        let result = await DatabaseFacility.ExecuteJsonSP("GetPersonIncidentHistory",
+    @trylog()
+    static async getSummary(branch_id, month_modifier, week_modifier, date) : Promise<Result<any>> {        
+        return await DatabaseFacility.ExecuteJsonSP("GetPeopleSummary",
+            { "branch":  branch_id },
+            { "month_modifier" : month_modifier },
+            { "week_modifier":  week_modifier },
+            { "date":  date }
+        );
+    }
+
+    @trylog()
+    static async getDailyMonitor(branch_id, display, display_modifier ) : Promise<Result<any>> {
+        return await DatabaseFacility.ExecuteJsonSP("GetDailyMonitor2", 
+            { "branch": branch_id },
+            { "display_modifier":  display_modifier },
+            { "display": display }
+        );
+    }
+
+    @trylog()
+    static async getPersonIncidentsHistory(person_id, activity_type, page = 1, pagesize = 10) : Promise<Result<any>> {        
+        return await DatabaseFacility.ExecuteJsonSP("GetPersonIncidentHistory",
             { "page":  page },
             { "person_id":  person_id },
             { "activity_type": activity_type }
-        );       
-
-        return result;        
+        );
     }
 
+    @trylog()
     static async getIncidentDetails(incident_id) : Promise<Result<any>> {
-        let result = await DatabaseFacility.ExecuteJsonSP("GetIncidentDetails", 
+        return await DatabaseFacility.ExecuteJsonSP("GetIncidentDetails", 
             { "id":  incident_id }
-        );       
-
-        return result;        
+        );
     }
 
+    @trylog()
     static async getAgenda(branch_id, date) : Promise<Result<any>> {        
-        let result = await DatabaseFacility.ExecuteJsonSP("GetAgenda2",
+        return await DatabaseFacility.ExecuteJsonSP("GetAgenda2",
             { "branch_id":  branch_id },
             { "date":  date }
-        );       
-
-        return result;        
-                
+        );
     }
 }

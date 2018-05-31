@@ -78,8 +78,8 @@ export class PersonService {
     return this.http.get(this.dataUrl + `/agenda/${branch || 0}/${date.year}-${date.month}-${date.day}`);    
   }
 
-  getDailyMonitor(branch, display : DailyMonitorDisplayType, display_modifier: number) {
-    return this.http.get(this.dataUrl + `/daily/${branch || 0}/${display}/${display_modifier}`);    
+  getDailyMonitor(branch, display : DailyMonitorDisplayType, display_modifier: number) : Observable<Result<any>> {
+    return this.http.get(this.dataUrl + `/daily/${branch || 0}/${display}/${display_modifier}`) as Observable<Result<any>>;    
   }  
 
   getPeopleSummary(branche, week) {

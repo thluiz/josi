@@ -29,8 +29,7 @@ p.cleanup = function() {
     return new Promise((resolve, reject) => {
         console.log('AzureSessionStore.cleaning...');
         var current_date = (Date.now() / 1000);
-        var expiration = current_date - ((parseFloat(process.env.SESSION_DURATION_MINUTES) || 3600) * 60)
-        console.log(expiration);
+        var expiration = current_date - ((parseFloat(process.env.SESSION_DURATION_MINUTES) || 3600) * 60)        
 
         AzureTableService.retrieveEntities(this.tableSvc, tableName, "CreatedOn le ?", [ expiration.toString() ], 
         (err, result) => {            
@@ -65,9 +64,18 @@ p.get = function (sid, cb) {
 
 p.set = function (sid, session, cb) {          
     const me = this;
+
+    if(!session.cookie 
+        || !session.cookie 
+        || !session.cookie.passport 
+        || !session.cookie.passport.user) {
+                        
+        return;
+    }
+
     let entity = AzureTableService.buildEntity(sid, session);
-    console.log(entity);
-    AzureTableService.insertOrMergeEntity(this.tableSvc, tableName, entity, function (err, results) {
+    
+    AzureTableService.insertOrMergeEntity(this.tableSvc, tableName, entity, (err, results) => {
         if (err) {
             console.log(err);
             console.log("AzureSessionStore.set: " + err);            
@@ -79,7 +87,7 @@ p.set = function (sid, session, cb) {
 }
 
 p.destroy = function (sid, cb) {    
-    AzureTableService.deleteEntity(this.tableSvc, tableName, sid, function (err, result) {
+    AzureTableService.deleteEntity(this.tableSvc, tableName, sid, (err, result) => {
         if (err) {
             console.log("AzureSessionStore.destroy: " + err);
             cb(err)

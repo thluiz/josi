@@ -1,7 +1,8 @@
+import { ApplicationEventService } from 'app/services/application-event-service';
 import { Component, ViewChildren, QueryList } from '@angular/core';
 
 import { PersonService, DailyMonitorDisplayType } from 'app/services/person-service';
-import { IncidentService } from 'app/services/incident-service';
+import { IncidentService, INCIDENT_ACTION_PREFIX, INCIDENT_ADDED } from 'app/services/incident-service';
 import { FormControl, FormsModule, ReactiveFormsModule,
         FormGroup, Validators, NgForm } from '@angular/forms';
 
@@ -26,6 +27,9 @@ import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from '
 import { ActivatedRoute, Router } from '@angular/router';
 import { SecurityService } from 'app/services/security-service';
 import { LateralSummaryComponent } from 'app/shared/components/lateral-summary/lateral-summary.component';
+import { filter } from 'rxjs/operators';
+import { Result } from 'app/shared/models/result';
+import { LightIncident } from 'app/shared/models/incident-model';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -62,11 +66,9 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   newIncidentForm: FormGroup;
   week_days;
   branch_cols;
-  external_people;  
-
-  private update_members_timer;  
-  private incident_added_subscriber : Subscription;
-  private incident_changes_subscriber: Subscription;
+  external_people;    
+  
+  private incidents_subscriber : Subscription;
 
   constructor(private personService: PersonService, 
               private incidentService: IncidentService, 
@@ -74,6 +76,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
               private modalService: NgbModal, 
               private datePickerConfig: NgbDatepickerConfig,
               private route: ActivatedRoute,
+              private eventManager: ApplicationEventService,
               private router: Router) {
 
     datePickerConfig.firstDayOfWeek = 7
@@ -90,17 +93,25 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
       this.current_branch = user.default_branch_id || 0;      
       this.getMonitorData();  
     });   
+
+    this.incidents_subscriber = this.eventManager
+    .event$
+    .pipe(
+      filter((result : Result<LightIncident[]>) =>  
+      result.data && result.data.length > 0      
+      && result.type.indexOf(INCIDENT_ADDED) > -1)
+    ).subscribe((result) => {      
+      this.current_incident = result.data[0];
+    });
   }
 
   ngOnDestroy() {    
-    if(this.update_members_timer) {    
-      clearTimeout(this.update_members_timer);
-    }    
+    if(this.incidents_subscriber) {
+      this.incidents_subscriber.unsubscribe();
+    }
   }
 
-  branchSelected(id) {
-    clearTimeout(this.update_members_timer);
-    this.update_members_timer = null;        
+  branchSelected(id) {    
     this.current_branch = id;
     this.getMonitorData();    
     this.show_change_branch = false;
@@ -113,29 +124,26 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  change_week(modifier) {
-    clearTimeout(this.update_members_timer);
-    this.update_members_timer = null;
+  change_week(modifier) {    
     this.current_week += modifier;
     this.getMonitorData();    
   }
 
   getMonitorData() {
-    this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Week, this.current_week).subscribe(
-      data => {    
-        const result = data[0] as any;  
-        console.log(result);
+    this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Week, this.current_week)
+    .subscribe((result : Result<any>) => {    
+        const data = result.data[0] as any;          
         
-        this.branches = result.branches as any;
+        this.branches = data.branches as any;
         this.current_branch_name = (this.current_branch > 0 ? 
                             this.branches.filter(b => b.id == this.current_branch)[0].name
                             : "Todos os Núcleos");
-        this.domains = result.domains;   
-        this.incident_types = result.incident_types;
+        this.domains = data.domains;   
+        this.incident_types = data.incident_types;
         this.manual_incident_types = this.incident_types.filter(f => !f.automatically_generated);
-        this.current_week_range = result.current_week_range;
-        this.week_days = result.week_days;        
-        this.selected_week = result.selected_week[0];
+        this.current_week_range = data.current_week_range;
+        this.week_days = data.week_days;        
+        this.selected_week = data.selected_week[0];
 
         this.cols = [                    
           { width: "24.5%" }          
@@ -154,10 +162,10 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
         if(this.domains) {
           this.domains.daily = [];
 
-          for(var w = 0; w < result.domains.length; w++) {
-            let domain = result.domains[w];
+          for(var w = 0; w < data.domains.length; w++) {
+            let domain = data.domains[w];
             this.domains[w].daily = [];
-            let people = result.people != null ? result.people.filter(p => p.domain_id == domain.id) : [];
+            let people = data.people != null ? data.people.filter(p => p.domain_id == domain.id) : [];
             this.domains[w].number_of_members = people.length;
 
             for(var i = 0; i< this.week_days.length; i++) {    
@@ -165,13 +173,20 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
               
               for(var z = 0; z< people.length; z++) {
                 let person_incidents = people[z];  
+                
                 if(!person_incidents.dates) {
                   person_incidents.dates = [];
                 }
 
                 person_incidents.dates[i] = person_incidents.dates[i] || [];
-                let incidents = result.incidents.filter((i : any) => { 
-                  return i.date == c.date && i.person_id == people[z].person_id;
+                
+                let incidents = data.incidents.filter((i : any) => { 
+                  const incident_date = new Date(i.date);
+                  const week_day_date = new Date(c.date);  
+                  return incident_date.getDate() == week_day_date.getDate()
+                          && incident_date.getFullYear() == week_day_date.getFullYear()
+                          && incident_date.getMonth() == week_day_date.getMonth()
+                          && i.person_id == people[z].person_id;
                 });
                 
                 person_incidents.dates[i] = person_incidents.dates[i].concat(incidents);                              
@@ -182,22 +197,11 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
           }
         }   
 
-        this.load_external_people(result); 
+        this.load_external_people(data); 
       }                
       ,
       err => console.error(err)      
-    );
-
-    var d = new Date();
-    var hours = d.getHours();
-    
-    const update_interval = hours >= 22 || hours < 6 ? 1800000 : 120000;
-
-    if(this.update_members_timer) {
-      clearTimeout(this.update_members_timer);
-    }
-
-    this.update_members_timer = setTimeout(() => { this.getMonitorData() }, update_interval);
+    );    
   }
 
   private load_external_people(result) {
