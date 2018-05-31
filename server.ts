@@ -1,5 +1,10 @@
+let appInsights = require("applicationinsights");
+
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
+} else {
+    appInsights.setup(process.env.AZURE_APP_INSIGHTS);
+    appInsights.start();
 }
 
 import { LoggerService, ErrorOrigins } from './src/services/logger-service';

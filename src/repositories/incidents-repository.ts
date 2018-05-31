@@ -5,11 +5,12 @@ import { trylog } from "../decorators/trylog-decorator";
 
 export class IncidentsRepository{
 
-    @trylog()
-    static async getCurrentActivities(branch_id) : Promise<Result<any>> {
-        return await DatabaseFacility.ExecuteJsonSP("GetCurrentActivities",
+    static async getCurrentActivities(branch_id) : Promise<Result<any>> {        
+        let result = await DatabaseFacility.ExecuteJsonSP("GetCurrentActivities",
             { "branch_id":  branch_id }
         );
+        
+        return result;
     }
 
     @trylog()

@@ -22,7 +22,8 @@ const trylog_decorator_1 = require("../decorators/trylog-decorator");
 class IncidentsRepository {
     static getCurrentActivities(branch_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetCurrentActivities", { "branch_id": branch_id });
+            let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetCurrentActivities", { "branch_id": branch_id });
+            return result;
         });
     }
     static getPeopleSummary(branch_id, week_modifier, date) {
@@ -56,12 +57,6 @@ class IncidentsRepository {
         });
     }
 }
-__decorate([
-    trylog_decorator_1.trylog(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], IncidentsRepository, "getCurrentActivities", null);
 __decorate([
     trylog_decorator_1.trylog(),
     __metadata("design:type", Function),

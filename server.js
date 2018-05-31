@@ -1,7 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+let appInsights = require("applicationinsights");
 if (process.env.LOAD_ENV === 'true') {
     require('dotenv').load();
+}
+else {
+    appInsights.setup(process.env.AZURE_APP_INSIGHTS);
+    appInsights.start();
 }
 const logger_service_1 = require("./src/services/logger-service");
 require("reflect-metadata");

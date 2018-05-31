@@ -65,11 +65,12 @@ p.get = function (sid, cb) {
 p.set = function (sid, session, cb) {          
     const me = this;
 
+     
     if(!session.cookie 
         || !session.cookie 
         || !session.cookie.passport 
         || !session.cookie.passport.user) {
-                        
+
         return;
     }
 
