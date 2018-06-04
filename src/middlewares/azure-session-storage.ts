@@ -8,6 +8,7 @@ import { LoggerService, ErrorOrigins } from './../services/logger-service';
 
 import { AzureTableService } from './../services/azure-tables-service';
 import { Result } from '../helpers/result';
+import { ErrorCode } from '../helpers/errors-codes';
 
 const util = require('util'),
     Session = require('express-session'),
@@ -15,12 +16,12 @@ const util = require('util'),
 
 module.exports = AzureSessionStore;
 
-function AzureSessionStore(options) {    
+function AzureSessionStore(options) {
     Session.Store.call(this, options);
-    
+
     this.tableSvc = AzureTableService.createTableService();
     AzureTableService.createTableIfNotExists(this.tableSvc, tableName, (err) => {
-                
+
     });
 }
 
@@ -29,15 +30,15 @@ util.inherits(AzureSessionStore, Session.Store);
 var p = AzureSessionStore.prototype;
 
 function _retriveEntites(self, query, parameters) {
-    return new Promise((resolve, reject) => {        
-        AzureTableService.retrieveEntities(self.tableSvc, tableName, 
-            query, parameters, 
-            (err, result) => {            
-                if(err) {
+    return new Promise((resolve, reject) => {
+        AzureTableService.retrieveEntities(self.tableSvc, tableName,
+            query, parameters,
+            (err, result) => {
+                if (err) {
                     reject(err);
-                    return; 
+                    return;
                 }
-            
+
                 resolve(result.entries);
             }
         );
@@ -46,61 +47,69 @@ function _retriveEntites(self, query, parameters) {
 
 async function retriveOldEntites(self) {
     var current_date = Math.floor(Date.now() / 1000);
-    var expiration = current_date - ((parseFloat(process.env.SESSION_DURATION_MINUTES) || 3600) * 60)        
+    var expiration = current_date - (parseFloat(process.env.SESSION_DURATION_MINUTES) 
+                                    || (3600 * 6 /*default 6 hours*/))
 
     return await _retriveEntites(self, "CreatedOn le ?", expiration);
 }
 
-async function retriveTestEntites(self) {    
+async function retriveTestEntites(self) {
     return await _retriveEntites(self, "Test eq ?", true);
 }
 
 function deleteEntity(self, sid) {
     return new Promise((resolve, reject) => {
         AzureTableService.deleteEntity(
-            self.tableSvc, tableName, sid, 
+            self.tableSvc, tableName, sid,
 
             (errDel, result) => {
-                if(errDel) {                
+                if (errDel) {
                     LoggerService.error(
-                        ErrorOrigins.SessionControl, errDel 
+                        ErrorOrigins.SessionControl, errDel
                     );
-                    return;                    
+                    return;
                 }
-                
+
                 resolve(Result.GeneralOk());
             }
-        );                                      
+        );
     });
 }
 
-p.cleanup = function() {
+p.cleanup = function cleanup() {
     let self = this;
 
     return new Promise(async (resolve, reject) => {
-        console.log('AzureSessionStore.cleaning...');
-        
-        const old_entries = await retriveOldEntites(self) as any[];
-        const test_entries = await retriveTestEntites(self) as any[];
+        console.log('AzureSessionStore.start_cleaning...');
 
-        let entries = old_entries.concat(test_entries);
+        try {
+            const old_entries = await retriveOldEntites(self) as any[];
+            const test_entries = await retriveTestEntites(self) as any[];
 
-        let batch = AzureTableService.createTableBatch();
-        for(let i = 0; i < entries.length; i++) {                                               
-            batch.deleteEntity(entries[i]);
+            let entries = old_entries.concat(test_entries);
 
-            if(i > 0 && i % 100 == 0) {
-                let result = await AzureTableService.executeBatch(self.tableSvc, tableName, batch);                
-                batch = AzureTableService.createTableBatch();
+            let batch = AzureTableService.createTableBatch();
+            for (let i = 0; i < entries.length; i++) {
+                batch.deleteEntity(entries[i]);
+
+                if (i > 0 && i % 99 == 0) {
+                    let result = await AzureTableService.executeBatch(self.tableSvc, tableName, batch);
+                    console.log(`deleted ${batch.operations.length} entries!`);
+                    batch = AzureTableService.createTableBatch();
+                }
             }
-        }
 
-        if(batch.operations.length > 0) {
-            await AzureTableService.executeBatch(self.tableSvc, tableName, batch);            
+            if (batch.operations.length > 0) {
+                await AzureTableService.executeBatch(self.tableSvc, tableName, batch);
+                console.log(`finally: deleted ${batch.operations.length} entries!`);
+            }
+
+            console.log("AzureSessionStore.end_session_cleaning");
+            resolve(Result.GeneralOk());
+
+        } catch (error) {
+            reject(Result.Fail(ErrorCode.GenericError, error));
         }
-        
-        console.log("AzureSessionStore.end_session_cleaning");
-        resolve(Result.GeneralOk());  
     });
 };
 
@@ -109,41 +118,41 @@ p.reap = function (ms) {
     console.log("AzureSessionStore.reap: " + thresh.toString());
 };
 
-p.get = function (sid, cb) {    
+p.get = function (sid, cb) {
     var me = this;
     AzureTableService.retriveEntity(this.tableSvc, tableName, sid, function (err, result) {
-        if (err) {     
+        if (err) {
             if (err.code == "ResourceNotFound") {
                 cb();
-            } else {                                
+            } else {
                 cb(err);
-            }            
-        } else {            
+            }
+        } else {
             cb(null, result);
         }
     });
 }
 
-p.set = function (sid, session, cb) {          
-    const me = this;     
+p.set = function (sid, session, cb) {
+    const me = this;
 
     let entity = AzureTableService.buildEntity(sid, session);
-    
+
     AzureTableService.insertOrMergeEntity(this.tableSvc, tableName, entity, (err, results) => {
         if (err) {
-            console.log("AzureSessionStore.set: " + err);            
-            cb(err.toString(), null);            
-        } else {            
-            
+            console.log("AzureSessionStore.set: " + err);
+            cb(err.toString(), null);
+        } else {
+
             cb(null, entity);
 
-        } 
+        }
     });
 }
 
-p.destroy = function (sid, cb) {    
+p.destroy = function (sid, cb) {
     deleteEntity(this, sid)
-    .then(result => cb(null, result));        
+        .then(result => cb(null, result));
 }
 
 p.on = function (cmd) {

@@ -34,9 +34,12 @@ export class JobsService {
         results.push(await this.cleanup_sessions());
 
         let end_time = new Date().getTime();
+        
+        let err = results.find(r => !r.success);
 
         LoggerService.benchmark(key, HOURLY_JOB_EXECUTION, { 
             start_time, 
+            success: err == null,
             end_time, 
             duration: (end_time - start_time)/1000,
             results 
@@ -44,7 +47,6 @@ export class JobsService {
         
         console.log("Finished running jobs!");
 
-        let err = results.find(r => !r.success);
         if(err) return err;
         
         return Result.GeneralOk();       
@@ -55,9 +57,13 @@ export class JobsService {
         const AzureSessionStore = require('../middlewares/azure-session-storage');
         const storage = new AzureSessionStore();
 
-        let results = await storage.cleanup();        
+        try {
+            let results = await storage.cleanup();        
 
-        return Result.GeneralOk();
+            return results;
+        } catch (error) {
+            return Result.Fail(ErrorCode.GenericError, error);
+        }
     }
 
     @trylog()

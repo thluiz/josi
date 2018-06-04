@@ -225,8 +225,14 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
         }
 
         person_incidents.dates[i] = person_incidents.dates[i] || [];
-        let incidents = result.incidents.filter((i : any) => { 
-          return i.date == c.date && i.person_id == external_people[z].person_id;
+        
+        let incidents = result.incidents.filter((i : any) => {
+          const incident_date = new Date(i.date);
+          const week_day_date = new Date(c.date);  
+          return incident_date.getDate() == week_day_date.getDate()
+                          && incident_date.getFullYear() == week_day_date.getFullYear()
+                          && incident_date.getMonth() == week_day_date.getMonth()
+                          && i.person_id == external_people[z].person_id;
         });
 
         if(incidents.length > 0) {

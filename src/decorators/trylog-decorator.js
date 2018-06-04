@@ -8,7 +8,8 @@ function trylog() {
         var originalMethod = descriptor.value;
         descriptor.value = function (...args) {
             try {
-                return originalMethod.apply(this, args);
+                let result = originalMethod.apply(this, args);
+                return result;
             }
             catch (error) {
                 logger_service_1.LoggerService.error(target, error, {

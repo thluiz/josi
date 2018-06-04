@@ -16,6 +16,7 @@ const logger_service_1 = require("./../services/logger-service");
 */
 const azure_tables_service_1 = require("./../services/azure-tables-service");
 const result_1 = require("../helpers/result");
+const errors_codes_1 = require("../helpers/errors-codes");
 const util = require('util'), Session = require('express-session'), tableName = 'AzureSessionStore';
 module.exports = AzureSessionStore;
 function AzureSessionStore(options) {
@@ -40,7 +41,8 @@ function _retriveEntites(self, query, parameters) {
 function retriveOldEntites(self) {
     return __awaiter(this, void 0, void 0, function* () {
         var current_date = Math.floor(Date.now() / 1000);
-        var expiration = current_date - ((parseFloat(process.env.SESSION_DURATION_MINUTES) || 3600) * 60);
+        var expiration = current_date - (parseFloat(process.env.SESSION_DURATION_MINUTES)
+            || (3600 * 6 /*default 6 hours*/));
         return yield _retriveEntites(self, "CreatedOn le ?", expiration);
     });
 }
@@ -60,26 +62,33 @@ function deleteEntity(self, sid) {
         });
     });
 }
-p.cleanup = function () {
+p.cleanup = function cleanup() {
     let self = this;
     return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-        console.log('AzureSessionStore.cleaning...');
-        const old_entries = yield retriveOldEntites(self);
-        const test_entries = yield retriveTestEntites(self);
-        let entries = old_entries.concat(test_entries);
-        let batch = azure_tables_service_1.AzureTableService.createTableBatch();
-        for (let i = 0; i < entries.length; i++) {
-            batch.deleteEntity(entries[i]);
-            if (i > 0 && i % 100 == 0) {
-                let result = yield azure_tables_service_1.AzureTableService.executeBatch(self.tableSvc, tableName, batch);
-                batch = azure_tables_service_1.AzureTableService.createTableBatch();
+        console.log('AzureSessionStore.start_cleaning...');
+        try {
+            const old_entries = yield retriveOldEntites(self);
+            const test_entries = yield retriveTestEntites(self);
+            let entries = old_entries.concat(test_entries);
+            let batch = azure_tables_service_1.AzureTableService.createTableBatch();
+            for (let i = 0; i < entries.length; i++) {
+                batch.deleteEntity(entries[i]);
+                if (i > 0 && i % 99 == 0) {
+                    let result = yield azure_tables_service_1.AzureTableService.executeBatch(self.tableSvc, tableName, batch);
+                    console.log(`deleted ${batch.operations.length} entries!`);
+                    batch = azure_tables_service_1.AzureTableService.createTableBatch();
+                }
             }
+            if (batch.operations.length > 0) {
+                yield azure_tables_service_1.AzureTableService.executeBatch(self.tableSvc, tableName, batch);
+                console.log(`finally: deleted ${batch.operations.length} entries!`);
+            }
+            console.log("AzureSessionStore.end_session_cleaning");
+            resolve(result_1.Result.GeneralOk());
         }
-        if (batch.operations.length > 0) {
-            yield azure_tables_service_1.AzureTableService.executeBatch(self.tableSvc, tableName, batch);
+        catch (error) {
+            reject(result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error));
         }
-        console.log("AzureSessionStore.end_session_cleaning");
-        resolve(result_1.Result.GeneralOk());
     }));
 };
 p.reap = function (ms) {

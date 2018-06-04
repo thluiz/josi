@@ -47,14 +47,15 @@ class JobsService {
             results.push(yield this.consolidate_activity_sumary());
             results.push(yield this.cleanup_sessions());
             let end_time = new Date().getTime();
+            let err = results.find(r => !r.success);
             logger_service_1.LoggerService.benchmark(key, exports.HOURLY_JOB_EXECUTION, {
                 start_time,
+                success: err == null,
                 end_time,
                 duration: (end_time - start_time) / 1000,
                 results
             });
             console.log("Finished running jobs!");
-            let err = results.find(r => !r.success);
             if (err)
                 return err;
             return result_1.Result.GeneralOk();
@@ -64,8 +65,13 @@ class JobsService {
         return __awaiter(this, void 0, void 0, function* () {
             const AzureSessionStore = require('../middlewares/azure-session-storage');
             const storage = new AzureSessionStore();
-            let results = yield storage.cleanup();
-            return result_1.Result.GeneralOk();
+            try {
+                let results = yield storage.cleanup();
+                return results;
+            }
+            catch (error) {
+                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+            }
         });
     }
     static update_voucher_site() {
