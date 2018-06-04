@@ -1,0 +1,178 @@
+.white {    
+    color:white;
+}
+
+label {
+    font-size:12px;
+    line-height: 12px;
+    font-weight: bold;
+    display: block;
+    color: gray;
+    margin:0;
+}
+
+.btn-silver {
+    background-color: #EEE;
+    color:#BBB;
+}
+
+.btn-silver:hover {
+    background-color: #DDD;
+    color: #333;
+}
+
+.btn-success {
+    color: white !important;
+}
+
+.btn-primary {
+    color: white !important;
+}
+
+.btn-danger {
+    color: white !important;
+}
+
+.form-body {
+    overflow: unset;
+}
+
+.main-panel {
+    overflow: visible !important;
+}
+
+form label {
+    text-transform: unset;
+    letter-spacing: 1px;
+    font-size: 10px;
+}
+
+.input-group-addon {
+    padding:8px;
+}
+
+compact-card {
+    width:100%;
+    float:left;
+    border:1px solid silver;
+    margin: auto;
+    margin-right:5px;
+    margin-bottom:5px;
+    background-color:white;
+    max-width: 250px;
+    cursor: pointer;
+}
+
+task-treatment-card {
+    width:100%;
+    float:left;
+    border:1px solid silver;
+    margin: auto;
+    margin-right:5px;
+    margin-bottom:5px;    
+}
+
+.card_due_date {
+    font-size:10px;
+    background-color:green;
+    color:white;
+    padding:3px;
+    padding-top:5px;
+    width:50px;
+    border-radius: 10px;
+    line-height: 10px;
+    display: inline-block;
+    margin-right: 1px;
+    margin-left: 5px;
+    text-align: center;
+}
+
+.card_actions {
+    font-size:10px;
+    padding:3px;
+    padding-top:5px;        
+    line-height: 10px;
+    display: inline-block;
+    margin-right: 1px;
+    margin-left: 5px;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.contact_title {
+    font-size:10px;    
+}
+
+.card_comment_count {
+    font-size:10px;
+    color:gray;
+    display: inline-block;
+    margin-right: 2px;
+    margin-left: 5px;
+}
+
+.cursor_pointer {
+    cursor: pointer;
+}
+
+/* Checkbox and Radio Buttons Customizations */
+.option_container {
+    display: block;
+    position: relative;
+    padding-left: 20px;    
+    padding-top: 2px;
+    cursor: pointer;    
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;    
+}
+
+.option_container:hover  {
+    text-decoration: underline; 
+}
+
+.option_container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    background-color: #eee;
+}
+
+.option_container:hover input ~ .checkmark {
+    background-color: #ddd;      
+}
+
+.option_container input:checked ~ .checkmark {
+    background-color:white;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.option_container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.option_container .checkmark:after {
+    left: 5px;
+    top: 1px;
+    width: 5px;
+    height: 10px;
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
