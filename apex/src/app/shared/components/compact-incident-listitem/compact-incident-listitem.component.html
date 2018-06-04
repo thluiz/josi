@@ -12,6 +12,9 @@
                     && incident.type != 2 && incident.type != 4"
             style="font-size:11px"
         > - {{ incident.short_description }} </span>
+        <span *ngIf="incident.need_start_hour_minute"> 
+            - {{ (incident.started_on || incident.date) | date : "HH:mm" }}
+        </span>
     </a>																																																																	
     <i  												
         class="icon-present"

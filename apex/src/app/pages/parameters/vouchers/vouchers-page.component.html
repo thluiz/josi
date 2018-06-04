@@ -11,8 +11,8 @@
                 <tr *ngFor="let item of collection"
                 class="cursor_pointer"                
                 >
-                    <td (click)="edit(modal, item)">{{ item["title"] }}</td>                                        
-                    <td (click)="edit(modal, item)">{{ item["initials"] }}</td>
+                    <td (click)="edit(item)">{{ item["title"] }}</td>                                        
+                    <td (click)="edit(item)">{{ item["initials"] }}</td>
                     <td>
                         <a href="{{'http://myvtmi.im/voucher/' + item['url'] }}"
                         target="_blank">

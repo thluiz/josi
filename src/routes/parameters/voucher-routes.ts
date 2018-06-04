@@ -12,12 +12,14 @@ import { Voucher } from './../../entity/Voucher';
 
 
 export function routes(app) {    
-    app.get("/api/vouchers", 
+    app.get("/api/vouchers/:id?", 
     auth.ensureLoggedIn(),
     async (req, res, next) => {                                
         const VR = await DatabaseFacility.getRepository<Voucher>(Voucher);
 
-        let vouchers = await VR.find({ order: { "active": "DESC" } });
+        let vouchers = req.params.id > 0 ? 
+                        await VR.find({ where: { id : req.params.id }, relations: ['branches']})
+                        : await VR.find({ order: { "active": "DESC" } });
 
         res.send(Result.GeneralOk(vouchers));                                          
     });

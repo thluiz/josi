@@ -59,7 +59,11 @@ __decorate([
 ], Voucher.prototype, "active", void 0);
 __decorate([
     typeorm_1.ManyToMany(type => Branch_1.Branch),
-    typeorm_1.JoinTable(),
+    typeorm_1.JoinTable({
+        name: "branch_voucher",
+        joinColumns: [{ name: "voucher_id" }],
+        inverseJoinColumns: [{ name: "branch_id" }]
+    }),
     __metadata("design:type", Array)
 ], Voucher.prototype, "branches", void 0);
 Voucher = __decorate([

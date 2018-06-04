@@ -17,9 +17,11 @@ const parameters_service_1 = require("../../services/parameters-service");
 const Branch_1 = require("../../entity/Branch");
 const Voucher_1 = require("./../../entity/Voucher");
 function routes(app) {
-    app.get("/api/vouchers", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/vouchers/:id?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
-        let vouchers = yield VR.find({ order: { "active": "DESC" } });
+        let vouchers = req.params.id > 0 ?
+            yield VR.find({ where: { id: req.params.id }, relations: ['branches'] })
+            : yield VR.find({ order: { "active": "DESC" } });
         res.send(result_1.Result.GeneralOk(vouchers));
     }));
     app.post("/api/parametes/voucher_branch/add", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {

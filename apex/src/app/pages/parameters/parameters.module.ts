@@ -30,6 +30,7 @@ import { OverviewPageComponent } from 'app/pages/parameters/overview/overview-pa
 import { PaymentMethodsPageComponent } from 'app/pages/parameters/payment-methods/payment-methods-page.component';
 import { ProductCatergoriesPageComponent } from 'app/pages/parameters/product_categories/product_categories-page.component';
 import { ProductsPageComponent } from 'app/pages/parameters/products/products-page.component';
+import { VoucherDetailPageComponent } from 'app/pages/parameters/voucher-detail/voucher-detail-page.component';
 import { VouchersPageComponent } from 'app/pages/parameters/vouchers/vouchers-page.component';
 
 @NgModule({
@@ -53,7 +54,8 @@ import { VouchersPageComponent } from 'app/pages/parameters/vouchers/vouchers-pa
         ProductsPageComponent,
         CurrenciesPageComponent,
         ProductCatergoriesPageComponent,
-        VouchersPageComponent
+        VouchersPageComponent,
+        VoucherDetailPageComponent
     ]
 })
 export class ParametersModule { }

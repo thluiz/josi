@@ -37,6 +37,10 @@ export class Voucher {
     active: boolean;
 
     @ManyToMany(type => Branch)
-    @JoinTable()
+    @JoinTable({    
+        name: "branch_voucher",
+        joinColumns : [ {name: "voucher_id" }],
+        inverseJoinColumns: [{name: "branch_id"}]
+    })
     branches: Branch[];
 } 

@@ -12,6 +12,7 @@ import { ProductsPageComponent } from 'app/pages/parameters/products/products-pa
 import { ProductCatergoriesPageComponent } from 'app/pages/parameters/product_categories/product_categories-page.component';
 import { CurrenciesPageComponent } from 'app/pages/parameters/currencies/currencies-page.component';
 import { VouchersPageComponent } from 'app/pages/parameters/vouchers/vouchers-page.component';
+import { VoucherDetailPageComponent } from 'app/pages/parameters/voucher-detail/voucher-detail-page.component';
 
 let routes: Routes = [
   {
@@ -67,6 +68,11 @@ let routes: Routes = [
   {
     path: 'vouchers',
     component: VouchersPageComponent,
+    data: { },    
+  },
+  {
+    path: 'vouchers/:id',
+    component: VoucherDetailPageComponent,
     data: { },    
   }
 ];

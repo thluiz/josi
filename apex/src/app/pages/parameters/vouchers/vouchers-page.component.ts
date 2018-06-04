@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Component, OnInit } from "@angular/core";
 import { ParameterService } from "app/services/parameter-service";
@@ -14,7 +15,8 @@ export class VouchersPageComponent implements OnInit {
   saving = false;
 
   constructor(private parameterService: ParameterService, 
-              private ngbModalService: NgbModal) {      
+              private ngbModalService: NgbModal, 
+              private router : Router) {      
 
   }  
 
@@ -47,9 +49,8 @@ export class VouchersPageComponent implements OnInit {
     this.open_modal(content);
   }
 
-  edit(content, item) {
-    this.current_item = item;
-    this.open_modal(content);
+  edit(item) {
+    this.router.navigateByUrl("/parameters/vouchers/" + item.id);
   }
 
   private open_modal(content: any) {

@@ -68,8 +68,8 @@
 										<tr>
 											<td colspan="11"
 												style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center"
-												[ngStyle]="{ 'background-color': d.program_id == 3 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)') }">
-												{{ d.program }} - {{ d.long_name }}
+												[ngStyle]="{ 'background-color': d.program_id == 3 || d.program_id == 2 ? '#333' : '#666' }">
+												{{ d.program }} - {{ d.long_name }} 
 											</td>
 										</tr>								
 										<tr>						
@@ -77,8 +77,8 @@
 												align="center" 
 												[ngStyle]="{ 'width': c.width, 
 															'background-color': selected_week.current && k3 == current_week_day + 1 ? 
-																d.program_id == 3 ? '#9b0e04' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)')
-																: d.program_id == 3 ? '#810c02' : (d.program_id == 2 ? 'rgb(54, 63, 167)' : 'rgb(8, 82, 1)'), 
+																d.program_id == 3 || d.program_id == 2 ? '#555' : '#777'
+																: d.program_id == 3 || d.program_id == 2 ? '#333' : '#666', 
 															'color': 'white' }"
 												[colSpan]="c.colspan || 1"
 												>	
@@ -127,19 +127,16 @@
 							style="width:100%;margin-bottom:50px">
 							<tr>
 								<td colspan="9"
-									style="background-color:gray;font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center">
+									style="background-color:silver;font-weight:bold;width:100%;color:#333;margin:0;padding:5px;text-align:center">
 									Público Externo
 								</td>
 							</tr>								
 							<tr>		
-								<td style="width:24.5%;background-color: gray"></td>				
-								<td style="width:9%;background-color: gray">
-
-								</td>
+								<td style="width:24.5%;background-color: silver"></td>				
 								<td *ngFor="let c of week_days, let k3 = index" 							
 									style="width:9.5%;text-align: center"
-									[ngStyle]="{'background-color': selected_week.current && k3 == current_week_day ? 'rgb(100,100,100)': 'gray', 
-												'color': 'white' }"							
+									[ngStyle]="{'background-color': selected_week.current && k3 == current_week_day ? '#EEE': '#CCC', 
+												'color': '#333' }"							
 									>																				
 									<div>								
 										<i  												
@@ -155,9 +152,6 @@
 								<td>									
 									<person-card [person]="visitant"></person-card>									
 								</td>
-								<td>
-									
-								</td>						
 								<td valign="middle" align="center" 										
 									*ngFor="let item of visitant.dates, let k2 = index" 
 									style="border-right:1px solid grey"

@@ -4,6 +4,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ModalService, ModalType } from 'app/services/modal-service';
 
 import { Subscription } from 'rxjs';
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'lateral-summary',
@@ -50,10 +51,11 @@ export class LateralSummaryComponent implements OnInit, OnDestroy {
   
       this.personService.getPeopleSummary(this.branch, this.week || 0)
       .subscribe(
-        data => {                  
-        const result = data as any;
+        (result : Result<any[]>) => {                 
+        console.log(result);
+        const data = result.data as any;
         
-        this.people_summary = result.people_summary;
+        this.people_summary = data.people_summary;
       },
       err => console.error(err)      
       );

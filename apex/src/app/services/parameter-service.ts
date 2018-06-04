@@ -138,6 +138,10 @@ export class ParameterService {
         return this.utilsService.cache_results(this.product_categories$, `/product_categories`, forceRefresh);                      
     }
 
+    getVoucher(id) {
+        return this.http.get(this.dataUrl + `/vouchers/${id}`);        
+    }
+
     getVouchers() {        
         return this.http.get(this.dataUrl + `/vouchers`);        
     }
