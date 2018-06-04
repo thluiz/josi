@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParameterService } from 'app/services/parameter-service';
 import { Component, OnInit, OnDestroy } from "@angular/core";
+import { isArray } from 'util';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -291,12 +292,19 @@ export class BranchDetailPageComponent implements OnInit, OnDestroy {
         current.associated_products = branch_products.filter(bp => bp.product_id != null);
         current.branch_products = branch_products.filter(bp => bp.product_id == null);
 
+        if(!current.associated_products) {
+          current.associated_products = [];
+        }
+
+        if(!current.branch_products) {
+          current.branch_products = [];
+        }
 
         if(!current.map) {
           current.map = [];
         }          
 
-        if(!current.acquirers) {
+        if(!current.acquirers || !isArray(current.acquirers)) {
           current.acquirers = [];
         }
 
