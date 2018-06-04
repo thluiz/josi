@@ -9,8 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sql = require("mssql");
-const auth = require("../../src/middlewares/auth");
-const jobs_service_1 = require("../../src/services/jobs-service");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     app.post("/api/voucher", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -44,64 +42,6 @@ function configure_routes(app, connection_pool) {
             .execute(`GetInvitesForVoucher`);
         let response = result.recordset[0];
         res.send(response);
-    }));
-    app.get("/api/parameters/vouchers", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield new sql.Request(pool)
-            .query(`select * from voucher order by active desc, title for json path`);
-        let response = result.recordset[0];
-        res.send(response[0].empty ? [] : response);
-    }));
-    app.post("/api/parameters/vouchers", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        const voucher = req.body.voucher;
-        let result = null;
-        try {
-            const start = Date.now();
-            if (voucher.id > 0) {
-                result = yield new sql.Request(pool)
-                    .input('id', sql.Int, voucher.id)
-                    .input('title', sql.VarChar(100), voucher.title)
-                    .input('url', sql.VarChar(100), voucher.url)
-                    .input('initials', sql.VarChar(3), voucher.initials)
-                    .input('additional_question', sql.VarChar(200), voucher.additional_question)
-                    .input('header_text', sql.VarChar(sql.MAX), voucher.header_text)
-                    .input('final_text', sql.VarChar(sql.MAX), voucher.final_text)
-                    .input('confirm_button_text', sql.VarChar(35), voucher.confirm_button_text)
-                    .input('header_title', sql.VarChar(40), voucher.header_title)
-                    .input('anonymous_header_text', sql.VarChar(sql.MAX), voucher.anonymous_header_text)
-                    .query(`update voucher set
-                            title = @title,
-                            [url] = @url,
-                            header_text = @header_text,
-                            anonymous_header_text = @anonymous_header_text,
-                            final_text = @final_text,
-                            additional_question = @additional_question,
-                            initials = @initials,
-                            confirm_button_text = @confirm_button_text,
-                            header_title = @header_title
-                        where id = @id`);
-            }
-            else {
-                result = yield new sql.Request(pool)
-                    .input('title', sql.VarChar(100), voucher.title)
-                    .input('url', sql.VarChar(100), voucher.url)
-                    .input('initials', sql.VarChar(3), voucher.initials)
-                    .input('additional_question', sql.VarChar(200), voucher.additional_question)
-                    .input('header_text', sql.VarChar(sql.MAX), voucher.header_text)
-                    .input('final_text', sql.VarChar(sql.MAX), voucher.final_text)
-                    .input('confirm_button_text', sql.VarChar(35), voucher.confirm_button_text)
-                    .input('header_title', sql.VarChar(40), voucher.header_title)
-                    .input('anonymous_header_text', sql.VarChar(sql.MAX), voucher.anonymous_header_text)
-                    .query(`insert into voucher (title, [url], header_text, final_text, 
-                        additional_question, initials, confirm_button_text, header_title, @anonymous_header_text)
-                            values (@title, @url, @header_text, @final_text, @additional_question, 
-                                    @initials, @confirm_button_text, @header_title, @anonymous_header_text)`);
-            }
-            let result_voucher = yield jobs_service_1.JobsService.update_voucher_site();
-            res.send(result_voucher);
-        }
-        catch (error) {
-            res.status(500).json(error);
-        }
     }));
 }
 exports.configure_routes = configure_routes;

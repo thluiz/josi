@@ -1,3 +1,4 @@
+import { Result } from 'app/shared/models/result';
 
 import {filter} from 'rxjs/operators';
 import { CardService } from 'app/services/card-service';
@@ -46,8 +47,8 @@ export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
       this.branches = branches;
     });
 
-    this.parameterService.getVouchers().subscribe((vouchers) => {
-      this.vouchers = vouchers;
+    this.parameterService.getVouchers().subscribe((result : Result<any[]>) => {
+      this.vouchers = result.data;
     });
 
     this.securityService.getCurrentUserData().subscribe((user) => {      

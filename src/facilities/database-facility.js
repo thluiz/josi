@@ -20,10 +20,13 @@ class DatabaseFacility {
             return yield connection.getRepository(type);
         });
     }
-    static ExecuteWithinTransaction(fun) {
+    static ExecuteWithinTransaction(fun, queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (queryRunner) {
+                return fun(queryRunner);
+            }
             const conn = yield DatabaseFacility.getConnection();
-            const queryRunner = conn.createQueryRunner();
+            queryRunner = conn.createQueryRunner();
             try {
                 yield queryRunner.startTransaction();
                 let result = yield fun(queryRunner);

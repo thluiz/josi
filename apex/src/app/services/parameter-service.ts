@@ -139,7 +139,7 @@ export class ParameterService {
     }
 
     getVouchers() {        
-        return this.http.get(this.dataUrl + `/parameters/vouchers`);        
+        return this.http.get(this.dataUrl + `/vouchers`);        
     }
 
     saveBranch(branch) {

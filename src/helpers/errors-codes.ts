@@ -2,5 +2,7 @@ export enum ErrorCode {
     NoError,
     GenericError,
     FailedGetConnection,
-    ExternalRequestError
+    ExternalRequestError,
+    ParcialExecution,
+    NothingChanged
 }

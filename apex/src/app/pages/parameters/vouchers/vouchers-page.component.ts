@@ -1,6 +1,7 @@
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Component, OnInit } from "@angular/core";
 import { ParameterService } from "app/services/parameter-service";
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -22,8 +23,8 @@ export class VouchersPageComponent implements OnInit {
   }
 
   private load_data() {
-    this.parameterService.getVouchers().subscribe((data: any[]) => {
-      this.collection = data;
+    this.parameterService.getVouchers().subscribe((result: Result<any[]>) => {
+      this.collection = result.data;
     });
   }
 

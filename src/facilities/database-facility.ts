@@ -14,9 +14,15 @@ export class DatabaseFacility {
         return await connection.getRepository(type);
     }
 
-    static async ExecuteWithinTransaction<T>(fun: (queryRunner: QueryRunner) => Promise<Result<T>>): Promise<Result<T>> {        
+    static async ExecuteWithinTransaction<T>(fun: (queryRunner: QueryRunner) => Promise<Result<T>>, 
+        queryRunner? :QueryRunner ): Promise<Result<T>> {        
+
+        if(queryRunner) {
+            return fun(queryRunner);
+        }
+
         const conn = await DatabaseFacility.getConnection();
-        const queryRunner = conn.createQueryRunner(); 
+        queryRunner = conn.createQueryRunner(); 
 
         try {            
             
