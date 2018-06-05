@@ -54,6 +54,7 @@ export function routes(app) {
     auth.ensureLoggedIn(),
     async (req, res, next) => {      
         const voucher_data = req.body.voucher;
+
         let result = await ParametersService.save_voucher(voucher_data);
         
         if(!result.success) {
@@ -61,13 +62,17 @@ export function routes(app) {
             return;
         }                     
 
-        let result_voucher = await JobsService.update_voucher_site();
-        
-        if(!result_voucher.success) {
-            result_voucher.error_code == ErrorCode.ParcialExecution;
+        try {
+            let result_voucher = await JobsService.update_voucher_site();
+            
+            if(!result_voucher.success) {
+                result_voucher.error_code == ErrorCode.ParcialExecution;
+            }
+            
+            res.send(result_voucher);
+        } catch (error) {
+            res.send(Result.Fail(ErrorCode.ParcialExecution, error)); 
         }
-
-        res.send(result_voucher);
     });
 }
 

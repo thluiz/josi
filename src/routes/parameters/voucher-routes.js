@@ -45,11 +45,16 @@ function routes(app) {
             res.send(result);
             return;
         }
-        let result_voucher = yield jobs_service_1.JobsService.update_voucher_site();
-        if (!result_voucher.success) {
-            result_voucher.error_code == errors_codes_1.ErrorCode.ParcialExecution;
+        try {
+            let result_voucher = yield jobs_service_1.JobsService.update_voucher_site();
+            if (!result_voucher.success) {
+                result_voucher.error_code == errors_codes_1.ErrorCode.ParcialExecution;
+            }
+            res.send(result_voucher);
         }
-        res.send(result_voucher);
+        catch (error) {
+            res.send(result_1.Result.Fail(errors_codes_1.ErrorCode.ParcialExecution, error));
+        }
     }));
 }
 exports.routes = routes;
