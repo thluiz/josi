@@ -36,5 +36,14 @@ export function configure_routes(app: any, connection_pool: any) {
 
         res.send(response);
     });
-   
+
+    app.get("/api/voucher/data", async(req, res, next) => {
+        const result = await new sql.Request(pool)          
+        .execute(`GetDataForVoucher`);                
+
+        let response = result.recordset[0];
+
+        res.send(response);
+    });
+  
 }
