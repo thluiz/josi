@@ -28,15 +28,6 @@ export function configure_routes(app: any, connection_pool: any) {
         res.send({ sucess: true});   
     });
 
-    app.get("/api/voucher/:id?", async(req, res, next) => {
-        const result = await new sql.Request(pool)          
-                                    .execute(`GetDataForVoucher`);                
-
-        let response = result.recordset[0];
-
-        res.send(response);
-    });
-
     app.get("/api/voucher/invites", async(req, res, next) => {
         const result = await new sql.Request(pool)          
         .execute(`GetInvitesForVoucher`);                

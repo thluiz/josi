@@ -13,7 +13,7 @@ import to from 'await-to-js'
 export const HOURLY_JOB_EXECUTION = "HOURLY_JOB_EXECUTION";
 
 export class JobsService {
-    
+
     @trylog()
     static async execute_hourly_jobs(): Promise<Result<void>> {
         console.log('Start running jobs...');
@@ -35,31 +35,31 @@ export class JobsService {
         results.push(await this.cleanup_sessions());
 
         let end_time = new Date().getTime();
-        
+
         let err = results.find(r => !r.success);
 
-        LoggerService.benchmark(key, HOURLY_JOB_EXECUTION, { 
-            start_time, 
+        LoggerService.benchmark(key, HOURLY_JOB_EXECUTION, {
+            start_time,
             success: err == null,
-            end_time, 
+            end_time,
             duration: (end_time - start_time)/1000,
-            results 
+            results
         });
-        
+
         console.log("Finished running jobs!");
 
         if(err) return err;
-        
-        return Result.GeneralOk();       
+
+        return Result.GeneralOk();
     }
 
     @trylog()
-    static async cleanup_sessions(): Promise<Result<any>> {       
+    static async cleanup_sessions(): Promise<Result<any>> {
         const AzureSessionStore = require('../middlewares/azure-session-storage');
         const storage = new AzureSessionStore();
 
         try {
-            let results = await storage.cleanup();        
+            let results = await storage.cleanup();
 
             return results;
         } catch (error) {
@@ -68,18 +68,18 @@ export class JobsService {
     }
 
     @trylog()
-    static async update_voucher_site(): Promise<Result<AxiosResponse>> {        
+    static async update_voucher_site(): Promise<Result<AxiosResponse>> {
         let [ err_voucher, result_voucher ] = await to(axios.get(process.env.VOUCHER_SITE_UPDATE_URL));
 
-        if(err_voucher || result_voucher.status != 200)                    
+        if(err_voucher || result_voucher.status != 200)
             return Result.Fail(ErrorCode.ExternalRequestError, err_voucher || new Error(result_voucher.statusText), null);
 
         let [ err_invites, result_invites ] = await to(axios.get(process.env.VOUCHER_SITE_UPDATE_INVITES_URL));
 
-        if(err_invites || result_invites.status != 200)                    
+        if(err_invites || result_invites.status != 200)
             return Result.Fail(ErrorCode.ExternalRequestError, err_invites || new Error(result_invites.statusText), null);
 
-        return Result.GeneralOk();        
+        return Result.GeneralOk();
     }
 
     @trylog()
