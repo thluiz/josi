@@ -26,6 +26,7 @@ const errors_codes_1 = require("../helpers/errors-codes");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const logger_service_1 = require("./logger-service");
 const uuid = require("uuid/v4");
+const await_to_js_1 = require("await-to-js");
 exports.HOURLY_JOB_EXECUTION = "HOURLY_JOB_EXECUTION";
 class JobsService {
     static execute_hourly_jobs() {
@@ -76,12 +77,12 @@ class JobsService {
     }
     static update_voucher_site() {
         return __awaiter(this, void 0, void 0, function* () {
-            let result_voucher = yield axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_URL);
-            if (result_voucher.status != 200)
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.ExternalRequestError, new Error(result_voucher.statusText), null);
-            let result_invites = yield axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_INVITES_URL);
-            if (result_invites.status != 200)
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.ExternalRequestError, new Error(result_invites.statusText), null);
+            let [err_voucher, result_voucher] = yield await_to_js_1.default(axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_URL));
+            if (err_voucher || result_voucher.status != 200)
+                return result_1.Result.Fail(errors_codes_1.ErrorCode.ExternalRequestError, err_voucher || new Error(result_voucher.statusText), null);
+            let [err_invites, result_invites] = yield await_to_js_1.default(axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_INVITES_URL));
+            if (err_invites || result_invites.status != 200)
+                return result_1.Result.Fail(errors_codes_1.ErrorCode.ExternalRequestError, err_invites || new Error(result_invites.statusText), null);
             return result_1.Result.GeneralOk();
         });
     }

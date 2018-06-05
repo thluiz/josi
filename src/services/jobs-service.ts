@@ -8,6 +8,7 @@ import { Observable, from, concat, zip } from 'rxjs';
 import { trylog } from "../decorators/trylog-decorator";
 import { LoggerService, LogOrigins, LogLevel } from "./logger-service";
 import * as uuid from "uuid/v4";
+import to from 'await-to-js'
 
 export const HOURLY_JOB_EXECUTION = "HOURLY_JOB_EXECUTION";
 
@@ -68,15 +69,15 @@ export class JobsService {
 
     @trylog()
     static async update_voucher_site(): Promise<Result<AxiosResponse>> {        
-        let result_voucher = await axios.get(process.env.VOUCHER_SITE_UPDATE_URL);
+        let [ err_voucher, result_voucher ] = await to(axios.get(process.env.VOUCHER_SITE_UPDATE_URL));
 
-        if(result_voucher.status != 200)                    
-            return Result.Fail(ErrorCode.ExternalRequestError, new Error(result_voucher.statusText), null);
+        if(err_voucher || result_voucher.status != 200)                    
+            return Result.Fail(ErrorCode.ExternalRequestError, err_voucher || new Error(result_voucher.statusText), null);
 
-        let result_invites = await axios.get(process.env.VOUCHER_SITE_UPDATE_INVITES_URL);
+        let [ err_invites, result_invites ] = await to(axios.get(process.env.VOUCHER_SITE_UPDATE_INVITES_URL));
 
-        if(result_invites.status != 200)                    
-            return Result.Fail(ErrorCode.ExternalRequestError, new Error(result_invites.statusText), null);
+        if(err_invites || result_invites.status != 200)                    
+            return Result.Fail(ErrorCode.ExternalRequestError, err_invites || new Error(result_invites.statusText), null);
 
         return Result.GeneralOk();        
     }
