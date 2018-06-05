@@ -8,6 +8,15 @@ export function trylog() {
         descriptor.value = function (...args) {
             try {
                 let result = originalMethod.apply(this, args);
+
+                if(result && !result.success) {
+                    LoggerService.error(target, new Error('Failed Result'), {
+                        action: method,
+                        args,
+                        result
+                    });
+                }
+
                 return result;
             } catch (error) {
 
