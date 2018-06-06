@@ -147,13 +147,14 @@
                                             || current_incident.started_on_hour)">				
                     <div class="row">					
                         <div class="col-12">													
-                            <fieldset class="form-group">					
+                            <fieldset class="form-group">	
                                 <textarea class="form-control" 
                                     name="closing_contact_text"
-                                    [(ngModel)]="current_incident.closing_contact_text"	
+                                    [(ngModel)]="current_incident.close_text"	
                                     (ngModelChange)="validate_for_closing(current_incident)"			
                                     rows="3" placeholder="Como foi?"></textarea>
-                            </fieldset>	
+                            </fieldset>
+                            {{ current_incident | json }}	
                             <span 
                                 style="font-style: italic;color:red"
                                 *ngIf="current_incident.valid_for_closing != null 

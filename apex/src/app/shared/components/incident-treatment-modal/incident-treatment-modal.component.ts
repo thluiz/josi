@@ -117,8 +117,8 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
 
   validate_for_closing(incident) {
     if(incident.need_description_for_closing
-      && (!incident.closing_contact_text
-      || incident.closing_contact_text.length < 5)) {
+      && (!incident.close_text
+      || incident.close_text.length < 5)) {
         incident.valid_for_closing = false;
         return;
       }
