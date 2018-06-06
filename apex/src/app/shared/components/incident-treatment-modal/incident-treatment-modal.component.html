@@ -154,7 +154,6 @@
                                     (ngModelChange)="validate_for_closing(current_incident)"			
                                     rows="3" placeholder="Como foi?"></textarea>
                             </fieldset>
-                            {{ current_incident | json }}	
                             <span 
                                 style="font-style: italic;color:red"
                                 *ngIf="current_incident.valid_for_closing != null 

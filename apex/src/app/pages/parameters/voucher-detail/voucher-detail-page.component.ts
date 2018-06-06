@@ -21,7 +21,7 @@ export class VoucherDetailPageComponent implements OnInit, OnDestroy {
   voucher : Voucher;
   saving = false;
   result_form_text = "";
-
+  branches = [];
 
   constructor(private parameterService: ParameterService, 
               private ngbModalService: NgbModal,
@@ -59,10 +59,10 @@ export class VoucherDetailPageComponent implements OnInit, OnDestroy {
   private load_data(callback = () => { }) {
     observableZip(
       this.parameterService.getVoucher(this.id),
-      (result : Result<Voucher>) => {
-        const voucher = result.data[0];
-
-        this.voucher = voucher;
+      this.parameterService.getActiveBranches(),
+      (result_voucher : Result<Voucher>, result_branches : any) => {
+        this.voucher = result_voucher.data[0];
+        this.branches = result_branches;
 
         if(callback) {
           callback();

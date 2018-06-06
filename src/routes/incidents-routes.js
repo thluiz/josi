@@ -43,6 +43,7 @@ function routes(app) {
         res.send(result);
     }));
     app.post("/api/incident/close", auth.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
+        console.log(req.body);
         let user = yield security_service_1.SecurityService.getUserFromRequest(req);
         let result = yield incidents_service_1.IncidentsService.close_incident({
             id: req.body.id,
