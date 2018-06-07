@@ -1,7 +1,11 @@
+export enum ErrorCode {
+    NothingChanged = 5    
+}
+
 export class Result<T = any> {    
     public id : string;    
     public time : number;
-
+    public error_code : ErrorCode;
     public static Ok<T>(data?: T, type = "Generic"): Result<T> {        
         return new Result<T>(true, data);
     }

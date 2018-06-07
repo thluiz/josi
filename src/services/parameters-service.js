@@ -49,30 +49,40 @@ class ParametersService {
     }
     static create_branch_voucher(branch, voucher) {
         return __awaiter(this, void 0, void 0, function* () {
-            const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
-            voucher = yield VR.findOne(voucher.id, { relations: ["branch"] }); //load relation
-            if (voucher.branches.find(b => b.id == branch.id)) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.NothingChanged, null);
+            try {
+                const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
+                voucher = yield VR.findOne(voucher.id, { relations: ["branches"] }); //load relation
+                if (voucher.branches.find(b => b.id == branch.id)) {
+                    return result_1.Result.Fail(errors_codes_1.ErrorCode.NothingChanged, null);
+                }
+                voucher.branches.push(branch);
+                yield VR.save(voucher);
+                return result_1.Result.Ok(BRANCHVOUCHER_CREATED, {
+                    branch, voucher
+                });
             }
-            voucher.branches.push(branch);
-            yield VR.save(voucher);
-            return result_1.Result.Ok(BRANCHVOUCHER_CREATED, {
-                branch, voucher
-            });
+            catch (error) {
+                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+            }
         });
     }
     static remove_branch_voucher(branch, voucher) {
         return __awaiter(this, void 0, void 0, function* () {
-            const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
-            voucher = yield VR.findOne(voucher.id, { relations: ["branch"] }); //load relation
-            if (!voucher.branches.find(b => b.id == branch.id)) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.NothingChanged, null);
+            try {
+                const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
+                const voucher_branches = yield VR.findOne(voucher.id, { relations: ["branches"] });
+                if (!voucher_branches.branches.find(b => b.id == branch.id)) {
+                    return result_1.Result.Fail(errors_codes_1.ErrorCode.NothingChanged, null);
+                }
+                voucher_branches.branches = voucher_branches.branches.filter(b => b.id != branch.id);
+                yield VR.save(voucher_branches);
+                return result_1.Result.Ok(BRANCHVOUCHER_REMOVED, {
+                    branch, voucher
+                });
             }
-            voucher.branches = voucher.branches.filter(b => b.id != branch.id);
-            yield VR.save(voucher);
-            return result_1.Result.Ok(BRANCHVOUCHER_REMOVED, {
-                branch, voucher
-            });
+            catch (error) {
+                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+            }
         });
     }
     static update_branch(branch) {

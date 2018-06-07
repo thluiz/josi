@@ -13,7 +13,7 @@ export class Result<T = any> {
     }
 
     public static Fail<T>(code: ErrorCode, error: Error, message?: string, data?: T): Result<T> {
-        return new Result<T>(false, 'Fail', data, error, message, code);
+        return new Result<T>(false, 'Fail', data, error, message || error != null? error.message : null, code);
     }
 
     private constructor(public success: boolean, public type:string, public data: T|Error, public error?: Error, public message?: string, public error_code?: ErrorCode) {        

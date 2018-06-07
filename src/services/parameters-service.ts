@@ -15,6 +15,7 @@ import { ErrorCode } from '../helpers/errors-codes';
 import { Country } from '../entity/Country';
 import { Card } from '../entity/Card';
 import { Person } from '../entity/Person';
+import to from 'await-to-js';
 
 const PARAMETERS_COLLECTION = "parameters-events";
 const BRANCH_CREATED = "BRANCH_CREATED";
@@ -52,39 +53,47 @@ export class ParametersService {
     @trylog()
     @firebaseEmitter(PARAMETERS_COLLECTION)
     static async create_branch_voucher(branch : Branch, voucher : Voucher ) : Promise<Result<{branch: Branch, voucher: Voucher}>> {
-        const VR = await DatabaseFacility.getRepository<Voucher>(Voucher);             
-
-        voucher = await VR.findOne(voucher.id, { relations: ["branch"] }); //load relation
-
-        if(voucher.branches.find(b => b.id == branch.id)) {
-            return Result.Fail(ErrorCode.NothingChanged, null);
+        try {
+            const VR = await DatabaseFacility.getRepository<Voucher>(Voucher);             
+    
+            voucher = await VR.findOne(voucher.id, { relations: ["branches"] }); //load relation
+    
+            if(voucher.branches.find(b => b.id == branch.id)) {
+                return Result.Fail(ErrorCode.NothingChanged, null);
+            }
+    
+            voucher.branches.push(branch);
+            await VR.save(voucher);
+    
+            return Result.Ok(BRANCHVOUCHER_CREATED, {
+                branch, voucher
+            })
+        } catch (error) {
+            return Result.Fail(ErrorCode.GenericError, error);            
         }
-
-        voucher.branches.push(branch);
-        await VR.save(voucher);
-
-        return Result.Ok(BRANCHVOUCHER_CREATED, {
-            branch, voucher
-        })
     }
 
     @trylog()
     @firebaseEmitter(PARAMETERS_COLLECTION)
     static async remove_branch_voucher(branch : Branch, voucher : Voucher ) : Promise<Result<{branch: Branch, voucher: Voucher}>> {
-        const VR = await DatabaseFacility.getRepository<Voucher>(Voucher);             
-
-        voucher = await VR.findOne(voucher.id, { relations: ["branch"] }); //load relation
-
-        if(!voucher.branches.find(b => b.id == branch.id)) {
-            return Result.Fail(ErrorCode.NothingChanged, null);
+        try {
+            const VR = await DatabaseFacility.getRepository<Voucher>(Voucher);             
+            
+            const voucher_branches = await VR.findOne(voucher.id, { relations: ["branches"] });
+            
+            if(!voucher_branches.branches.find(b => b.id == branch.id)) {
+                return Result.Fail(ErrorCode.NothingChanged, null);
+            }
+    
+            voucher_branches.branches = voucher_branches.branches.filter(b => b.id != branch.id);
+            await VR.save(voucher_branches);            
+            
+            return Result.Ok(BRANCHVOUCHER_REMOVED, {
+                branch, voucher
+            })
+        } catch (error) {
+            return Result.Fail(ErrorCode.GenericError, error);
         }
-
-        voucher.branches = voucher.branches.filter(b => b.id != branch.id);
-        await VR.save(voucher);            
-        
-        return Result.Ok(BRANCHVOUCHER_REMOVED, {
-            branch, voucher
-        })
     }
 
     @trylog()

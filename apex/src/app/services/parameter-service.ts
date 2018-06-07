@@ -1,4 +1,3 @@
-
 import {tap} from 'rxjs/operators';
 import { UtilsService } from 'app/services/utils-service';
 import {Injectable} from '@angular/core';
@@ -6,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import {Observable, ReplaySubject} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
 import { Subject }    from 'rxjs';
+import { Result } from 'app/shared/models/result';
 
 export enum Configurations {
     MinimalDirectIndicationsPerActiveMember = 1,
@@ -146,6 +146,21 @@ export class ParameterService {
         return this.http.get(this.dataUrl + `/vouchers`);        
     }
 
+    getBranchVouchers() {        
+        return this.http.get(this.dataUrl + `/branch_vouchers`);        
+    }
+
+    remove_voucher_branch(branch, voucher) {
+        return this.http.post(`${this.dataUrl}/parameters/voucher_branch/remove`, {
+            branch, voucher 
+        });
+    }
+
+    save_voucher_branch(branch, voucher) {
+        return this.http.post(`${this.dataUrl}/parameters/voucher_branch/add`, {
+            branch, voucher 
+        });
+    }
     saveBranch(branch) {
         return this.http
         .post(this.dataUrl + `/branches`, {

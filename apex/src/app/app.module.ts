@@ -7,6 +7,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from "./shared/shared.module";
 
+import { ToastrModule, ToastrService } from 'ngx-toastr';
+
 import { AppComponent } from './app.component';
 import { ContentLayoutComponent } from "./layouts/content/content-layout.component";
 import { FullLayoutComponent } from "./layouts/full/full-layout.component";
@@ -86,6 +88,7 @@ import { HttpService } from './services/http-service';
         AngularFirestoreModule,
         AngularFireAuthModule, 
         AngularFireStorageModule,             
+        ToastrModule.forRoot()
         //BrowserModule,
         //FormsModule, 
         //JsonpModule
@@ -109,7 +112,8 @@ import { HttpService } from './services/http-service';
         AppInsightsService,        
         FirebaseService,
         ApplicationEventService,
-        HttpService                
+        HttpService,
+        
     ],
     bootstrap: [AppComponent]
 })

@@ -24,14 +24,14 @@ function routes(app) {
             : yield VR.find({ order: { "active": "DESC" } });
         res.send(result_1.Result.GeneralOk(vouchers));
     }));
-    app.post("/api/parametes/voucher_branch/add", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/parameters/voucher_branch/add", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const BR = yield database_facility_1.DatabaseFacility.getRepository(Branch_1.Branch);
         const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
         let branch = yield BR.findOne(req.body.branch.id);
         let voucher = yield VR.findOne(req.body.voucher.id);
         res.send(yield parameters_service_1.ParametersService.create_branch_voucher(branch, voucher));
     }));
-    app.post("/api/parametes/voucher_branch/remove", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/parameters/voucher_branch/remove", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const BR = yield database_facility_1.DatabaseFacility.getRepository(Branch_1.Branch);
         const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
         let branch = yield BR.findOne(req.body.branch.id);

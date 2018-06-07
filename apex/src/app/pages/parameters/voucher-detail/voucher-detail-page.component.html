@@ -98,43 +98,34 @@
             {{ result_form_text }}
           </div>
         </div>
-        <div class="col-12 col-md-6">
-          <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
-            <div class="row" style="border-bottom: 1px solid black">
-              <div class="col-10 col-xl-10 col-sm-9">
-                <h6 style="padding:0;margin:0;font-weight:bold">
-                  <i class="fas fa-credit-card"></i> Adquirentes </h6>
-              </div>
-              <div class="col-2 col-sm-3 col-xl-2 text-right">
-                <button type="button" class="btn btn-silver btn-sm" style="margin:0;padding:2px;line-height:10px" (click)="open_add_acquirer(new_acquirer);">
-                  <i class="fas fa-plus-circle"></i>
-                </button>
-              </div>
-            </div>
 
-            <div class="row">
-              <div class="col-12 text-center">
-                Nenhum Adquirente encontrado
-              </div>
-            </div>
-            <div class="row" *ngFor="let ac of current.acquirers">
-              <div class="col-10">
-                {{ ac.name }}
-              </div>
-              <div class="col-2 col-sm-3 col-xl-2 text-right">
-                <button type="button" class="btn btn-silver btn-sm" style="margin:0;padding:2px;line-height:10px" *ngIf="!ac.remove" (click)="ac.remove = true">
-                  <i class="ft-trash-2"></i>
-                </button>
-                <button type="button" class="btn btn-danger btn-sm" *ngIf="ac.remove" style="margin:0;padding:2px;line-height:10px" (click)="toggle_associate_acquirer(ac.id);">
-                  <i class="ft-trash-2"></i>
-                </button>
-                <button type="button" class="btn btn-secondary btn-sm" *ngIf="ac.remove" style="margin:0;padding:2px;line-height:10px" (click)="ac.remove = false">
-                  <i class="icon-action-undo"></i>
-                </button>
-              </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
+          <div class="row" style="border-bottom: 1px solid black">
+            <div class="col-10 col-xl-10 col-sm-9">
+              <h6 style="padding:0;margin:0;font-weight:bold">
+                Núcleos
+
+                <span *ngIf="saving"><i class="fas fa-spinner fa-spin"></i></span>
+              </h6>
             </div>
           </div>
 
+          <div class="row" *ngFor="let b of branches">
+            <div class="col-11" style="padding-top: 5px; padding-bottom:5px;">
+              <div style="display:inline-block;margin-left:10px">
+                <label class="option_container" style="font-weight:normal;font-size: 1em;">
+                  {{ b.name }}
+                  <input type="checkbox" [checked]="b.receive_voucher" 
+                  (change)="toggle_receive_voucher(b)" 
+                  id="item_receive_voucher" name="item_receive_voucher"
+                  />
+                  <span class="checkmark" *ngIf="!saving"></span>
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

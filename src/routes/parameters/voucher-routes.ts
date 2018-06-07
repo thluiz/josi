@@ -24,7 +24,7 @@ export function routes(app) {
         res.send(Result.GeneralOk(vouchers));                                          
     });
 
-    app.post("/api/parametes/voucher_branch/add",
+    app.post("/api/parameters/voucher_branch/add",
         auth.ensureLoggedIn(),
         async (req, res, next) => {
             const BR = await DatabaseFacility.getRepository<Branch>(Branch);
@@ -37,7 +37,7 @@ export function routes(app) {
         }
     );
 
-    app.post("/api/parametes/voucher_branch/remove",
+    app.post("/api/parameters/voucher_branch/remove",
         auth.ensureLoggedIn(),
         async (req, res, next) => {
             const BR = await DatabaseFacility.getRepository<Branch>(Branch);

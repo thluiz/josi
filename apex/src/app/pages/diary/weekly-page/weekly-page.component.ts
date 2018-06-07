@@ -162,16 +162,16 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
         if(this.domains) {
           this.domains.daily = [];
 
-          for(var w = 0; w < data.domains.length; w++) {
+          for(let w = 0; w < data.domains.length; w++) {
             let domain = data.domains[w];
             this.domains[w].daily = [];
             let people = data.people != null ? data.people.filter(p => p.domain_id == domain.id) : [];
             this.domains[w].number_of_members = people.length;
 
-            for(var i = 0; i< this.week_days.length; i++) {    
+            for(let i = 0; i< this.week_days.length; i++) {    
               let c = this.week_days[i];
               
-              for(var z = 0; z< people.length; z++) {
+              for(let z = 0; z< people.length; z++) {
                 let person_incidents = people[z];  
                 
                 if(!person_incidents.dates) {
@@ -180,13 +180,14 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
 
                 person_incidents.dates[i] = person_incidents.dates[i] || [];
                 
-                let incidents = data.incidents.filter((i : any) => { 
-                  const incident_date = new Date(i.date);
+                let incidents = data.incidents.filter((k : any) => { 
+                  const incident_date = new Date(k.date);
                   const week_day_date = new Date(c.date);  
-                  return incident_date.getDate() == week_day_date.getDate()
-                          && incident_date.getFullYear() == week_day_date.getFullYear()
-                          && incident_date.getMonth() == week_day_date.getMonth()
-                          && i.person_id == people[z].person_id;
+                  debugger;
+                  return incident_date.getUTCDate() == week_day_date.getUTCDate()
+                          && incident_date.getUTCFullYear() == week_day_date.getUTCFullYear()
+                          && incident_date.getUTCMonth() == week_day_date.getUTCMonth()
+                          && k.person_id == people[z].person_id;
                 });
                 
                 person_incidents.dates[i] = person_incidents.dates[i].concat(incidents);                              
@@ -215,10 +216,10 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
         || p.is_associated_with_member || p.is_external_member || p.branch_id != this.current_branch);
     }
     
-    for(var i = 0; i< this.week_days.length; i++) {    
+    for(let i = 0; i< this.week_days.length; i++) {    
       let c = this.week_days[i];
       
-      for(var z = 0; z < external_people.length; z++) {
+      for(let z = 0; z < external_people.length; z++) {
         let person_incidents = external_people[z];  
         if(!person_incidents.dates) {
           person_incidents.dates = [];
@@ -226,13 +227,14 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
 
         person_incidents.dates[i] = person_incidents.dates[i] || [];
         
-        let incidents = result.incidents.filter((i : any) => {
-          const incident_date = new Date(i.date);
-          const week_day_date = new Date(c.date);  
-          return incident_date.getDate() == week_day_date.getDate()
-                          && incident_date.getFullYear() == week_day_date.getFullYear()
-                          && incident_date.getMonth() == week_day_date.getMonth()
-                          && i.person_id == external_people[z].person_id;
+        let incidents = result.incidents.filter((k : any) => {
+          const incident_date = new Date(k.date);
+          const week_day = new Date(c.date);
+
+          return incident_date.getUTCDate() == week_day.getUTCDate() 
+                          && incident_date.getUTCFullYear() == week_day.getUTCFullYear()
+                          && incident_date.getUTCMonth() == week_day.getUTCMonth()
+                          && k.person_id == external_people[z].person_id;
         });
 
         if(incidents.length > 0) {

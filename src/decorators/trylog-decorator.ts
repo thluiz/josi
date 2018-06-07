@@ -7,11 +7,8 @@ export function trylog() {
         var originalMethod = descriptor.value;
         descriptor.value = function (...args) {
             try {
-                let result = originalMethod.apply(this, args);
-
-                return result;
+                return originalMethod.apply(this, args);
             } catch (error) {
-
                 LoggerService.error(target, error, {
                     action: method,
                     args

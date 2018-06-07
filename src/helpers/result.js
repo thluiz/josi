@@ -18,7 +18,7 @@ class Result {
         return new Result(true, type, data);
     }
     static Fail(code, error, message, data) {
-        return new Result(false, 'Fail', data, error, message, code);
+        return new Result(false, 'Fail', data, error, message || error != null ? error.message : null, code);
     }
 }
 exports.Result = Result;
