@@ -38,8 +38,12 @@
             </div>
         </div>										
     </div>
-        
-    <div class="col-1 d-none d-md-block" *ngIf="!hideActions">
+    
+    <div class="col-1 d-none d-md-block" *ngIf="!hideActions && saving">
+        <i class="fas fa-spinner fa-spin"></i>
+    </div>
+
+    <div class="col-1 d-none d-md-block" *ngIf="!hideActions && !saving">
         <button type="button" 
         class="btn btn-silver btn-sm btn-action" 										
         title="Iniciar Atividade"									
@@ -83,7 +87,10 @@
         <div class="row">
             <div class="col-12">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-12" *ngIf="saving">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <div class="col-12" *ngIf="!saving">
                         <button type="button" 
                         class="btn btn-silver btn-sm btn-action" 										
                         title="Iniciar Atividade"									

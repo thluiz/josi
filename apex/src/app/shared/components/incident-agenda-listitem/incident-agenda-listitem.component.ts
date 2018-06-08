@@ -26,6 +26,7 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
     @Input() hideActions = false;
     @Input() showTitle = false;
     @Input() showCloseText = false;
+    saving = false;    
 
     private incidents_subscriber : Subscription;
 
@@ -59,12 +60,18 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
     }
 
     start_incident(incident) {      
+      this.saving = true;
       this.incidentService.start_incident(incident)
-      .subscribe(); 
+      .subscribe((result) => {
+        this.saving = false;
+      }); 
     }
   
     close_incident(incident) {      
+      this.saving = true;
       this.incidentService.close_incident(incident)
-      .subscribe(); 
+      .subscribe((data) => {
+        this.saving = false;        
+      }); 
     }
 }

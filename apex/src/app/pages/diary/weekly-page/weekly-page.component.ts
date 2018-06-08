@@ -149,7 +149,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
           { width: "24.5%" }          
         ];
                 
-        for(var i = 0; i< this.week_days.length; i++) {
+        for(let i = 0; i< this.week_days.length; i++) {
           let c = this.week_days[i];
           this.cols[this.cols.length] = {
             prop: 'incidents' + c.date,
@@ -182,8 +182,7 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
                 
                 let incidents = data.incidents.filter((k : any) => { 
                   const incident_date = new Date(k.date);
-                  const week_day_date = new Date(c.date);  
-                  debugger;
+                  const week_day_date = new Date(c.date);                    
                   return incident_date.getUTCDate() == week_day_date.getUTCDate()
                           && incident_date.getUTCFullYear() == week_day_date.getUTCFullYear()
                           && incident_date.getUTCMonth() == week_day_date.getUTCMonth()
