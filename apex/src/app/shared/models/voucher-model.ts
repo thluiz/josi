@@ -11,4 +11,5 @@ export class Voucher {
     anonymous_header_text: string;
     active: boolean;
     branches: any[];
+    youtube_url: string;
 }

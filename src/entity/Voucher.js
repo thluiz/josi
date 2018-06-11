@@ -28,6 +28,10 @@ __decorate([
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
+], Voucher.prototype, "youtube_url", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
 ], Voucher.prototype, "header_text", void 0);
 __decorate([
     typeorm_1.Column(),

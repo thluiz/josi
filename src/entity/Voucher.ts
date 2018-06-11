@@ -12,6 +12,9 @@ export class Voucher {
     @Column()
     url: string;
 
+    @Column()
+    youtube_url: string;
+
     @Column()    
     header_text: string;
 

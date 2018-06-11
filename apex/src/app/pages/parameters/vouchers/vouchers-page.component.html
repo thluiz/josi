@@ -57,6 +57,16 @@
                 </div>
             </div>                       
         </div> 
+        <div class="row">
+            <div class="col-12">
+                <label for="item_youtube_url">URL Youtube:</label>
+                <div class="input-group">
+                <input class="form-control" [(ngModel)]="current_item.youtube_url" 
+                    autocomplete="off" placeholder="https://www.youtube.com/watch?v=CODIGO" maxlength="100"
+                    id="item_youtube_url" name="item_youtube_url" />
+                </div>
+            </div>
+        </div>
         <div class="row">                    
             <div class="col-6">
                 <label for="item_url">Url</label>                                                									
