@@ -18,8 +18,8 @@ function routes(app) {
         let result = yield IR.getCurrentActivities(req.params.branch > 0 ? req.params.branch : null);
         res.send(result);
     }));
-    app.get("/api/incidents/history/:person/:activity_type/:page?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield IR.getPersonIncidentsHistory(req.params.person, req.params.activity_type, req.params.page > 0 ? req.params.page : 1);
+    app.get("/api/incidents/history/:person/:start_date/:end_date/:activity_type?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield IR.getPersonIncidentsHistory(req.params.person, req.params.start_date, req.params.end_date, req.params.activity_type);
         res.send(result);
     }));
     app.get("/api/incidents/:id", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {

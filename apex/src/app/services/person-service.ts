@@ -1,3 +1,4 @@
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 import {tap} from 'rxjs/operators';
 import { IContact } from './person-service';
@@ -7,6 +8,7 @@ import {Observable} from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
 import { Subject } from 'rxjs';
 import { Result } from 'app/shared/models/result';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date';
 
 export enum DailyMonitorDisplayType {
     Week = 0,
@@ -224,6 +226,18 @@ export class PersonService {
   getIncidentHistory(id, type: ActivityType, page = 1) {    
     return this.http
         .get(this.dataUrl + `/incidents/history/${id}/${type.toFixed(0)}/${page}`);
+  }
+
+  getAllIncidentHistory(person_id, start_date : NgbDateStruct, end_date: NgbDateStruct, type?: ActivityType) {    
+    let url = this.dataUrl + `/incidents/history/${person_id}`
+            + `/${start_date.year}-${start_date.month}-${start_date.day}`
+            + `/${end_date.year}-${end_date.month}-${end_date.day}`;
+
+    if(type != null) {
+      url += `/${type.toFixed()}`
+    }            
+
+    return this.http.get(url);
   }
 
   getPersonRoles(id) {    

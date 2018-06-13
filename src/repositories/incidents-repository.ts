@@ -43,10 +43,11 @@ export class IncidentsRepository{
     }
 
     @trylog()
-    static async getPersonIncidentsHistory(person_id, activity_type, page = 1, pagesize = 10) : Promise<Result<any>> {        
-        return await DatabaseFacility.ExecuteJsonSP("GetPersonIncidentHistory",
-            { "page":  page },
+    static async getPersonIncidentsHistory(person_id, start_date, end_date, activity_type) : Promise<Result<any>> {        
+        return await DatabaseFacility.ExecuteJsonSP("GetPersonIncidentHistory2",            
             { "person_id":  person_id },
+            { "start_date":  start_date },
+            { "end_date":  end_date },
             { "activity_type": activity_type }
         );
     }

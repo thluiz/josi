@@ -16,12 +16,12 @@ export function routes(app) {
         res.send(result);        
     });
 
-    app.get("/api/incidents/history/:person/:activity_type/:page?",
+    app.get("/api/incidents/history/:person/:start_date/:end_date/:activity_type?",
     auth.ensureLoggedIn(),
     async (req, res, next) => {          
         let result = await IR.getPersonIncidentsHistory( req.params.person,
-            req.params.activity_type, 
-            req.params.page > 0 ? req.params.page : 1)
+            req.params.start_date, req.params.end_date, 
+            req.params.activity_type)
         
         res.send(result);
     });

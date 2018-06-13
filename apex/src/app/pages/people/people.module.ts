@@ -43,6 +43,7 @@ import { PersonIndicationListModule } from 'app/shared/components/person-indicat
 import { PersonPartnershipListModule } from 'app/pages/people/shared/components/person-partnership-list/person-partnership-list.module';
 import { PersonExternalUnitListModule } from 'app/pages/people/shared/components/person-external-unit-list/person-external-unit-list.module';
 import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-image/person-avatar-image.module';
+import { PersonIncidentHistoryListModule } from 'app/shared/components/person-incident-history-list/person-incident-history-list.module';
 
 
 @NgModule({
@@ -70,7 +71,8 @@ import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-ima
         PersonRelationshipListModule,
         IncidentFinancialListitemModule,
         IncidentAgendaListitemModule,
-        PersonAvatarImageModule
+        PersonAvatarImageModule,
+        PersonIncidentHistoryListModule
     ],
     declarations: [       
         MembersPanelPageComponent,

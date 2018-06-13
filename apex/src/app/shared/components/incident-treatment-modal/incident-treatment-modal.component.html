@@ -31,6 +31,17 @@
   </div>
   <div class="modal-body">
     <form class="form" #f="ngForm">
+      <div class="row" *ngIf="person">
+        <div class="col-12">
+          <person-card [person]="person">
+          </person-card>
+        </div>
+      </div>
+      <div class="row" *ngIf="person && false">
+          <div class="col-12">
+            <person-incident-history-list [person]="person"></person-incident-history-list>
+          </div>
+      </div>
       <div class="row" *ngIf="current_incident.card_id > 0" style="margin-bottom:15px;">
         <div class="col-12">
           <label>Referente à: </label>

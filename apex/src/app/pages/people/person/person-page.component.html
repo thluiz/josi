@@ -294,61 +294,15 @@
                                 </div>                                                            
                             </div>
                             <div class="row">    
-                                <div class="col-6" 
-                                    style="margin-bottom:30px">
-                                    <div class="row" style="border-bottom: 1px solid black">
-                                        <div class="col-10 col-xl-10 col-sm-9">
-                                            <h6 style="padding:0;margin:0;font-weight:bold"> Histórico de Contatos </h6>
-                                        </div>
-                                        <div class="col-2 col-sm-3 col-xl-2 text-right">
-                                            
-                                        </div>
-                                    </div>
-                                    <div class="row" *ngFor="let item of contact_history"> 
-                                        <div class="col-12">                                            
-                                            <incident-agenda-listitem [incident]="item" [hideName]="true"
-                                            [showCloseText]="true" [hideStatus]="true" [hideActions]="true" 
-                                            [showDate]="true" [forceCompact]="true"></incident-agenda-listitem>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6" 
-                                style="margin-bottom:30px">
-                                    <div class="row" style="border-bottom: 1px solid black">
-                                        <div class="col-10 col-xl-10 col-sm-9">
-                                            <h6 style="padding:0;margin:0;font-weight:bold"> Histórico Financeiro </h6>
-                                        </div>
-                                        <div class="col-2 col-sm-3 col-xl-2 text-right">
-                                            
-                                        </div>
-                                    </div>
-                                    <div class="row" *ngFor="let item of financial_history"> 
-                                        <div class="col-12">
-                                            <incident-financial-listitem [incident]="item" [hideName]="true"></incident-financial-listitem>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">    
                                 <div class="col-12" 
                                     style="margin-bottom:30px">
-                                    <div class="row" style="border-bottom: 1px solid black">
-                                        <div class="col-10 col-xl-10 col-sm-9">
-                                            <h6 style="padding:0;margin:0;font-weight:bold"> Histórico de Pratica </h6>
-                                        </div>
-                                        <div class="col-2 col-sm-3 col-xl-2 text-right">
-                                            
-                                        </div>
-                                    </div>
-                                    <div class="row" *ngFor="let item of trainning_history"> 
-                                        <div class="col-12">                                            
-                                            <incident-agenda-listitem [incident]="item" [hideName]="true"
-                                            [showCloseText]="true" [hideStatus]="true" [hideActions]="true"
-                                            [showDate]="true" [forceCompact]="true"></incident-agenda-listitem>
-                                        </div>
-                                    </div>
-                                </div>                                
+                                    <person-incident-history-list
+                                    [person]="person">
+                                    </person-incident-history-list>
+                                </div>
+                                
                             </div>
+                            
                         </div>
 
                         <div class="col-12 col-sm-12 col-md-12 col-xl-6 pr-3">
@@ -359,7 +313,12 @@
                                     (onNavigateToRelationship)="changePerson($event)"                                
                                     [person]="person">                                
                                     </person-relationship-list>
-                                </div> 
+                                </div>                                
+                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
+                                    <person-contact-list                                    
+                                    [person]="person">                                
+                                    </person-contact-list>
+                                </div>   
                                 <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;" *ngIf="person.is_active_member">
                                     <person-indication-list   
                                     [navigateToIndication]="true" 
@@ -376,13 +335,8 @@
                                     <person-external-unit-list                                    
                                     [person]="person">                                
                                     </person-external-unit-list>
-                                </div>
-                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
-                                    <person-contact-list                                    
-                                    [person]="person">                                
-                                    </person-contact-list>
-                                </div>                     
-                                <div class="col-12 col-xl-12 col-md-6"  style="margin-bottom:30px;" *ngIf="person.is_active_member">
+                                </div>                   
+                                <div class="col-12 col-xl-12 col-md-6"  style="margin-bottom:30px;" *ngIf="person.is_active_member || person.is_leaving || person.is_inactive_member">
                                     <div class="row" style="border-bottom: 1px solid black">
                                         <div class="col-10 col-xl-10 col-sm-9">
                                             <h6 style="padding:0;margin:0;font-weight:bold"><i class="ft-calendar"></i> Agendamento </h6>

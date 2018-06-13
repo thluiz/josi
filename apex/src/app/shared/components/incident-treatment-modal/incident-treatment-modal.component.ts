@@ -26,7 +26,8 @@ import { LightIncident } from 'app/shared/models/incident-model';
 
 export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {    
   current_incident : any;  
-
+  person: any;
+  
   @ViewChild('content') incident_treatment_modal: ElementRef;
   
   private incidents_subscriber : Subscription;
@@ -62,18 +63,23 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  open(incident) {        
-    this.incidentService.getIncidentDetails(incident.id).subscribe((result : any) => {
-      
-      this.current_incident = result.data[0];
+  open(incident) {  
+    Observable.zip(
+      this.incidentService.getIncidentDetails(incident.id), 
+      this.personService.getData(incident.person_id),
+    (incident_data : any, person: any) => {
+      this.current_incident = incident_data.data[0];
+
+      this.person = person;
 
       this.ngbModalService.open(this.incident_treatment_modal)
       .result.then((result) => {                                  
       
       }, (reason) => {        
           console.log(reason);
-      });         
-    });    
+      });      
+    })      
+    .subscribe(); 
   }  
 
   begin_remove_incident(incident) {

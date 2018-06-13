@@ -194,6 +194,7 @@ export class NewInicidentModalComponent implements OnInit {
 
     this.new_incident = {
       branch_id: initial_state.branch_id,
+      people: initial_state.people || [],
       contact_text: "",
       date: {
         year: date.getFullYear(),

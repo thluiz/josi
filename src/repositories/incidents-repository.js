@@ -41,9 +41,9 @@ class IncidentsRepository {
             return yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetDailyMonitor2", { "branch": branch_id }, { "display_modifier": display_modifier }, { "display": display });
         });
     }
-    static getPersonIncidentsHistory(person_id, activity_type, page = 1, pagesize = 10) {
+    static getPersonIncidentsHistory(person_id, start_date, end_date, activity_type) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetPersonIncidentHistory", { "page": page }, { "person_id": person_id }, { "activity_type": activity_type });
+            return yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetPersonIncidentHistory2", { "person_id": person_id }, { "start_date": start_date }, { "end_date": end_date }, { "activity_type": activity_type });
         });
     }
     static getIncidentDetails(incident_id) {

@@ -118,7 +118,7 @@
             </div>
             <div class="row" *ngIf="new_incident.type != null">
                 <div class="col-12">
-                    <label for="new_incident_search_people" style="font-weight: bold">Participante{{ new_incident.people == null || new_incident.people.length <= 1 ? '' : 's' }}</label>	
+                    <label for="new_incident_search_people" style="font-weight: bold">Participante{{ new_incident.people == null || new_incident.people.length <= 1 ? '' : 's' }}</label>	                    
                     <ul *ngIf="new_incident.people != null && new_incident.people.length > 0"
                         class="list-group">
                         <li *ngFor="let p of new_incident.people"
@@ -164,8 +164,8 @@
                             (novo)
                         </span>
                     </ng-template>					
-                </div>
-            </div>
+                </div>                
+            </div>            
             <div class="row" *ngIf="new_incident.type != null">
                 <div class="col-12">
                     <label for="new_incident_description" style="font-weight: bold">Descrição</label>								

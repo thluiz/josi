@@ -7,6 +7,8 @@ import { PersonCommentListComponent } from './../shared/components/person-commen
 import { PersonPartnershipListComponent } from './../shared/components/person-partnership-list/person-partnership-list.component';
 import { PersonContactListComponent } from './../shared/components/person-contact-list/person-contact-list.component';
 import { PersonExternalUnitListComponent } from './../shared/components/person-external-unit-list/person-external-unit-list.component';
+import { PersonIncidentHistoryListComponent } from './../../../shared/components/person-incident-history-list/person-incident-history-list.component';
+
 import { CardService } from 'app/services/card-service';
 
 import { Component, Input, AfterViewInit, QueryList, OnInit, OnDestroy, ViewChildren   } 
@@ -57,6 +59,9 @@ export class PersonPageComponent implements OnInit, OnDestroy {
 
   @ViewChildren(PersonRelationshipListComponent) 
   relationShipListComponent : QueryList<PersonRelationshipListComponent>;
+
+  @ViewChildren(PersonIncidentHistoryListComponent) 
+  historyListComponent : QueryList<PersonIncidentHistoryListComponent>;
 
   id: number;
   person: any;   
@@ -120,7 +125,14 @@ export class PersonPageComponent implements OnInit, OnDestroy {
 
     this.subs.push(this.relationShipListComponent.changes.subscribe((comps: QueryList <PersonRelationshipListComponent>) => {        
       if(comps.first) comps.first.load_items();
-    }))
+    }));
+
+    this.subs.push(this.historyListComponent.changes.subscribe((comps: QueryList <PersonIncidentHistoryListComponent>) => {        
+      if(comps.first) {
+        comps.first.set_dates_from_date(new Date());
+        comps.first.load_items();
+      }
+    }));
   }
 
   ngOnInit() {
@@ -230,19 +242,7 @@ export class PersonPageComponent implements OnInit, OnDestroy {
   load_person_data() {   
     this.personService.getData(this.id).subscribe((data) => {
       this.person = data;  
-    });
-
-    this.personService.getIncidentHistory(this.id, ActivityType.Financial).subscribe((result : any) => {      
-      this.financial_history = result.data;  
-    });
-
-    this.personService.getIncidentHistory(this.id, ActivityType.Contact).subscribe((result : any) => {
-      this.contact_history = result.data;  
-    });
-
-    this.personService.getIncidentHistory(this.id, ActivityType.Trainning).subscribe((result : any) => {
-      this.trainning_history = result.data;  
-    });
+    });    
   }
 
   begin_remove_schedule(schedule) {
