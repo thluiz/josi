@@ -1,3 +1,5 @@
+import { ActivityType } from './../../services/person-service';
+
 export class LightIncident {
     id: number;    
     branch_id: number; 
@@ -24,4 +26,6 @@ export class LightIncident {
     data_status:number;
     scheduling_status:number;
     financial_status:number;
+
+    activity_type: ActivityType;
 }

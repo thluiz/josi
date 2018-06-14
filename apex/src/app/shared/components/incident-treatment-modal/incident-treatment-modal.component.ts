@@ -1,7 +1,8 @@
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { ApplicationEventService } from 'app/services/application-event-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 import { Observable ,  Subscription } from 'rxjs';
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ElementRef, ViewChild, ViewChildren, QueryList } from '@angular/core';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 
@@ -13,6 +14,7 @@ import { PersonService } from 'app/services/person-service';
 import { filter } from 'rxjs/operators';
 import { Result } from 'app/shared/models/result';
 import { LightIncident } from 'app/shared/models/incident-model';
+import { PersonIncidentHistoryListComponent } from '../person-incident-history-list/person-incident-history-list.component';
 
 
 @Component({
@@ -27,9 +29,14 @@ import { LightIncident } from 'app/shared/models/incident-model';
 export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {    
   current_incident : any;  
   person: any;
+  history_start_date : NgbDateStruct;
+  history_end_date : NgbDateStruct;
   
   @ViewChild('content') incident_treatment_modal: ElementRef;
   
+  @ViewChildren(PersonIncidentHistoryListComponent) 
+  historyListComponent : QueryList<PersonIncidentHistoryListComponent>;
+
   private incidents_subscriber : Subscription;
 
   constructor(private datePickerConfig: NgbDatepickerConfig,     
@@ -63,14 +70,38 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
     }
   }
 
+  set_dates_from_string_date(end_date: string) {
+    return this.set_dates_from_date(new Date(end_date));
+  }
+
+  set_dates_from_date(end_date: Date) {
+    this.history_end_date = {
+      year: end_date.getUTCFullYear(),
+      day: end_date.getUTCDate(),
+      month: end_date.getUTCMonth() + 1
+    }
+    this.history_start_date = this.getLastWeekFromDate(this.history_end_date);
+  }
+
+  private getLastWeekFromDate(date: NgbDateStruct) {
+    let last_week = new Date(date.year, date.month, date.day - 7);
+
+    return {
+      year: last_week.getUTCFullYear(),
+      day: last_week.getUTCDate(),
+      month: last_week.getUTCMonth()
+    };
+  }
+
   open(incident) {  
     Observable.zip(
       this.incidentService.getIncidentDetails(incident.id), 
       this.personService.getData(incident.person_id),
     (incident_data : any, person: any) => {
       this.current_incident = incident_data.data[0];
-
       this.person = person;
+
+      this.set_dates_from_string_date(this.current_incident.date);      
 
       this.ngbModalService.open(this.incident_treatment_modal)
       .result.then((result) => {                                  

@@ -26,6 +26,8 @@ export class PersonIncidentHistoryListComponent implements OnInit, OnDestroy {
   @Input() end_date: NgbDateStruct;
   @Input() activity_type: ActivityType = null;
 
+  show_full_history = false;
+
   private last_call: Date;
 
   constructor(private modalService: ModalService,
@@ -61,16 +63,29 @@ export class PersonIncidentHistoryListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.show_full_history = false;
     this.load_items();
   }
-
+  
   ngOnDestroy() {
 
   }
 
-  load_items() {
-    if (this.last_call != null && ((new Date()).getTime() - (this.last_call.getTime()) <= this.parameterService.getTimeReloadComponents())) {
-      return;
+  toggle_full_history() {
+    this.show_full_history = !this.show_full_history;
+  }
+
+  load_items() {    
+    let start = new Date(this.start_date.year, this.start_date.month - 1, this.start_date.day).getTime();
+    let end = new Date(this.end_date.year, this.end_date.month - 1, this.end_date.day).getTime();
+    let current_date_time = new Date();
+    let current_date = new Date(current_date_time.getFullYear(), 
+                            current_date_time.getMonth(), current_date_time.getDate()).getTime();
+
+    let last_week = new Date(current_date_time.getFullYear(), current_date_time.getMonth(), current_date_time.getDate() - 7).getTime();
+
+    if(start < last_week || current_date < start || current_date > end) {
+      this.show_full_history = true;
     }
 
     this.personService.getAllIncidentHistory(this.person.id,

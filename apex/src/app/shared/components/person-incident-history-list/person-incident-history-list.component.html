@@ -21,7 +21,7 @@
             <div class="col-3">
                 <select id="branch" 
                     [(ngModel)]="activity_type"                     
-                    class="form-control"								
+                    class="form-control form-control-sm"								
                 >			
                 <option [ngValue]="null">Todos</option>			
                 <option [ngValue]="ActivityTypes.Trainning">Pratica</option>		
@@ -33,10 +33,14 @@
             <div class="col-4 pl-0 pr-0">
                 <div class="form-group">													
                     <div class="input-group">							
-                        <input class="form-control text-center" placeholder="dd/mm/aaaa" 
+                        <input class="form-control form-control-sm text-center" 
+                        placeholder="dd/mm/aaaa" 
                         [(ngModel)]="start_date" id="start_date"
+                        style="height: calc(1.8125rem + 2px)"
                         ngbDatepicker #niStartDateReschedule="ngbDatepicker" />
-                        <div class="input-group-addon" (click)="niStartDateReschedule.toggle()">
+                        <div class="input-group-addon" 
+                        style="height: calc(1.8125rem + 2px);padding-top:4px;"
+                        (click)="niStartDateReschedule.toggle()">
                             <i class="ft-calendar" style="cursor: pointer;"></i>
                         </div>																																
                     </div>	                    
@@ -45,10 +49,13 @@
             <div class="col-4 pl-0 pr-0">
                 <div class="form-group">													
                     <div class="input-group">							
-                        <input class="form-control text-center" placeholder="dd/mm/aaaa" 
+                        <input class="form-control form-control-sm text-center" placeholder="dd/mm/aaaa" 
                         [(ngModel)]="end_date" id="end_date"
+                        style="height: calc(1.8125rem + 2px)"
                         ngbDatepicker #niEndDateReschedule="ngbDatepicker" />
-                        <div class="input-group-addon" (click)="niEndDateReschedule.toggle()">
+                        <div class="input-group-addon" 
+                        style="height: calc(1.8125rem + 2px);padding-top:4px;"
+                        (click)="niEndDateReschedule.toggle()">
                             <i class="ft-calendar" style="cursor: pointer;"></i>
                         </div>																																
                     </div>	                    
@@ -58,17 +65,25 @@
                 <button type="button" 			
                     class="btn btn-silver btn-sm"
                     title="Pesquisar"                    
-                    (click)="load_items();"
-                    >						                    
+                    (click)="load_items();">						                    
                     <i class="fas fa-search"></i>                                                    
                 </button>
             </div>
         </div>
-        <div class="row" *ngFor="let item of items"> 
-            <div class="col-12">                                            
+        <div class="row" *ngFor="let item of items, let k = index"> 
+            <div class="col-12" *ngIf="k < 3 || show_full_history">                                            
                 <incident-agenda-listitem [incident]="item" [hideName]="true"
                 [showCloseText]="true" [hideStatus]="true" [hideActions]="true"
                 [showDate]="true" [forceCompact]="true"></incident-agenda-listitem>
+            </div>
+        </div>
+        <div class="row" *ngIf="items && items.length > 3 && !show_full_history">
+            <div class="col-12 text-center">                
+                <a (click)="toggle_full_history()"
+                *ngIf="!show_full_history"
+                >
+                    {{items.length}} atividades no período - Exibir todas
+                </a>
             </div>
         </div>
     </div>                                
