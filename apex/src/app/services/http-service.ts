@@ -11,8 +11,8 @@ import { environment } from '../../environments/environment';
 import { Result } from 'app/shared/models/result';
 
 @Injectable()
-export class HttpService {     
-    private dataUrl = environment.api_url;       
+export class HttpService {
+    private dataUrl = environment.api_url;
 
     constructor(
       private http: HttpClient,
@@ -28,6 +28,7 @@ export class HttpService {
     post_and_emit<T>(method, data) : Observable<Result<T>> {
         return  this.http.post<Result<T>>(this.dataUrl + method, data)
         .do<Result<T>>((next: Result<T>) => {
+            console.log(next);
             this.eventManager.emit(next);
         });
     }

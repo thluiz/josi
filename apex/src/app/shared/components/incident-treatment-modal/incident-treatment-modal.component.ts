@@ -31,7 +31,8 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
   person: any;
   history_start_date : NgbDateStruct;
   history_end_date : NgbDateStruct;
-  
+  comments: any[] = [];
+
   @ViewChild('content') incident_treatment_modal: ElementRef;
   
   @ViewChildren(PersonIncidentHistoryListComponent) 
@@ -60,6 +61,16 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
       && result.data[0].id == this.current_incident.id
       && result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1)
     ).subscribe((result) => {      
+      let r = result.data[0] as any;
+      if(this.current_incident && result.data[0] && r.comment_count) {
+        const comment_count = this.current_incident.comment_count || 0;
+        if(comment_count != r.comment_count) {
+          this.incidentService.getComments(this.current_incident.id)
+          .subscribe((comments : any[]) => {
+            this.comments = comments;
+          })
+        }
+      }
       this.current_incident = result.data[0];
     });
   }
@@ -97,10 +108,12 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
     Observable.zip(
       this.incidentService.getIncidentDetails(incident.id), 
       this.personService.getData(incident.person_id),
-    (incident_data : any, person: any) => {
+      this.incidentService.getComments(incident.id),
+
+      (incident_data : any, person: any, comments: any[]) => {
       this.current_incident = incident_data.data[0];
       this.person = person;
-
+      this.comments = comments;
       this.set_dates_from_string_date(this.current_incident.date);      
 
       this.ngbModalService.open(this.incident_treatment_modal)
@@ -251,9 +264,5 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
 
   add_comment() {    
     this.modalService.open(ModalType.AddIncidentComment, this.current_incident);
-  }
-
-  show_comments() {
-    this.modalService.open(ModalType.IncidentCommentList, this.current_incident);
   }
 }

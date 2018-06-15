@@ -46,7 +46,8 @@ export interface IPersonEvent {
 export enum ActivityType {
   Trainning = 16,
   Financial = 17,
-  Contact = 18
+  Contact = 18,
+  Others = 19
 }
 
 @Injectable()

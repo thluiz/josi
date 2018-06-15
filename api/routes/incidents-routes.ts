@@ -2,6 +2,7 @@ import * as sql from 'mssql';
 import { IncidentService } from '../../domain/services/incident_services';
 import * as auth from '../../src/middlewares/auth';
 import { SecurityService } from '../../src/services/security-service';
+import { Result } from '../../src/helpers/result';
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
@@ -32,12 +33,16 @@ export function configure_routes(app: any, connection_pool: any) {
     app.post("/api/incident_comments", 
     auth.ensureLoggedIn(),
     async (request, res, next) => { 
+        let user = await SecurityService.getUserFromRequest(request);
+        console.log(user);
+
         let result = await incident_service.save_comment(
             request.body.incident_id,
-            request.body.comment
+            request.body.comment,
+            await user.getPersonId()    
         );            
 
-        res.send(result.recordset[0][0]);        
+        res.send(Result.Ok("INCIDENT_COMMENT_ADDED",  [ result.recordset[0][0] ] ));        
     });
 
     app.post("/api/incident_comments/archive", 
@@ -47,6 +52,6 @@ export function configure_routes(app: any, connection_pool: any) {
             request.body.id
         );            
 
-        res.send(result.recordset[0][0]); 
+        res.send(Result.Ok("INCIDENT_COMMENT_ARCHIVED", [ result.recordset[0][0]])); 
     });
 }

@@ -6,6 +6,7 @@
                 <th>Título</th>                           
                 <th>Iniciais</th>
                 <th>Url</th>                
+                <th>Vídeo</th>
             </thead>
             <tbody>
                 <tr *ngFor="let item of collection"
@@ -17,6 +18,15 @@
                         <a href="{{'http://myvtmi.im/voucher/' + item['url'] }}"
                         target="_blank">
                             /voucher/{{ item["url"] }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ item['youtube_url'] }}"
+                        target="_blank"
+                        *ngIf="item['youtube_url']">
+                            {{ item['youtube_url']                                
+                                .substring(item['youtube_url'].indexOf("v=") + 2) 
+                            }}
                         </a>
                     </td>
                 </tr>

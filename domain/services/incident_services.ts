@@ -7,10 +7,11 @@ export class IncidentService {
         this.sql_pool = sql_pool;
     }
     
-    async save_comment(incident_id, comment) {
+    async save_comment(incident_id, comment, responsible_id) {
         const result = await new sql.Request(this.sql_pool) 
                                 .input('incident_id', sql.Int, incident_id)
                                 .input('comment', sql.NVarChar(sql.MAX), comment)                               
+                                .input('responsible_id', sql.Int, responsible_id)
                                 .execute(`SaveIncidentComment`);
 
         return result;  

@@ -46,7 +46,7 @@ export class IncidentCommentsListModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.comment_changes_subscriber.unsubscribe();
+    this.comment_changes_subscriber.unsubscribe(); 
   }
   
   open(incident) {    

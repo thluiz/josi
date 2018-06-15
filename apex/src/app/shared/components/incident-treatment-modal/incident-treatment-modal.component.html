@@ -9,20 +9,6 @@
         </h5>
       </div>
       <div class="col-4 pr-0 text-right">
-        <button type="button" class="btn btn-silver btn-sm" style="margin:0;padding:2px;line-height:10px" *ngIf="current_incident.comment_count > 0 && !current_incident.card_id"
-          (click)="show_comments();">
-
-          {{ current_incident.comment_count }}
-
-          <i class="far fa-sticky-note"></i>
-        </button>
-
-        <button type="button" class="btn btn-silver btn-sm" style="margin:0;padding:2px;line-height:10px" *ngIf="!current_incident.card_id"
-          (click)="add_comment();">
-          <i class="ft-plus"></i>
-          <i class="far fa-sticky-note"></i>
-        </button>
-
         <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -38,14 +24,55 @@
         </div>
       </div>
       <div class="row" *ngIf="person">
-          <div class="col-12">
-            <person-incident-history-list 
-            [person]="person"
-            [start_date]="history_start_date"
-            [end_date]="history_end_date"
-            [activity_type]="current_incident.activity_type"
-            ></person-incident-history-list>
+        <div class="col-12">
+          <person-incident-history-list [person]="person" [start_date]="history_start_date" [end_date]="history_end_date" [activity_type]="current_incident.activity_type"></person-incident-history-list>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="row" style="border-bottom: 1px solid black">
+            <div class="col-10 col-xl-10 col-sm-9">
+              <h6 style="padding:0;margin:0;font-weight:bold">Comentários </h6>
+            </div>
+            <div class="col-2 col-sm-3 col-xl-2 text-right">
+              <button type="button" class="btn btn-silver btn-sm" title="Registrar Comentário" style="margin:0;padding:3px;line-height:10px"
+                (click)="add_comment();">
+                <i class="ft-plus"></i>
+                <i class="far fa-sticky-note"></i>
+              </button>
+            </div>
           </div>
+          <div class="row" *ngFor="let cm of comments">
+            <div class="col-12 pl-3">
+              <div class="row" style="border-bottom:1px solid silver;">
+                <div class="col-10" style="color:black;">
+                  <div class="row">
+                    <div class="col-12">
+                      <markdown [data]="cm.comment" style="margin-bottom:0 !important"></markdown>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 text-right pr-0" style="font-style: italic;line-height:10px;font-size:10px">
+                      {{ cm.responsible }} - {{ cm.created_date_br }} {{ cm.created_hour_br }}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2 text-right pl-0">
+                  <button type="button" class="btn btn-silver btn-sm" style="margin: 0; padding:2px; line-height:10px" *ngIf="!cm.archive"
+                    (click)="cm.archive = true">
+                    <i class="fas fa-archive"></i>
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm" *ngIf="cm.archive" style="margin:0;padding:2px;line-height:10px" (click)="archive_comment(cm)">
+                    <i class="fas fa-archive"></i>
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-sm" *ngIf="cm.archive" style="margin:0;padding:2px;line-height:10px" (click)="cm.archive = false">
+                    <i class="icon-action-undo"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="row" *ngIf="current_incident.card_id > 0" style="margin-bottom:15px;">
         <div class="col-12">
@@ -216,28 +243,25 @@
           <div class="col-8" *ngIf="!current_incident.begin_remove && !current_incident.in_treatment && !current_incident.reschedule">
             <div class="row" *ngIf="current_incident.responsible_name || current_incident.created_on">
               <div class="col-12" style="font-style: italic">
-                Reg.:{{ current_incident.responsible_name | slice:0:15 }}                
-                ({{ current_incident.created_on | date : 'dd/MM HH:mm' }})
+                Reg.:{{ current_incident.responsible_name | slice:0:15 }} ({{ current_incident.created_on | date : 'dd/MM HH:mm' }})
               </div>
             </div>
             <div class="row" *ngIf="current_incident.started_by && current_incident.need_to_be_started">
               <div class="col-12" style="font-style: italic">
-                Início: {{ current_incident.started_by | slice:0:15 }}                
+                Início: {{ current_incident.started_by | slice:0:15 }}
                 <span *ngIf="current_incident.closed_by">
-                    Fim: {{ current_incident.closed_by | slice:0:15 }} 
+                  Fim: {{ current_incident.closed_by | slice:0:15 }}
                 </span>
               </div>
             </div>
-            <div class="row" 
-            *ngIf="(current_incident.closed_by || current_incident.treated_by || current_incident.closed_on) && !current_incident.need_to_be_started">
+            <div class="row" *ngIf="(current_incident.closed_by || current_incident.treated_by || current_incident.closed_on) && !current_incident.need_to_be_started">
               <div class="col-12" style="font-style: italic">
-                Fec.: {{ (current_incident.closed_by || current_incident.treated_by) | slice:0:15 }}                 
-                ({{ (current_incident.closed_on || current_incident.treated_on ) | date : 'dd/MM HH:mm' }})                                               
+                Fec.: {{ (current_incident.closed_by || current_incident.treated_by) | slice:0:15 }} ({{ (current_incident.closed_on || current_incident.treated_on
+                ) | date : 'dd/MM HH:mm' }})
               </div>
             </div>
           </div>
-          <div 
-          [ngClass]="current_incident.begin_remove || current_incident.in_treatment || current_incident.reschedule ? 'col-12' : 'col-4'">
+          <div [ngClass]="current_incident.begin_remove || current_incident.in_treatment || current_incident.reschedule ? 'col-12' : 'col-4'">
             <button type="button" class="btn btn-success" (click)="register_contact_for_incident(current_incident, d);" *ngIf="current_incident.in_treatment && !current_incident.reschedule">
               <i class="far fa-envelope"></i>
               Registrar Contato

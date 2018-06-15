@@ -98,7 +98,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
     .filter((data) => data.type == INCIDENT_ADDED)    
     .subscribe((data) => {      
       this.getMonitorData();
-    });
+    }); 
   }
 
   ngOnDestroy() {    
@@ -145,19 +145,19 @@ export class DailyPageComponent implements OnInit, OnDestroy {
       return;
     }
     this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Day, this.current_week).subscribe(
-      data => {    
-        const result = data[0] as any;        
+      result => {    
+        const data = result.data[0] as any;   
         
-        this.branches = result.branches;
+        this.branches = data.branches;
         this.current_branch_name = (this.current_branch > 0 ? 
                             this.branches.filter(b => b.id == this.current_branch)[0].name
                             : "Todos os Núcleos");
-        this.domains = result.domains;   
-        this.incident_types = result.incident_types;
+        this.domains = data.domains;   
+        this.incident_types = data.incident_types;
         this.manual_incident_types = this.incident_types.filter(f => !f.automatically_generated);
-        this.current_week_range = result.current_week_range;
-        this.week_days = result.week_days;        
-        this.selected_week = result.selected_week[0];
+        this.current_week_range = data.current_week_range;
+        this.week_days = data.week_days;        
+        this.selected_week = data.selected_week[0];
 
         this.cols = [                    
           { width: "20%" }
@@ -176,10 +176,10 @@ export class DailyPageComponent implements OnInit, OnDestroy {
         if(this.domains) {
           this.domains.daily = [];
 
-          for(var w = 0; w < result.domains.length; w++) {
-            let domain = result.domains[w];
+          for(var w = 0; w < data.domains.length; w++) {
+            let domain = data.domains[w];
             this.domains[w].daily = [];
-            let people = result.people != null ? result.people.filter(p => p.domain_id == domain.id) : [];
+            let people = data.people != null ? data.people.filter(p => p.domain_id == domain.id) : [];
             this.domains[w].number_of_members = people.length;
 
             for(var i = 0; i< this.week_days.length; i++) {    
@@ -192,8 +192,13 @@ export class DailyPageComponent implements OnInit, OnDestroy {
                 }
 
                 person_incidents.dates[i] = person_incidents.dates[i] || [];
-                let incidents = result.incidents.filter((i : any) => { 
-                  return i.date == c.date && i.person_id == people[z].person_id;
+                let incidents = data.incidents.filter((k : any) => { 
+                  const incident_date = new Date(k.date);
+                  const week_day_date = new Date(c.date);                    
+                  return incident_date.getUTCDate() == week_day_date.getUTCDate()
+                          && incident_date.getUTCFullYear() == week_day_date.getUTCFullYear()
+                          && incident_date.getUTCMonth() == week_day_date.getUTCMonth()
+                          && k.person_id == people[z].person_id;
                 });
                 
                 person_incidents.dates[i] = person_incidents.dates[i].concat(incidents);                              
@@ -204,7 +209,7 @@ export class DailyPageComponent implements OnInit, OnDestroy {
           }    
         }
         
-        this.load_external_people(result);
+        this.load_external_people(data);
       },
       err => console.error(err)      
     );
@@ -242,8 +247,13 @@ export class DailyPageComponent implements OnInit, OnDestroy {
         }
 
         person_incidents.dates[i] = person_incidents.dates[i] || [];
-        let incidents = result.incidents.filter((i : any) => { 
-          return i.date == c.date && i.person_id == external_people[z].person_id;
+        let incidents = result.incidents.filter((k : any) => { 
+          const incident_date = new Date(k.date);
+          const week_day_date = new Date(c.date);                    
+          return incident_date.getUTCDate() == week_day_date.getUTCDate()
+                  && incident_date.getUTCFullYear() == week_day_date.getUTCFullYear()
+                  && incident_date.getUTCMonth() == week_day_date.getUTCMonth()
+                  && k.person_id == external_people[z].person_id;
         });
 
         if(incidents.length > 0) {
