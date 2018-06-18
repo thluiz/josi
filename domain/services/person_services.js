@@ -116,7 +116,7 @@ class PersonService {
                 .execute(`CancelPersonSchedule`);
         });
     }
-    save_schedule(schedule) {
+    save_schedule(schedule, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield new sql.Request(this.sql_pool)
                 .input('person_id', sql.Int, schedule.person_id)
@@ -132,6 +132,7 @@ class PersonService {
                 .input('number_of_incidents', sql.Int, schedule.number_of_incidents)
                 .input('description', sql.NVarChar(sql.MAX), schedule.description)
                 .input('value', sql.Decimal(12, 2), schedule.value)
+                .input('responsible_id', sql.Int, responsible_id)
                 .execute(`SavePersonScheduleAndGenerateIncidents`);
         });
     }

@@ -6,50 +6,50 @@ import { SecurityService } from '../../src/services/security-service';
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
 
-    const person_service = new PersonService(pool);    
+    const person_service = new PersonService(pool);
 
-    app.get("/api/people/members", 
+    app.get("/api/people/members",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {                        
-        const result = await new sql.Request(pool)            
-        .execute(`GetMembersList`);                
+    async (request, response, next) => {
+        const result = await new sql.Request(pool)
+        .execute(`GetMembersList`);
 
         response.send(result.recordset[0]);
     });
 
-    app.get("/api/people", 
+    app.get("/api/people",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {                        
-        const result = await new sql.Request(pool)            
-        .execute(`GetPeopleList`);                
+    async (request, response, next) => {
+        const result = await new sql.Request(pool)
+        .execute(`GetPeopleList`);
 
         response.send(result.recordset[0]);
     });
-    
-    app.get("/api/people/:id", 
+
+    app.get("/api/people/:id",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {                        
+    async (request, response, next) => {
         const result = await new sql.Request(pool)
         .input('id', sql.Int, request.params.id)
-        .execute(`GetPersonData`);                
+        .execute(`GetPersonData`);
 
         response.send(result.recordset[0][0]);
     });
 
-    app.get("/api/people/search/:name?", 
+    app.get("/api/people/search/:name?",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {                        
+    async (request, response, next) => {
         const result = await new sql.Request(pool)
         .input('names', sql.VarChar(sql.MAX), request.params.name)
-        .execute(`GetPeopleByNameForTypeahead`);                
+        .execute(`GetPeopleByNameForTypeahead`);
 
         response.send(result.recordset[0]);
     });
-    
-    app.post("/api/people", 
+
+    app.post("/api/people",
     auth.ensureLoggedIn(),
-    async (request, res, next) => {                        
-        try {        
+    async (request, res, next) => {
+        try {
             const result = await person_service.update_person_data(
                 request.body.person
             );
@@ -60,10 +60,10 @@ export function configure_routes(app: any, connection_pool: any) {
         }
     });
 
-    app.post("/api/person", 
+    app.post("/api/person",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {                        
-        try {        
+    async (req, res, next) => {
+        try {
             const result = await person_service.register_new_person(
                 req.body.person, SecurityService.getUserFromRequest(req)
             );
@@ -74,182 +74,182 @@ export function configure_routes(app: any, connection_pool: any) {
         }
     });
 
-    app.get("/api/invited_people", 
+    app.get("/api/invited_people",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {      
-        console.log(req.query.voucher)                            ;                         
-        const result = await new sql.Request(pool)        
+    async (req, res, next) => {
+        console.log(req.query.voucher)                            ;
+        const result = await new sql.Request(pool)
         .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
         .input('voucher', sql.Int, req.query.voucher > 0 ? req.query.voucher : null)
         .input('name', sql.VarChar(150), req.query.name)
-        .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)        
+        .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)
         .input('page', sql.Int, req.query.page > 1 ? req.query.page : 1)
-        .execute(`GetInvitedPeople`);                
+        .execute(`GetInvitedPeople`);
 
         let response = result.recordset[0];
 
         res.send(response[0].empty ? [] : response);
     });
 
-    app.get("/api/interested", 
+    app.get("/api/interested",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {                               
-        const result = await new sql.Request(pool)        
+    async (req, res, next) => {
+        const result = await new sql.Request(pool)
         .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
         .input('name', sql.VarChar(150), req.query.name)
-        .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)        
+        .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)
         .input('page', sql.Int, req.query.page > 1 ? req.query.page : 1)
-        .execute(`GetPeopleInterested`);                
+        .execute(`GetPeopleInterested`);
 
         let response = result.recordset[0];
 
         res.send(response[0].empty ? [] : response);
     });
 
-    app.get("/api/people-away", 
+    app.get("/api/people-away",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {                               
-        const result = await new sql.Request(pool)        
+    async (req, res, next) => {
+        const result = await new sql.Request(pool)
         .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
         .input('name', sql.VarChar(150), req.query.name)
-        .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)        
+        .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)
         .input('page', sql.Int, req.query.page > 1 ? req.query.page : 1)
-        .execute(`GetPeopleAway`);                
+        .execute(`GetPeopleAway`);
 
         let response = result.recordset[0];
 
         res.send(response[0].empty ? [] : response);
     });
 
-    app.get("/api/service-providers", 
+    app.get("/api/service-providers",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {                               
-        const result = await new sql.Request(pool)        
+    async (req, res, next) => {
+        const result = await new sql.Request(pool)
         .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
         .input('name', sql.VarChar(150), req.query.name)
-        .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)        
+        .input('people_per_page', sql.Int, req.query.people_per_page > 0 ? req.query.people_per_page : null)
         .input('page', sql.Int, req.query.page > 1 ? req.query.page : 1)
-        .execute(`GetPeopleServiceProvider`);                
+        .execute(`GetPeopleServiceProvider`);
 
         let response = result.recordset[0];
 
         res.send(response[0].empty ? [] : response);
     });
 
-    app.get("/api/people/:id", 
+    app.get("/api/people/:id",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {                        
+    async (request, response, next) => {
         const result = await new sql.Request(pool)
         .input('id', sql.Int, request.params.id)
-        .execute(`GetPersonData`);                
+        .execute(`GetPersonData`);
 
         response.send(result.recordset[0][0]);
     });
-    
 
-    app.get("/api/person_address/:person_id", 
+
+    app.get("/api/person_address/:person_id",
     auth.ensureLoggedIn(),
-    async (request, res, next) => {                        
+    async (request, res, next) => {
         const result = await new sql.Request(pool)
         .input('person_id', sql.Int, request.params.person_id)
-        .execute(`GetPersonAddress`);                
+        .execute(`GetPersonAddress`);
 
         let response = result.recordset[0];
 
         res.send(response[0].empty ? [] : response);
     });
 
-    app.get("/api/person_communication/pending/:person_id", 
+    app.get("/api/person_communication/pending/:person_id",
     auth.ensureLoggedIn(),
-    async (request, res, next) => {                        
+    async (request, res, next) => {
         const result = await new sql.Request(pool)
         .input('person_id', sql.Int, request.params.person_id)
-        .execute(`GetPersonPendingCommunication`);                
+        .execute(`GetPersonPendingCommunication`);
 
-        let response = result.recordset[0];        
+        let response = result.recordset[0];
         res.send(response);
     });
 
-    app.get("/api/person_financial/pending/:person_id", 
+    app.get("/api/person_financial/pending/:person_id",
     auth.ensureLoggedIn(),
-    async (request, res, next) => {                        
+    async (request, res, next) => {
         const result = await new sql.Request(pool)
         .input('person_id', sql.Int, request.params.person_id)
-        .execute(`GetPersonPendingFinancial`);                
+        .execute(`GetPersonPendingFinancial`);
 
-        let response = result.recordset[0];        
+        let response = result.recordset[0];
         res.send(response);
     });
 
-    app.get("/api/person_schedule/pending/:person_id", 
+    app.get("/api/person_schedule/pending/:person_id",
     auth.ensureLoggedIn(),
-    async (request, res, next) => {                        
+    async (request, res, next) => {
         const result = await new sql.Request(pool)
         .input('person_id', sql.Int, request.params.person_id)
-        .execute(`GetPersonPendingSchedule`);                
+        .execute(`GetPersonPendingSchedule`);
 
-        let response = result.recordset[0];        
+        let response = result.recordset[0];
         res.send(response);
     });
 
-    app.post("/api/person_address", 
+    app.post("/api/person_address",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {            
-        let result = await person_service.save_address(request.body.address);            
+    async (request, response, next) => {
+        let result = await person_service.save_address(request.body.address);
 
-        response.send({ sucess: true});                        
+        response.send({ sucess: true});
     });
 
-    app.post("/api/person_address/archive", 
+    app.post("/api/person_address/archive",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {            
-        let result = await person_service.archive_address(request.body.person_address);            
+    async (request, response, next) => {
+        let result = await person_service.archive_address(request.body.person_address);
 
-        response.send({ sucess: true});                        
+        response.send({ sucess: true});
     })
 
     /**
      * ROLES
      */
 
-    app.post("/api/person_role/delete", 
+    app.post("/api/person_role/delete",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {            
+    async (request, response, next) => {
         let result = await person_service.remove_role(
-            request.body.person_id, 
+            request.body.person_id,
             request.body.role_id
-        );            
+        );
 
-        response.send({ sucess: true});                        
+        response.send({ sucess: true});
     });
 
-    app.get("/api/person_role", 
+    app.get("/api/person_role",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {                        
-        const result = await new sql.Request(pool)            
-        .execute(`GetPeopleList`);                
+    async (request, response, next) => {
+        const result = await new sql.Request(pool)
+        .execute(`GetPeopleList`);
 
         response.send(result.recordset[0]);
     });
 
 
-    app.post("/api/person_role", 
+    app.post("/api/person_role",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {            
+    async (request, response, next) => {
         let result = await person_service.add_role(
-            request.body.person_id, 
+            request.body.person_id,
             request.body.role_id
-        );            
+        );
 
-        response.send({ sucess: true});                        
+        response.send({ sucess: true});
     });
 
-    app.get("/api/person_role/person/:id", 
+    app.get("/api/person_role/person/:id",
     auth.ensureLoggedIn(),
-    async (request, res, next) => {                                
+    async (request, res, next) => {
         const result = await new sql.Request(pool)
         .input('person_id', sql.Int, request.params.id)
-        .execute(`GetPersonRoles`);                
+        .execute(`GetPersonRoles`);
 
         let response = result.recordset[0];
 
@@ -260,81 +260,81 @@ export function configure_routes(app: any, connection_pool: any) {
      * ALIAS
      */
 
-    app.post("/api/people_alias/kf_name", 
+    app.post("/api/people_alias/kf_name",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {            
+    async (request, response, next) => {
         let result = await person_service.change_kf_name(
-            request.body.person_id, 
+            request.body.person_id,
             request.body.kf_name,
             request.body.ideograms
-        );            
+        );
 
-        response.send({ sucess: true});                        
+        response.send({ sucess: true});
     });
 
-    /** 
-     * CONTACTS     
+    /**
+     * CONTACTS
     */
 
-    app.post("/api/person_contact/remove", 
+    app.post("/api/person_contact/remove",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {            
+    async (request, response, next) => {
         let result = await person_service.remove_contact(
-            request.body.contact_id,                 
-        );            
+            request.body.contact_id,
+        );
 
-        response.send({ sucess: true});                        
+        response.send({ sucess: true});
     });
 
-    app.post("/api/person_contact", 
+    app.post("/api/person_contact",
     auth.ensureLoggedIn(),
-    async (request, res, next) => {   
-        try {         
-            let result = await person_service.save_contact({ 
-                    person_id: request.body.person_id,                
-                    contact_type: request.body.contact_type,                  
+    async (request, res, next) => {
+        try {
+            let result = await person_service.save_contact({
+                    person_id: request.body.person_id,
+                    contact_type: request.body.contact_type,
                     contact: request.body.contact,
                     details: request.body.details,
                     principal: request.body.principal
                 }
-            );            
+            );
 
-            res.send({ sucess: true});                        
-        } catch (error) {                                
+            res.send({ sucess: true});
+        } catch (error) {
             res.status(500).json(error);
         }
     });
 
-    app.get("/api/person_contact/person/:id/:only_principal?", 
+    app.get("/api/person_contact/person/:id/:only_principal?",
     auth.ensureLoggedIn(),
-    async (request, res, next) => {  
-        try {                      
+    async (request, res, next) => {
+        try {
             const result = await new sql.Request(pool)
             .input('person_id', sql.Int, request.params.id)
             .input('only_principal', sql.Int, request.params.only_principal || 0)
-            .execute(`GetPersonContacts`);                
-            
+            .execute(`GetPersonContacts`);
+
             let response = result.recordset[0];
-            res.send(response[0].empty ? [] : response);   
-                     
-        } catch(error)  {   
+            res.send(response[0].empty ? [] : response);
+
+        } catch(error)  {
             console.log(error);
             res.status(500).json(error);
         }
     });
 
-    app.get("/api/person/missing_data/:id", 
+    app.get("/api/person/missing_data/:id",
     auth.ensureLoggedIn(),
-    async (request, res, next) => {  
-        try {                      
+    async (request, res, next) => {
+        try {
             const result = await new sql.Request(pool)
-            .input('person_id', sql.Int, request.params.id)            
-            .execute(`GetPersonMissingData`);                
-            
+            .input('person_id', sql.Int, request.params.id)
+            .execute(`GetPersonMissingData`);
+
             let response = result.recordset[0];
-            res.send(response[0].empty ? [] : response);   
-                     
-        } catch(error)  {   
+            res.send(response[0].empty ? [] : response);
+
+        } catch(error)  {
             console.log(error);
             res.status(500).json(error);
         }
@@ -344,22 +344,22 @@ export function configure_routes(app: any, connection_pool: any) {
      * PARTNERSHIP INDICATIONS
      */
 
-    app.get("/api/person_partnerships/person/:id", 
+    app.get("/api/person_partnerships/person/:id",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {  
-        try {                                              
-            const result = await new sql.Request(pool)   
-            .input("person", sql.Int, req.params.id)                   
-            .query(`select * from person_partnership 
-                    where person_id = @person 
-                    for json path`);                
-            
+    async (req, res, next) => {
+        try {
+            const result = await new sql.Request(pool)
+            .input("person", sql.Int, req.params.id)
+            .query(`select * from person_partnership
+                    where person_id = @person
+                    for json path`);
+
             let response = result.recordset[0];
-            res.send(response);   
-                     
-        } catch(error)  {   
+            res.send(response);
+
+        } catch(error)  {
             if(error.code = 'EJSON') {
-                res.send([]);       
+                res.send([]);
             } else {
                 console.log(error);
                 res.status(500).json(error);
@@ -367,26 +367,26 @@ export function configure_routes(app: any, connection_pool: any) {
         }
     });
 
-    app.post("/api/person_partnerships", 
+    app.post("/api/person_partnerships",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {  
-        try {                          
+    async (req, res, next) => {
+        try {
             let partnership = req.body.partnership;
             console.log(partnership)
 
-            const result = await new sql.Request(pool)   
-            .input("person_id", sql.Int, partnership.person_id)                               
+            const result = await new sql.Request(pool)
+            .input("person_id", sql.Int, partnership.person_id)
             .input('comments', sql.VarChar(sql.MAX), partnership.comment)
-            .input('name', sql.VarChar(250), partnership.name)            
+            .input('name', sql.VarChar(250), partnership.name)
             .input("branch_id", sql.Int, partnership.branch_id)
             .input("operator_id", sql.Int, partnership.operator_id)
-            .input("indication_contact_type", sql.Int, partnership.indication_contact_type)            
-            .execute(`SaveNewPartnership`);      
-                        
-            res.send({ success: true});                        
-        } catch(error)  {   
+            .input("indication_contact_type", sql.Int, partnership.indication_contact_type)
+            .execute(`SaveNewPartnership`);
+
+            res.send({ success: true});
+        } catch(error)  {
             if(error.code = 'EJSON') {
-                res.send([]);       
+                res.send([]);
             } else {
                 console.log(error);
                 res.status(500).json(error);
@@ -398,22 +398,22 @@ export function configure_routes(app: any, connection_pool: any) {
      * EXTERNAL UNIT INDICATIONS
      */
 
-    app.get("/api/person_external_units/person/:id", 
+    app.get("/api/person_external_units/person/:id",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {  
-        try {                                              
-            const result = await new sql.Request(pool)   
-            .input("person", sql.Int, req.params.id)                   
-            .query(`select * from person_external_unit 
-                    where person_id = @person 
-                    for json path`);                
-            
+    async (req, res, next) => {
+        try {
+            const result = await new sql.Request(pool)
+            .input("person", sql.Int, req.params.id)
+            .query(`select * from person_external_unit
+                    where person_id = @person
+                    for json path`);
+
             let response = result.recordset[0];
-            res.send(response);   
-                     
-        } catch(error)  {   
+            res.send(response);
+
+        } catch(error)  {
             if(error.code = 'EJSON') {
-                res.send([]);       
+                res.send([]);
             } else {
                 console.log(error);
                 res.status(500).json(error);
@@ -421,25 +421,25 @@ export function configure_routes(app: any, connection_pool: any) {
         }
     });
 
-    app.post("/api/person_external_units", 
+    app.post("/api/person_external_units",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {  
-        try {                          
+    async (req, res, next) => {
+        try {
             let external_unit = req.body.external_unit;
 
-            const result = await new sql.Request(pool)   
-            .input("person_id", sql.Int, external_unit.person_id)                               
+            const result = await new sql.Request(pool)
+            .input("person_id", sql.Int, external_unit.person_id)
             .input('comments', sql.VarChar(sql.MAX), external_unit.comment)
-            .input('name', sql.VarChar(250), external_unit.name)            
+            .input('name', sql.VarChar(250), external_unit.name)
             .input("branch_id", sql.Int, external_unit.branch_id)
             .input("operator_id", sql.Int, external_unit.operator_id)
-            .input("indication_contact_type", sql.Int, external_unit.indication_contact_type)            
-            .execute(`SaveNewExternalUnit`);      
-                        
-            res.send({ success: true});                        
-        } catch(error)  {   
+            .input("indication_contact_type", sql.Int, external_unit.indication_contact_type)
+            .execute(`SaveNewExternalUnit`);
+
+            res.send({ success: true});
+        } catch(error)  {
             if(error.code = 'EJSON') {
-                res.send([]);       
+                res.send([]);
             } else {
                 console.log(error);
                 res.status(500).json(error);
@@ -453,22 +453,22 @@ export function configure_routes(app: any, connection_pool: any) {
 
 
 
-    app.get("/api/person_indications/person/:id", 
+    app.get("/api/person_indications/person/:id",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {  
-        try {                                              
-            const result = await new sql.Request(pool)   
-            .input("person", sql.Int, req.params.id)                   
-            .query(`select * from vwPersonRelationships 
-                    where relationship_type in (10, 13, 14) and person_id = @person 
-                    for json path`);                
-            
+    async (req, res, next) => {
+        try {
+            const result = await new sql.Request(pool)
+            .input("person", sql.Int, req.params.id)
+            .query(`select * from vwPersonRelationships
+                    where relationship_type in (10, 13, 14) and person_id = @person
+                    for json path`);
+
             let response = result.recordset[0];
-            res.send(response);   
-                     
-        } catch(error)  {   
+            res.send(response);
+
+        } catch(error)  {
             if(error.code = 'EJSON') {
-                res.send([]);       
+                res.send([]);
             } else {
                 console.log(error);
                 res.status(500).json(error);
@@ -476,20 +476,20 @@ export function configure_routes(app: any, connection_pool: any) {
         }
     });
 
-    app.post("/api/person_indications", 
+    app.post("/api/person_indications",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {  
-        try {                          
+    async (req, res, next) => {
+        try {
             let indication = req.body.indication;
 
-            const result = await new sql.Request(pool)   
-            .input("person_id", sql.Int, indication.person_id)                   
+            const result = await new sql.Request(pool)
+            .input("person_id", sql.Int, indication.person_id)
             .input("contact_type1", sql.Int, indication.contact_type1)
             .input("contact_type2", sql.Int, indication.contact_type2)
             .input("contact_type3", sql.Int, indication.contact_type3)
             .input('comments', sql.VarChar(sql.MAX), indication.comment)
             .input('name', sql.VarChar(250), indication.name)
-            .input('contact1', sql.VarChar(250), indication.contact1)            
+            .input('contact1', sql.VarChar(250), indication.contact1)
             .input('contact2', sql.VarChar(250), indication.contact2)
             .input('contact3', sql.VarChar(250), indication.contact3)
             .input("indication_contact_type", sql.Int, indication.indication_contact_type)
@@ -498,13 +498,13 @@ export function configure_routes(app: any, connection_pool: any) {
             .input("age", sql.Int, indication.age > 0 ? indication.age : 0)
             .input('district', sql.VarChar(100), indication.district)
             .input('occupation', sql.VarChar(100), indication.occupation)
-            .execute(`SaveNewIndication`);      
-                        
-            res.send({ success: true});                        
-        } catch(error)  {   
+            .execute(`SaveNewIndication`);
+
+            res.send({ success: true});
+        } catch(error)  {
             if(error.code = 'EJSON') {
                 console.log(error);
-                res.send([]);       
+                res.send([]);
             } else {
                 console.log(error);
                 res.status(500).json(error);
@@ -516,83 +516,86 @@ export function configure_routes(app: any, connection_pool: any) {
      * SCHEDULING
      */
 
-    app.post("/api/person_schedule/delete", 
+    app.post("/api/person_schedule/delete",
     auth.ensureLoggedIn(),
-    async (request, response, next) => { 
+    async (request, response, next) => {
         let result = await person_service.remove_schedule(
             request.body.id
-        );            
+        );
 
-        response.send({ sucess: true});             
+        response.send({ sucess: true});
     });
 
-    app.get("/api/person_schedule/person/:id", 
+    app.get("/api/person_schedule/person/:id",
     auth.ensureLoggedIn(),
-    async (request, res, next) => { 
-        try {                     
-            let result = await new sql.Request(pool)                
+    async (request, res, next) => {
+        try {
+            let result = await new sql.Request(pool)
                 .input('person_id', sql.Int, request.params.id)
-                .execute(`GetPersonScheduling`);                
-                            
+                .execute(`GetPersonScheduling`);
+
             let response = result.recordset[0];
-            
+
             res.send(response[0].empty ? [] : response);
-        } catch (error) {                                
+        } catch (error) {
             res.status(500).json(error);
-        }              
+        }
     });
 
-    app.post("/api/person_schedule", 
+    app.post("/api/person_schedule",
     auth.ensureLoggedIn(),
-    async (request, response, next) => { 
-        let result = await person_service.save_schedule(
-            request.body.schedule
-        );            
+    async (request, response, next) => {
+        const user = await SecurityService.getUserFromRequest(request);
+        const responsible_id = await user.getPersonId();
 
-        response.send({ sucess: true});             
+        let result = await person_service.save_schedule(
+            request.body.schedule, responsible_id
+        );
+
+        response.send({ sucess: true});
     });
 
     /**
-     * COMMENTS    
+     * COMMENTS
      */
 
-    app.get("/api/people_comments/about/:id/:show_archived?", 
+    app.get("/api/people_comments/about/:id/:show_archived?",
     auth.ensureLoggedIn(),
-    async (request, res, next) => {  
-        try {                      
+    async (request, res, next) => {
+        try {
             const result = await new sql.Request(pool)
             .input('person_id', sql.Int, request.params.id)
             .input('show_archived', sql.Int, request.params.show_archived || 0)
-            .execute(`GetCommentsAboutPerson`);                
-            
+            .execute(`GetCommentsAboutPerson`);
+
             let response = result.recordset[0];
-            res.send(response[0].empty ? [] : response);   
-                     
-        } catch(error)  {   
+            res.send(response[0].empty ? [] : response);
+
+        } catch(error)  {
             console.log(error);
             res.status(500).json(error);
         }
     });
 
-    app.post("/api/people_comments/about", 
+    app.post("/api/people_comments/about",
     auth.ensureLoggedIn(),
-    async (request, response, next) => { 
+    async (request, response, next) => {
         let result = await person_service.save_comment_about(
             request.body.person_id,
             request.body.comment
-        );            
+        );
 
-        response.send({ sucess: true});             
+        response.send({ sucess: true});
     });
 
-    app.post("/api/people_comments/archive", 
+    app.post("/api/people_comments/archive",
     auth.ensureLoggedIn(),
-    async (request, response, next) => { 
+    async (request, response, next) => {
         let result = await person_service.archive_comment(
             request.body.id
-        );            
+        );
 
-        response.send({ sucess: true});             
+        response.send({ sucess: true});
     });
-    
+
 }

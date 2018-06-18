@@ -112,7 +112,7 @@ export class PersonService {
                                 .execute(`CancelPersonSchedule`);
     }
 
-    async save_schedule(schedule) {
+    async save_schedule(schedule, responsible_id) {
         return await new sql.Request(this.sql_pool)
             .input('person_id', sql.Int, schedule.person_id)
             .input('branch_id', sql.Int, schedule.branch_id)
@@ -127,6 +127,7 @@ export class PersonService {
             .input('number_of_incidents', sql.Int, schedule.number_of_incidents)
             .input('description', sql.NVarChar(sql.MAX), schedule.description)
             .input('value', sql.Decimal(12,2), schedule.value)
+            .input('responsible_id', sql.Int, responsible_id)
             .execute(`SavePersonScheduleAndGenerateIncidents`);
     }
 

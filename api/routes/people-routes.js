@@ -225,8 +225,8 @@ function configure_routes(app, connection_pool) {
         try {
             const result = yield new sql.Request(pool)
                 .input("person", sql.Int, req.params.id)
-                .query(`select * from person_partnership 
-                    where person_id = @person 
+                .query(`select * from person_partnership
+                    where person_id = @person
                     for json path`);
             let response = result.recordset[0];
             res.send(response);
@@ -272,8 +272,8 @@ function configure_routes(app, connection_pool) {
         try {
             const result = yield new sql.Request(pool)
                 .input("person", sql.Int, req.params.id)
-                .query(`select * from person_external_unit 
-                    where person_id = @person 
+                .query(`select * from person_external_unit
+                    where person_id = @person
                     for json path`);
             let response = result.recordset[0];
             res.send(response);
@@ -318,8 +318,8 @@ function configure_routes(app, connection_pool) {
         try {
             const result = yield new sql.Request(pool)
                 .input("person", sql.Int, req.params.id)
-                .query(`select * from vwPersonRelationships 
-                    where relationship_type in (10, 13, 14) and person_id = @person 
+                .query(`select * from vwPersonRelationships
+                    where relationship_type in (10, 13, 14) and person_id = @person
                     for json path`);
             let response = result.recordset[0];
             res.send(response);
@@ -387,7 +387,9 @@ function configure_routes(app, connection_pool) {
         }
     }));
     app.post("/api/person_schedule", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield person_service.save_schedule(request.body.schedule);
+        const user = yield security_service_1.SecurityService.getUserFromRequest(request);
+        const responsible_id = yield user.getPersonId();
+        let result = yield person_service.save_schedule(request.body.schedule, responsible_id);
         response.send({ sucess: true });
     }));
     /**
