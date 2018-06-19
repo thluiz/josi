@@ -25,12 +25,15 @@
     [card_id]                            INT             NULL,
     [financial_agreement_installment_id] INT             NULL,
     [currency_id]                        INT             NULL,
+    [title]                              NVARCHAR (200)  NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [fk_incident_branch] FOREIGN KEY ([branch_id]) REFERENCES [dbo].[branch] ([id]),
     CONSTRAINT [fk_incident_card] FOREIGN KEY ([card_id]) REFERENCES [dbo].[card] ([id]),
     CONSTRAINT [fk_incident_currency] FOREIGN KEY ([currency_id]) REFERENCES [dbo].[currency] ([id]),
     CONSTRAINT [FK_incident_responsible] FOREIGN KEY ([responsible_id]) REFERENCES [dbo].[person] ([id])
 );
+
+
 
 
 
@@ -73,4 +76,10 @@ GO
 CREATE NONCLUSTERED INDEX [ix_incident_current_activity]
     ON [dbo].[incident]([incident_type] ASC, [treated] ASC, [cancelled] ASC, [started_on] ASC)
     INCLUDE([closed], [closed_on], [branch_id]);
+
+
+GO
+CREATE NONCLUSTERED INDEX [ix_current_activities]
+    ON [dbo].[incident]([closed] ASC, [treated] ASC, [cancelled] ASC, [started_on] ASC)
+    INCLUDE([branch_id]);
 

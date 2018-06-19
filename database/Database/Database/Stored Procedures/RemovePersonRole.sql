@@ -22,7 +22,8 @@ begin
   update person set is_service_provider = 0 where id = @person_id  
  else if (@role_id = 13)        
   update person set is_associated_with_member = 0 where id = @person_id  
-    
+  
+ exec UpdateP1ContractedSessions @person_id  
  exec CheckPeopleStatus @person_id    
     
 end    

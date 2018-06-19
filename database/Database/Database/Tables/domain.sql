@@ -8,6 +8,9 @@
     [program_id]      INT           DEFAULT ((1)) NOT NULL,
     [extra_long_name] VARCHAR (350) NULL,
     [ideograms]       NVARCHAR (50) NULL,
+    [sessions]        INT           DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC)
 );
+
+
 

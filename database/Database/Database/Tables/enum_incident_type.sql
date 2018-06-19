@@ -17,8 +17,11 @@
     [allowed_for_new_person]       BIT           DEFAULT ((0)) NOT NULL,
     [financial_type]               INT           DEFAULT ((0)) NOT NULL,
     [use_in_map]                   BIT           DEFAULT ((0)) NOT NULL,
+    [require_title]                BIT           DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC)
 );
+
+
 
 
 

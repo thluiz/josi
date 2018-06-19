@@ -6,7 +6,7 @@
     [domain_id]                 INT           NULL,
     [scheduling_status]         INT           DEFAULT ((0)) NOT NULL,
     [financial_status]          INT           DEFAULT ((0)) NOT NULL,
-    [avatar_img]                VARCHAR (50)  NULL,
+    [avatar_img]                VARCHAR (80)  NULL,
     [free_financial]            BIT           DEFAULT ((0)) NOT NULL,
     [free_scheduling]           BIT           DEFAULT ((0)) NOT NULL,
     [comunication_status]       BIT           DEFAULT ((0)) NOT NULL,
@@ -40,12 +40,20 @@
     [is_associated_with_member] BIT           DEFAULT ((0)) NOT NULL,
     [default_page_id]           INT           CONSTRAINT [df_person_default_page_id] DEFAULT ((5)) NOT NULL,
     [is_external_member]        BIT           DEFAULT ((0)) NOT NULL,
+    [age]                       INT           NULL,
+    [scheduling_description]    VARCHAR (MAX) NULL,
+    [financial_description]     VARCHAR (MAX) NULL,
+    [alias]                     VARCHAR (15)  NULL,
+    [contracted_p1_sessions]    INT           DEFAULT ((0)) NOT NULL,
+    [p1_sessions_current_month] INT           DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [FK_Person_Branch] FOREIGN KEY ([branch_id]) REFERENCES [dbo].[branch] ([id]),
     CONSTRAINT [FK_Person_Domain] FOREIGN KEY ([domain_id]) REFERENCES [dbo].[domain] ([id]),
     CONSTRAINT [fk_person_family] FOREIGN KEY ([family_id]) REFERENCES [dbo].[person] ([id]),
     CONSTRAINT [FK_person_program] FOREIGN KEY ([program_id]) REFERENCES [dbo].[program] ([id])
 );
+
+
 
 
 

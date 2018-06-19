@@ -3,7 +3,7 @@
     [title]                   NVARCHAR (250) NULL,
     [due_date]                DATETIME       NULL,
     [created_on]              DATETIME       DEFAULT (getdate()) NOT NULL,
-    [feature_area_id]         INT            NOT NULL,
+    [feature_area_id]         INT            NULL,
     [description]             NVARCHAR (MAX) NULL,
     [leader_id]               INT            NULL,
     [current_step_id]         INT            NULL,
@@ -22,8 +22,11 @@
     [created_by]              INT            NULL,
     [has_overdue_card]        BIT            DEFAULT ((0)) NOT NULL,
     [automatically_generated] BIT            DEFAULT ((0)) NOT NULL,
-    PRIMARY KEY CLUSTERED ([id] ASC)
+    PRIMARY KEY CLUSTERED ([id] ASC),
+    CONSTRAINT [fk_card_parent] FOREIGN KEY ([parent_id]) REFERENCES [dbo].[card] ([id])
 );
+
+
 
 
 

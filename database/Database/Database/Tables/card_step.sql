@@ -13,9 +13,12 @@
     [close_financial_incident] BIT           DEFAULT ((0)) NOT NULL,
     [start_incident]           BIT           DEFAULT ((0)) NOT NULL,
     [initial_step]             BIT           DEFAULT ((0)) NOT NULL,
+    [automatically_move]       BIT           DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [fk_card_step_card] FOREIGN KEY ([card_id]) REFERENCES [dbo].[card] ([id])
 );
+
+
 
 
 

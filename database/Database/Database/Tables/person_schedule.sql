@@ -21,6 +21,9 @@
     [cancelled_on]        DATETIME        NULL,
     [cancelled_by]        INT             NULL,
     [branch_id]           INT             NOT NULL,
+    [responsible_id]      INT             NULL,
     PRIMARY KEY CLUSTERED ([id] ASC)
 );
+
+
 

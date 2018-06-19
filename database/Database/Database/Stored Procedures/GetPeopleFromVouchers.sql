@@ -14,7 +14,7 @@ begin
   if(@page is null)   
  set @page = 1  
   
- if(not exists(select 1 from vwPerson p  
+ if(not exists(select 1 from person p  
 	left join person_voucher pv on pv.person_id = p.id    	    
   where p.is_interested = 1    
 	and exists(select 1 
