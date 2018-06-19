@@ -149,10 +149,11 @@ export class PersonService {
 
     
 
-    async save_comment_about(person_id, comment) {
+    async save_comment_about(person_id, comment, responsible_id) {
         const result = await new sql.Request(this.sql_pool) 
                                 .input('person_id', sql.Int, person_id)
                                 .input('comment', sql.NVarChar(sql.MAX), comment)                               
+                                .input('responsible_id', sql.Int, responsible_id)
                                 .execute(`SavePersonComment`);
 
         return result;  

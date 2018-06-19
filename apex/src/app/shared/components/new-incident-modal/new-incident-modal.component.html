@@ -75,8 +75,7 @@
                             <div class="input-group-addon" (click)="niReschedule.toggle()">
                                 <i class="ft-calendar" style="cursor: pointer;"></i>
                             </div>																																
-                        </div>	
-                        
+                        </div>	                        
                     </div>
                 </div>
                 <div class="col-6">					
@@ -165,7 +164,16 @@
                         </span>
                     </ng-template>					
                 </div>                
-            </div>            
+            </div>                        
+            <div class="row" *ngIf="new_incident.type != null && new_incident.type.require_title">
+                <div class="col-12 pb-1">
+                    <label for="new_incident_title" style="font-weight: bold">Título</label>								
+                    <input class="form-control" 
+                    (ngModelChange) ="validate_new_event()"
+                    [(ngModel)]="new_incident.title" id="new_incident_title"
+                    />
+                </div>
+            </div>	
             <div class="row" *ngIf="new_incident.type != null">
                 <div class="col-12">
                     <label for="new_incident_description" style="font-weight: bold">Descrição</label>								
@@ -183,8 +191,14 @@
                         [(ngModel)]="new_incident.value"							
                         class="form-control text-right"
                         (ngModelChange) ="validate_new_event_value()" 						
-                        />
-                    <small class="form-text text-muted danger" *ngIf="new_incident.value != null && new_incident.value.errors?.gt">gt error</small>
+                        />                    
+                </div>
+            </div>
+            <div class="row" *ngIf="errors.length > 0">
+                <div class="col-12 pl-3 pt-3">
+                    <ul style="color:red;font-style: italic;">
+                        <li *ngFor="let e of errors" style="line-height: 1rem;">{{ e }}</li>
+                    </ul>
                 </div>
             </div>
         </div>			

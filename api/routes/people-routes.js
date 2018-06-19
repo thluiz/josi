@@ -410,7 +410,9 @@ function configure_routes(app, connection_pool) {
         }
     }));
     app.post("/api/people_comments/about", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield person_service.save_comment_about(request.body.person_id, request.body.comment);
+        const user = yield security_service_1.SecurityService.getUserFromRequest(request);
+        const responsible_id = yield user.getPersonId();
+        let result = yield person_service.save_comment_about(request.body.person_id, request.body.comment, responsible_id);
         response.send({ sucess: true });
     }));
     app.post("/api/people_comments/archive", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {

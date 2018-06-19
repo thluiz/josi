@@ -1,12 +1,12 @@
 <div class="row" *ngIf="!incident.cancelled">
     <div class="col-8 d-none d-md-block"
         [style.color]="incident.closed && !incident.treated ? 'silver' : ( incident.treated ? '#ffa000ad' : ( incident.started_on ? '#1565c0' : (incident.past ? 'red' : 'black'  )  ))  "
-        style="cursor:pointer;"
-        [style.font-weight]="incident.incident_type == 36 ? 'bold' : 'normal'"
-        (click)="show_incident_details(incident);">
+        [style.cursor]="showLink ? 'pointer' : null"
+        [style.font-weight]="incident.incident_type == 36 || showBold ? 'bold' : 'normal'"
+        (click)="showLink ? show_incident_details(incident) : null;">
         <span *ngIf="current_branch <= 0" style="width:40px;display:inline-table;">{{ incident.branch_initials }}</span>
         <span style="width:50px;display:inline-table;" *ngIf="showDate">{{ incident.date | date:'dd/MM' }}</span>
-        <span style="width:45px;display:inline-table;" 
+        <span style="width:45px;display:inline-table;"
         *ngIf="incident.need_start_hour_minute">{{ (incident.started_on || incident.date) | date:'HH:mm' }}</span>
         <span style="width:40px;display:inline-table;">{{ incident.abrev }}</span>
         <span *ngIf="!hideName">{{ incident.person }}</span>

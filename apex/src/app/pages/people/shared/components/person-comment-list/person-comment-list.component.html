@@ -29,6 +29,9 @@
                 </div>
                 <div class="row">
                     <div class="col-12 text-right pr-0" style="font-style: italic;line-height:10px;font-size:10px">
+                        <ng-template [ngIf]="cm.responsible_id > 0">
+                            {{ cm.responsible }} - 
+                        </ng-template>
                         {{ cm.created_date_br }} {{ cm.created_hour_br  }}
                     </div>
                 </div>                              

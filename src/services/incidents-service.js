@@ -68,7 +68,7 @@ class IncidentsService {
                 date += ` ${incident.time.hour}:${incident.time.minute}`;
             }
             let execution = yield database_facility_1.DatabaseFacility
-                .ExecuteTypedJsonSP(exports.INCIDENT_ADDED, "RegisterNewIncident", { "description": incident.description }, { "responsible_id": responsible_id }, { "people": incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(",") }, { "date": date }, { "type": incident.type.id }, { "branch": incident.branch_id }, { "value": incident.value }, { "start_activity": incident.start_activity ? 1 : 0 }, { "register_closed": incident.close_activity == 1 ? 1 : 0 }, { "register_treated": incident.close_activity == 2 ? 1 : 0 }, { "new_people": incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(",") });
+                .ExecuteTypedJsonSP(exports.INCIDENT_ADDED, "RegisterNewIncident", { "description": incident.description }, { "responsible_id": responsible_id }, { "people": incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(",") }, { "date": date }, { "type": incident.type.id }, { "branch": incident.branch_id }, { "title": incident.title }, { "value": incident.value }, { "start_activity": incident.start_activity ? 1 : 0 }, { "register_closed": incident.close_activity == 1 ? 1 : 0 }, { "register_treated": incident.close_activity == 2 ? 1 : 0 }, { "new_people": incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(",") });
             return execution;
         });
     }

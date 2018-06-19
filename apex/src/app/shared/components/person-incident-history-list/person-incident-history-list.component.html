@@ -18,9 +18,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-3">
+            <div class="col-4">
                 <select id="branch" 
-                    [(ngModel)]="activity_type"                     
+                    [(ngModel)]="activity_type"         
+                    (ngModelChange)="load_items()"
                     class="form-control form-control-sm"								
                 >			
                 <option [ngValue]="null">Todos</option>			
@@ -37,6 +38,7 @@
                         placeholder="dd/mm/aaaa" 
                         [(ngModel)]="start_date" id="start_date"
                         style="height: calc(1.8125rem + 2px)"
+                        (ngModelChange)="load_items()"
                         ngbDatepicker #niStartDateReschedule="ngbDatepicker" />
                         <div class="input-group-addon" 
                         style="height: calc(1.8125rem + 2px);padding-top:4px;"
@@ -52,6 +54,7 @@
                         <input class="form-control form-control-sm text-center" placeholder="dd/mm/aaaa" 
                         [(ngModel)]="end_date" id="end_date"
                         style="height: calc(1.8125rem + 2px)"
+                        (ngModelChange)="load_items()"
                         ngbDatepicker #niEndDateReschedule="ngbDatepicker" />
                         <div class="input-group-addon" 
                         style="height: calc(1.8125rem + 2px);padding-top:4px;"
@@ -61,19 +64,13 @@
                     </div>	                    
                 </div>
             </div>
-            <div class="col-1  pl-1 pr-0">
-                <button type="button" 			
-                    class="btn btn-silver btn-sm"
-                    title="Pesquisar"                    
-                    (click)="load_items();">						                    
-                    <i class="fas fa-search"></i>                                                    
-                </button>
-            </div>
         </div>
         <div class="row" *ngFor="let item of items, let k = index"> 
             <div class="col-12" *ngIf="k < 3 || show_full_history">                                            
                 <incident-agenda-listitem [incident]="item" [hideName]="true"
-                [showCloseText]="true" [hideStatus]="true" [hideActions]="true"
+                [showLink]="!current || item.id != current.id"
+                [showBold]="current && item.id == current.id"
+                [showTitle]="true" [showCloseText]="true" [hideStatus]="true" [hideActions]="true"
                 [showDate]="true" [forceCompact]="true"></incident-agenda-listitem>
             </div>
         </div>

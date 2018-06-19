@@ -28,6 +28,7 @@ export class NewInicidentModalComponent implements OnInit {
   modalRef;
   branches: any;
   incident_types:any;  
+  errors: string[] = [];
 
   @ViewChild('add_incident_modal') add_incident_modal: ElementRef;  
   
@@ -111,20 +112,36 @@ export class NewInicidentModalComponent implements OnInit {
 
   validate_new_event() {  
     let new_incident = this.new_incident;
+    this.errors = [];
 
     if(new_incident.people != null
       && new_incident.people.length > 0
       && new_incident.type != null
       && new_incident.branch_id > 0
+      && (!new_incident.type.require_title
+          || (new_incident.title || "").length > 3
+          || (new_incident.title || "").length > 50)
       && (!this.new_incident.type.need_description
-          || ((this.new_incident.description || "").length > 3))
+          || (this.new_incident.description || "").length > 5)
       && (
         !this.new_incident.type.need_value 
         || this.new_incident.value > 0
-      )) {
+      )) {        
         this.new_incident.correct = true;
         return;
-    }    
+    }     
+    
+    if(new_incident.type.require_title && (new_incident.title || "").length < 3) {
+      this.errors.push("Informe o título");      
+    }
+
+    if(new_incident.type.require_title && (new_incident.title || "").length > 50) {
+      this.errors.push("O título precisa ser menor que 50 caracteres");      
+    }
+
+    if(new_incident.type.need_description && (new_incident.description || "").length <= 5) {
+      this.errors.push("Informe a descrição");      
+    }
 
     this.new_incident.correct = false;    
   }

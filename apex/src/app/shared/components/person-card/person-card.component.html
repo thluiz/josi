@@ -56,8 +56,14 @@
 					{{ person.kf_name }}
 				</div>				
 				<div *ngIf="person.program_id == 1"
+				[style.color]="person.contracted_p1_sessions  < person.p1_sessions_current_month ? 'red' : null"
 					style="float:right;">
 					{{ person.p1_sessions_current_month }}/{{ person.contracted_p1_sessions }}
+				</div>
+				<div *ngIf="person.program_id == 2 && person.p2_cycle_start_date"
+					[style.color]="person.current_p2_session  < person.expected_p2_session ? 'red' : null"
+					style="float:right;">
+					{{ person.current_p2_session }}/{{ person.expected_p2_session }}
 				</div>
 			</div>
 		</div>

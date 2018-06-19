@@ -154,11 +154,12 @@ class PersonService {
                 .execute(`SavePersonContact`);
         });
     }
-    save_comment_about(person_id, comment) {
+    save_comment_about(person_id, comment, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield new sql.Request(this.sql_pool)
                 .input('person_id', sql.Int, person_id)
                 .input('comment', sql.NVarChar(sql.MAX), comment)
+                .input('responsible_id', sql.Int, responsible_id)
                 .execute(`SavePersonComment`);
             return result;
         });

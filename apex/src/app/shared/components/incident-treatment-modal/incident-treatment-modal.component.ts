@@ -62,7 +62,7 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
       && result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1)
     ).subscribe((result) => {      
       let r = result.data[0] as any;
-      if(this.current_incident && result.data[0] && r.comment_count) {
+      if(this.current_incident && result.data[0] && r.comment_count != null) {
         const comment_count = this.current_incident.comment_count || 0;
         if(comment_count != r.comment_count) {
           this.incidentService.getComments(this.current_incident.id)
@@ -264,5 +264,9 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
 
   add_comment() {    
     this.modalService.open(ModalType.AddIncidentComment, this.current_incident);
+  }
+
+  archive_comment(comment) {    
+    this.incidentService.archiveComment(comment, this.current_incident).subscribe();
   }
 }

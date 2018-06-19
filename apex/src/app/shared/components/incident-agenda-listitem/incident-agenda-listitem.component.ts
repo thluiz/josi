@@ -26,6 +26,9 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
     @Input() hideActions = false;
     @Input() showTitle = false;
     @Input() showCloseText = false;
+    @Input() showLink = true;
+    @Input() showBold = false;
+    
     saving = false;    
 
     private incidents_subscriber : Subscription;

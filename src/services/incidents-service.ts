@@ -102,6 +102,7 @@ export class IncidentsService {
             {"date":  date},
             {"type": incident.type.id},
             {"branch": incident.branch_id},
+            {"title": incident.title},
             {"value": incident.value},
             {"start_activity": incident.start_activity ? 1 : 0},
             {"register_closed" : incident.close_activity == 1 ? 1 : 0},

@@ -9,6 +9,7 @@ import { ParameterService, Configurations } from 'app/services/parameter-service
 import { PersonService, ActivityType } from 'app/services/person-service';
 import { NgbModal, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { ModalType, ModalService } from 'app/services/modal-service';
+import { LightIncident } from '../../models/incident-model';
 
 @Component({
   selector: 'person-incident-history-list',
@@ -22,6 +23,7 @@ export class PersonIncidentHistoryListComponent implements OnInit, OnDestroy {
 
   @Input() d: any;
   @Input() person: any;
+  @Input() current: LightIncident;
   @Input() start_date: NgbDateStruct;
   @Input() end_date: NgbDateStruct;
   @Input() activity_type: ActivityType = null;

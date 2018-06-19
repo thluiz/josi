@@ -580,9 +580,13 @@ export function configure_routes(app: any, connection_pool: any) {
     app.post("/api/people_comments/about",
     auth.ensureLoggedIn(),
     async (request, response, next) => {
+        const user = await SecurityService.getUserFromRequest(request);
+        const responsible_id = await user.getPersonId();
+
         let result = await person_service.save_comment_about(
             request.body.person_id,
-            request.body.comment
+            request.body.comment,
+            responsible_id
         );
 
         response.send({ sucess: true});

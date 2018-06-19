@@ -25,11 +25,13 @@
       </div>
       <div class="row" *ngIf="person">
         <div class="col-12">
-          <person-incident-history-list [person]="person" [start_date]="history_start_date" [end_date]="history_end_date" [activity_type]="current_incident.activity_type"></person-incident-history-list>
+          <person-incident-history-list 
+          [person]="person" [current]="current_incident"
+          [start_date]="history_start_date" [end_date]="history_end_date" [activity_type]="current_incident.activity_type"></person-incident-history-list>
         </div>
       </div>
       <div class="row">
-        <div class="col-12">
+        <div class="col-12 pb-3">
           <div class="row" style="border-bottom: 1px solid black">
             <div class="col-10 col-xl-10 col-sm-9">
               <h6 style="padding:0;margin:0;font-weight:bold">Comentários </h6>
@@ -161,8 +163,10 @@
           <div class="row">
             <div class="col-12">
               <fieldset class="form-group">
-                <textarea class="form-control" name="closing_contact_text" [(ngModel)]="current_incident.close_text" (ngModelChange)="validate_for_closing(current_incident)"
-                  rows="3" placeholder="Como foi?"></textarea>
+                <textarea class="form-control" name="closing_contact_text" 
+                [(ngModel)]="current_incident.close_text" 
+                (ngModelChange)="validate_for_closing(current_incident)"
+                rows="3" placeholder="Como foi?"></textarea>
               </fieldset>
               <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null 
                                             && current_incident.valid_for_closing != undefined
