@@ -63,7 +63,7 @@ export class PersonService {
     public async update_person_data(person) {                  
         return await new sql.Request(this.sql_pool)
                                 .input('id', sql.Int, person.id)                                                                                                             
-                                .input('name', sql.VarChar(200), person.name)
+                                .input('name', sql.VarChar(200), person.full_name || person.name)
                                 .input('birth_date', sql.VarChar(10), person.birth_date)
                                 .input('admission_date', sql.VarChar(10), person.admission_date)
                                 .input('enrollment_date', sql.VarChar(10), person.enrollment_date)                                
@@ -80,6 +80,7 @@ export class PersonService {
                                 .input('branch_id', sql.Int, person.branch_id > 0 ? person.branch_id : null )
                                 .input('domain_id', sql.Int, person.domain_id > 0 ? person.domain_id : null )
                                 .input('program_id', sql.Int, person.program_id > 0 ? person.program_id : null )
+                                .input('alias', sql.VarChar(15), person.alias)
                                 .execute(`UpdatePersonData`);
     }
 

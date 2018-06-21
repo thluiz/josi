@@ -52,6 +52,14 @@ __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Number)
 ], Branch.prototype, "order", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], Branch.prototype, "contact_phone", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], Branch.prototype, "contact_email", void 0);
 Branch = __decorate([
     typeorm_1.Entity()
 ], Branch);

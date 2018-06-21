@@ -11,7 +11,7 @@
             <div class="col-12 text-left" *ngFor="let d of p.domains">
                 <div
                     style="font-weight:bold;width:100%;color:white;margin:0;padding:5px;text-align:center"
-                    [ngStyle]="{ 'background-color': d.program_id == 3 ? '#690b01' : (d.program_id == 2 ? 'rgb(38, 44, 122)' : 'rgb(5, 53, 1)') }">
+                    [ngStyle]="{ 'background-color': d.program_id == 3 || d.program_id == 2 ? '#333' : '#666' }">
 
                     {{ p.long_name }} - {{ d.long_name }}
 

@@ -6,7 +6,7 @@
     <div class="col-2 text-right">
         <button type="button" class="btn btn-silver btn-sm" 
             style="margin:0;padding:2px;line-height:10px"
-            (click)="open(new_indication_modal);">
+            (click)="open(new_relationship_modal);">
             <i class="ft-plus"></i>               
         </button>
     </div>
@@ -33,7 +33,7 @@
     </div>  
 </div>
 
-<ng-template #new_indication_modal let-c="close" let-d="dismiss">
+<ng-template #new_relationship_modal let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h5 class="modal-title" style="font-weight: bold">
             Novo Relacionamento
@@ -42,45 +42,63 @@
         <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="modal-body">	        
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12 pb-3">
+                    <label for="relationship_type" style="font-weight: bold">Tipo de Relacionamento</label>	                    
+                    <select id="relationship_type" 
+                    [(ngModel)]="new_relationship.relationship_type" 
+                    (ngModelChange)="validate_relationship()"																	
+                    class="form-control"								
+                    >			
+                    <option></option>			
+                    <option *ngFor="let b of relationship_types" [value]="b.id">{{b.name}}</option>
+                </select>
+            </div>
+        </div>	        
         <div class="row">
             <div class="col-12">
-                <div class="form-group">
-                    <label for="new_indication_name">Nome</label>
-                    <input class="form-control" style="width:100%" 
-                        placeholder="Nome da pessoa convidada"
-                        name="new_indication_name" 
-                        (ngModelChange)="validate_new_indication()"
-                        (keyup)="validate_new_indication()"
-                        (keypress)="validate_new_indication()"
-                        (keydown)="validate_new_indication()"
-                        [(ngModel)]="new_indication.name" />
+                <div class="form-group">                    
+                    <label for="new_relationship_search_people" style="font-weight: bold">Pessoa</label>	                    
+                    <div class="form-group" [class.has-danger]="search_failed">
+                    <input type="text" class="form-control" 
+                            id="new_relationship_search_people"
+                            [ngbTypeahead]="search_people" 
+                            placeholder="Pesquise... "
+                            [resultTemplate]="person_typeahead_template"
+                            [inputFormatter]="people_typeahead_formatter"
+                            [(ngModel)]="search_person" 
+                            (ngModelChange) ="add_person($event)" 
+                        />
+                    <span *ngIf="searching_people">buscando...</span>
+                    <div class="form-control-feedback" *ngIf="search_failed">
+                        ops... ocorreu algum erro na busca</div>
+                    </div>
+                    <ng-template #person_typeahead_template let-p="result">
+                        <img alt="{{ p.name }}" 
+                        class="img-border" 
+                        src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}" 											
+                        style="min-width:50px;max-width:50px;" 
+                        *ngIf="p.avatar_url && p.avatar_url.length > 0" />						
+                        {{ p.name }}
+                        <span *ngIf="!p.found" style="font-style: italic;">
+                            (novo)
+                        </span>
+                    </ng-template>
                 </div>
             </div>
-        </div>        
-        <div class="form-group">
-            <label for="new_indication_operator">Operador Responsável</label>
-            <select id="new_indication_operator" 
-                [(ngModel)]="new_indication.operator_id" 
-                (ngModelChange)="validate_new_indication()"																	
-                class="form-control"								
-                >			
-                <option></option>			
-                <option *ngFor="let o of operators" [value]="o.id">{{o.name}}</option>
-            </select>								
-        </div>        
-        <div class="row">
-            <div class="col-12">                
-                <div class="form-group">
-                    <label for="new_indication_comment">Comentários Gerais</label>
-                    <textarea class="form-control" 
-                    name="new_indication_comment" id="new_indication_comment"                    
-                    [(ngModel)]="new_indication.comment"		
-                    rows="3"></textarea>
-                </div>
+        </div>  
+        <div class="row" *ngIf="new_relationship.person2">
+            <div class="col-12">
+                <img alt="{{ new_relationship.person2.name }}" 
+                class="img-border" 
+                src="https://myvtmiim.blob.core.windows.net/avatars/{{ new_relationship.person2.avatar_url }}" 											
+                style="min-width:50px;max-width:50px;" 
+                *ngIf="new_relationship.person2.avatar_url && new_relationship.person2.avatar_url.length > 0" />							
+                {{ new_relationship.person2.name }}
             </div>
-        </div>
-        <div class="row" *ngIf="!new_indication.valid">
+        </div>        
+        <div class="row" *ngIf="!new_relationship.valid">
             <div class="col-12 text-danger">
                 <ul>
                     <li style="line-height:1.2em" *ngFor="let error of errors">{{ error }}</li>
@@ -95,7 +113,7 @@
         <div class="form-actions text-right">
             <button type="button" class="btn btn-success" 
                 (click)="save_new_indication(d('indication created!'));"
-                *ngIf="new_indication.valid">
+                *ngIf="new_relationship.valid">
                 <i class="icon-check"></i>
                 Salvar
             </button>

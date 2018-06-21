@@ -32,4 +32,10 @@ export class Branch {
 
     @Column()
     order: number;
+
+    @Column()
+    contact_phone: string;
+
+    @Column()
+    contact_email: string;
 }

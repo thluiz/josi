@@ -52,7 +52,9 @@ class ParametersService {
             try {
                 const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
                 voucher = yield VR.findOne(voucher.id, { relations: ["branches"] }); //load relation
-                if (voucher.branches.find(b => b.id == branch.id)) {
+                if (voucher.branches.find(b => b.id == branch.id) != null) {
+                    console.log(voucher.branches);
+                    console.log(branch.id);
                     return result_1.Result.Fail(errors_codes_1.ErrorCode.NothingChanged, null);
                 }
                 voucher.branches.push(branch);

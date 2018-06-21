@@ -58,7 +58,9 @@ export class ParametersService {
     
             voucher = await VR.findOne(voucher.id, { relations: ["branches"] }); //load relation
     
-            if(voucher.branches.find(b => b.id == branch.id)) {
+            if(voucher.branches.find(b => b.id == branch.id) != null) {
+                console.log(voucher.branches);
+                console.log(branch.id)
                 return Result.Fail(ErrorCode.NothingChanged, null);
             }
     
@@ -99,7 +101,7 @@ export class ParametersService {
     @trylog()
     @firebaseEmitter(PARAMETERS_COLLECTION)
     static async update_branch(branch : Branch) : Promise<Result<Branch>> {
-        const BR = await DatabaseFacility.getRepository<Branch>(Branch);     
+        const BR = await DatabaseFacility.getRepository<Branch>(Branch);      
         return Result.Ok(BRANCH_UPDATED, await BR.save(branch));
     }
 

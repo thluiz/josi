@@ -70,7 +70,7 @@ class PersonService {
         return __awaiter(this, void 0, void 0, function* () {
             return yield new sql.Request(this.sql_pool)
                 .input('id', sql.Int, person.id)
-                .input('name', sql.VarChar(200), person.name)
+                .input('name', sql.VarChar(200), person.full_name || person.name)
                 .input('birth_date', sql.VarChar(10), person.birth_date)
                 .input('admission_date', sql.VarChar(10), person.admission_date)
                 .input('enrollment_date', sql.VarChar(10), person.enrollment_date)
@@ -87,6 +87,7 @@ class PersonService {
                 .input('branch_id', sql.Int, person.branch_id > 0 ? person.branch_id : null)
                 .input('domain_id', sql.Int, person.domain_id > 0 ? person.domain_id : null)
                 .input('program_id', sql.Int, person.program_id > 0 ? person.program_id : null)
+                .input('alias', sql.VarChar(15), person.alias)
                 .execute(`UpdatePersonData`);
         });
     }

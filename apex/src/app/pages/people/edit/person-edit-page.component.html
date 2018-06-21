@@ -1,4 +1,4 @@
-
+ 
 <section id="person-edit-profile" *ngIf="person">
     <div>        
         <div class="row justify-content-md-center">
@@ -6,7 +6,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title" id="basic-layout-form">Alterar Dados</h4>
-                        <p class="mb-0">{{ person.name }}</p>
+                        <p class="mb-0">{{ person.full_name }}</p>
                     </div>
                     <div class="card-body">
                         <div class="px-3">
@@ -18,7 +18,8 @@
                                             <div class="form-group">
                                                 <label for="person_name">Nome Completo</label>
                                                 <input type="text" id="person_name" name="person_name"
-                                                class="form-control" [(ngModel)]="person.name">
+                                                autocomplete="false" class="form-control" 
+                                                [(ngModel)]="person.full_name">
                                             </div>
                                         </div>
                                         <div class="col-12 col-sm-6 col-lg-3">
@@ -53,9 +54,16 @@
                                     <div class="row">
                                         <div class="col-12 col-sm-6 col-lg-3">
                                             <div class="form-group">
+                                                <label for="person_alias">Apelido</label>
+                                                <input type="text" id="person_alias" name="person_alias"
+                                                maxlength="15" class="form-control" [(ngModel)]="person.alias">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6 col-lg-3">
+                                            <div class="form-group">
                                                 <label for="person_occupation">Profissão</label>
                                                 <input type="text" id="person_occupation" name="person_occupation"
-                                                maxlength="100" class="form-control" [(ngModel)]="person.occupation" maxlength="100">
+                                                maxlength="100" class="form-control" [(ngModel)]="person.occupation">
                                             </div>
                                         </div>
                                     </div>

@@ -89,7 +89,7 @@
                         </span>
                     </div>
                 </div>                            
-                <div class="col-6">
+                <div class="col-3">
                     <label for="item_initials">Iniciais</label>                                                									
                     <div class="input-group">							
                         <input class="form-control"
@@ -97,6 +97,18 @@
                         autocomplete="off"
                         id="item_initials"
                         name="item_initials"/>                                    
+                    </div>
+                </div>
+                <div class="col-3">
+                    <label for="item_order">Ordem</label>                                                									
+                    <div class="input-group">							
+                        <input class="form-control text-center"
+                        [(ngModel)]="current_item.order"                        
+                        autocomplete="off"
+                        maxlength="3"
+                        type="number"
+                        id="item_order"
+                        name="item_order"/>                                    
                     </div>
                 </div>
             </div>
@@ -111,7 +123,33 @@
                         id="item_abrev"
                         name="item_abrev"/>                                    
                     </div>
-                </div>
+                </div>                
+            </div>
+            <div class="row" *ngIf="current_item.category_id == 3">
+                <div class="col-12">
+                    <label for="item_contact_phone">Telefone</label>                                                									
+                    <div class="input-group">							
+                        <input class="form-control"
+                        [(ngModel)]="current_item.contact_phone"                        
+                        autocomplete="off"
+                        maxlength="200"
+                        id="item_contact_phone"
+                        name="item_contact_phone"/>                                    
+                    </div>
+                </div>                
+            </div>
+            <div class="row" *ngIf="current_item.category_id == 3">
+                <div class="col-12">
+                    <label for="item_contact_email">Email</label>                                                									
+                    <div class="input-group">							
+                        <input class="form-control"
+                        [(ngModel)]="current_item.contact_email"                        
+                        autocomplete="off"
+                        maxlength="200"
+                        id="item_contact_email"
+                        name="item_contact_email"/>                                    
+                    </div>
+                </div>                
             </div>
         </div>
         <div class="modal-footer" *ngIf="saving">        

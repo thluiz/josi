@@ -36,6 +36,7 @@ export class ParameterService {
     private products$ = new ReplaySubject(1);
     private currencies$ = new ReplaySubject(1);    
     private product_categories$ = new ReplaySubject(1);
+    private relationship_types$ = new ReplaySubject(1);
     
     private personCardPositions$ = new ReplaySubject(1);
     private cardTemplates$ = new ReplaySubject(1);
@@ -100,6 +101,10 @@ export class ParameterService {
 
     getRecurrenceTypes(forceRefresh?: boolean) {
         return this.utilsService.cache_results(this.recurrence_types$, `/recurrence_types`, forceRefresh);                      
+    }
+
+    getRelationshipTypes(forceRefresh?: boolean) {
+        return this.utilsService.cache_results(this.relationship_types$, `/relationship_types`, forceRefresh);                      
     }
 
     getIncidentTypes(forceRefresh?: boolean) {

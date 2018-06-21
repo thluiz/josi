@@ -1,3 +1,4 @@
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 
 
@@ -11,7 +12,8 @@ import { PersonRelationshipListComponent } from './person-relationship-list.comp
     imports: [
         CommonModule,
         FormsModule,
-        RouterModule
+        RouterModule,
+        NgbModule
     ],
     declarations: [       
         PersonRelationshipListComponent

@@ -1,5 +1,6 @@
 
-import {zip as observableZip,  Subscription, Observable } from 'rxjs';
+import {zip as observableZip,  Subscription, Observable ,  of } from 'rxjs';
+import { debounceTime ,  delay ,  map ,  distinctUntilChanged ,  catchError ,  tap ,  switchMap } from 'rxjs/operators';
 
 import {filter} from 'rxjs/operators';
 import { CardService } from 'app/services/card-service';
@@ -25,29 +26,10 @@ export class PersonRelationshipListComponent implements OnInit, OnDestroy {
   @Input() navigateToRelationship = false;
   @Output() onNavigateToRelationship = new EventEmitter<boolean>();
 
-  saving = false;  
-  needed_direct_indications = 0; 
-  needed_indirect_indications = 0; 
-  new_indication = { name: "", 
-    contact_type1: 0,
-    contact1: "",
-    contact_type2: 0,
-    contact2: "",
-    contact_type3: 0,
-    contact3: "",
-    valid: false,
-    comment: "",
-    person_id: 0,
-    branch_id: 0,
-    operator_id: 0,
-    indication_contact_type: 0,
-    occupation: '',
-    district: '',
-    age: ''
-  };
-  contact_types: any[];
-  branches: any[];
-  operators: any[];
+  saving = false;    
+  new_relationship: any;
+  relationship_types  = [];
+  
   errors :string[] = [];
   private last_call : Date;
   
@@ -58,8 +40,35 @@ export class PersonRelationshipListComponent implements OnInit, OnDestroy {
     private securityService: SecurityService,  
     private cardService: CardService,
     private personService: PersonService) {   
-
+    this.setup_new_relationship();
   }
+
+  search_person;
+  searching_people;
+  search_failed;
+  people_typeahead_formatter = (x) => x.name;
+
+  add_person(event) {    
+    this.new_relationship.person2 = event;
+    this.validate_relationship();
+  }
+  
+  search_people = (text$: Observable<string>) =>
+      text$.pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        tap(() => this.searching_people = true),
+        switchMap(term =>
+          this.personService.search(term).pipe(
+            map(response =>  {             
+              return <string[]>response; 
+            }),
+            tap(() => this.search_failed = false),
+            catchError(() => {
+              this.search_failed = true;
+              return of([]);
+            }),)),
+        tap(() => this.searching_people = false),)
 
   ngOnInit() {      
     
@@ -96,112 +105,60 @@ export class PersonRelationshipListComponent implements OnInit, OnDestroy {
   }
        
   open(content){  
-    this.saving = false;
+    this.saving = false;    
+    this.setup_new_relationship();
+    this.parameterService.getRelationshipTypes().subscribe(result => {
+      
+      this.relationship_types = result;
 
-    this.new_indication = { name: "", 
-      contact_type1: 0,
-      contact1: "",
-      contact_type2: 0,
-      contact2: "",
-      contact_type3: 0,
-      contact3: "",
-      valid: false,
-      comment: "",
-      person_id: this.person.id,
-      branch_id: this.person.branch_id,
-      operator_id: 0,
-      indication_contact_type: 0,
-      occupation: '',
-      district: '',
-      age: ''
-    };  
+      this.modalService.open(content).result.then((result2) => {                                  
+    
+      }, (reason) => {
+        console.log(reason);
+      });
+    });
 
-    observableZip(
-      this.securityService.getCurrentUserData(),
-      this.parameterService.getContactTypes(),
-      this.parameterService.getActiveBranches(),
-      this.cardService.getOperators(),
-      (user, contact_types, branches, operators) => {        
-        this.new_indication.operator_id = user.person_id;        
-        this.contact_types = contact_types;
-        this.branches = branches;
-        this.operators = operators; 
-
-        this.modalService.open(content).result.then((result) => {                                  
-  
-        }, (reason) => {
-          console.log(reason);
-        }); 
-      }  
-    ).subscribe(); 
   } 
 
   save_new_indication(close_action) {
     this.saving = true;
 
-    this.personService.saveIndication(this.new_indication).subscribe((data) => {
+    /*this.personService.saveRelationship(this.new_relationship)
+    .subscribe((data) => {
       this.saving = false;
 
       if(close_action) {
         close_action();
       }
-    });
+    });*/
   } 
 
-  remove_indication(indication) {
+  remove_relationship(indication) {
 
   }
 
-  validate_new_indication() {
+  validate_relationship() {
     this.errors = [];
-    if(!this.new_indication) {
+    if(!this.new_relationship) {
       return;
+    }    
+
+    if(!this.new_relationship.relationship_type) {
+      this.errors.push("Defina o tipo de relacionamento");
+      this.new_relationship.valid = false;
     }
 
-    if(!this.new_indication.name || this.new_indication.name.length < 3) {
-      this.errors.push("Informe o nome da pessoa");
+    if(!this.new_relationship.person2) {
+      this.errors.push("Defina a pessoa a relacionar");
+      this.new_relationship.valid = false;
     }
+  }
 
-    if(!this.new_indication.district || this.new_indication.district.length < 3) {
-      this.errors.push("Informe o bairro da pessoa");
+  private setup_new_relationship() {
+    this.new_relationship = {
+      valid: true,
+      person2: null,
+      person: this.person
     }
-
-    if(!this.new_indication.occupation || this.new_indication.occupation.length < 3) {
-      this.errors.push("Informe a profissão da pessoa");
-    }
-
-    if(this.new_indication.branch_id <= 0) {
-      this.errors.push("Informe o núcleo para indicação");
-    }
-
-    if(this.new_indication.operator_id <= 0) {
-      this.errors.push("Informe o operador responsável para indicação");
-    }
-
-    if((!this.new_indication.contact1 || this.new_indication.contact1.length < 3)
-     && (!this.new_indication.contact2 || this.new_indication.contact2.length < 3)
-     && (!this.new_indication.contact3 || this.new_indication.contact3.length < 3))  {
-      this.errors.push("Informe ao menos o contato principal da pessoa");
-    }
-
-    if(this.new_indication.contact1 
-        && this.new_indication.contact1.length >= 3
-        && this.new_indication.contact_type1 <= 0)  {
-      this.errors.push("Informe o tipo do primeiro contato");
-    }
-
-    if(this.new_indication.contact2 
-      && this.new_indication.contact2.length >= 3
-      && this.new_indication.contact_type2 <= 0)  {
-      this.errors.push("Informe o tipo do segundo contato");
-    }
-
-    if(this.new_indication.contact3 
-      && this.new_indication.contact3.length >= 3
-      && this.new_indication.contact_type3 <= 0)  {
-      this.errors.push("Informe o tipo do terceiro contato");
-    }
-
-    this.new_indication.valid = this.errors.length <= 0;
   }
 }

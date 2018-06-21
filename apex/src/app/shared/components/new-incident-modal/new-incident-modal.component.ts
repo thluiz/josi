@@ -1,5 +1,6 @@
-
 import {zip as observableZip,  Observable ,  of } from 'rxjs';
+import { debounceTime ,  delay ,  map ,  distinctUntilChanged ,  catchError ,  tap ,  switchMap } from 'rxjs/operators';
+
 import { ParameterService } from 'app/services/parameter-service';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Component, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
@@ -9,7 +10,6 @@ import { PersonService } from 'app/services/person-service';
 import { IncidentService } from 'app/services/incident-service';
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { debounceTime ,  delay ,  map ,  distinctUntilChanged ,  catchError ,  tap ,  switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'new-incident-modal',

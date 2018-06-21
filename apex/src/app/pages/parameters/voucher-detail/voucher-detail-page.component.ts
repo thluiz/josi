@@ -63,7 +63,7 @@ export class VoucherDetailPageComponent implements OnInit, OnDestroy {
 
     b.receive_voucher = !b.receive_voucher;
 
-    (b.receive_voucher ?
+    (!b.receive_voucher ?
       this.parameterService.remove_voucher_branch(b, this.voucher)
       : this.parameterService.save_voucher_branch(b, this.voucher)
     ).subscribe((result: Result<any>) => {

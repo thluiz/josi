@@ -96,6 +96,13 @@ function configure_routes(app, connection_pool) {
             .execute(`GetRecurrenceTypes`);
         response.send(result.recordset[0]);
     }));
+    app.get("/api/relationship_types", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield new sql.Request(pool)
+            .query(`select * from [enum_relationship_type] 
+                where active = 1 
+                for json path`);
+        res.send(result.recordset[0]);
+    }));
     app.get("/api/incident_types", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetIncidentTypes`);
@@ -151,10 +158,16 @@ function configure_routes(app, connection_pool) {
             .input('name', sql.VarChar(100), branch.name)
             .input('abrev', sql.VarChar(100), branch.abrev)
             .input('initials', sql.VarChar(3), branch.initials)
+            .input('contact_phone', sql.VarChar(200), branch.contact_phone)
+            .input('contact_email', sql.VarChar(200), branch.contact_email)
+            .input('order', sql.Int, branch.order)
             .query(`update branch set
                     name = @name,
                     abrev = @abrev,
-                    initials = @initials
+                    initials = @initials,
+                    [order] = @order,
+                    contact_phone = @contact_phone,
+                    contact_email = @contact_email
                 where id = @id`);
         res.send({ sucess: true });
     }));
