@@ -127,6 +127,12 @@
             Alterar
         </button>
         <button type="button" class="btn btn-silver" 			
+            *ngIf="!begin_remove"
+            (click)="open_move_modal(d)">
+            <i class="fas fa-expand-arrows-alt"></i>
+            Mover
+        </button>
+        <button type="button" class="btn btn-silver" 			
             *ngIf="!begin_remove && card.is_task"
             (click)="begin_remove = true">
             <i class="fas fa-archive"></i>

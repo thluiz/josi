@@ -1,4 +1,4 @@
-
+ 
 import {zip as observableZip,  Subscription, Observable } from 'rxjs';
 
 import {filter} from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { SecurityService } from 'app/services/security-service';
 import { ParameterService, Configurations } from 'app/services/parameter-service';
 import { PersonService } from 'app/services/person-service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalType, ModalService } from 'app/services/modal-service';
 
 @Component({
   selector: 'person-indication-list',
@@ -58,7 +59,8 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
   
   private indication_changes_subscriber: Subscription;
 
-  constructor(private modalService: NgbModal, 
+  constructor(private ngbModal: NgbModal, 
+    private modalService: ModalService,
     private parameterService: ParameterService, 
     private securityService: SecurityService,  
     private cardService: CardService,
@@ -115,11 +117,18 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
 
     this.last_call = new Date();
   }
+
+  open_card(card_id) {
+    this.cardService.getCardData(card_id).subscribe(card => {
+      console.log(card);
+      this.modalService.open(ModalType.DetailTask, card[0]);
+    });
+  }
   
   openChangeIndicationType(indication, content) {
     this.new_indication_type = -1;
     this.current_indication = indication;
-    this.modalService.open(content).result.then((result) => {                                  
+    this.ngbModal.open(content).result.then((result) => {                                  
   
     }, (reason) => {
       console.log(reason);
@@ -173,7 +182,7 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
         this.branches = branches;
         this.operators = operators; 
 
-        this.modalService.open(content).result.then((result) => {                                  
+        this.ngbModal.open(content).result.then((result) => {                                  
   
         }, (reason) => {
           console.log(reason);

@@ -8,7 +8,7 @@
             style="margin:0;padding:2px;line-height:10px"
             (click)="open(new_indication_modal);">
             <i class="ft-plus"></i>               
-        </button>
+        </button> 
     </div>
 </div>
 
@@ -17,17 +17,29 @@
         Nenhum Convite encontrado
     </div>    
 </div>
+<style>
+    .indication:hover {
+        background-color: #EFEFEF;
+    }
+</style>
 
-<div class="row" *ngFor="let item of indications">
-    <div class="col-8" *ngIf="navigateToIndication">        
+<div class="row indication" *ngFor="let item of indications">
+    <div class="col-6" *ngIf="navigateToIndication">        
         <a
             style="cursor:pointer;color:gray"
             (click)="navigateToPerson(item.person2_id)">
             {{ item.indicated_name }}
         </a>           
     </div>
-    <div class="col-8" *ngIf="!navigateToIndication">                
+    <div class="col-6" *ngIf="!navigateToIndication">                
         {{ item.indicated_name }}        
+    </div>
+    <div class="col-2 text-center">                
+        <a 
+        (click)="open_card(item.monitoring_card_id)" 
+        *ngIf="item.monitoring_card_id > 0">
+            {{ item.current_step.replace("Aguardando", "Ag.") }}        
+        </a>
     </div>
     <div class="col-2 text-center">  
             <a style="cursor:pointer;color:gray"
@@ -47,19 +59,19 @@
 </div>
 <div class="row" *ngIf="needed_direct_indications > 0">
     <div class="col-12 text-center" *ngIf="needed_direct_indications > 1">        
-        É preciso fazer mais {{ needed_direct_indications }} convites diretos
+        Tem direito a mais {{ needed_direct_indications }} convites diretos
     </div>
     <div class="col-12 text-center" *ngIf="needed_direct_indications == 1">        
-        Falta apenas um convite direto
+        Apenas mais um convite direto
     </div>
 </div>
 
 <div class="row" *ngIf="needed_indirect_indications > 0">
     <div class="col-12 text-center" *ngIf="needed_indirect_indications > 1">        
-        É preciso fazer mais {{ needed_indirect_indications }} convites indiretos
+        Tem direito a mais {{ needed_indirect_indications }} convites indiretos
     </div>
     <div class="col-12 text-center" *ngIf="needed_indirect_indications == 1">        
-        Falta apenas mais uma convite indireto
+        Apenas mais uma convite indireto
     </div>
 </div>
 

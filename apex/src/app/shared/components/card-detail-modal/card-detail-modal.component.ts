@@ -85,6 +85,13 @@ export class CardDetailModalComponent implements OnInit {
     });
   }
 
+  open_move_modal(close_action) {
+    if(close_action) {
+      close_action();
+    }
+    this.modalService.open(ModalType.MoveCard, this.card);    
+  }
+
   edit_card() {
     this.modalService.open(ModalType.EditCard, this.card);
   }
