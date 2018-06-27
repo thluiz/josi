@@ -4,21 +4,79 @@ export const ROUTES: RouteInfo[] = [
 
     {
         path: '/diary', title: 'Diário',
-        icon: 'ft-monitor',
+        icon: 'ft-monitor has-sub open',
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,
-        submenu: []
+        submenu: [
+            {
+                path: '/organizations', title: 'Gestores',
+                icon: '',
+                class: '', badge: '',
+                badgeClass: '', isExternalLink: false,
+                submenu: [] 
+            }
+        ]
     },
     {
         path: '/people/members', title: 'Painéis',
-        icon: 'icon-users',
+        icon: 'icon-users has-sub open',
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,
-        submenu: []
+        submenu: [
+            {
+                path: '/people/members', title: 'Membros',
+                icon: '',
+                class: '', badge: '',
+                badgeClass: '', isExternalLink: false,
+                submenu: [
+                    {
+                        path: '/people/members/management', title: 'Gerenciamento',
+                        icon: '',
+                        class: '', badge: '',
+                        badgeClass: '', isExternalLink: false,
+                        submenu: [] 
+                    }
+                ] 
+            }, {
+                path: '/people/voucher', title: 'Convidados',
+                icon: '',
+                class: '', badge: '',
+                badgeClass: '', isExternalLink: false,
+                submenu: [] 
+            }, 
+            {
+                path: '/people/interested', title: 'Interessados',
+                icon: '',
+                class: '', badge: '',
+                badgeClass: '', isExternalLink: false,
+                submenu: [] 
+            }, 
+            {
+                path: '/people/away', title: 'Afastados',
+                icon: '',
+                class: '', badge: '',
+                badgeClass: '', isExternalLink: false,
+                submenu: [] 
+            },
+            {
+                path: '/people/service_provider', title: 'Prestadores de Serviço',
+                icon: '',
+                class: '', badge: '',
+                badgeClass: '', isExternalLink: false,
+                submenu: [] 
+            },
+            {
+                path: '/under-construction', title: 'Não Interessados',
+                icon: 'icon-ban',
+                class: '', badge: '',
+                badgeClass: '', isExternalLink: false,
+                submenu: [] 
+            },                
+        ]
     },
     {
         path: '/under-construction', title: 'Calendário',
-        icon: 'ft-calendar',
+        icon: 'icon-ban',
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,
         submenu: []

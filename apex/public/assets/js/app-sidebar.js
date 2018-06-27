@@ -1,6 +1,6 @@
 /*!
  =========================================================
- * Apex Angular 4 Bootstrap theme - V2.0
+ * Apex Angular 4 Bootstrap theme - V1.0
  =========================================================
 
  * Product Page: https://www.pixinvent.com/product/apex
@@ -8,7 +8,7 @@
 
  =========================================================
 */
- $(document).ready( function(){
+$(document).ready( function(){
 
 
     var $sidebar = $('.app-sidebar'),
@@ -23,7 +23,9 @@
         $sidebar_img_container.css('background-image','url("' + $sidebar_img + '")');
     }
 
-    $sidebar_content.find('li.active').parents('li').addClass('open');
+    if(!$wrapper.hasClass('nav-collapsed')){
+        $sidebar_content.find('li.active').parents('li').addClass('open');
+    }
 
 
     $sidebar_content.on('click', '.navigation li a',function(){
@@ -31,13 +33,13 @@
         listItem = $this.parent('li');
 
         if(listItem.hasClass('has-sub') && listItem.hasClass('open')){
-            //collapse(listItem);
+            collapse(listItem);
         }
         else{
             if(listItem.hasClass('has-sub')){
                 expand(listItem);
             }
-            
+
             // If menu collapsible then do not take any action
             if ($sidebar_content.data('collapsible')) {
                 return false;
@@ -45,9 +47,8 @@
             // If menu accordion then close all except clicked once
             else {
                 openListItems = listItem.siblings('.open');
-                //collapse(openListItems);
+                collapse(openListItems);
                 listItem.siblings('.open').find('li.open').removeClass('open');
-                // openListItems.removeClass('open');
             }
         }
     });
@@ -65,8 +66,6 @@
             if (callback) {
                 callback();
             }
-
-            $.app.nav.container.trigger('collapsed.app.menu');
         });
 
     }
@@ -83,8 +82,6 @@
             if (callback) {
                 callback();
             }
-
-            $.app.nav.container.trigger('expanded.app.menu');
         });
 
         
@@ -145,56 +142,77 @@
         }
     });
 
-    $sidebar.on('mouseenter', function() {
+    $('.navigation li').on('mouseenter', function() {        
         if($wrapper.hasClass('nav-collapsed')){
-            $wrapper.removeClass('menu-collapsed');
-            var $listItem = $('.navigation li.nav-collapsed-open'),
-            $subList = $listItem.children('ul');
+            $wrapper.removeClass('menu-collapsed');            
+            var $subList = $(this).children('ul');
 
             $subList.hide().slideDown(300, function() {
                 $(this).css('display', '');
             });
 
-            $listItem.addClass('open').removeClass('nav-collapsed-open');
+            $(this).addClass('open').removeClass('nav-collapsed-open');
         }
     }).on('mouseleave', function(event) {
         if($wrapper.hasClass('nav-collapsed')){
-            $wrapper.addClass('menu-collapsed');
-            var $listItem = $('.navigation li.open'),
-            $subList = $listItem.children('ul');
-            $listItem.addClass('nav-collapsed-open');
+            $wrapper.addClass('menu-collapsed');            
+            var $subList = $(this).children('ul');
+            $(this).addClass('nav-collapsed-open');
 
             $subList.show().slideUp(300, function() {
                 $(this).css('display', '');
             });
 
-            $listItem.removeClass('open');
+            $(this).removeClass('open');
         }
     });
 
     if ($(window).width() < 992) {
-        //$sidebar.addClass('hide-sidebar');
+        $sidebar.addClass('hide-sidebar');
+        $wrapper.removeClass('nav-collapsed menu-collapsed');
     }
     $( window ).resize(function() {
         if ($(window).width() < 992) {
             //$sidebar.addClass('hide-sidebar');
+            //$wrapper.removeClass('nav-collapsed menu-collapsed');
         }
         if ($(window).width() > 992) {
             $sidebar.removeClass('hide-sidebar');
+            if( $('.toggle-icon').attr('data-toggle') === 'collapsed' &&  $wrapper.not('.nav-collapsed menu-collapsed')){
+                $wrapper.addClass('nav-collapsed menu-collapsed');
+            }
         }
     });
+
+    $(document).on('click', '.navigation li:not(.has-sub)', function(){
+        if( $(window).width() < 992 ){
+            //$sidebar.addClass('hide-sidebar');
+        }
+    });
+
+    $(document).on('click', '.logo-text', function(){
+        if( $(window).width() < 992 ){
+            //$sidebar.addClass('hide-sidebar');
+        }
+    });
+
 
     $('.navbar-toggle').on('click',function(e){
         e.stopPropagation();
         $sidebar.toggleClass('hide-sidebar');
     });
 
-    $('html').click(function (e) {
+    $('html').on('click', function (e) {
         if ($(window).width() < 992) {
             if (!$sidebar.hasClass('hide-sidebar') && $sidebar.has(e.target).length === 0) {
-                //$sidebar.addClass('hide-sidebar');
+                $sidebar.addClass('hide-sidebar');
             }
         }
     });
 
+    $('#sidebarClose').on('click', function(){
+        $sidebar.addClass('hide-sidebar');
+    });
+
+    $('.noti-list').perfectScrollbar();
 });
