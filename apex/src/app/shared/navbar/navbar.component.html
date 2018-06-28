@@ -1,0 +1,133 @@
+<!-- Navbar (Header) Starts -->
+<nav class="navbar navbar-expand-lg navbar-light bg-faded">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle d-lg-none float-left" data-toggle="collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <form class="navbar-form navbar-right mt-1" role="search">
+        <div class="position-relative has-icon-right">          
+          <div class="form-group" [class.has-danger]="search_failed">
+            <input type="text" class="form-control round" id="new_incident_search_people" 
+                [ngbTypeahead]="search_people" 
+                placeholder="Pesquisar"
+                [resultTemplate]="person_typeahead_template" 
+                [inputFormatter]="people_typeahead_formatter"   
+                [(ngModel)]="current_person"  
+                name="search_person_input"          
+                (ngModelChange)="navegate_to($event)" />
+            <span *ngIf="searching_people">buscando...</span>
+            <div class="form-control-feedback" *ngIf="search_failed">
+              ops... ocorreu algum erro na busca</div>
+          </div>
+          <ng-template #person_typeahead_template let-p="result">
+            <img alt="{{ p.name }}" class="img-border" src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}" style="min-width:50px;max-width:50px;"
+              *ngIf="p.avatar_url && p.avatar_url.length > 0" /> {{ p.name }}
+            <span *ngIf="!p.found" style="font-style: italic;">
+              (novo)
+            </span>
+          </ng-template>
+          <div class="form-control-position">
+            <i class="ft-search"></i>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="navbar-container">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item mr-2">
+            <a href="javascript:;" class="nav-link" id="navbar-fullscreen" appToggleFullscreen (click)="ToggleClass()">
+              <i class="{{toggleClass}} font-medium-3 blue-grey darken-4"></i>
+              <p class="d-none">fullscreen</p>
+            </a>
+          </li>
+          <li class="nav-item" ngbDropdown placement="bottom-right" *ngIf="current_user">
+            <a class="nav-link position-relative" id="dropdownBasic3" ngbDropdownToggle>
+              <div style="display:inline-block; width:40px;">
+                <img src="https://myvtmiim.blob.core.windows.net/avatars/{{ current_user.avatar_img }}" style="max-width: 40px;border-radius: 50%;top: 0;position: absolute"
+                />
+              </div>
+              <span class="text align-middle">
+                {{ current_user.name }}
+              </span>
+            </a>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic3">
+              <!-- a class="dropdown-item py-1" routerLink="/pages/profile">
+                                <i class="ft-edit mr-2"></i>
+                                <span>Perfil</span>
+                            </a -->
+              <!-- a class="dropdown-item py-1" routerLink="/inbox">
+                                <i class="ft-mail mr-2"></i>
+                                <span>My Inbox</span>
+                            </a -->
+              <a class="dropdown-item py-1" [routerLink]="['/people/operator', current_user.person_id]">
+                <i class="fas fa-tasks mr-2"></i>
+                <span>Tarefas</span>
+              </a>
+              <a class="dropdown-item py-1" href="javascript:;">
+                <i class="ft-settings mr-2"></i>
+                <span>Configurações</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" [href]="logout_url">
+                <i class="ft-power mr-2"></i>
+                <span>Sair</span>
+              </a>
+            </div>
+          </li>
+          <li class="nav-item" ngbDropdown placement="bottom-right">
+            <a class="nav-link position-relative" id="dropdownBasic2" ngbDropdownToggle>
+              <i class="ft-bell font-medium-3 blue-grey darken-4"></i>
+              <!-- span class="notification badge badge-pill badge-danger">4</span -->
+              <p class="d-none">Notificações</p>
+            </a>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic2" class="notification-dropdown">
+              <div class="noti-list">
+                <a class="dropdown-item noti-container py-3 border-bottom border-bottom-blue-grey border-bottom-lighten-4">
+                  <i class="ft-bell info float-left d-block font-large-1 mt-1 mr-2"></i>
+                  <span class="noti-wrapper">
+                    <span class="noti-title line-height-1 d-block text-bold-400 info">New Order Received</span>
+                    <span class="noti-text">Lorem ipsum dolor sit ametitaque in, et!</span>
+                  </span>
+                </a>
+                <a class="dropdown-item noti-container py-3 border-bottom border-bottom-blue-grey border-bottom-lighten-4">
+                  <i class="ft-bell warning float-left d-block font-large-1 mt-1 mr-2"></i>
+                  <span class="noti-wrapper">
+                    <span class="noti-title line-height-1 d-block text-bold-400 warning">New User Registered</span>
+                    <span class="noti-text">Lorem ipsum dolor sit ametitaque in </span>
+                  </span>
+                </a>
+                <a class="dropdown-item noti-container py-3 border-bottom border-bottom-blue-grey border-bottom-lighten-4">
+                  <i class="ft-bell danger float-left d-block font-large-1 mt-1 mr-2"></i>
+                  <span class="noti-wrapper">
+                    <span class="noti-title line-height-1 d-block text-bold-400 danger">New Order Received</span>
+                    <span class="noti-text">Lorem ipsum dolor sit ametest?</span>
+                  </span>
+                </a>
+                <a class="dropdown-item noti-container py-3">
+                  <i class="ft-bell success float-left d-block font-large-1 mt-1 mr-2"></i>
+                  <span class="noti-wrapper">
+                    <span class="noti-title line-height-1 d-block text-bold-400 success">New User Registered</span>
+                    <span class="noti-text">Lorem ipsum dolor sit ametnatus aut.</span>
+                  </span>
+                </a>
+              </div>
+              <a class="noti-footer primary text-center d-block border-top border-top-blue-grey border-top-lighten-4 text-bold-400 py-1">Read All Notifications</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link position-relative notification-sidebar-toggle">
+              <i class="ft-align-left font-medium-3 blue-grey darken-4"></i>
+              <p class="d-none">Notifications Sidebar</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- Navbar (Header) Ends -->

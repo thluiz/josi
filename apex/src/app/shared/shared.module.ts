@@ -8,7 +8,8 @@ import { FooterComponent } from "./footer/footer.component";
 import { NavbarComponent } from "./navbar/navbar.component";
 import { SidebarComponent } from "./sidebar/sidebar.component";
 import { ToggleFullscreenDirective } from "./directives/toggle-fullscreen.directive";
-
+import { NotificationSidebarComponent } from "./notification-sidebar/notification-sidebar.component";
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { ToggleFullscreenDirective } from "./directives/toggle-fullscreen.direct
         CommonModule,
         FooterComponent,
         NavbarComponent,
+        NotificationSidebarComponent,
         SidebarComponent,
         ToggleFullscreenDirective,
         NgbModule
@@ -23,12 +25,14 @@ import { ToggleFullscreenDirective } from "./directives/toggle-fullscreen.direct
     imports:[
         RouterModule,
         CommonModule,
+        FormsModule,
         NgbModule
     ],
     declarations: [
         FooterComponent,
         NavbarComponent,
         SidebarComponent,
+        NotificationSidebarComponent,
         ToggleFullscreenDirective
         ]
 })

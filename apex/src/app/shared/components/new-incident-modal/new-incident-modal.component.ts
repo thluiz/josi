@@ -82,6 +82,23 @@ export class NewInicidentModalComponent implements OnInit {
 
   people_typeahead_formatter = (x) => x.name;
 
+  search_people = (text$: Observable<string>) =>
+  text$.pipe(
+    debounceTime(300),
+    distinctUntilChanged(),
+    tap(() => this.searching_people = true),
+    switchMap(term =>
+      this.personService.search(term).pipe(
+        map(response =>  {             
+          return <string[]>response; 
+        }),
+        tap(() => this.search_failed = false),
+        catchError(() => {
+          this.search_failed = true;
+          return of([]);
+        }),)),
+    tap(() => this.searching_people = false),)
+
   add_person_to_new_incident(event) {    
     if(!event.name) {
       return;
@@ -145,25 +162,6 @@ export class NewInicidentModalComponent implements OnInit {
 
     this.new_incident.correct = false;    
   }
-
-  search_people = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      tap(() => this.searching_people = true),
-      switchMap(term =>
-        this.personService.search(term).pipe(
-          map(response =>  {             
-            return <string[]>response; 
-          }),
-          tap(() => this.search_failed = false),
-          catchError(() => {
-            this.search_failed = true;
-            return of([]);
-          }),)),
-      tap(() => this.searching_people = false),)
-
-
       
   change_new_incident_type(tp) {    
     const t = this.incident_types.filter(t => t.id == tp);
