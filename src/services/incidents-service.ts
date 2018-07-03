@@ -65,6 +65,7 @@ export class IncidentsService {
             "CloseIncident",
             {"incident" : incident.id},
             {"close_description" : incident.close_text || ""},
+            {"title" : incident.title || ""},
             {"responsible_id": responsible_id }
         );    
 

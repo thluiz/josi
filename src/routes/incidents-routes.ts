@@ -89,7 +89,8 @@ export function routes(app) {
         let user = await SecurityService.getUserFromRequest(req);
         let result = await IncidentsService.close_incident({ 
             id: req.body.id, 
-            close_text: req.body.close_text 
+            close_text: req.body.close_text,
+            title: req.body.title 
         }, await user.getPersonId());
 
         response.send(result); 

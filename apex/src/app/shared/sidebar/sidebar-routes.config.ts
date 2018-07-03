@@ -9,6 +9,20 @@ export const ROUTES: RouteInfo[] = [
         badgeClass: '', isExternalLink: false,
         submenu: [
             {
+                path: '/diary/agenda', title: 'Agenda',
+                icon: '',
+                class: '', badge: '',
+                badgeClass: '', isExternalLink: false,
+                submenu: [] 
+            },
+            {
+                path: '/diary/week', title: 'Semana',
+                icon: '',
+                class: '', badge: '',
+                badgeClass: '', isExternalLink: false,
+                submenu: [] 
+            },
+            {
                 path: '/organizations', title: 'Gestores',
                 icon: '',
                 class: '', badge: '',

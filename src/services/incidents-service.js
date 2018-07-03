@@ -51,7 +51,7 @@ class IncidentsService {
     }
     static close_incident(incident, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let execution = yield database_facility_1.DatabaseFacility.ExecuteTypedJsonSP(exports.INCIDENT_ENDED, "CloseIncident", { "incident": incident.id }, { "close_description": incident.close_text || "" }, { "responsible_id": responsible_id });
+            let execution = yield database_facility_1.DatabaseFacility.ExecuteTypedJsonSP(exports.INCIDENT_ENDED, "CloseIncident", { "incident": incident.id }, { "close_description": incident.close_text || "" }, { "title": incident.title || "" }, { "responsible_id": responsible_id });
             return execution;
         });
     }

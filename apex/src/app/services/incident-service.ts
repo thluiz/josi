@@ -46,7 +46,8 @@ export class IncidentService {
     return this.http
     .post_and_emit<Result<LightIncident>>('/incident/close', { 
       id: incident.id,
-      close_text: incident.close_text
+      close_text: incident.close_text,
+      title: incident.title
     });
   }
 

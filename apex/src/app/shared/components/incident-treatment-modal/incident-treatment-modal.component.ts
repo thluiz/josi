@@ -171,9 +171,15 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
       || incident.close_text.length < 5)) {
         incident.valid_for_closing = false;
         return;
-      }
+    }
 
-      incident.valid_for_closing = true;
+    if(incident.require_title
+      && (!incident.require_title || incident.title.length < 3)) {
+        incident.valid_for_closing = false;
+        return;
+    }
+
+    incident.valid_for_closing = true;
   }
 
   close_incident(incident, close_action) {

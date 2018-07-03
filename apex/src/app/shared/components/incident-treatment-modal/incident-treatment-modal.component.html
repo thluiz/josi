@@ -23,11 +23,34 @@
           </person-card>
         </div>
       </div>
+      <div class="row" *ngIf="current_incident.title">
+        <div class="col-12 pb-3">
+          <label>Título</label>
+          <markdown [data]="current_incident.title"></markdown>
+        </div>
+      </div>
+      <div class="row" *ngIf="current_incident.description">
+        <div class="col-12 pb-3">
+          <label>Descrição</label>
+          <markdown [data]="current_incident.description"></markdown>
+        </div>
+      </div>
+      <div class="row" *ngIf="current_incident.treatment_text">
+        <div class="col-12 pb-3">
+          <label>Tratamento</label>
+          <markdown [data]="current_incident.treatment_text"></markdown>
+        </div>
+      </div>
+      <div class="row" *ngIf="current_incident.close_text">
+        <div class="col-12 pb-3">          
+          <label>Fechamento</label>
+          <markdown [data]="current_incident.close_text"></markdown>
+        </div>
+      </div>
       <div class="row" *ngIf="person">
         <div class="col-12">
-          <person-incident-history-list 
-          [person]="person" [current]="current_incident"
-          [start_date]="history_start_date" [end_date]="history_end_date" [activity_type]="current_incident.activity_type"></person-incident-history-list>
+          <person-incident-history-list [person]="person" [current]="current_incident" [start_date]="history_start_date" [end_date]="history_end_date"
+            [activity_type]="current_incident.activity_type"></person-incident-history-list>
         </div>
       </div>
       <div class="row">
@@ -74,6 +97,11 @@
               </div>
             </div>
           </div>
+          <div class="row" *ngIf="!comments || comments.length == 0">
+            <div class="col-12 text-center">
+              Nenhum comentário adicionado
+            </div>
+          </div>
         </div>
       </div>
       <div class="row" *ngIf="current_incident.card_id > 0" style="margin-bottom:15px;">
@@ -93,23 +121,8 @@
             <i class="far fa-sticky-note"></i>
           </button>
         </div>
-      </div>
-      <div class="row" *ngIf="current_incident.title">
-        <div class="col-12">
-          <markdown [data]="current_incident.title"></markdown>
-        </div>
-      </div>
-      <div class="row" *ngIf="current_incident.treatment_text">
-        <div class="col-12">
-          <markdown [data]="current_incident.treatment_text"></markdown>
-        </div>
-      </div>
-      <div class="row" *ngIf="current_incident.close_text">
-        <div class="col-12">
-          <div style="font-size:10px;font-weight:bold;line-height:10px;font-style:italic">Fechamento:</div>
-          <markdown [data]="current_incident.close_text"></markdown>
-        </div>
-      </div>
+      </div>      
+      
       <div class="row" *ngIf="current_incident.new_schedule_date">
         <div class="col-12">
           <b>Reagendado para: </b>{{ current_incident.new_schedule_small_date }} {{ current_incident.new_schedule_hour }}
@@ -153,31 +166,67 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-12" *ngIf="!current_incident.in_treatment 
+      <div class="row" *ngIf="!current_incident.closed && !current_incident.treated">
+        <div class="col-12 pb-3">
+          <div class="row" style="border-bottom: 1px solid black">
+            <div class="col-10 col-xl-10 col-sm-9">
+              <h6 style="padding:0;margin:0;font-weight:bold">Fechamento </h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 pt-3" *ngIf="!current_incident.in_treatment 
+              && current_incident.require_title
+              && !current_incident.closed
+              && !current_incident.treated
+              && (!current_incident.need_to_be_started 
+              || current_incident.started_on_hour)">
+              <div class="row">
+                <div class="col-12">
+                  <fieldset class="form-group">
+                    <label for="current_incident_title">Título</label>
+                    <input class="form-control" id="current_incident_title" name="current_incident_title" (ngModelChange)="validate_for_closing(current_incident)"
+                      [(ngModel)]="current_incident.title" />
+                  </fieldset>
+                  <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null 
+                    && current_incident.valid_for_closing != undefined                
+                    && !current_incident.valid_for_closing
+                    && !current_incident.title
+                    && current_incident.title.length < 3">
+                    * Informe o título da atividade para poder finaliza-la
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12" *ngIf="!current_incident.in_treatment 
                                             && current_incident.need_description_for_closing
                                             && !current_incident.closed
                                             && !current_incident.treated
                                             && (!current_incident.need_to_be_started 
                                             || current_incident.started_on_hour)">
-          <div class="row">
+              <div class="row">
 
-            
-            <div class="col-12">
-              <fieldset class="form-group">
-                <textarea class="form-control" name="closing_contact_text" 
-                [(ngModel)]="current_incident.close_text" 
-                (ngModelChange)="validate_for_closing(current_incident)"
-                rows="3" placeholder="Como foi?"></textarea>
-              </fieldset>
-              <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null 
+
+                <div class="col-12">
+                  <fieldset class="form-group">
+                    <label for="closing_contact_text">Como foi?</label>
+                    <textarea class="form-control" id="closing_contact_text" name="closing_contact_text" [(ngModel)]="current_incident.close_text"
+                      (ngModelChange)="validate_for_closing(current_incident)" rows="3" placeholder="Como foi?"></textarea>
+                  </fieldset>
+                  <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null 
                                             && current_incident.valid_for_closing != undefined
                                             && !current_incident.valid_for_closing">
-                * Informe como foi a atividade para poder finaliza-la
-              </span>
+                    * Informe como foi a atividade para poder finaliza-la
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="row">
         <div class="col-12" *ngIf="!current_incident.in_treatment 
                                             && !current_incident.closed 
                                             && !current_incident.treated
@@ -196,8 +245,8 @@
                                             && !current_incident.treated
                                             && (!current_incident.need_to_be_started 
                                             || current_incident.started_on_hour)">
-          <h6 style="font-weight: bold" *ngIf="! current_incident.started_on_hour">Realizado?</h6>
-          <h6 style="font-weight: bold" *ngIf="current_incident.started_on_hour">Finalizar?</h6>
+          <h6 style="font-weight: bold;" *ngIf="! current_incident.started_on_hour">Realizado?</h6>
+          <h6 style="font-weight: bold;" *ngIf="current_incident.started_on_hour">Finalizar?</h6>
           <button type="button" class="btn" [ngClass]="current_incident.valid_for_closing != null 
                                             && current_incident.valid_for_closing != undefined
                                             && !current_incident.valid_for_closing ? 
@@ -242,6 +291,8 @@
       </div>
     </form>
   </div>
+
+
   <div class="modal-footer" style="display:block">
     <div class="row">
       <div class="col-12 text-right">

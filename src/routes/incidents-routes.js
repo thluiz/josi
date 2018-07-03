@@ -47,7 +47,8 @@ function routes(app) {
         let user = yield security_service_1.SecurityService.getUserFromRequest(req);
         let result = yield incidents_service_1.IncidentsService.close_incident({
             id: req.body.id,
-            close_text: req.body.close_text
+            close_text: req.body.close_text,
+            title: req.body.title
         }, yield user.getPersonId());
         response.send(result);
     }));
