@@ -47,7 +47,8 @@ export class IncidentService {
     .post_and_emit<Result<LightIncident>>('/incident/close', { 
       id: incident.id,
       close_text: incident.close_text,
-      title: incident.title
+      title: incident.title,
+      payment_method_id: incident.payment_method_id
     });
   }
 

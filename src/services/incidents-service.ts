@@ -66,7 +66,8 @@ export class IncidentsService {
             {"incident" : incident.id},
             {"close_description" : incident.close_text || ""},
             {"title" : incident.title || ""},
-            {"responsible_id": responsible_id }
+            {"responsible_id": responsible_id },            
+            {"payment_method_id": incident.payment_method_id > 0 ? incident.payment_method_id : null }
         );    
 
         return execution;

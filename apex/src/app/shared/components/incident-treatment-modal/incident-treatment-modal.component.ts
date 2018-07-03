@@ -10,6 +10,7 @@ import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModa
 
 import { CardService } from 'app/services/card-service';
 import { IncidentService, INCIDENT_ACTION_PREFIX } from 'app/services/incident-service';
+import { ParameterService } from 'app/services/parameter-service';
 import { PersonService } from 'app/services/person-service';
 import { filter } from 'rxjs/operators';
 import { Result } from 'app/shared/models/result';
@@ -32,6 +33,7 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
   history_start_date : NgbDateStruct;
   history_end_date : NgbDateStruct;
   comments: any[] = [];
+  payment_methods : {id: number, name: string}[] = []
 
   @ViewChild('content') incident_treatment_modal: ElementRef;
   
@@ -46,6 +48,7 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
     private modalService: ModalService,
     private personService: PersonService,
     private eventManager: ApplicationEventService,
+    private parameterService: ParameterService,
     private cardService: CardService) {
    
       datePickerConfig.firstDayOfWeek = 7
@@ -109,11 +112,13 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
       this.incidentService.getIncidentDetails(incident.id), 
       this.personService.getData(incident.person_id),
       this.incidentService.getComments(incident.id),
+      this.parameterService.getPaymentMethods(),
 
-      (incident_data : any, person: any, comments: any[]) => {
+      (incident_data : any, person: any, comments: any[], payment_methods: any[]) => {
       this.current_incident = incident_data.data[0];
       this.person = person;
       this.comments = comments;
+      this.payment_methods = payment_methods;
       this.set_dates_from_string_date(this.current_incident.date);      
 
       this.ngbModalService.open(this.incident_treatment_modal)
@@ -174,7 +179,12 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
     }
 
     if(incident.require_title
-      && (!incident.require_title || incident.title.length < 3)) {
+      && (!incident.title || incident.title.length < 3)) {
+        incident.valid_for_closing = false;
+        return;
+    }
+
+    if(incident.require_payment_method && !incident.payment_method_id) {
         incident.valid_for_closing = false;
         return;
     }

@@ -12,6 +12,7 @@
             {{ incident.final_value }}
         </span>
         <span *ngIf="!hideName">{{ incident.person }}</span>
+        <span *ngIf="incident.payment_method"> - {{ incident.payment_method }}</span>
     </div>
     
     <div class="col-9 d-block d-md-none"         
@@ -26,6 +27,7 @@
             </div>
             <div class="col-12 p-0 pl-2" *ngIf="!hideName">												
                 {{ incident.person }}
+                <span *ngIf="incident.payment_method"> - {{ incident.payment_method }}</span>
             </div>
         </div>										
     </div>

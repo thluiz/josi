@@ -48,7 +48,8 @@ function routes(app) {
         let result = yield incidents_service_1.IncidentsService.close_incident({
             id: req.body.id,
             close_text: req.body.close_text,
-            title: req.body.title
+            title: req.body.title,
+            payment_method_id: req.body.payment_method_id
         }, yield user.getPersonId());
         response.send(result);
     }));

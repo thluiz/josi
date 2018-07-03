@@ -173,56 +173,75 @@
               <h6 style="padding:0;margin:0;font-weight:bold">Fechamento </h6>
             </div>
           </div>
-          <div class="row">
-            <div class="col-12 pt-3" *ngIf="!current_incident.in_treatment 
-              && current_incident.require_title
-              && !current_incident.closed
-              && !current_incident.treated
-              && (!current_incident.need_to_be_started 
-              || current_incident.started_on_hour)">
-              <div class="row">
-                <div class="col-12">
-                  <fieldset class="form-group">
-                    <label for="current_incident_title">Título</label>
-                    <input class="form-control" id="current_incident_title" name="current_incident_title" (ngModelChange)="validate_for_closing(current_incident)"
-                      [(ngModel)]="current_incident.title" />
-                  </fieldset>
-                  <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null 
-                    && current_incident.valid_for_closing != undefined                
-                    && !current_incident.valid_for_closing
-                    && !current_incident.title
-                    && current_incident.title.length < 3">
-                    * Informe o título da atividade para poder finaliza-la
-                  </span>
-                </div>
-              </div>
+          <div class="row"  *ngIf="!current_incident.in_treatment 
+                                      && current_incident.require_title
+                                      && !current_incident.closed
+                                      && !current_incident.treated
+                                      && (!current_incident.need_to_be_started 
+                                      || current_incident.started_on_hour)">
+            <div class="col-12 pt-3">              
+              <fieldset class="form-group">
+                <label for="current_incident_title">Título</label>
+                <input class="form-control" id="current_incident_title" 
+                  name="current_incident_title" 
+                  (ngModelChange)="validate_for_closing(current_incident)"
+                  [(ngModel)]="current_incident.title" />
+              </fieldset>
+              <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null 
+                && current_incident.valid_for_closing != undefined                
+                && !current_incident.valid_for_closing
+                && !current_incident.title
+                && current_incident.title.length < 3">
+                * Informe o título da atividade para poder finaliza-la
+              </span>                
             </div>
           </div>
-          <div class="row">
-            <div class="col-12" *ngIf="!current_incident.in_treatment 
-                                            && current_incident.need_description_for_closing
-                                            && !current_incident.closed
-                                            && !current_incident.treated
-                                            && (!current_incident.need_to_be_started 
-                                            || current_incident.started_on_hour)">
-              <div class="row">
-
-
-                <div class="col-12">
-                  <fieldset class="form-group">
-                    <label for="closing_contact_text">Como foi?</label>
-                    <textarea class="form-control" id="closing_contact_text" name="closing_contact_text" [(ngModel)]="current_incident.close_text"
-                      (ngModelChange)="validate_for_closing(current_incident)" rows="3" placeholder="Como foi?"></textarea>
-                  </fieldset>
-                  <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null 
-                                            && current_incident.valid_for_closing != undefined
-                                            && !current_incident.valid_for_closing">
-                    * Informe como foi a atividade para poder finaliza-la
-                  </span>
-                </div>
-              </div>
+          <div class="row" *ngIf="!current_incident.in_treatment 
+                                  && current_incident.need_description_for_closing
+                                  && !current_incident.closed
+                                  && !current_incident.treated
+                                  && (!current_incident.need_to_be_started 
+                                  || current_incident.started_on_hour)">
+            <div class="col-12">              
+              <fieldset class="form-group">
+                <label for="closing_contact_text">Como foi?</label>
+                <textarea class="form-control" id="closing_contact_text" name="closing_contact_text" [(ngModel)]="current_incident.close_text"
+                  (ngModelChange)="validate_for_closing(current_incident)" rows="3" placeholder="Como foi?"></textarea>
+              </fieldset>
+              <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null 
+                                         && current_incident.valid_for_closing != undefined
+                                        && !current_incident.valid_for_closing">
+                * Informe como foi a atividade para poder finaliza-la
+              </span>                
             </div>
           </div>
+          <div class="row" *ngIf="!current_incident.in_treatment 
+                                    && current_incident.require_payment_method
+                                    && !current_incident.closed
+                                    && !current_incident.treated
+                                    && (!current_incident.need_to_be_started 
+                                    || current_incident.started_on_hour)">
+              <div class="col-12 pt-3">                
+                <fieldset class="form-group">
+                  <label for="current_incident_payment_method">Forma de Pagamento</label>
+                  <select id="current_incident_payment_method" 
+                      name="current_incident_payment_method" 
+                      [(ngModel)]="current_incident.payment_method_id" 
+                      (ngModelChange)="validate_for_closing(current_incident)"																	
+                      class="form-control"								
+                      >			
+                      <option></option>			
+                      <option *ngFor="let b of payment_methods" [value]="b.id">{{b.name}}</option>
+                  </select>
+                </fieldset>
+                <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null 
+                  && current_incident.valid_for_closing != undefined                
+                  && !current_incident.valid_for_closing
+                  && !current_incident.payment_method_id">
+                  * Informe a forma de pagamento para finalizar
+                </span>                  
+              </div>
+            </div>
         </div>
       </div>
 

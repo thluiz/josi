@@ -38,7 +38,7 @@
         <a 
         (click)="open_card(item.monitoring_card_id)" 
         *ngIf="item.monitoring_card_id > 0">
-            {{ item.current_step.replace("Aguardando", "Ag.") }}        
+            {{ (item.current_step || "").replace("Aguardando", "Ag.") }}        
         </a>
     </div>
     <div class="col-2 text-center">  
