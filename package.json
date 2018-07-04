@@ -29,6 +29,7 @@
    "homepage": "https://github.com/thluiz/josi#readme",
    "dependencies": {
       "@reactivex/rxjs": "^6.0.0",
+      "@sendgrid/mail": "^6.3.1",
       "applicationinsights": "^1.0.2",
       "await-to-js": "^2.0.1",
       "axios": "^0.18.0",
