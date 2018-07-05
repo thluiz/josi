@@ -22,7 +22,7 @@ export class BranchesPageComponent implements OnInit {
   }
 
   private load_data() {
-    this.parameterService.getActiveBranches().subscribe((data) => {
+    this.parameterService.getBranches().subscribe((data) => {
       this.collection = data;
     });
   }

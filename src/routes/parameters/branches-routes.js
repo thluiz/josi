@@ -26,6 +26,17 @@ function routes(app) {
             res.status(500).json({ error });
         }
     }));
+    app.get("/api/all_branches/:id?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = !req.params.id ?
+                yield database_facility_1.DatabaseFacility.ExecuteJsonSP(`GetBranches`, { 'active': null })
+                : yield database_facility_1.DatabaseFacility.ExecuteJsonSQL(`select * from vwBranch where id = @0 for json path`, req.params.id);
+            res.send(result.data);
+        }
+        catch (error) {
+            res.status(500).json({ error });
+        }
+    }));
     app.post("/api/branches_new", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield parameters_service_1.ParametersService.create_branch(req.body.branch);
         if (!result.success) {

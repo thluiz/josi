@@ -13,7 +13,8 @@
                 <tr *ngFor="let item of collection">
                     <td class="cursor_pointer"
                     [routerLink]="['/parameters/branch', item.id]">
-                        {{ item["name"] }}
+                        {{ item["name"] }}                        
+                        <i *ngIf="!item['active']">(INATIVO)</i>
                     </td>
                     <td class="cursor_pointer text-center"
                     [routerLink]="['/parameters/branch', item.id]">
@@ -149,6 +150,18 @@
                         id="item_contact_email"
                         name="item_contact_email"/>                                    
                     </div>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <label class="option_container"> 
+                        Ativo                       
+                        <input type="checkbox"                         
+                        [checked]="current_item.active" 
+                        (change)="current_item.active = !current_item.active"
+                        id="current_item_active" name="current_item_active"/>
+                        <span class="checkmark"></span>
+                    </label>
                 </div>                
             </div>
         </div>

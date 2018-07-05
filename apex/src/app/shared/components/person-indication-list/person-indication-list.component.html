@@ -1,7 +1,7 @@
 <div class="row" *ngIf="showHeader"
     style="border-bottom: 1px solid black;" >
     <div class="col-10">        
-        <h6 style="font-weight:bold;margin-bottom:0"> Convidados Indicados </h6>
+        <h6 style="font-weight:bold;margin-bottom:0"> Convidados e Indicados </h6>
     </div>
     <div class="col-2 text-right">
         <button type="button" class="btn btn-silver btn-sm" 
@@ -59,26 +59,26 @@
 </div>
 <div class="row" *ngIf="needed_direct_indications > 0">
     <div class="col-12 text-center" *ngIf="needed_direct_indications > 1">        
-        Tem direito a mais {{ needed_direct_indications }} convites diretos
+        Tem direito a mais {{ needed_direct_indications }} convites
     </div>
     <div class="col-12 text-center" *ngIf="needed_direct_indications == 1">        
-        Apenas mais um convite direto
+        Apenas mais um convite disponível
     </div>
 </div>
 
 <div class="row" *ngIf="needed_indirect_indications > 0">
     <div class="col-12 text-center" *ngIf="needed_indirect_indications > 1">        
-        Tem direito a mais {{ needed_indirect_indications }} convites indiretos
+        Tem direito a mais {{ needed_indirect_indications }} indicações
     </div>
     <div class="col-12 text-center" *ngIf="needed_indirect_indications == 1">        
-        Apenas mais uma convite indireto
+        Apenas mais uma indicação disponível
     </div>
 </div>
 
 <ng-template #modal_change_indication_type let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h5 class="modal-title" style="font-weight: bold">
-            Alterar Tipo de Convite
+            Alterar Tipo de Convite/Indicação
         </h5>
         <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
         <span aria-hidden="true">&times;</span>
@@ -117,7 +117,7 @@
 <ng-template #new_indication_modal let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h5 class="modal-title" style="font-weight: bold">
-            Convidar pessoa
+            Convidar ou Indicar Pessoa
         </h5>
         <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
         <span aria-hidden="true">&times;</span>
@@ -164,7 +164,7 @@
         <div class="row">
             <div class="col-6">
                 <div class="form-group">  
-                    <label for="new_indication_invitation_type">Convite</label>          
+                    <label for="new_indication_invitation_type">Tipo</label>          
                     <select id="new_indication_invitation_type" 
                         [(ngModel)]="new_indication.indication_contact_type" 
                         (ngModelChange)="validate_new_indication()"																	

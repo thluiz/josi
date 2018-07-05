@@ -26,6 +26,7 @@ export class ParameterService {
     private roles$ = new ReplaySubject(1);
 
     private branches$ = new ReplaySubject(1);
+    private all_branches$ = new ReplaySubject(1);
     private programs$ = new ReplaySubject(1);    
     private domains$ = new ReplaySubject(1);
     private locations$ = new ReplaySubject(1);
@@ -69,6 +70,10 @@ export class ParameterService {
     
     getActiveBranches(forceRefresh?: boolean) {
         return this.utilsService.cache_results(this.branches$, `/branches`, forceRefresh);                      
+    }
+
+    getBranches(forceRefresh?: boolean) {
+        return this.utilsService.cache_results(this.all_branches$, `/all_branches`, forceRefresh);                      
     }
 
     getBranch(id) {

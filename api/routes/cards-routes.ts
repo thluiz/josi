@@ -1,7 +1,9 @@
+import { LoggerService, ErrorOrigins } from './../../src/services/logger-service';
 import * as sql from 'mssql';
 import { CardService } from '../../domain/services/card_services';
 import * as auth from '../../src/middlewares/auth';
 import { SecurityService } from '../../src/services/security-service';
+import { CardsRepository } from '../../src/repositories/cards-repository';
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
@@ -83,32 +85,30 @@ export function configure_routes(app: any, connection_pool: any) {
     app.get("/api/organizations/:id?/:include_childrens?", 
     auth.ensureLoggedIn(),
     async (req, res, next) => {  
+        try {
+            let result = await CardsRepository.getOrganizations(req.params.id, req.params.include_childrens);
 
-        const result = await new sql.Request(pool)  
-        .input("organization_id", sql.Int, req.params.id > 0 ? req.params.id : null)          
-        .input("include_childrens", sql.Int, req.params.include_childrens > 0 ? 1 : 0)
-        .execute(`GetOrganizations`);                
-
-        let response = result.recordset[0];
-
-        res.send(response[0].empty ? [] : 
-            req.params.id > 0 ? response[0] : response);
+            let response = result.data;
+    
+            res.send(response[0].empty ? [] : req.params.id > 0 ? response[0] : response);            
+        } catch (error) {
+            LoggerService.error(ErrorOrigins.UnhandledRejection, error, { method: 'getOrganizations'});
+            res.status(500).json(error);
+        }
     });
 
     app.get("/api/projects/:id", 
     auth.ensureLoggedIn(),
     async (req, res, next) => {          
         try {
-            const result = await new sql.Request(pool)  
-            .input("project_id", sql.Int, req.params.id)                  
-            .execute(`GetProject`);                
+            let result = await CardsRepository.getProject(req.params.id);
 
-            let response = result.recordset[0];
+            let response = result.data;
             
             res.send(response[0].empty ? [] : 
                 req.params.id > 0 ? response[0] : response);
-        } catch(error)  {   
-            console.log(error);
+        } catch(error)  {               
+            LoggerService.error(ErrorOrigins.UnhandledRejection, error, { method: 'getProject'});
             res.status(500).json(error);
         }
     });

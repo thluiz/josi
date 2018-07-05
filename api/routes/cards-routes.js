@@ -8,10 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const logger_service_1 = require("./../../src/services/logger-service");
 const sql = require("mssql");
 const card_services_1 = require("../../domain/services/card_services");
 const auth = require("../../src/middlewares/auth");
 const security_service_1 = require("../../src/services/security-service");
+const cards_repository_1 = require("../../src/repositories/cards-repository");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     const card_service = new card_services_1.CardService(pool);
@@ -54,25 +56,25 @@ function configure_routes(app, connection_pool) {
         res.send(response);
     }));
     app.get("/api/organizations/:id?/:include_childrens?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield new sql.Request(pool)
-            .input("organization_id", sql.Int, req.params.id > 0 ? req.params.id : null)
-            .input("include_childrens", sql.Int, req.params.include_childrens > 0 ? 1 : 0)
-            .execute(`GetOrganizations`);
-        let response = result.recordset[0];
-        res.send(response[0].empty ? [] :
-            req.params.id > 0 ? response[0] : response);
+        try {
+            let result = yield cards_repository_1.CardsRepository.getOrganizations(req.params.id, req.params.include_childrens);
+            let response = result.data;
+            res.send(response[0].empty ? [] : req.params.id > 0 ? response[0] : response);
+        }
+        catch (error) {
+            logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.UnhandledRejection, error, { method: 'getOrganizations' });
+            res.status(500).json(error);
+        }
     }));
     app.get("/api/projects/:id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
-            const result = yield new sql.Request(pool)
-                .input("project_id", sql.Int, req.params.id)
-                .execute(`GetProject`);
-            let response = result.recordset[0];
+            let result = yield cards_repository_1.CardsRepository.getProject(req.params.id);
+            let response = result.data;
             res.send(response[0].empty ? [] :
                 req.params.id > 0 ? response[0] : response);
         }
         catch (error) {
-            console.log(error);
+            logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.UnhandledRejection, error, { method: 'getProject' });
             res.status(500).json(error);
         }
     }));

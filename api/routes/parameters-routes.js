@@ -161,13 +161,15 @@ function configure_routes(app, connection_pool) {
             .input('contact_phone', sql.VarChar(200), branch.contact_phone)
             .input('contact_email', sql.VarChar(200), branch.contact_email)
             .input('order', sql.Int, branch.order)
+            .input('active', sql.Int, branch.active ? 1 : 0)
             .query(`update branch set
                     name = @name,
                     abrev = @abrev,
                     initials = @initials,
                     [order] = @order,
                     contact_phone = @contact_phone,
-                    contact_email = @contact_email
+                    contact_email = @contact_email,
+                    active = @active
                 where id = @id`);
         res.send({ sucess: true });
     }));

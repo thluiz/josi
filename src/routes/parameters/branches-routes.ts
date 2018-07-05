@@ -22,6 +22,22 @@ export function routes(app) {
         }                            
     });
 
+    app.get("/api/all_branches/:id?", 
+    auth.ensureLoggedIn(),
+    async (req, res, next) => {                        
+        try {            
+            const result = !req.params.id ? 
+                await DatabaseFacility.ExecuteJsonSP(`GetBranches`, { 'active': null })
+                : await DatabaseFacility.ExecuteJsonSQL(
+                        `select * from vwBranch where id = @0 for json path`, 
+                        req.params.id);   
+
+            res.send(result.data);            
+        } catch (error) {
+            res.status(500).json({ error });
+        }                            
+    });
+
     app.post("/api/branches_new", 
     auth.ensureLoggedIn(),
     async (req, res, next) => {                        
