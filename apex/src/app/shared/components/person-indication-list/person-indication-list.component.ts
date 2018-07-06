@@ -47,7 +47,7 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
     age: ''
   };
   
-  indication_types = [{id: 0, description: 'Indireto'}, {id: 1, description: 'Direto'}, {id: 2, description: 'Anônimo'}];
+  indication_types = [{id: 0, description: 'Indicação'}, {id: 1, description: 'Convite'}, {id: 2, description: 'Anônimo'}];
 
   contact_types: any[];
   branches: any[];

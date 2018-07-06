@@ -2,6 +2,7 @@ import * as sql from 'mssql';
 import { PersonService } from '../../domain/services/person_services';
 import * as auth from '../../src/middlewares/auth';
 import { SecurityService } from '../../src/services/security-service';
+import { JobsService } from '../../src/services/jobs-service';
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
@@ -499,6 +500,18 @@ export function configure_routes(app: any, connection_pool: any) {
             .input('district', sql.VarChar(100), indication.district)
             .input('occupation', sql.VarChar(100), indication.occupation)
             .execute(`SaveNewIndication`);
+
+            try {
+                let voucher_update = await JobsService.update_voucher_site();
+                if(!voucher_update.success) {
+                    res.send(voucher_update);
+                    return;
+                }
+            } catch (error) {
+                console.log(error);
+                res.status(500).json(error);
+                return;
+            }
 
             res.send({ success: true});
         } catch(error)  {

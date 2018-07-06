@@ -12,6 +12,7 @@ const sql = require("mssql");
 const person_services_1 = require("../../domain/services/person_services");
 const auth = require("../../src/middlewares/auth");
 const security_service_1 = require("../../src/services/security-service");
+const jobs_service_1 = require("../../src/services/jobs-service");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     const person_service = new person_services_1.PersonService(pool);
@@ -354,6 +355,18 @@ function configure_routes(app, connection_pool) {
                 .input('district', sql.VarChar(100), indication.district)
                 .input('occupation', sql.VarChar(100), indication.occupation)
                 .execute(`SaveNewIndication`);
+            try {
+                let voucher_update = yield jobs_service_1.JobsService.update_voucher_site();
+                if (!voucher_update.success) {
+                    res.send(voucher_update);
+                    return;
+                }
+            }
+            catch (error) {
+                console.log(error);
+                res.status(500).json(error);
+                return;
+            }
             res.send({ success: true });
         }
         catch (error) {

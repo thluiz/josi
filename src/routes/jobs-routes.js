@@ -22,7 +22,7 @@ function routes(app) {
     app.get("/api/test-email", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
         const msg = {
-            to: 'moychiyausi.myvt@gmail.com',
+            to: 'th.luiz@gmail.com',
             from: 'contato@myvtmi.im',
             subject: 'Sending with SendGrid!',
             text: 'Siu Nim Tau, Cham Kiu, Biu Ji...',
@@ -31,7 +31,7 @@ function routes(app) {
         sgMail.send(msg)
             .then(r2 => {
             console.log(r2);
-            res.send("ok v3!");
+            res.send("ok v4!");
         })
             .catch(error => {
             //Log friendly error
