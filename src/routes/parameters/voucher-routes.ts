@@ -18,8 +18,8 @@ export function routes(app) {
         const VR = await DatabaseFacility.getRepository<Voucher>(Voucher);
 
         let vouchers = req.params.id > 0 ? 
-                        await VR.find({ where: { id : req.params.id }, relations: ['branches']})
-                        : await VR.find({ order: { "active": "DESC" } });
+                        await VR.find({ where: { id : req.params.id }, relations: ['branches', 'voucher_type']})
+                        : await VR.find({ order: { "active": "DESC" }, relations: ['voucher_type'] });
 
         res.send(Result.GeneralOk(vouchers));                                          
     });

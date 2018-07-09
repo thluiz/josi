@@ -46,6 +46,10 @@ export class VoucherDetailPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  entity_compare(optionOne, optionTwo) {    
+    return optionOne.id == optionTwo.id;
+  }
+
   save() {
     this.saving = true;
     this.parameterService.saveVoucher(this.voucher).subscribe((data) => {

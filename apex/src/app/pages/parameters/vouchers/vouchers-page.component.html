@@ -4,7 +4,8 @@
         <table class="table table-hover table-striped" width="100%">                        
             <thead>
                 <th>Título</th>                           
-                <th>Iniciais</th>
+                <th style="text-align:center;width:80px">Iniciais</th>
+                <th style="text-align:center;width:120px">Tipo</th>
                 <th>Url</th>                
                 <th>Vídeo</th>
             </thead>
@@ -14,12 +15,13 @@
                 >
                     <td (click)="edit(item)">{{ item["title"] }}</td>                                        
                     <td (click)="edit(item)">{{ item["initials"] }}</td>
+                    <td  align="center" (click)="edit(item)">{{ item["voucher_type"]["name"] }}</td>
                     <td>
                         <a href="{{'http://myvtmi.im/voucher/' + item['url'] }}"
                         target="_blank">
                             /voucher/{{ item["url"] }}
                         </a>
-                    </td>
+                    </td>                    
                     <td>
                         <a href="{{ item['youtube_url'] }}"
                         target="_blank"
@@ -101,6 +103,18 @@
                 </div>
             </div>    
         </div> 
+        <div class="row">
+            <div class="col-12">
+                <label for="item_voucher_type">Tipo</label>
+                <select [(ngModel)]="current_item.voucher_type"
+                    id="item_voucher_type"
+                    class="form-control form-control-sm"
+                    [ngModelOptions]="{standalone: true}">
+                    <option value="1">Campanha</option>
+                    <option value="2">Parceria</option>
+                </select>
+            </div>
+        </div>
         <div class="row">
             <div class="col-12">
                 <label for="item_header_title">Título da página do Voucher</label>                                                									

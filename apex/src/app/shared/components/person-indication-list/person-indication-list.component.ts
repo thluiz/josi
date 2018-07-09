@@ -19,6 +19,8 @@ import { ModalType, ModalService } from 'app/services/modal-service';
 export class PersonIndicationListComponent implements OnInit, OnDestroy { 
 
   indications: any[];   
+  indirect_indications: any[];   
+  invites: any[];
 
   @Input() d:any;
   @Input() person:any;
@@ -113,6 +115,8 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
       });
 
       this.indications = data;
+      this.indirect_indications = data.filter(d => d.relationship_type == 13 || d.relationship_type == 14);
+      this.invites = data.filter(d => d.relationship_type == 10);
     });
 
     this.last_call = new Date();

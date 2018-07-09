@@ -1,5 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, JoinColumn, ManyToOne } from "typeorm";
 import { Branch } from "./Branch";
+import { VoucherType } from "./VoucherType";
 
 @Entity()
 export class Voucher {
@@ -11,6 +12,10 @@ export class Voucher {
 
     @Column()
     url: string;
+
+    @ManyToOne(type => VoucherType)
+    @JoinColumn({ name: "voucher_type" })
+    voucher_type: VoucherType;
 
     @Column()
     youtube_url: string;

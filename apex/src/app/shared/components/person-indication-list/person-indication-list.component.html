@@ -1,7 +1,14 @@
+<style>
+    .indication:hover {
+        background-color: #EFEFEF;
+    }
+</style>
+
+
 <div class="row" *ngIf="showHeader"
     style="border-bottom: 1px solid black;" >
     <div class="col-10">        
-        <h6 style="font-weight:bold;margin-bottom:0"> Convidados e Indicados </h6>
+        <h6 style="font-weight:bold;margin-bottom:0"> Convidados </h6>
     </div>
     <div class="col-2 text-right">
         <button type="button" class="btn btn-silver btn-sm" 
@@ -12,18 +19,13 @@
     </div>
 </div>
 
-<div class="row" *ngIf="!indications || indications.length == 0">
+<div class="row" *ngIf="!invites || invites.length == 0">
     <div class="col-12 text-center">
         Nenhum Convite encontrado
     </div>    
 </div>
-<style>
-    .indication:hover {
-        background-color: #EFEFEF;
-    }
-</style>
 
-<div class="row indication" *ngFor="let item of indications">
+<div class="row indication" *ngFor="let item of invites">
     <div class="col-6" *ngIf="navigateToIndication">        
         <a
             style="cursor:pointer;color:gray"
@@ -65,6 +67,61 @@
         Apenas mais um convite disponível
     </div>
 </div>
+
+<div class="row" *ngIf="showHeader"
+    style="border-bottom: 1px solid black;" >
+    <div class="col-10 pt-2">        
+        <h6 style="font-weight:bold;margin-bottom:0"> Indicações </h6>
+    </div>
+    <div class="col-2 text-right pt-2">
+        <button type="button" class="btn btn-silver btn-sm" 
+            style="margin:0;padding:2px;line-height:10px"
+            (click)="open(new_indication_modal);">
+            <i class="ft-plus"></i>               
+        </button> 
+    </div>
+</div>
+
+<div class="row" *ngIf="!indirect_indications || indirect_indications.length == 0">
+    <div class="col-12 text-center">
+        Nenhuma indicação encontrada
+    </div>    
+</div>
+
+<div class="row indication" *ngFor="let item of indirect_indications">
+    <div class="col-6" *ngIf="navigateToIndication">        
+        <a
+            style="cursor:pointer;color:gray"
+            (click)="navigateToPerson(item.person2_id)">
+            {{ item.indicated_name }}
+        </a>           
+    </div>
+    <div class="col-6" *ngIf="!navigateToIndication">                
+        {{ item.indicated_name }}        
+    </div>
+    <div class="col-2 text-center">                
+        <a 
+        (click)="open_card(item.monitoring_card_id)" 
+        *ngIf="item.monitoring_card_id > 0">
+            {{ (item.current_step || "").replace("Aguardando", "Ag.") }}        
+        </a>
+    </div>
+    <div class="col-2 text-center">  
+            <a style="cursor:pointer;color:gray"
+            (click)="openChangeIndicationType(item, modal_change_indication_type)"
+            >              
+            {{ item.relationship_description.replace("Convite ", "") }}        
+            </a>
+    </div>    
+    <div class="col-2 text-center">    
+        <a
+            style="cursor:pointer;color:gray"
+            target="_blank"
+            href="http://myvtmi.im/voucher/membros/{{ item.identifier.substring(0, 5) }}">            
+            {{ item.identifier.substring(0, 5) }}        
+        </a>
+    </div>     
+</div> 
 
 <div class="row" *ngIf="needed_indirect_indications > 0">
     <div class="col-12 text-center" *ngIf="needed_indirect_indications > 1">        

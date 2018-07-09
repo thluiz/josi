@@ -20,8 +20,8 @@ function routes(app) {
     app.get("/api/vouchers/:id?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
         let vouchers = req.params.id > 0 ?
-            yield VR.find({ where: { id: req.params.id }, relations: ['branches'] })
-            : yield VR.find({ order: { "active": "DESC" } });
+            yield VR.find({ where: { id: req.params.id }, relations: ['branches', 'voucher_type'] })
+            : yield VR.find({ order: { "active": "DESC" }, relations: ['voucher_type'] });
         res.send(result_1.Result.GeneralOk(vouchers));
     }));
     app.post("/api/parameters/voucher_branch/add", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {

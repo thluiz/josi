@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const Branch_1 = require("./Branch");
+const VoucherType_1 = require("./VoucherType");
 let Voucher = class Voucher {
 };
 __decorate([
@@ -25,6 +26,11 @@ __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
 ], Voucher.prototype, "url", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => VoucherType_1.VoucherType),
+    typeorm_1.JoinColumn({ name: "voucher_type" }),
+    __metadata("design:type", VoucherType_1.VoucherType)
+], Voucher.prototype, "voucher_type", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)

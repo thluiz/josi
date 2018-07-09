@@ -17,7 +17,7 @@
           <div class="col-12">
             <label for="item_youtube_url">URL Youtube:</label>
             <div class="input-group">
-              <input class="form-control" [(ngModel)]="voucher.youtube_url" 
+              <input class="form-control" [(ngModel)]="voucher.youtube_url"
                 autocomplete="off" placeholder="https://www.youtube.com/watch?v=CODIGO" maxlength="100"
                 id="item_youtube_url" name="item_youtube_url" />
             </div>
@@ -37,6 +37,19 @@
               <input class="form-control text-center" [(ngModel)]="voucher.initials" autocomplete="off" placeholder="Iniciais do Voucher"
                 maxlength="3" id="item_initials" name="item_initials" />
             </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 pb-2">            
+            <label for="item_voucher_type">Tipo</label>
+            <select [(ngModel)]="voucher.voucher_type"
+              id="item_voucher_type"
+              [compareWith]="entity_compare"
+              class="form-control form-control-sm"
+              [ngModelOptions]="{standalone: true}">
+              <option [ngValue]="{id: 1}">Campanha</option>
+              <option [ngValue]="{id: 2}">Parceria</option>
+            </select>
           </div>
         </div>
         <div class="row">
@@ -127,8 +140,8 @@
               <div style="display:inline-block;margin-left:10px">
                 <label class="option_container" style="font-weight:normal;font-size: 1em;">
                   {{ b.name }}
-                  <input type="checkbox" [checked]="b.receive_voucher" 
-                  (change)="toggle_receive_voucher(b)" 
+                  <input type="checkbox" [checked]="b.receive_voucher"
+                  (change)="toggle_receive_voucher(b)"
                   id="item_receive_voucher" name="item_receive_voucher"
                   />
                   <span class="checkmark" *ngIf="!saving"></span>

@@ -12,4 +12,5 @@ export class Voucher {
     active: boolean;
     branches: any[];
     youtube_url: string;
+    voucher_type: number;
 }
