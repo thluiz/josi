@@ -17,9 +17,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const jobs_service_1 = require("./jobs-service");
 const database_facility_1 = require("./../facilities/database-facility");
+const logger_service_1 = require("./logger-service");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const firebase_emitter_decorator_1 = require("../decorators/firebase-emitter-decorator");
+const Incident_1 = require("../entity/Incident");
 exports.EVENTS_COLLECTION = "incident-events";
 exports.INCIDENT_ADDED = "INCIDENT_ADDED";
 exports.INCIDENT_STARTED = "INCIDENT_STARTED";
@@ -52,6 +55,17 @@ class IncidentsService {
     static close_incident(incident, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
             let execution = yield database_facility_1.DatabaseFacility.ExecuteTypedJsonSP(exports.INCIDENT_ENDED, "CloseIncident", { "incident": incident.id }, { "close_description": incident.close_text || "" }, { "title": incident.title || "" }, { "responsible_id": responsible_id }, { "payment_method_id": incident.payment_method_id > 0 ? incident.payment_method_id : null });
+            try {
+                const IR = yield database_facility_1.DatabaseFacility.getRepository(Incident_1.Incident);
+                const light_incident = yield IR.findOne(incident.id);
+                console.log(light_incident);
+                if (light_incident.incident_type == 36) {
+                    yield jobs_service_1.JobsService.send_ownership_closing_report(light_incident.id);
+                }
+            }
+            catch (ex) {
+                logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.SendingEmail, ex);
+            }
             return execution;
         });
     }

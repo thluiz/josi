@@ -46,12 +46,17 @@
     [alias]                     VARCHAR (15)  NULL,
     [contracted_p1_sessions]    INT           DEFAULT ((0)) NOT NULL,
     [p1_sessions_current_month] INT           DEFAULT ((0)) NOT NULL,
+    [current_p2_session]        INT           DEFAULT ((0)) NOT NULL,
+    [expected_p2_session]       INT           DEFAULT ((0)) NOT NULL,
+    [p2_cycle_start_date]       DATE          NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [FK_Person_Branch] FOREIGN KEY ([branch_id]) REFERENCES [dbo].[branch] ([id]),
     CONSTRAINT [FK_Person_Domain] FOREIGN KEY ([domain_id]) REFERENCES [dbo].[domain] ([id]),
     CONSTRAINT [fk_person_family] FOREIGN KEY ([family_id]) REFERENCES [dbo].[person] ([id]),
     CONSTRAINT [FK_person_program] FOREIGN KEY ([program_id]) REFERENCES [dbo].[program] ([id])
 );
+
+
 
 
 

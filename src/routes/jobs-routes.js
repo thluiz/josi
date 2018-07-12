@@ -19,32 +19,9 @@ function routes(app) {
         let result = yield jobs_service_1.JobsService.cleanup_sessions();
         res.send(result);
     }));
-    app.get("/api/test-email", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-        const msg = {
-            to: 'th.luiz@gmail.com',
-            from: 'contato@myvtmi.im',
-            subject: 'Sending with SendGrid!',
-            text: 'Siu Nim Tau, Cham Kiu, Biu Ji...',
-            html: '<strong>Tan Sau</strong>, Bong Sau...',
-        };
-        sgMail.send(msg)
-            .then(r2 => {
-            console.log(r2);
-            res.send("ok v4!");
-        })
-            .catch(error => {
-            //Log friendly error
-            console.error(error.toString());
-            //Extract error msg
-            const { message, code, response } = error;
-            console.log(code);
-            //Extract response msg
-            const { headers, body } = response;
-            console.log(headers);
-            console.log(body);
-            res.send("arg!");
-        });
+    app.get("/api/ownership_report", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield jobs_service_1.JobsService.send_ownership_closing_report(69836);
+        res.send(result.data.content);
     }));
 }
 exports.routes = routes;

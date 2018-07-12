@@ -25,8 +25,14 @@ const axios_1 = require("axios");
 const errors_codes_1 = require("../helpers/errors-codes");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const logger_service_1 = require("./logger-service");
+const incidents_repository_1 = require("../repositories/incidents-repository");
 const uuid = require("uuid/v4");
 const await_to_js_1 = require("await-to-js");
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const path = require("path");
+const Ejs = require("ejs");
+let IR = incidents_repository_1.IncidentsRepository;
 exports.HOURLY_JOB_EXECUTION = "HOURLY_JOB_EXECUTION";
 class JobsService {
     static execute_hourly_jobs() {
@@ -86,6 +92,66 @@ class JobsService {
             return result_1.Result.GeneralOk();
         });
     }
+    static send_ownership_closing_report(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var templatePath = path.join(__dirname, "../template/ownership_closing_report.html");
+            let ow_data_request = yield IR.getOwnershipData(id);
+            let data = ow_data_request.data;
+            let content = "";
+            try {
+                const generated_content = yield this.render_template(templatePath, data);
+                content = generated_content.data;
+            }
+            catch (error) {
+                content = `Error rendering content ${error.message}`;
+            }
+            const msg = {
+                to: 'th.luiz@gmail.com',
+                from: 'contato@myvtmi.im',
+                subject: `Fechamento de titularidade - ${data.branch_name} `,
+                html: content,
+            };
+            try {
+                console.log(msg.to);
+                yield this.send_email(msg);
+            }
+            catch (error) {
+                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+            }
+            return result_1.Result.Ok("GENERIC_ACTION", { content, data });
+        });
+    }
+    static render_template(template_path, data) {
+        return new Promise((resolve, reject) => {
+            Ejs.renderFile(template_path, { data: data }, (err, content) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(result_1.Result.GeneralOk(content));
+            });
+        });
+    }
+    static send_email(msg) {
+        return new Promise((resolve, reject) => {
+            sgMail.send(msg)
+                .then(r2 => {
+                console.log(r2);
+                resolve(result_1.Result.GeneralOk(r2));
+            })
+                .catch(error => {
+                console.error(error.toString());
+                //Extract error msg
+                const { message, code, response } = error;
+                //Extract response msg
+                const { headers, body } = response;
+                console.log(code);
+                console.log(headers);
+                console.log(body);
+                reject(error);
+            });
+        });
+    }
     static consolidate_members_sumary() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield database_facility_1.DatabaseFacility.ExecuteSPNoResults("ConsolidateMembersSumary");
@@ -115,6 +181,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], JobsService, "update_voucher_site", null);
+__decorate([
+    trylog_decorator_1.trylog(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], JobsService, "send_ownership_closing_report", null);
 __decorate([
     trylog_decorator_1.trylog(),
     __metadata("design:type", Function),

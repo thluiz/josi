@@ -2,6 +2,8 @@ import { DatabaseFacility } from "../facilities/database-facility";
 import { Result } from "../helpers/result";
 import { ErrorCode } from "../helpers/errors-codes";
 import { trylog } from "../decorators/trylog-decorator";
+import showdown = require('showdown');
+const converter = new showdown.Converter();
 
 export class IncidentsRepository{
     
@@ -65,5 +67,28 @@ export class IncidentsRepository{
             { "branch_id":  branch_id },
             { "date":  date }
         );
+    }
+
+    @trylog()
+    static async getOwnershipData(id: number) : Promise<Result<any>> {
+        const ownership_data = await DatabaseFacility.ExecuteJsonSP("getOwnershipData", {
+            "ownership_id": id
+        });
+
+        const data = ownership_data.data[0];
+
+        for(var i = 0; i < data.incidents.length; i++) {
+            if(data.incidents[i].description) {
+                const d = data.incidents[i].description.replace(/\r?\n/g, "<br />");
+                console.log(d);
+                data.incidents[i].description = converter.makeHtml(d);                
+            }
+            if(data.incidents[i].close_text) {
+                const d = data.incidents[i].close_text.replace(/\r?\n/g, "<br />");                
+                data.incidents[i].close_text = converter.makeHtml(d);                
+            }
+        }
+
+        return Result.GeneralOk(data);
     }
 }

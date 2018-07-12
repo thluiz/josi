@@ -18,7 +18,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_facility_1 = require("../facilities/database-facility");
+const result_1 = require("../helpers/result");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
+const showdown = require("showdown");
+const converter = new showdown.Converter();
 class IncidentsRepository {
     static getCurrentActivities(branch_id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -54,6 +57,26 @@ class IncidentsRepository {
     static getAgenda(branch_id, date) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetAgenda2", { "branch_id": branch_id }, { "date": date });
+        });
+    }
+    static getOwnershipData(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const ownership_data = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("getOwnershipData", {
+                "ownership_id": id
+            });
+            const data = ownership_data.data[0];
+            for (var i = 0; i < data.incidents.length; i++) {
+                if (data.incidents[i].description) {
+                    const d = data.incidents[i].description.replace(/\r?\n/g, "<br />");
+                    console.log(d);
+                    data.incidents[i].description = converter.makeHtml(d);
+                }
+                if (data.incidents[i].close_text) {
+                    const d = data.incidents[i].close_text.replace(/\r?\n/g, "<br />");
+                    data.incidents[i].close_text = converter.makeHtml(d);
+                }
+            }
+            return result_1.Result.GeneralOk(data);
         });
     }
 }
@@ -99,5 +122,11 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository, "getAgenda", null);
+__decorate([
+    trylog_decorator_1.trylog(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository, "getOwnershipData", null);
 exports.IncidentsRepository = IncidentsRepository;
 //# sourceMappingURL=incidents-repository.js.map

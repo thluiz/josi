@@ -1,24 +1,26 @@
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParameterService } from 'app/services/parameter-service';
 import { Component, OnInit } from "@angular/core";
+import { Observable } from '../../../../../node_modules/rxjs';
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './branches-page.component.html',
-  styleUrls: ['../parameters-customizations.scss']  
+  styleUrls: ['../parameters-customizations.scss']
 })
-export class BranchesPageComponent implements OnInit {      
+export class BranchesPageComponent implements OnInit {
   collection: any;
   current_item: any;
   saving = false;
+  currencies = [];
 
-  constructor(private parameterService: ParameterService, 
-              private ngbModalService: NgbModal) {      
+  constructor(private parameterService: ParameterService,
+    private ngbModalService: NgbModal) {
 
-  }  
+  }
 
   ngOnInit() {
-    this.load_data();    
+    this.load_data();
   }
 
   private load_data() {
@@ -30,7 +32,7 @@ export class BranchesPageComponent implements OnInit {
   save(close_action) {
     this.saving = true;
     this.parameterService.saveBranch(this.current_item).subscribe((data) => {
-      if(close_action) {
+      if (close_action) {
         close_action();
       }
       this.saving = false;
@@ -42,7 +44,7 @@ export class BranchesPageComponent implements OnInit {
     this.current_item = {
       id: 0
     };
-    
+
     this.open_form_modal(content);
   }
 
@@ -52,11 +54,16 @@ export class BranchesPageComponent implements OnInit {
   }
 
   private open_form_modal(content) {
-    this.ngbModalService.open(content).result.then((result) => {                                  
-        
-    }, (reason) => {
-        this.current_item = null;
-        console.log(reason);
-    });
+    Observable.zip(
+      this.parameterService.getCurrencies(),
+      (currencies) => {
+        this.currencies = currencies;
+        this.ngbModalService.open(content).result.then((result) => {
+
+        }, (reason) => {
+          this.current_item = null;
+          console.log(reason);
+        });
+      }).subscribe();
   }
 }

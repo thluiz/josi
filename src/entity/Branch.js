@@ -12,6 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const BranchCategory_1 = require("./BranchCategory");
 const typeorm_1 = require("typeorm");
 const Location_1 = require("./Location");
+const Currency_1 = require("./Currency");
+const Timezone_1 = require("./Timezone");
 let Branch = class Branch {
 };
 __decorate([
@@ -40,6 +42,16 @@ __decorate([
     typeorm_1.JoinColumn({ name: "location_id" }),
     __metadata("design:type", Location_1.Location)
 ], Branch.prototype, "location", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => Currency_1.Currency),
+    typeorm_1.JoinColumn({ name: "default_currency_id" }),
+    __metadata("design:type", Currency_1.Currency)
+], Branch.prototype, "default_currency", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => Timezone_1.Timezone),
+    typeorm_1.JoinColumn({ name: "timezone_id" }),
+    __metadata("design:type", Timezone_1.Timezone)
+], Branch.prototype, "timezone", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Boolean)

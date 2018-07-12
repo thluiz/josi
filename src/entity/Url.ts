@@ -1,10 +1,10 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
 export class Url {
     @PrimaryGeneratedColumn()
     id: number;
-    
+
     @Column()
     name: string
 

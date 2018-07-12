@@ -18,8 +18,12 @@
     [financial_type]               INT           DEFAULT ((0)) NOT NULL,
     [use_in_map]                   BIT           DEFAULT ((0)) NOT NULL,
     [require_title]                BIT           DEFAULT ((0)) NOT NULL,
+    [require_payment_method]       BIT           DEFAULT ((0)) NOT NULL,
+    [require_contact_method]       BIT           DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC)
 );
+
+
 
 
 

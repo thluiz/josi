@@ -1,3 +1,4 @@
+import { JobsService } from './jobs-service';
 import { DatabaseFacility } from './../facilities/database-facility';
 import { Result } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
@@ -5,6 +6,7 @@ import { FirebaseService } from './firebase-service';
 import { LoggerService, ErrorOrigins } from './logger-service';
 import { trylog } from '../decorators/trylog-decorator';
 import { firebaseEmitter } from '../decorators/firebase-emitter-decorator';
+import { Incident } from '../entity/Incident';
 
 export const EVENTS_COLLECTION = "incident-events";
 export const INCIDENT_ADDED = "INCIDENT_ADDED";
@@ -69,6 +71,17 @@ export class IncidentsService {
             {"responsible_id": responsible_id },            
             {"payment_method_id": incident.payment_method_id > 0 ? incident.payment_method_id : null }
         );    
+
+        try {
+            const IR = await DatabaseFacility.getRepository<Incident>(Incident);             
+            const light_incident = await IR.findOne(incident.id as number);
+            console.log(light_incident);
+            if(light_incident.incident_type == 36) {
+                await JobsService.send_ownership_closing_report(light_incident.id);
+            }
+        } catch (ex) {
+            LoggerService.error(ErrorOrigins.SendingEmail, ex);
+        }    
 
         return execution;
     }

@@ -98,8 +98,8 @@ function configure_routes(app, connection_pool) {
     }));
     app.get("/api/relationship_types", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
-            .query(`select * from [enum_relationship_type] 
-                where active = 1 
+            .query(`select * from [enum_relationship_type]
+                where active = 1
                 for json path`);
         res.send(result.recordset[0]);
     }));
@@ -162,6 +162,8 @@ function configure_routes(app, connection_pool) {
             .input('contact_email', sql.VarChar(200), branch.contact_email)
             .input('order', sql.Int, branch.order)
             .input('active', sql.Int, branch.active ? 1 : 0)
+            .input('default_currency_id', sql.Int, branch.default_currency_id)
+            .input('timezone_id', sql.Int, branch.timezone_id)
             .query(`update branch set
                     name = @name,
                     abrev = @abrev,
@@ -169,7 +171,9 @@ function configure_routes(app, connection_pool) {
                     [order] = @order,
                     contact_phone = @contact_phone,
                     contact_email = @contact_email,
-                    active = @active
+                    active = @active,
+                    timezone_id = @timezone_id,
+                    default_currency_id = @default_currency_id
                 where id = @id`);
         res.send({ sucess: true });
     }));
@@ -258,7 +262,7 @@ function configure_routes(app, connection_pool) {
         const result = yield new sql.Request(pool)
             .input('id', sql.Int, req.body.id)
             .query(`update branch_map set
-                    active = 0                    
+                    active = 0
                 where id = @id`);
         let result_site_update = yield jobs_service_1.JobsService.update_voucher_site();
         res.send(result_site_update);
@@ -340,7 +344,7 @@ function configure_routes(app, connection_pool) {
                         name = @name,
                         [association_percentage] = @association_percentage,
                         [im_percentage] = @im_percentage,
-                        [local_percentage] = @local_percentage,                        
+                        [local_percentage] = @local_percentage,
                         [association_minimal_value] = @association_minimal_value,
                         [im_minimal_value] = @im_minimal_value,
                         [local_minimal_value] = @local_minimal_value,
@@ -361,7 +365,7 @@ function configure_routes(app, connection_pool) {
                 .input('local_minimal_value', sql.Decimal(12, 2), product.local_minimal_value)
                 .input('currency_id', sql.Int, product.currency_id || 1)
                 .input('category_id', sql.Int, product.category_id)
-                .query(`insert into product (name, base_value, country_id, [association_percentage], im_percentage, local_percentage, 
+                .query(`insert into product (name, base_value, country_id, [association_percentage], im_percentage, local_percentage,
                     association_minimal_value, im_minimal_value, local_minimal_value, currency_id, category_id)
                 values (@name, @base_value, 1, @association_percentage, @im_percentage, @local_percentage,
                 @association_minimal_value, @im_minimal_value, @local_minimal_value, @currency_id, @category_id)`);

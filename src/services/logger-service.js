@@ -20,6 +20,7 @@ var ErrorOrigins;
     ErrorOrigins[ErrorOrigins["Firebase"] = 1] = "Firebase";
     ErrorOrigins[ErrorOrigins["UnhandledRejection"] = 2] = "UnhandledRejection";
     ErrorOrigins[ErrorOrigins["SessionControl"] = 3] = "SessionControl";
+    ErrorOrigins[ErrorOrigins["SendingEmail"] = 4] = "SendingEmail";
 })(ErrorOrigins = exports.ErrorOrigins || (exports.ErrorOrigins = {}));
 class LoggerService {
     static error(origin, error, details) {
