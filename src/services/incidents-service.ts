@@ -18,142 +18,144 @@ export const INCIDENT_CANCELLED = "INCIDENT_CANCELLED";
 export const INCIDENT_RESCHEDULED = "INCIDENT_RESCHEDULED";
 
 export class IncidentsService {
-    
+
     @trylog()
     @firebaseEmitter(EVENTS_COLLECTION)
-    static async start_incident(incident, responsible_id) : Promise<Result> {        
+    static async start_incident(incident, responsible_id): Promise<Result> {
         let execution = await DatabaseFacility
-        .ExecuteTypedJsonSP(INCIDENT_STARTED, 
-            "StartIncident",
-            {"incident" : incident.id},
-            {"responsible_id": responsible_id }
-        );    
+            .ExecuteTypedJsonSP(INCIDENT_STARTED,
+                "StartIncident",
+                { "incident": incident.id },
+                { "responsible_id": responsible_id }
+            );
 
-        return execution; 
+        return execution;
     }
 
     @trylog()
     @firebaseEmitter(EVENTS_COLLECTION)
-    static async reopen_incident(incident, responsible_id) : Promise<Result> {        
+    static async reopen_incident(incident, responsible_id): Promise<Result> {
         let execution = await DatabaseFacility.ExecuteTypedJsonSP(
             INCIDENT_STARTED,
             "ReopenIncident",
-            {"incident" : incident.id},
-            {"responsible_id": responsible_id }
-        );    
+            { "incident": incident.id },
+            { "responsible_id": responsible_id }
+        );
 
-        return execution;                        
+        return execution;
     }
 
     @trylog()
     @firebaseEmitter(EVENTS_COLLECTION)
-    static async cancel_start_incident(incident, responsible_id) : Promise<Result> {        
+    static async cancel_start_incident(incident, responsible_id): Promise<Result> {
         let execution = await DatabaseFacility
-        .ExecuteTypedJsonSP(
-            INCIDENT_CHANGED,
-            "CancelIncidentStart",
-            {"incident" : incident.id},
-            {"responsible_id": responsible_id }
-        );    
+            .ExecuteTypedJsonSP(
+                INCIDENT_CHANGED,
+                "CancelIncidentStart",
+                { "incident": incident.id },
+                { "responsible_id": responsible_id }
+            );
 
-        return execution;                    
+        return execution;
     }
-    
+
     @trylog()
     @firebaseEmitter(EVENTS_COLLECTION)
-    static async close_incident(incident, responsible_id) : Promise<Result> {        
+    static async close_incident(incident, responsible_id): Promise<Result> {
         let execution = await DatabaseFacility.ExecuteTypedJsonSP(
             INCIDENT_ENDED,
             "CloseIncident",
-            {"incident" : incident.id},
-            {"close_description" : incident.close_text || ""},
-            {"title" : incident.title || ""},
-            {"responsible_id": responsible_id },            
-            {"payment_method_id": incident.payment_method_id > 0 ? incident.payment_method_id : null }
-        );    
+            { "incident": incident.id },
+            { "close_description": incident.close_text || "" },
+            { "title": incident.title || "" },
+            { "responsible_id": responsible_id },
+            { "payment_method_id": incident.payment_method_id > 0 ? incident.payment_method_id : null }
+        );
 
-        try {
-            const IR = await DatabaseFacility.getRepository<Incident>(Incident);             
-            const light_incident = await IR.findOne(incident.id as number);
-            console.log(light_incident);
-            if(light_incident.incident_type == 36) {
-                await JobsService.send_ownership_closing_report(light_incident.id);
+        if (execution.success) {
+            try {
+                const IR = await DatabaseFacility.getRepository<Incident>(Incident);
+                const light_incident = await IR.findOne(incident.id as number);
+
+                if (light_incident.incident_type == 36) {
+                    await JobsService.send_ownership_closing_report(light_incident.id);
+                }
+            } catch (ex) {
+                LoggerService.error(ErrorOrigins.SendingEmail, ex);
             }
-        } catch (ex) {
-            LoggerService.error(ErrorOrigins.SendingEmail, ex);
-        }    
+        }
 
         return execution;
     }
 
     @trylog()
     @firebaseEmitter(EVENTS_COLLECTION)
-    static async remove_incident(incident, responsible_id) : Promise<Result> {                        
+    static async remove_incident(incident, responsible_id): Promise<Result> {
         let execution = await DatabaseFacility.ExecuteTypedJsonSP(
             INCIDENT_CANCELLED,
             "RemoveIncident",
-            {"incident" : incident.id},
-            {"responsible_id": responsible_id }
-        );    
-
-        return execution;                          
-    }
-
-    @trylog() 
-    @firebaseEmitter(EVENTS_COLLECTION)   
-    static async register_incident(incident, responsible_id) : Promise<Result> {
-        let date = `${incident.date.year}-${incident.date.month}-${incident.date.day}`;
-        if(incident.time) {
-            date += ` ${incident.time.hour}:${incident.time.minute}`;
-        }        
-
-        let execution = await DatabaseFacility
-        .ExecuteTypedJsonSP<any[]>(
-            INCIDENT_ADDED,
-            "RegisterNewIncident",
-            {"description" : incident.description},
-            {"responsible_id": responsible_id },
-            {"people": incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(",")},
-            {"date":  date},
-            {"type": incident.type.id},
-            {"branch": incident.branch_id},
-            {"title": incident.title},
-            {"value": incident.value},
-            {"start_activity": incident.start_activity ? 1 : 0},
-            {"register_closed" : incident.close_activity == 1 ? 1 : 0},
-            {"register_treated" : incident.close_activity == 2 ? 1 : 0},
-            {"new_people" : incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(",") },
-        );                                                                                        
+            { "incident": incident.id },
+            { "responsible_id": responsible_id }
+        );
 
         return execution;
     }
 
     @trylog()
     @firebaseEmitter(EVENTS_COLLECTION)
-    static async reschedule_incident(incident, new_incident, contact, responsible_id) : Promise<Result> {        
+    static async register_incident(incident, responsible_id): Promise<Result> {
+        let date = `${incident.date.year}-${incident.date.month}-${incident.date.day}`;
+        if (incident.time) {
+            date += ` ${incident.time.hour}:${incident.time.minute}`;
+        }
+
+        let execution = await DatabaseFacility
+            .ExecuteTypedJsonSP<any[]>(
+                INCIDENT_ADDED,
+                "RegisterNewIncident",
+                { "description": incident.description },
+                { "responsible_id": responsible_id },
+                { "people": incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(",") },
+                { "date": date },
+                { "type": incident.type.id },
+                { "branch": incident.branch_id },
+                { "title": incident.title },
+                { "value": incident.value },
+                { "start_activity": incident.start_activity ? 1 : 0 },
+                { "register_closed": incident.close_activity == 1 ? 1 : 0 },
+                { "register_treated": incident.close_activity == 2 ? 1 : 0 },
+                { "new_people": incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(",") },
+        );
+
+        return execution;
+    }
+
+    @trylog()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    static async reschedule_incident(incident, new_incident, contact, responsible_id): Promise<Result> {
         let execution = await DatabaseFacility.ExecuteTypedJsonSP(
             INCIDENT_RESCHEDULED,
             "RescheduleIncident",
-            {"incident" : incident.id},
-            {"contact" :  contact},
-            {"new_date" : new_incident.date + ' ' + new_incident.start_hour },
-            {"responsible_id": responsible_id }
-        );    
+            { "incident": incident.id },
+            { "contact": contact },
+            { "new_date": new_incident.date + ' ' + new_incident.start_hour },
+            { "responsible_id": responsible_id }
+        );
 
         return execution;
     }
-    
+
     @trylog()
     @firebaseEmitter(EVENTS_COLLECTION)
-    static async register_contact_for_incident(incident, contact, responsible_id) : Promise<Result> {        
+    static async register_contact_for_incident(incident, contact, responsible_id): Promise<Result> {
         let execution = await DatabaseFacility.ExecuteTypedJsonSP(
             INCIDENT_TREATED,
             "RegisterContactForIncident",
-            {"incident" : incident.id},
-            {"contact" :  contact},                
-            {"responsible_id": responsible_id }
-        );    
+            { "incident": incident.id },
+            { "contact": contact },
+            { "responsible_id": responsible_id }
+        );
 
-        return execution;                    
+        return execution;
     }
 }

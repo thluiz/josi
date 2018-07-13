@@ -1,406 +1,327 @@
 <style>
-    .indication:hover {
-        background-color: #EFEFEF;
-    }
+  .indication:hover {
+    background-color: #EFEFEF;
+  }
+
 </style>
 
 
-<div class="row" *ngIf="showHeader"
-    style="border-bottom: 1px solid black;" >
-    <div class="col-10">        
-        <h6 style="font-weight:bold;margin-bottom:0"> Convidados </h6>
-    </div>
-    <div class="col-2 text-right">
-        <button type="button" class="btn btn-silver btn-sm" 
-            style="margin:0;padding:2px;line-height:10px"
-            (click)="open(new_indication_modal);">
-            <i class="ft-plus"></i>               
-        </button> 
-    </div>
+<div class="row" *ngIf="showHeader" style="border-bottom: 1px solid black;">
+  <div class="col-10">
+    <h6 style="font-weight:bold;margin-bottom:0"> Convidados </h6>
+  </div>
+  <div class="col-2 text-right">
+    <button type="button" class="btn btn-silver btn-sm" style="margin:0;padding:2px;line-height:10px" (click)="open(new_indication_modal);">
+      <i class="ft-plus"></i>
+    </button>
+  </div>
 </div>
 
-<div class="row" *ngIf="!invites || invites.length == 0">
-    <div class="col-12 text-center">
-        Nenhum Convite encontrado
-    </div>    
+<div class="row" *ngIf="loading">
+  <div class="col-12 text-centert">
+    <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+  </div>
+</div>
+
+<div class="row" *ngIf="!loading && (!invites || invites.length == 0)">
+  <div class="col-12 text-center">
+    Nenhum Convite encontrado
+  </div>
 </div>
 
 <div class="row indication" *ngFor="let item of invites">
-    <div class="col-6" *ngIf="navigateToIndication">        
-        <a
-            style="cursor:pointer;color:gray"
-            (click)="navigateToPerson(item.person2_id)">
-            {{ item.indicated_name }}
-        </a>           
-    </div>
-    <div class="col-6" *ngIf="!navigateToIndication">                
-        {{ item.indicated_name }}        
-    </div>
-    <div class="col-2 text-center">                
-        <a 
-        (click)="open_card(item.monitoring_card_id)" 
-        *ngIf="item.monitoring_card_id > 0">
-            {{ (item.current_step || "").replace("Aguardando", "Ag.") }}        
+  <div class="col-12">
+    <div class="row">
+      <div class="col-6" *ngIf="navigateToIndication">
+        <a style="cursor:pointer;color:gray" (click)="navigateToPerson(item.person2_id)">
+          {{ item.indicated_name }}
         </a>
-    </div>
-    <div class="col-2 text-center">  
-            <a style="cursor:pointer;color:gray"
-            (click)="openChangeIndicationType(item, modal_change_indication_type)"
-            >              
-            {{ item.relationship_description.replace("Convite ", "") }}        
-            </a>
-    </div>    
-    <div class="col-2 text-center">    
-        <a
-            style="cursor:pointer;color:gray"
-            target="_blank"
-            href="http://myvtmi.im/voucher/membros/{{ item.identifier.substring(0, 5) }}">            
-            {{ item.identifier.substring(0, 5) }}        
+      </div>
+      <div class="col-6" *ngIf="!navigateToIndication">
+        {{ item.indicated_name }}
+      </div>
+      <div class="col-2 text-center">
+        <a (click)="open_card(item.monitoring_card_id)" *ngIf="item.monitoring_card_id > 0">
+          {{ (item.current_step || "").replace("Aguardando", "Ag.") }}
         </a>
-    </div>     
-</div> 
+      </div>
+      <div class="col-2 text-center">
+        <a style="cursor:pointer;color:gray" (click)="openChangeIndicationType(item, modal_change_indication_type)">
+          {{ item.relationship_description.replace("Convite ", "") }}
+        </a>
+      </div>
+      <div class="col-2 text-center">
+        <a style="cursor:pointer;color:gray" target="_blank" href="http://myvtmi.im/voucher/membros/{{ item.identifier.substring(0, 5) }}">
+          {{ item.identifier.substring(0, 5) }}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="row" *ngIf="needed_direct_indications > 0">
-    <div class="col-12 text-center" *ngIf="needed_direct_indications > 1">        
-        Tem direito a mais {{ needed_direct_indications }} convites
-    </div>
-    <div class="col-12 text-center" *ngIf="needed_direct_indications == 1">        
-        Apenas mais um convite disponível
-    </div>
+  <div class="col-12 text-center" *ngIf="needed_direct_indications > 1">
+    Tem direito a mais {{ needed_direct_indications }} convites
+  </div>
+  <div class="col-12 text-center" *ngIf="needed_direct_indications == 1">
+    Apenas mais um convite disponível
+  </div>
 </div>
 
-<div class="row" *ngIf="showHeader"
-    style="border-bottom: 1px solid black;" >
-    <div class="col-10 pt-2">        
-        <h6 style="font-weight:bold;margin-bottom:0"> Indicações </h6>
-    </div>
-    <div class="col-2 text-right pt-2">
-        <button type="button" class="btn btn-silver btn-sm" 
-            style="margin:0;padding:2px;line-height:10px"
-            (click)="open(new_indication_modal);">
-            <i class="ft-plus"></i>               
-        </button> 
-    </div>
+<div class="row" *ngIf="showHeader" style="border-bottom: 1px solid black;">
+  <div class="col-10 pt-2">
+    <h6 style="font-weight:bold;margin-bottom:0"> Indicações </h6>
+  </div>
+  <div class="col-2 text-right pt-2">
+    <button type="button" class="btn btn-silver btn-sm" style="margin:0;padding:2px;line-height:10px" (click)="open(new_indication_modal);">
+      <i class="ft-plus"></i>
+    </button>
+  </div>
 </div>
 
 <div class="row" *ngIf="!indirect_indications || indirect_indications.length == 0">
-    <div class="col-12 text-center">
-        Nenhuma indicação encontrada
-    </div>    
+  <div class="col-12 text-center">
+    Nenhuma indicação encontrada
+  </div>
 </div>
 
 <div class="row indication" *ngFor="let item of indirect_indications">
-    <div class="col-6" *ngIf="navigateToIndication">        
-        <a
-            style="cursor:pointer;color:gray"
-            (click)="navigateToPerson(item.person2_id)">
-            {{ item.indicated_name }}
-        </a>           
-    </div>
-    <div class="col-6" *ngIf="!navigateToIndication">                
-        {{ item.indicated_name }}        
-    </div>
-    <div class="col-2 text-center">                
-        <a 
-        (click)="open_card(item.monitoring_card_id)" 
-        *ngIf="item.monitoring_card_id > 0">
-            {{ (item.current_step || "").replace("Aguardando", "Ag.") }}        
-        </a>
-    </div>
-    <div class="col-2 text-center">  
-            <a style="cursor:pointer;color:gray"
-            (click)="openChangeIndicationType(item, modal_change_indication_type)"
-            >              
-            {{ item.relationship_description.replace("Convite ", "") }}        
-            </a>
-    </div>    
-    <div class="col-2 text-center">    
-        <a
-            style="cursor:pointer;color:gray"
-            target="_blank"
-            href="http://myvtmi.im/voucher/membros/{{ item.identifier.substring(0, 5) }}">            
-            {{ item.identifier.substring(0, 5) }}        
-        </a>
-    </div>     
-</div> 
+  <div class="col-6" *ngIf="navigateToIndication">
+    <a style="cursor:pointer;color:gray" (click)="navigateToPerson(item.person2_id)">
+      {{ item.indicated_name }}
+    </a>
+  </div>
+  <div class="col-6" *ngIf="!navigateToIndication">
+    {{ item.indicated_name }}
+  </div>
+  <div class="col-2 text-center">
+    <a (click)="open_card(item.monitoring_card_id)" *ngIf="item.monitoring_card_id > 0">
+      {{ (item.current_step || "").replace("Aguardando", "Ag.") }}
+    </a>
+  </div>
+  <div class="col-2 text-center">
+    <a style="cursor:pointer;color:gray" (click)="openChangeIndicationType(item, modal_change_indication_type)">
+      {{ item.relationship_description.replace("Convite ", "") }}
+    </a>
+  </div>
+  <div class="col-2 text-center">
+    <a style="cursor:pointer;color:gray" target="_blank" href="http://myvtmi.im/voucher/membros/{{ item.identifier.substring(0, 5) }}">
+      {{ item.identifier.substring(0, 5) }}
+    </a>
+  </div>
+</div>
 
 <div class="row" *ngIf="needed_indirect_indications > 0">
-    <div class="col-12 text-center" *ngIf="needed_indirect_indications > 1">        
-        Tem direito a mais {{ needed_indirect_indications }} indicações
-    </div>
-    <div class="col-12 text-center" *ngIf="needed_indirect_indications == 1">        
-        Apenas mais uma indicação disponível
-    </div>
+  <div class="col-12 text-center" *ngIf="needed_indirect_indications > 1">
+    Tem direito a mais {{ needed_indirect_indications }} indicações
+  </div>
+  <div class="col-12 text-center" *ngIf="needed_indirect_indications == 1">
+    Apenas mais uma indicação disponível
+  </div>
 </div>
 
 <ng-template #modal_change_indication_type let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h5 class="modal-title" style="font-weight: bold">
-            Alterar Tipo de Convite/Indicação
-        </h5>
-        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-        <span aria-hidden="true">&times;</span>
-        </button>
+  <div class="modal-header">
+    <h5 class="modal-title" style="font-weight: bold">
+      Alterar Tipo de Convite/Indicação
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="new_indication_branch">Novo Tipo</label>
+      <select id="new_indication_branch" [(ngModel)]="new_indication_type" (ngModelChange)="validate_new_indication()" class="form-control">
+        <option value="-1"></option>
+        <option *ngFor="let i of indication_types" [value]="i.id">{{i.description}}</option>
+      </select>
     </div>
-    <div class="modal-body">
-        <div class="form-group">
-            <label for="new_indication_branch">Novo Tipo</label>
-            <select id="new_indication_branch" 
-                [(ngModel)]="new_indication_type" 
-                (ngModelChange)="validate_new_indication()"																	
-                class="form-control"								
-                >			
-                <option value="-1"></option>			                
-                <option *ngFor="let i of indication_types" [value]="i.id">{{i.description}}</option>			
-            </select>								
-        </div>	 
+  </div>
+  <div class="modal-footer" *ngIf="!saving">
+    <div class="form-actions text-right">
+      <button type="button" class="btn btn-success" (click)="changeIndicationType(d);" *ngIf="new_indication_type != -1">
+        <i class="icon-check"></i>
+        Salvar
+      </button>
+      <button type="button" class="btn btn-silver" (click)="d('cancel')">
+        <i class="icon-action-undo"></i>
+        Cancelar
+      </button>
     </div>
-    <div class="modal-footer" *ngIf="!saving">
-        <div class="form-actions text-right">
-            <button type="button" class="btn btn-success" 
-                (click)="changeIndicationType(d);"
-                *ngIf="new_indication_type != -1">
-                <i class="icon-check"></i>
-                Salvar
-            </button>
-            <button type="button" class="btn btn-silver"                 
-                (click)="d('cancel')">
-                <i class="icon-action-undo"></i>
-                Cancelar
-            </button>	
-        </div>
-    </div>
+  </div>
 </ng-template>
 
 <ng-template #new_indication_modal let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h5 class="modal-title" style="font-weight: bold">
-            Convidar ou Indicar Pessoa
-        </h5>
-        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-        <span aria-hidden="true">&times;</span>
-        </button>
+  <div class="modal-header">
+    <h5 class="modal-title" style="font-weight: bold">
+      Convidar ou Indicar Pessoa
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="new_indication_branch">Núcleo</label>
+      <select id="new_indication_branch" [(ngModel)]="new_indication.branch_id" (ngModelChange)="validate_new_indication()" class="form-control">
+        <option></option>
+        <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
+      </select>
     </div>
-    <div class="modal-body">
+    <div class="row">
+      <div class="col-12">
         <div class="form-group">
-            <label for="new_indication_branch">Núcleo</label>
-            <select id="new_indication_branch" 
-                [(ngModel)]="new_indication.branch_id" 
-                (ngModelChange)="validate_new_indication()"																	
-                class="form-control"								
-                >			
-                <option></option>			
-                <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
-            </select>								
-        </div>	        
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="new_indication_name">Nome</label>
-                    <input class="form-control" style="width:100%" 
-                        placeholder="Nome da pessoa convidada"
-                        name="new_indication_name" 
-                        (ngModelChange)="validate_new_indication()"
-                        (keyup)="validate_new_indication()"
-                        (keypress)="validate_new_indication()"
-                        (keydown)="validate_new_indication()"
-                        [(ngModel)]="new_indication.name" />
-                </div>
-            </div>
-        </div>        
+          <label for="new_indication_name">Nome</label>
+          <input class="form-control" style="width:100%" placeholder="Nome da pessoa convidada" name="new_indication_name" (ngModelChange)="validate_new_indication()"
+            (keyup)="validate_new_indication()" (keypress)="validate_new_indication()" (keydown)="validate_new_indication()"
+            [(ngModel)]="new_indication.name" />
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="new_indication_operator">Operador Responsável</label>
+      <select id="new_indication_operator" [(ngModel)]="new_indication.operator_id" (ngModelChange)="validate_new_indication()"
+        class="form-control">
+        <option></option>
+        <option *ngFor="let o of operators" [value]="o.id">{{o.name}}</option>
+      </select>
+    </div>
+    <div class="row">
+      <div class="col-6">
         <div class="form-group">
-            <label for="new_indication_operator">Operador Responsável</label>
-            <select id="new_indication_operator" 
-                [(ngModel)]="new_indication.operator_id" 
-                (ngModelChange)="validate_new_indication()"																	
-                class="form-control"								
-                >			
-                <option></option>			
-                <option *ngFor="let o of operators" [value]="o.id">{{o.name}}</option>
-            </select>								
+          <label for="new_indication_invitation_type">Tipo</label>
+          <select id="new_indication_invitation_type" [(ngModel)]="new_indication.indication_contact_type" (ngModelChange)="validate_new_indication()"
+            class="form-control">
+            <option *ngFor="let i of indication_types" [value]="i.id">{{i.description}}</option>
+          </select>
         </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group">  
-                    <label for="new_indication_invitation_type">Tipo</label>          
-                    <select id="new_indication_invitation_type" 
-                        [(ngModel)]="new_indication.indication_contact_type" 
-                        (ngModelChange)="validate_new_indication()"																	
-                        class="form-control"								
-                        >			
-                        <option *ngFor="let i of indication_types" [value]="i.id">{{i.description}}</option>
-                    </select>								
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <label for="new_indication_age">Idade</label>
-                    <input class="form-control" style="width:100%" 
-                        placeholder="Idade da pessoa"
-                        name="new_indication_age" 
-                        type="number"
-                        (ngModelChange)="validate_new_indication()"
-                        (keyup)="validate_new_indication()"
-                        (keypress)="validate_new_indication()"
-                        (keydown)="validate_new_indication()"
-                        [(ngModel)]="new_indication.age" />
-                </div>
-            </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label for="new_indication_age">Idade</label>
+          <input class="form-control" style="width:100%" placeholder="Idade da pessoa" name="new_indication_age" type="number" (ngModelChange)="validate_new_indication()"
+            (keyup)="validate_new_indication()" (keypress)="validate_new_indication()" (keydown)="validate_new_indication()"
+            [(ngModel)]="new_indication.age" />
         </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group">
-                    <label for="new_indication_district">Bairro</label>
-                    <input class="form-control" style="width:100%" 
-                        placeholder="Bairro da pessoa convidada"
-                        name="new_indication_district" 
-                        (ngModelChange)="validate_new_indication()"
-                        (keyup)="validate_new_indication()"
-                        (keypress)="validate_new_indication()"
-                        (keydown)="validate_new_indication()"
-                        [(ngModel)]="new_indication.district"
-                        maxlength="100" />
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <label for="new_indication_occupation">Profissão</label>
-                    <input class="form-control" style="width:100%" 
-                        placeholder="Profissão da pessoa convidada"
-                        name="new_indication_occupation" 
-                        (ngModelChange)="validate_new_indication()"
-                        (keyup)="validate_new_indication()"
-                        (keypress)="validate_new_indication()"
-                        (keydown)="validate_new_indication()"
-                        [(ngModel)]="new_indication.occupation"
-                        maxlength="100" />
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-4">
-                <div class="form-group">
-                    <div class="form-group">
-                        <label for="contact_type1">Contato Principal</label>
-                        <select id="contact_type1" name="contact_type1" 
-                            [(ngModel)]="new_indication.contact_type1" 
-                            (ngModelChange) ="validate_new_indication()"
-                            class="form-control">						
-                            <option *ngFor="let c of contact_types" [value]="c.id">{{c.description}}</option>
-                        </select>
-                    </div>
-                </div>
-            </div>            
-            <div class="col-12 col-md-8">
-                <div class="form-group">
-                    <div class="form-group">     
-                        <label for="new_indication_contact1">&#160;</label>                       
-                        <input class="form-control text-center" style="width:100%" 
-                            placeholder=""
-                            name="new_indication_contact1" 
-                            (ngModelChange)="validate_new_indication()"
-                            (keyup)="validate_new_indication()"
-                            (keypress)="validate_new_indication()"
-                            (keydown)="validate_new_indication()"
-                            [(ngModel)]="new_indication.contact1" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-4">
-                <div class="form-group">
-                    <div class="form-group">
-                        <label for="contact_type2">Contato</label>
-                        <select id="contact_type2" name="contact_type2" 
-                            [(ngModel)]="new_indication.contact_type2" 
-                            (ngModelChange) ="validate_new_indication()"
-                            class="form-control">						
-                            <option *ngFor="let c of contact_types" [value]="c.id">{{c.description}}</option>
-                        </select>
-                    </div>
-                </div>
-            </div>            
-            <div class="col-12 col-md-8">
-                <div class="form-group">
-                    <div class="form-group">     
-                        <label for="new_indication_contact2">&#160;</label>                       
-                        <input class="form-control text-center" style="width:100%" 
-                            placeholder=""
-                            name="new_indication_contact2" 
-                            (ngModelChange)="validate_new_indication()"
-                            (keyup)="validate_new_indication()"
-                            (keypress)="validate_new_indication()"
-                            (keydown)="validate_new_indication()"
-                            [(ngModel)]="new_indication.contact2" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-4">
-                <div class="form-group">
-                    <div class="form-group">
-                        <label for="contact_type3">Contato</label>
-                        <select id="contact_type3" name="contact_type3" 
-                            [(ngModel)]="new_indication.contact_type3" 
-                            (ngModelChange) ="validate_new_indication()"
-                            class="form-control">						
-                            <option *ngFor="let c of contact_types" [value]="c.id">{{c.description}}</option>
-                        </select>
-                    </div>
-                </div>
-            </div>            
-            <div class="col-12 col-md-8">
-                <div class="form-group">
-                    <div class="form-group">     
-                        <label for="new_indication_contact3">&#160;</label>                       
-                        <input class="form-control text-center" style="width:100%" 
-                            placeholder=""
-                            name="new_indication_contact3" 
-                            (ngModelChange)="validate_new_indication()"
-                            (keyup)="validate_new_indication()"
-                            (keypress)="validate_new_indication()"
-                            (keydown)="validate_new_indication()"
-                            [(ngModel)]="new_indication.contact3" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">                
-                <div class="form-group">
-                    <label for="new_indication_comment">Comentários Gerais</label>
-                    <textarea class="form-control" 
-                    name="new_indication_comment" id="new_indication_comment"                    
-                    [(ngModel)]="new_indication.comment"		
-                    rows="3"></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="row" *ngIf="!new_indication.valid">
-            <div class="col-12 text-danger">
-                <ul>
-                    <li style="line-height:1.2em" *ngFor="let error of errors">{{ error }}</li>
-                </ul>                    
-            </div>
-        </div>   
-    </div>	  
-    <div class="modal-footer" *ngIf="saving">        
-        <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+      </div>
     </div>
-    <div class="modal-footer" *ngIf="!saving">
-        <div class="form-actions text-right">
-            <button type="button" class="btn btn-success" 
-                (click)="save_new_indication(d('indication created!'));"
-                *ngIf="new_indication.valid">
-                <i class="icon-check"></i>
-                Salvar
-            </button>
-            <button type="button" class="btn btn-silver"                 
-                (click)="d('cancel')">
-                <i class="icon-action-undo"></i>
-                Cancelar
-            </button>	
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label for="new_indication_district">Bairro</label>
+          <input class="form-control" style="width:100%" placeholder="Bairro da pessoa convidada" name="new_indication_district" (ngModelChange)="validate_new_indication()"
+            (keyup)="validate_new_indication()" (keypress)="validate_new_indication()" (keydown)="validate_new_indication()"
+            [(ngModel)]="new_indication.district" maxlength="100" />
         </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <label for="new_indication_occupation">Profissão</label>
+          <input class="form-control" style="width:100%" placeholder="Profissão da pessoa convidada" name="new_indication_occupation"
+            (ngModelChange)="validate_new_indication()" (keyup)="validate_new_indication()" (keypress)="validate_new_indication()"
+            (keydown)="validate_new_indication()" [(ngModel)]="new_indication.occupation" maxlength="100" />
+        </div>
+      </div>
     </div>
+    <div class="row">
+      <div class="col-12 col-md-4">
+        <div class="form-group">
+          <div class="form-group">
+            <label for="contact_type1">Contato Principal</label>
+            <select id="contact_type1" name="contact_type1" [(ngModel)]="new_indication.contact_type1" (ngModelChange)="validate_new_indication()"
+              class="form-control">
+              <option *ngFor="let c of contact_types" [value]="c.id">{{c.description}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-8">
+        <div class="form-group">
+          <div class="form-group">
+            <label for="new_indication_contact1">&#160;</label>
+            <input class="form-control text-center" style="width:100%" placeholder="" name="new_indication_contact1" (ngModelChange)="validate_new_indication()"
+              (keyup)="validate_new_indication()" (keypress)="validate_new_indication()" (keydown)="validate_new_indication()"
+              [(ngModel)]="new_indication.contact1" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-4">
+        <div class="form-group">
+          <div class="form-group">
+            <label for="contact_type2">Contato</label>
+            <select id="contact_type2" name="contact_type2" [(ngModel)]="new_indication.contact_type2" (ngModelChange)="validate_new_indication()"
+              class="form-control">
+              <option *ngFor="let c of contact_types" [value]="c.id">{{c.description}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-8">
+        <div class="form-group">
+          <div class="form-group">
+            <label for="new_indication_contact2">&#160;</label>
+            <input class="form-control text-center" style="width:100%" placeholder="" name="new_indication_contact2" (ngModelChange)="validate_new_indication()"
+              (keyup)="validate_new_indication()" (keypress)="validate_new_indication()" (keydown)="validate_new_indication()"
+              [(ngModel)]="new_indication.contact2" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-4">
+        <div class="form-group">
+          <div class="form-group">
+            <label for="contact_type3">Contato</label>
+            <select id="contact_type3" name="contact_type3" [(ngModel)]="new_indication.contact_type3" (ngModelChange)="validate_new_indication()"
+              class="form-control">
+              <option *ngFor="let c of contact_types" [value]="c.id">{{c.description}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-8">
+        <div class="form-group">
+          <div class="form-group">
+            <label for="new_indication_contact3">&#160;</label>
+            <input class="form-control text-center" style="width:100%" placeholder="" name="new_indication_contact3" (ngModelChange)="validate_new_indication()"
+              (keyup)="validate_new_indication()" (keypress)="validate_new_indication()" (keydown)="validate_new_indication()"
+              [(ngModel)]="new_indication.contact3" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="new_indication_comment">Comentários Gerais</label>
+          <textarea class="form-control" name="new_indication_comment" id="new_indication_comment" [(ngModel)]="new_indication.comment"
+            rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="!new_indication.valid">
+      <div class="col-12 text-danger">
+        <ul>
+          <li style="line-height:1.2em" *ngFor="let error of errors">{{ error }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer" *ngIf="saving">
+    <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+  </div>
+  <div class="modal-footer" *ngIf="!saving">
+    <div class="form-actions text-right">
+      <button type="button" class="btn btn-success" (click)="save_new_indication(d('indication created!'));" *ngIf="new_indication.valid">
+        <i class="icon-check"></i>
+        Salvar
+      </button>
+      <button type="button" class="btn btn-silver" (click)="d('cancel')">
+        <i class="icon-action-undo"></i>
+        Cancelar
+      </button>
+    </div>
+  </div>
 </ng-template>

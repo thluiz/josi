@@ -1,288 +1,256 @@
- 
 <section id="person-edit-profile" *ngIf="person">
-    <div>        
-        <div class="row justify-content-md-center">
-            <div class="col-md-10">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title" id="basic-layout-form">Alterar Dados</h4>
-                        <p class="mb-0">{{ person.full_name }}</p>
+  <div>
+    <div class="row justify-content-md-center">
+      <div class="col-md-10">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title" id="basic-layout-form">Alterar Dados</h4>
+            <p class="mb-0">{{ person.full_name }}</p>
+          </div>
+          <div class="card-body">
+            <div class="px-3">
+              <form class="form">
+                <div class="form-body">
+                  <h4 class="form-section">
+                    <i class="ft-user"></i> Dados Pessoais </h4>
+                  <div class="row">
+                    <div class="col-12 col-sm-6 col-lg-3">
+                      <div class="form-group">
+                        <label for="person_name">Nome Completo</label>
+                        <input type="text" id="person_name" name="person_name" autocomplete="false" class="form-control" [(ngModel)]="person.full_name">
+                      </div>
                     </div>
-                    <div class="card-body">
-                        <div class="px-3">
-                            <form class="form">
-                                <div class="form-body">
-                                    <h4 class="form-section"><i class="ft-user"></i> Dados Pessoais </h4>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-6 col-lg-3">
-                                            <div class="form-group">
-                                                <label for="person_name">Nome Completo</label>
-                                                <input type="text" id="person_name" name="person_name"
-                                                autocomplete="false" class="form-control" 
-                                                [(ngModel)]="person.full_name">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-6 col-lg-3">
-                                            <div class="form-group">
-                                                <label for="person_birth_date">Nascimento</label>                                                									
-                                                <div class="input-group">							
-                                                    <input class="form-control text-center" placeholder="dd/mm/aaaa" 
-                                                    [(ngModel)]="person.birth_date" id="person_birth_date"
-                                                    name="person_birth_date"
-                                                    ngbDatepicker #niReschedule="ngbDatepicker" />
-                                                    <div class="input-group-addon" (click)="niReschedule.toggle()">
-                                                        <i class="ft-calendar" style="cursor: pointer;"></i>
-                                                    </div>																																                                                    
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-6 col-lg-3">
-                                            <div class="form-group">
-                                                <label for="person_identification">Identidade</label>
-                                                <input type="text" id="person_identification" name="person_identification"
-                                                maxlength="50" class="form-control text-center" [(ngModel)]="person.identification">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-6 col-lg-3">
-                                            <div class="form-group">
-                                                <label for="person_identification2">CPF</label>
-                                                <input type="text" id="person_identification2" name="person_identification2"
-                                                maxlength="50" class="form-control text-center" [(ngModel)]="person.identification2">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-6 col-lg-3">
-                                            <div class="form-group">
-                                                <label for="person_alias">Apelido</label>
-                                                <input type="text" id="person_alias" name="person_alias"
-                                                maxlength="15" class="form-control" [(ngModel)]="person.alias">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-6 col-lg-3">
-                                            <div class="form-group">
-                                                <label for="person_occupation">Profissão</label>
-                                                <input type="text" id="person_occupation" name="person_occupation"
-                                                maxlength="100" class="form-control" [(ngModel)]="person.occupation">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-6 col-lg-3">
-                                            <div class="form-group">
-                                                <label for="person_passport">Passaporte</label>
-                                                <input type="text" id="person_passport" name="person_passport"
-                                                class="form-control" [(ngModel)]="person.passport" maxlength="50">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-6 col-lg-3">
-                                            <div class="form-group">
-                                                <label for="person_passport_expiration_date">Validade do Passaporte</label>                                                									
-                                                <div class="input-group">							
-                                                    <input class="form-control text-center" placeholder="dd/mm/aaaa" 
-                                                    [(ngModel)]="person.passport_expiration_date" 
-                                                    id="person_passport_expiration_date"
-                                                    name="person_passport_expiration_date"
-                                                    ngbDatepicker #niPassportExpirationDate="ngbDatepicker" />
-                                                    <div class="input-group-addon" (click)="niPassportExpirationDate.toggle()">
-                                                        <i class="ft-calendar" style="cursor: pointer;"></i>
-                                                    </div>																																                                                    
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-md-12 col-lg-6" *ngIf="person.is_active_member || person.is_disciple || person.is_leaving || person.is_inactive_member">
-                                            <h4 class="form-section"><i class="ft-user" style="color: red"></i> Membro </h4>
-                                            <div class="row">                                        
-                                                <div class="col-12 col-md-6 col-xl-4">
-                                                    <div class="form-group">
-                                                        <label for="person_branch">Núcleo</label>                                                									
-                                                        <div class="input-group">							
-                                                            <select id="person_branch" name="person_branch" 
-                                                                class="form-control"                                                                 
-                                                                [(ngModel)]="person.branch_id">	
-                                                                <option></option>					
-                                                                <option *ngFor="let b of branches" [value]="b.id">{{ b.abrev.replace("Núcleo", "") }}</option>
-                                                            </select>																															                                                    
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-12 col-md-6 col-xl-4">
-                                                    <div class="form-group">
-                                                        <label for="person_family">Família</label>                                                									
-                                                        <div class="input-group">							
-                                                            <select id="person_family" name="person_family" 
-                                                                class="form-control"                                                                 
-                                                                [(ngModel)]="person.family_id">		
-                                                                <option></option>									
-                                                                <option *ngFor="let f of families" [value]="f.id">{{ f.name }}</option>
-                                                            </select>																															                                                    
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-6 col-xl-4">
-                                                    <div class="form-group">
-                                                        <label for="person_admission_date">Admissão</label>                                                									
-                                                        <div class="input-group">							
-                                                            <input class="form-control text-center" placeholder="dd/mm/aaaa" 
-                                                            [(ngModel)]="person.admission_date" id="person_admission_date"
-                                                            name="person_admission_date"
-                                                            ngbDatepicker #niRescheduleAdmission="ngbDatepicker" />
-                                                            <div class="input-group-addon" (click)="niRescheduleAdmission.toggle()">
-                                                                <i class="ft-calendar" style="cursor: pointer;"></i>
-                                                            </div>																																                                                    
-                                                        </div>
-                                                    </div>
-                                                </div>                                                
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-12 col-md-6 col-xl-4">
-                                                    <div class="form-group">
-                                                        <label for="person_family">Família de Destino</label>                                                									
-                                                        <div class="input-group">							
-                                                            <select id="person_destiny_family" name="person_destiny_family" 
-                                                                class="form-control"                                                                 
-                                                                [(ngModel)]="person.destiny_family_id">		
-                                                                <option></option>									
-                                                                <option *ngFor="let f of families" [value]="f.id">{{ f.name }}</option>
-                                                            </select>																															                                                    
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-6 col-xl-4">
-                                                    <div class="form-group">
-                                                        <label for="person_enrollment_date">Matrícula</label>                                                									
-                                                        <div class="input-group">							
-                                                            <input class="form-control text-center" placeholder="dd/mm/aaaa" 
-                                                            [(ngModel)]="person.enrollment_date" id="person_enrollment_date"
-                                                            name="person_enrollment_date"
-                                                            ngbDatepicker #niEnrollment="ngbDatepicker" />
-                                                            <div class="input-group-addon" (click)="niEnrollment.toggle()">
-                                                                <i class="ft-calendar" style="cursor: pointer;"></i>
-                                                            </div>																																                                                    
-                                                        </div>
-                                                    </div>
-                                                </div>                                                
-                                            </div>
-                                            <div class="row">                                        
-                                                <div class="col-12 col-md-6 col-xl-4">
-                                                    <div class="form-group">
-                                                        <label for="person_program">Programa</label>                                                									
-                                                        <div class="input-group">							
-                                                            <select id="person_program" name="person_program" 
-                                                                class="form-control" required  
-                                                                (ngModelChange)="change_program($event)"                                                              
-                                                                [(ngModel)]="person.program_id">
-                                                                <option></option>						
-                                                                <option *ngFor="let p of programs" [value]="p.id">{{ p.name.replace("Programa", "") }}</option>
-                                                            </select>																															                                                    
-                                                        </div>
-                                                        <small class="form-text text-muted danger" 
-                                                            *ngIf="person.errors && person.errors['need_program']">
-                                                            Informe o programa antes de prosseguir!
-                                                        </small>
-                                                    </div>
-                                                </div>                                                 
-                                                <div class="col-12 col-md-6 col-xl-4" *ngIf="person.program_id && person.program_id > 0">
-                                                    <div class="form-group">
-                                                        <label for="person_program">Domínio/Nível</label>                                                									
-                                                        <div class="input-group">							
-                                                            <select id="person_domain" name="person_domain" 
-                                                                class="form-control"    
-                                                                required                                                             
-                                                                [(ngModel)]="person.domain_id">	
-                                                                <option></option>					
-                                                                <option *ngFor="let d of domains" [value]="d.id">{{ d.name }}</option>
-                                                            </select>	                                                            	                                                            																												                                                    
-                                                        </div>
-                                                        <small class="form-text text-muted danger" 
-                                                            *ngIf="person.errors && person.errors['need_domain']">
-                                                            Informe o domínio antes de prosseguir!
-                                                        </small>
-                                                    </div>
-                                                </div>                                               
-                                            </div>                                                
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-md-12 col-lg-6" *ngIf="person.is_interested">
-                                            <h4 class="form-section"><i class="ft-user" style="color: red"></i> Interessado </h4>
-                                            <div class="row">                                        
-                                                <div class="col-12 col-md-6 col-xl-4">
-                                                    <div class="form-group">
-                                                        <label for="person_branch">Núcleo</label>                                                									
-                                                        <div class="input-group">							
-                                                            <select id="person_branch" name="person_branch" 
-                                                                class="form-control"                                                                 
-                                                                [(ngModel)]="person.branch_id">	
-                                                                <option></option>					
-                                                                <option *ngFor="let b of branches" [value]="b.id">{{ b.abrev.replace("Núcleo", "") }}</option>
-                                                            </select>																															                                                    
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-md-12 col-lg-6"> 
-                                            <h4 class="form-section" *ngIf="person.is_disciple"><i class="ft-user" style="color: darkorange"></i> Discípulo </h4>
-                                            <div class="row" *ngIf="person.is_disciple">   
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="person_kf_name">Nome Kung Fu</label>
-                                                        <input type="text" class="form-control text-center"
-                                                        id="person_kf_name" name="person_kf_name"
-                                                        [(ngModel)]="person.kf_name" />                                                
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="person_kf_name_ideograms">Ideogramas</label>
-                                                        <input type="text" class="form-control text-center"
-                                                        id="person_kf_name_ideograms" name="person_kf_name_ideograms"
-                                                        [(ngModel)]="person.kf_name_ideograms" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row" *ngIf="person.is_disciple">                                        
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="person_baaisi_date">Baai Si</label>                                                									
-                                                        <div class="input-group">							
-                                                            <input class="form-control text-center" placeholder="dd/mm/aaaa" 
-                                                            [(ngModel)]="person.baaisi_date" id="person_baaisi_date"
-                                                            name="person_baaisi_date"
-                                                            ngbDatepicker #niRescheduleBaaiSiDate="ngbDatepicker" />
-                                                            <div class="input-group-addon" (click)="niRescheduleBaaiSiDate.toggle()">
-                                                                <i class="ft-calendar" style="cursor: pointer;"></i>
-                                                            </div>																																                                                    
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                                                                                                                                                                        
-                                </div>
-    
-                                <div class="form-actions text-right">
-                                    <button type="button" class="btn btn-success" 
-                                    (click)="save_person_data()"
-                                    style="margin-right:10px">
-                                        <i class="icon-check"></i> Salvar
-                                    </button>
-
-                                    <button type="button" class="btn btn-silver" 
-                                    [routerLink]="['/people/person', id]">
-                                        <i class="icon-action-undo"></i> Cancelar
-                                    </button>                                    
-                                </div>
-                            </form>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                      <div class="form-group">
+                        <label for="person_birth_date">Nascimento</label>
+                        <div class="input-group">
+                          <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.birth_date" id="person_birth_date" name="person_birth_date"
+                            ngbDatepicker #niReschedule="ngbDatepicker" />
+                          <div class="input-group-addon" (click)="niReschedule.toggle()">
+                            <i class="ft-calendar" style="cursor: pointer;"></i>
+                          </div>
                         </div>
+                      </div>
                     </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                      <div class="form-group">
+                        <label for="person_identification">Identidade</label>
+                        <input type="text" id="person_identification" name="person_identification" maxlength="50" class="form-control text-center"
+                          [(ngModel)]="person.identification">
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                      <div class="form-group">
+                        <label for="person_identification2">CPF</label>
+                        <input type="text" id="person_identification2" name="person_identification2" maxlength="50" class="form-control text-center"
+                          [(ngModel)]="person.identification2">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 col-sm-6 col-lg-3">
+                      <div class="form-group">
+                        <label for="person_alias">Nome Curto</label>
+                        <input type="text" id="person_alias" name="person_alias" maxlength="15" class="form-control" [(ngModel)]="person.alias">
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                      <div class="form-group">
+                        <label for="person_occupation">Profissão</label>
+                        <input type="text" id="person_occupation" name="person_occupation" maxlength="100" class="form-control" [(ngModel)]="person.occupation">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 col-sm-6 col-lg-3">
+                      <div class="form-group">
+                        <label for="person_passport">Passaporte</label>
+                        <input type="text" id="person_passport" name="person_passport" class="form-control" [(ngModel)]="person.passport" maxlength="50">
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                      <div class="form-group">
+                        <label for="person_passport_expiration_date">Validade do Passaporte</label>
+                        <div class="input-group">
+                          <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.passport_expiration_date" id="person_passport_expiration_date"
+                            name="person_passport_expiration_date" ngbDatepicker #niPassportExpirationDate="ngbDatepicker"
+                          />
+                          <div class="input-group-addon" (click)="niPassportExpirationDate.toggle()">
+                            <i class="ft-calendar" style="cursor: pointer;"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-6" *ngIf="person.is_active_member || person.is_disciple || person.is_leaving || person.is_inactive_member">
+                      <h4 class="form-section">
+                        <i class="ft-user" style="color: red"></i> Membro </h4>
+                      <div class="row">
+                        <div class="col-12 col-md-6 col-xl-4">
+                          <div class="form-group">
+                            <label for="person_branch">Núcleo</label>
+                            <div class="input-group">
+                              <select id="person_branch" name="person_branch" class="form-control" [(ngModel)]="person.branch_id">
+                                <option></option>
+                                <option *ngFor="let b of branches" [value]="b.id">{{ b.abrev.replace("Núcleo", "") }}</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12 col-md-6 col-xl-4">
+                          <div class="form-group">
+                            <label for="person_family">Família</label>
+                            <div class="input-group">
+                              <select id="person_family" name="person_family" class="form-control" [(ngModel)]="person.family_id">
+                                <option></option>
+                                <option *ngFor="let f of families" [value]="f.id">{{ f.name }}</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                          <div class="form-group">
+                            <label for="person_admission_date">Admissão</label>
+                            <div class="input-group">
+                              <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.admission_date" id="person_admission_date"
+                                name="person_admission_date" ngbDatepicker #niRescheduleAdmission="ngbDatepicker" />
+                              <div class="input-group-addon" (click)="niRescheduleAdmission.toggle()">
+                                <i class="ft-calendar" style="cursor: pointer;"></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12 col-md-6 col-xl-4">
+                          <div class="form-group">
+                            <label for="person_family">Família de Destino</label>
+                            <div class="input-group">
+                              <select id="person_destiny_family" name="person_destiny_family" class="form-control" [(ngModel)]="person.destiny_family_id">
+                                <option></option>
+                                <option *ngFor="let f of families" [value]="f.id">{{ f.name }}</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                          <div class="form-group">
+                            <label for="person_enrollment_date">Matrícula</label>
+                            <div class="input-group">
+                              <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.enrollment_date" id="person_enrollment_date"
+                                name="person_enrollment_date" ngbDatepicker #niEnrollment="ngbDatepicker" />
+                              <div class="input-group-addon" (click)="niEnrollment.toggle()">
+                                <i class="ft-calendar" style="cursor: pointer;"></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12 col-md-6 col-xl-4">
+                          <div class="form-group">
+                            <label for="person_program">Programa</label>
+                            <div class="input-group">
+                              <select id="person_program" name="person_program" class="form-control" required (ngModelChange)="change_program($event)"
+                                [(ngModel)]="person.program_id">
+                                <option></option>
+                                <option *ngFor="let p of programs" [value]="p.id">{{ p.name.replace("Programa", "") }}</option>
+                              </select>
+                            </div>
+                            <small class="form-text text-muted danger" *ngIf="person.errors && person.errors['need_program']">
+                              Informe o programa antes de prosseguir!
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4" *ngIf="person.program_id && person.program_id > 0">
+                          <div class="form-group">
+                            <label for="person_program">Domínio/Nível</label>
+                            <div class="input-group">
+                              <select id="person_domain" name="person_domain" class="form-control" required [(ngModel)]="person.domain_id">
+                                <option></option>
+                                <option *ngFor="let d of domains" [value]="d.id">{{ d.name }}</option>
+                              </select>
+                            </div>
+                            <small class="form-text text-muted danger" *ngIf="person.errors && person.errors['need_domain']">
+                              Informe o domínio antes de prosseguir!
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-6" *ngIf="person.is_interested">
+                      <h4 class="form-section">
+                        <i class="ft-user" style="color: red"></i> Interessado </h4>
+                      <div class="row">
+                        <div class="col-12 col-md-6 col-xl-4">
+                          <div class="form-group">
+                            <label for="person_branch">Núcleo</label>
+                            <div class="input-group">
+                              <select id="person_branch" name="person_branch" class="form-control" [(ngModel)]="person.branch_id">
+                                <option></option>
+                                <option *ngFor="let b of branches" [value]="b.id">{{ b.abrev.replace("Núcleo", "") }}</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                      <h4 class="form-section" *ngIf="person.is_disciple">
+                        <i class="ft-user" style="color: darkorange"></i> Discípulo </h4>
+                      <div class="row" *ngIf="person.is_disciple">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="person_kf_name">Nome Kung Fu</label>
+                            <input type="text" class="form-control text-center" id="person_kf_name" name="person_kf_name" [(ngModel)]="person.kf_name"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="person_kf_name_ideograms">Ideogramas</label>
+                            <input type="text" class="form-control text-center" id="person_kf_name_ideograms" name="person_kf_name_ideograms" [(ngModel)]="person.kf_name_ideograms"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row" *ngIf="person.is_disciple">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="person_baaisi_date">Baai Si</label>
+                            <div class="input-group">
+                              <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.baaisi_date" id="person_baaisi_date"
+                                name="person_baaisi_date" ngbDatepicker #niRescheduleBaaiSiDate="ngbDatepicker" />
+                              <div class="input-group-addon" (click)="niRescheduleBaaiSiDate.toggle()">
+                                <i class="ft-calendar" style="cursor: pointer;"></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
-            </div>           
+
+                <div class="form-actions text-right">
+                  <button type="button" class="btn btn-success" (click)="save_person_data()" style="margin-right:10px">
+                    <i class="icon-check"></i> Salvar
+                  </button>
+
+                  <button type="button" class="btn btn-silver" [routerLink]="['/people/person', id]">
+                    <i class="icon-action-undo"></i> Cancelar
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-    </div>        
+      </div>
+    </div>
+  </div>
 </section>

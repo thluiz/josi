@@ -13,6 +13,7 @@ const person_services_1 = require("../../domain/services/person_services");
 const auth = require("../../src/middlewares/auth");
 const security_service_1 = require("../../src/services/security-service");
 const jobs_service_1 = require("../../src/services/jobs-service");
+const database_facility_1 = require("../../src/facilities/database-facility");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     const person_service = new person_services_1.PersonService(pool);
@@ -27,10 +28,9 @@ function configure_routes(app, connection_pool) {
         response.send(result.recordset[0]);
     }));
     app.get("/api/people/:id", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield new sql.Request(pool)
-            .input('id', sql.Int, request.params.id)
-            .execute(`GetPersonData`);
-        response.send(result.recordset[0][0]);
+        let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetPersonData", { "id": request.params.id });
+        response.send(result.data && result.data.length > 0 ?
+            result.data[0] : []);
     }));
     app.get("/api/people/search/:name?", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)

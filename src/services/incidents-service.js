@@ -55,16 +55,17 @@ class IncidentsService {
     static close_incident(incident, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
             let execution = yield database_facility_1.DatabaseFacility.ExecuteTypedJsonSP(exports.INCIDENT_ENDED, "CloseIncident", { "incident": incident.id }, { "close_description": incident.close_text || "" }, { "title": incident.title || "" }, { "responsible_id": responsible_id }, { "payment_method_id": incident.payment_method_id > 0 ? incident.payment_method_id : null });
-            try {
-                const IR = yield database_facility_1.DatabaseFacility.getRepository(Incident_1.Incident);
-                const light_incident = yield IR.findOne(incident.id);
-                console.log(light_incident);
-                if (light_incident.incident_type == 36) {
-                    yield jobs_service_1.JobsService.send_ownership_closing_report(light_incident.id);
+            if (execution.success) {
+                try {
+                    const IR = yield database_facility_1.DatabaseFacility.getRepository(Incident_1.Incident);
+                    const light_incident = yield IR.findOne(incident.id);
+                    if (light_incident.incident_type == 36) {
+                        yield jobs_service_1.JobsService.send_ownership_closing_report(light_incident.id);
+                    }
                 }
-            }
-            catch (ex) {
-                logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.SendingEmail, ex);
+                catch (ex) {
+                    logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.SendingEmail, ex);
+                }
             }
             return execution;
         });

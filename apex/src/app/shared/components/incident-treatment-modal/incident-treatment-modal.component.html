@@ -42,7 +42,7 @@
         </div>
       </div>
       <div class="row" *ngIf="current_incident.close_text">
-        <div class="col-12 pb-3">          
+        <div class="col-12 pb-3">
           <label>Fechamento</label>
           <markdown [data]="current_incident.close_text"></markdown>
         </div>
@@ -121,8 +121,8 @@
             <i class="far fa-sticky-note"></i>
           </button>
         </div>
-      </div>      
-      
+      </div>
+
       <div class="row" *ngIf="current_incident.new_schedule_date">
         <div class="col-12">
           <b>Reagendado para: </b>{{ current_incident.new_schedule_small_date }} {{ current_incident.new_schedule_hour }}
@@ -173,83 +173,77 @@
               <h6 style="padding:0;margin:0;font-weight:bold">Fechamento </h6>
             </div>
           </div>
-          <div class="row"  *ngIf="!current_incident.in_treatment 
+          <div class="row" *ngIf="!current_incident.in_treatment
                                       && current_incident.require_title
                                       && !current_incident.closed
                                       && !current_incident.treated
-                                      && (!current_incident.need_to_be_started 
+                                      && (!current_incident.need_to_be_started
                                       || current_incident.started_on_hour)">
-            <div class="col-12 pt-3">              
+            <div class="col-12 pt-3">
               <fieldset class="form-group">
                 <label for="current_incident_title">Título</label>
-                <input class="form-control" id="current_incident_title" 
-                  name="current_incident_title" 
-                  (ngModelChange)="validate_for_closing(current_incident)"
+                <input class="form-control" id="current_incident_title" name="current_incident_title" (ngModelChange)="validate_for_closing(current_incident)"
                   [(ngModel)]="current_incident.title" />
               </fieldset>
-              <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null 
-                && current_incident.valid_for_closing != undefined                
+              <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null
+                && current_incident.valid_for_closing != undefined
                 && !current_incident.valid_for_closing
                 && !current_incident.title
                 && current_incident.title.length < 3">
                 * Informe o título da atividade para poder finaliza-la
-              </span>                
+              </span>
             </div>
           </div>
-          <div class="row" *ngIf="!current_incident.in_treatment 
+          <div class="row" *ngIf="!current_incident.in_treatment
                                   && current_incident.need_description_for_closing
                                   && !current_incident.closed
                                   && !current_incident.treated
-                                  && (!current_incident.need_to_be_started 
+                                  && (!current_incident.need_to_be_started
                                   || current_incident.started_on_hour)">
-            <div class="col-12">              
+            <div class="col-12">
               <fieldset class="form-group">
                 <label for="closing_contact_text">Como foi?</label>
                 <textarea class="form-control" id="closing_contact_text" name="closing_contact_text" [(ngModel)]="current_incident.close_text"
                   (ngModelChange)="validate_for_closing(current_incident)" rows="3" placeholder="Como foi?"></textarea>
               </fieldset>
-              <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null 
+              <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null
                                          && current_incident.valid_for_closing != undefined
                                         && !current_incident.valid_for_closing">
                 * Informe como foi a atividade para poder finaliza-la
-              </span>                
+              </span>
             </div>
           </div>
-          <div class="row" *ngIf="!current_incident.in_treatment 
+          <div class="row" *ngIf="!current_incident.in_treatment
                                     && current_incident.require_payment_method
                                     && !current_incident.closed
                                     && !current_incident.treated
-                                    && (!current_incident.need_to_be_started 
+                                    && (!current_incident.need_to_be_started
                                     || current_incident.started_on_hour)">
-              <div class="col-12 pt-3">                
-                <fieldset class="form-group">
-                  <label for="current_incident_payment_method">Forma de Pagamento</label>
-                  <select id="current_incident_payment_method" 
-                      name="current_incident_payment_method" 
-                      [(ngModel)]="current_incident.payment_method_id" 
-                      (ngModelChange)="validate_for_closing(current_incident)"																	
-                      class="form-control"								
-                      >			
-                      <option></option>			
-                      <option *ngFor="let b of payment_methods" [value]="b.id">{{b.name}}</option>
-                  </select>
-                </fieldset>
-                <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null 
-                  && current_incident.valid_for_closing != undefined                
+            <div class="col-12 pt-3">
+              <fieldset class="form-group">
+                <label for="current_incident_payment_method">Forma de Pagamento</label>
+                <select id="current_incident_payment_method" name="current_incident_payment_method" [(ngModel)]="current_incident.payment_method_id"
+                  (ngModelChange)="validate_for_closing(current_incident)" class="form-control">
+                  <option></option>
+                  <option *ngFor="let b of payment_methods" [value]="b.id">{{b.name}}</option>
+                </select>
+              </fieldset>
+              <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null
+                  && current_incident.valid_for_closing != undefined
                   && !current_incident.valid_for_closing
                   && !current_incident.payment_method_id">
-                  * Informe a forma de pagamento para finalizar
-                </span>                  
-              </div>
+                * Informe a forma de pagamento para finalizar
+              </span>
             </div>
+          </div>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-12" *ngIf="!current_incident.in_treatment 
-                                            && !current_incident.closed 
+        <div class="col-12" *ngIf="!current_incident.in_treatment
+                                            && !current_incident.closed
                                             && !current_incident.treated
-                                            && current_incident.need_to_be_started 
+                                            && current_incident.need_to_be_started
                                             && !current_incident.started_on_hour">
           <h6 style="font-weight: bold">Iniciar?</h6>
           <button type="button" class="btn btn-success" (click)="start_incident(current_incident, d);">
@@ -259,22 +253,24 @@
             <i class="icon-ban"></i> Não
           </button>
         </div>
-        <div class="col-12" *ngIf="!current_incident.in_treatment 
-                                            && !current_incident.closed 
+        <div class="col-12" *ngIf="!current_incident.in_treatment
+                                            && !current_incident.closed
                                             && !current_incident.treated
-                                            && (!current_incident.need_to_be_started 
+                                            && (!current_incident.need_to_be_started
                                             || current_incident.started_on_hour)">
           <h6 style="font-weight: bold;" *ngIf="! current_incident.started_on_hour">Realizado?</h6>
           <h6 style="font-weight: bold;" *ngIf="current_incident.started_on_hour">Finalizar?</h6>
-          <button type="button" class="btn" [ngClass]="current_incident.valid_for_closing != null 
-                                            && current_incident.valid_for_closing != undefined
-                                            && !current_incident.valid_for_closing ? 
-                                            'btn-secondary' : 'btn-success'" (click)="close_incident(current_incident, d);">
-            <i class="icon-check"></i> Sim
-          </button>
-          <button type="button" class="btn btn-primary" (click)="begin_treat_incident(current_incident)">
-            <i class="icon-ban"></i> Não
-          </button>
+          <div *ngIf="!saving">
+            <button type="button" class="btn" [ngClass]="current_incident.valid_for_closing != null && current_incident.valid_for_closing != undefined
+                    && !current_incident.valid_for_closing ?
+                            'btn-secondary' : 'btn-success'" (click)="close_incident(current_incident, d);">
+              <i class="icon-check"></i> Sim
+            </button>
+            <button type="button" class="btn btn-primary" (click)="begin_treat_incident(current_incident)">
+              <i class="icon-ban"></i> Não
+            </button>
+          </div>
+          <i *ngIf="saving" class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
         </div>
         <div class="col-12" *ngIf="current_incident.in_treatment">
           <div class="row">

@@ -21,8 +21,14 @@ const database_facility_1 = require("../facilities/database-facility");
 const result_1 = require("../helpers/result");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const showdown = require("showdown");
+const Incident_1 = require("../entity/Incident");
 const converter = new showdown.Converter();
 class IncidentsRepository {
+    static getRepository() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield database_facility_1.DatabaseFacility.getRepository(Incident_1.Incident);
+        });
+    }
     static getCurrentActivities(branch_id) {
         return __awaiter(this, void 0, void 0, function* () {
             let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetCurrentActivities", { "branch_id": branch_id });
@@ -80,6 +86,12 @@ class IncidentsRepository {
         });
     }
 }
+__decorate([
+    trylog_decorator_1.trylog(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository, "getRepository", null);
 __decorate([
     trylog_decorator_1.trylog(),
     __metadata("design:type", Function),

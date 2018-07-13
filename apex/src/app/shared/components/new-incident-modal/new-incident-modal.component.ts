@@ -1,5 +1,5 @@
-import {zip as observableZip,  Observable ,  of } from 'rxjs';
-import { debounceTime ,  delay ,  map ,  distinctUntilChanged ,  catchError ,  tap ,  switchMap } from 'rxjs/operators';
+import { zip as observableZip, Observable, of } from 'rxjs';
+import { debounceTime, delay, map, distinctUntilChanged, catchError, tap, switchMap } from 'rxjs/operators';
 
 import { ParameterService } from 'app/services/parameter-service';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
@@ -15,37 +15,37 @@ import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModa
   selector: 'new-incident-modal',
   templateUrl: './new-incident-modal.component.html',
   styleUrls: ['../../../../assets/customizations.scss'],
-  providers: [ DatePickerI18n,
-    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
-    {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
+  providers: [DatePickerI18n,
+    { provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter },
+    { provide: NgbDatepickerI18n, useClass: PortugueseDatepicker }]
 })
 
-export class NewInicidentModalComponent implements OnInit {  
+export class NewInicidentModalComponent implements OnInit {
 
   @Input() current_branch: any;
 
   new_incident: any;
   modalRef;
   branches: any;
-  incident_types:any;  
+  incident_types: any;
   errors: string[] = [];
 
-  @ViewChild('add_incident_modal') add_incident_modal: ElementRef;  
-  
-  constructor(private datePickerConfig: NgbDatepickerConfig,         
-    private ngbModalService: NgbModal, 
-    private personService: PersonService, 
-    private incidentService: IncidentService, 
+  @ViewChild('add_incident_modal') add_incident_modal: ElementRef;
+
+  constructor(private datePickerConfig: NgbDatepickerConfig,
+    private ngbModalService: NgbModal,
+    private personService: PersonService,
+    private incidentService: IncidentService,
     private parameterService: ParameterService) {
-   
-      datePickerConfig.firstDayOfWeek = 7
+
+    datePickerConfig.firstDayOfWeek = 7
   }
 
   ngOnInit() {
-    this.reset_new_incident();        
+    this.reset_new_incident();
   }
 
-  reset_new_incident_type(){
+  reset_new_incident_type() {
     this.new_incident.type = null;
     this.new_incident.tmp_type = null;
     this.new_incident.tmp_combo_type = null;
@@ -53,27 +53,27 @@ export class NewInicidentModalComponent implements OnInit {
     this.validate_new_event();
   }
 
-  open(initial_state = { }) {      
-    this.reset_new_incident(initial_state);    
+  open(initial_state = {}) {
+    this.reset_new_incident(initial_state);
     observableZip(
-      this.parameterService.getActiveBranches(),            
-      this.parameterService.getIncidentTypes(),     
-      (branches, incident_types : any[]) => {
-        this.branches = branches;        
+      this.parameterService.getActiveBranches(),
+      this.parameterService.getIncidentTypes(),
+      (branches, incident_types: any[]) => {
+        this.branches = branches;
         this.incident_types = incident_types.filter(i => !i.automatically_generated);
 
-        this.open_modal(this.add_incident_modal, true);        
+        this.open_modal(this.add_incident_modal, true);
       }
-    ).subscribe();                   
+    ).subscribe();
   }
 
   private open_modal(content, on_close_action = false) {
     this.modalRef = this.ngbModalService.open(content);
 
-    this.modalRef.result.then((result) => {                                  
-      
-    }, (reason) => {        
-        console.log(reason);
+    this.modalRef.result.then((result) => {
+
+    }, (reason) => {
+      console.log(reason);
     });
   }
 
@@ -83,28 +83,28 @@ export class NewInicidentModalComponent implements OnInit {
   people_typeahead_formatter = (x) => x.name;
 
   search_people = (text$: Observable<string>) =>
-  text$.pipe(
-    debounceTime(300),
-    distinctUntilChanged(),
-    tap(() => this.searching_people = true),
-    switchMap(term =>
-      this.personService.search(term).pipe(
-        map(response =>  {             
-          return <string[]>response; 
-        }),
-        tap(() => this.search_failed = false),
-        catchError(() => {
-          this.search_failed = true;
-          return of([]);
-        }),)),
-    tap(() => this.searching_people = false),)
+    text$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => this.searching_people = true),
+      switchMap(term =>
+        this.personService.search(term).pipe(
+          map(response => {
+            return <string[]>response;
+          }),
+          tap(() => this.search_failed = false),
+          catchError(() => {
+            this.search_failed = true;
+            return of([]);
+          }), )),
+      tap(() => this.searching_people = false), )
 
-  add_person_to_new_incident(event) {    
-    if(!event.name) {
+  add_person_to_new_incident(event) {
+    if (!event.name) {
       return;
     }
 
-    if(!this.new_incident.people) {
+    if (!this.new_incident.people) {
       this.new_incident.people = [];
     }
 
@@ -112,14 +112,14 @@ export class NewInicidentModalComponent implements OnInit {
     this.new_incident.tmp_person = "";
     this.validate_new_event();
   }
-  
-  remove_person_from_new_incident(person) {            
-    this.new_incident.people = this.new_incident.people.filter(p => p.person_id != person.person_id);            
+
+  remove_person_from_new_incident(person) {
+    this.new_incident.people = this.new_incident.people.filter(p => p.person_id != person.person_id);
     this.validate_new_event();
   }
 
   validate_new_event_value() {
-    if(parseFloat(this.new_incident.value) != NaN) {      
+    if (parseFloat(this.new_incident.value) != NaN) {
       this.validate_new_event();
       return;
     }
@@ -127,50 +127,54 @@ export class NewInicidentModalComponent implements OnInit {
     this.validate_new_event();
   }
 
-  validate_new_event() {  
+  validate_new_event() {
     let new_incident = this.new_incident;
     this.errors = [];
 
-    if(new_incident.people != null
+    if (new_incident.people != null
       && new_incident.people.length > 0
       && new_incident.type != null
       && new_incident.branch_id > 0
       && (!new_incident.type.require_title
-          || (new_incident.title || "").length > 3
-          || (new_incident.title || "").length > 50)
+        || (new_incident.title || "").length > 3
+        || (new_incident.title || "").length > 50)
       && (!this.new_incident.type.need_description
-          || (this.new_incident.description || "").length > 5)
+        || (this.new_incident.description || "").length > 5)
       && (
-        !this.new_incident.type.need_value 
+        !this.new_incident.type.need_value
         || this.new_incident.value > 0
-      )) {        
-        this.new_incident.correct = true;
-        return;
-    }     
-    
-    if(new_incident.type.require_title && (new_incident.title || "").length < 3) {
-      this.errors.push("Informe o título");      
-    }
-
-    if(new_incident.type.require_title && (new_incident.title || "").length > 50) {
-      this.errors.push("O título precisa ser menor que 50 caracteres");      
-    }
-
-    if(new_incident.type.need_description && (new_incident.description || "").length <= 5) {
-      this.errors.push("Informe a descrição");      
-    }
-
-    this.new_incident.correct = false;    
-  }
-      
-  change_new_incident_type(tp) {    
-    const t = this.incident_types.filter(t => t.id == tp);
-    if(t.length != 1) {
+      )) {
+      this.new_incident.correct = true;
       return;
-    } 
+    }
+
+    if (new_incident.type != null
+      && new_incident.type.require_title && (new_incident.title || "").length < 3) {
+      this.errors.push("Informe o título");
+    }
+
+    if (new_incident.type != null
+      && new_incident.type.require_title && (new_incident.title || "").length > 50) {
+      this.errors.push("O título precisa ser menor que 50 caracteres");
+    }
+
+    if (new_incident.type != null && new_incident.type != null
+      && new_incident.type.need_description
+      && (new_incident.description || "").length <= 5) {
+      this.errors.push("Informe a descrição");
+    }
+
+    this.new_incident.correct = false;
+  }
+
+  change_new_incident_type(tp) {
+    const t = this.incident_types.filter(t => t.id == tp);
+    if (t.length != 1) {
+      return;
+    }
     const type = t[0];
-    
-    if(type.childrens != null) {
+
+    if (type.childrens != null) {
       this.new_incident.type = null;
       this.new_incident.tmp_type = type;
       this.new_incident.correct = false;
@@ -180,28 +184,28 @@ export class NewInicidentModalComponent implements OnInit {
     }
   }
 
-  change_new_incident_children_type(tp) {    
+  change_new_incident_children_type(tp) {
     const t = this.new_incident.tmp_type.childrens.filter(t => t.id == tp);
-    if(t.length != 1) {
+    if (t.length != 1) {
       return;
-    } 
+    }
     const type = t[0];
     this.new_incident.children_type = type;
-    this.new_incident.type = type;    
+    this.new_incident.type = type;
   }
 
-  register_new_incident() {         
-    this.incidentService.register_new_incident(this.new_incident).pipe(    
-    tap((next) => this.reset_new_incident()))    
-    .subscribe();        
-  } 
+  register_new_incident() {
+    this.incidentService.register_new_incident(this.new_incident).pipe(
+      tap((next) => this.reset_new_incident()))
+      .subscribe();
+  }
 
-  reset_new_incident(initial_state?) {    
-    if(!initial_state) {
-      initial_state = { }
+  reset_new_incident(initial_state?) {
+    if (!initial_state) {
+      initial_state = {}
     }
 
-    if(initial_state.start_activity == undefined || initial_state.start_activity == null) {
+    if (initial_state.start_activity == undefined || initial_state.start_activity == null) {
       initial_state.start_activity = 0;
     }
 

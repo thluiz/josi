@@ -7,7 +7,7 @@ import { ErrorCode } from "../helpers/errors-codes";
 import { Observable, from, concat, zip } from 'rxjs';
 import { trylog } from "../decorators/trylog-decorator";
 import { LoggerService, LogOrigins, LogLevel } from "./logger-service";
-import { IncidentsRepository }  from "../repositories/incidents-repository";
+import { IncidentsRepository } from "../repositories/incidents-repository";
 
 import * as uuid from "uuid/v4";
 import to from 'await-to-js'
@@ -16,6 +16,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 import path = require('path');
 import Ejs = require('ejs');
+import { Incident } from "../entity/Incident";
 
 let IR = IncidentsRepository;
 
@@ -51,13 +52,13 @@ export class JobsService {
             start_time,
             success: err == null,
             end_time,
-            duration: (end_time - start_time)/1000,
+            duration: (end_time - start_time) / 1000,
             results
         });
 
         console.log("Finished running jobs!");
 
-        if(err) return err;
+        if (err) return err;
 
         return Result.GeneralOk();
     }
@@ -78,84 +79,89 @@ export class JobsService {
 
     @trylog()
     static async update_voucher_site(): Promise<Result<AxiosResponse>> {
-        let [ err_voucher, result_voucher ] = await to(axios.get(process.env.VOUCHER_SITE_UPDATE_URL));
+        let [err_voucher, result_voucher] = await to(axios.get(process.env.VOUCHER_SITE_UPDATE_URL));
 
-        if(err_voucher || result_voucher.status != 200)
+        if (err_voucher || result_voucher.status != 200)
             return Result.Fail(ErrorCode.ExternalRequestError, err_voucher || new Error(result_voucher.statusText), null);
 
-        let [ err_invites, result_invites ] = await to(axios.get(process.env.VOUCHER_SITE_UPDATE_INVITES_URL));
+        let [err_invites, result_invites] = await to(axios.get(process.env.VOUCHER_SITE_UPDATE_INVITES_URL));
 
-        if(err_invites || result_invites.status != 200)
+        if (err_invites || result_invites.status != 200)
             return Result.Fail(ErrorCode.ExternalRequestError, err_invites || new Error(result_invites.statusText), null);
 
         return Result.GeneralOk();
     }
 
     @trylog()
-    static async send_ownership_closing_report(id : number): Promise<Result> {
-        
+    static async send_ownership_closing_report(id: number): Promise<Result> {
+        //const IR = await DatabaseFacility.getRepository<Incident>(Incident);
+        const light_incident = await (await IR.getRepository()).findOne(
+            { id },
+            { relations: ["branch"] }
+        );
+
         var templatePath = path.join(__dirname, "../template/ownership_closing_report.html");
         let ow_data_request = await IR.getOwnershipData(id);
         let data = ow_data_request.data;
         let content = "";
         try {
-            const generated_content = await this.render_template(templatePath, data);    
+            const generated_content = await this.render_template(templatePath, data);
             content = generated_content.data;
         } catch (error) {
-            content = `Error rendering content ${error.message}`    
+            content = `Error rendering content ${error.message}`
         }
-                
+
         const msg = {
             to: 'th.luiz@gmail.com',
             from: 'contato@myvtmi.im',
-            subject: `Fechamento de titularidade - ${ data.branch_name } `,        
+            subject: `Fechamento de titularidade - ${data.branch_name} `,
             html: content,
         };
 
         try {
             console.log(msg.to);
-            await this.send_email(msg);    
+            await this.send_email(msg);
         } catch (error) {
             return Result.Fail(ErrorCode.GenericError, error);
         }
-        
+
         return Result.Ok("GENERIC_ACTION", { content, data });
     }
 
     private static render_template(template_path, data): Promise<Result<any>> {
         return new Promise((resolve, reject) => {
-            Ejs.renderFile(template_path, { data: data }, (err, content) => {                            
-                if(err) {
+            Ejs.renderFile(template_path, { data: data }, (err, content) => {
+                if (err) {
                     reject(err);
                     return;
                 }
 
-                resolve(Result.GeneralOk(content));                
+                resolve(Result.GeneralOk(content));
             });
         });
     }
 
-    private static send_email(msg) : Promise<Result<any>> {
+    private static send_email(msg): Promise<Result<any>> {
         return new Promise((resolve, reject) => {
             sgMail.send(msg)
-            .then(r2 =>  { 
-                console.log(r2);
-                resolve(Result.GeneralOk(r2));                    
-            })
-            .catch(error => {                
-                console.error(error.toString());
-            
-                //Extract error msg
-                const {message, code, response} = error;                
-                //Extract response msg
-                const {headers, body} = response;
+                .then(r2 => {
+                    console.log(r2);
+                    resolve(Result.GeneralOk(r2));
+                })
+                .catch(error => {
+                    console.error(error.toString());
 
-                console.log(code);
-                console.log(headers);
-                console.log(body);                    
+                    //Extract error msg
+                    const { message, code, response } = error;
+                    //Extract response msg
+                    const { headers, body } = response;
 
-                reject(error);                
-            });
+                    console.log(code);
+                    console.log(headers);
+                    console.log(body);
+
+                    reject(error);
+                });
         });
     }
 

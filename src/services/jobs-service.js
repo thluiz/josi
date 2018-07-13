@@ -94,6 +94,8 @@ class JobsService {
     }
     static send_ownership_closing_report(id) {
         return __awaiter(this, void 0, void 0, function* () {
+            //const IR = await DatabaseFacility.getRepository<Incident>(Incident);
+            const light_incident = yield (yield IR.getRepository()).findOne({ id }, { relations: ["branch"] });
             var templatePath = path.join(__dirname, "../template/ownership_closing_report.html");
             let ow_data_request = yield IR.getOwnershipData(id);
             let data = ow_data_request.data;

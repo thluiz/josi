@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
+const Branch_1 = require("./Branch");
 let Incident = class Incident {
 };
 __decorate([
@@ -20,6 +21,11 @@ __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Number)
 ], Incident.prototype, "incident_type", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => Branch_1.Branch),
+    typeorm_1.JoinColumn({ name: "branch_id" }),
+    __metadata("design:type", Branch_1.Branch)
+], Incident.prototype, "branch", void 0);
 Incident = __decorate([
     typeorm_1.Entity()
 ], Incident);

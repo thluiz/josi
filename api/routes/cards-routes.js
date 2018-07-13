@@ -24,7 +24,7 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/person_card_positions", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/person_card_positions", auth.ensureLoggedIn(), (_req, res) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from person_card_position where active = 1 for json path`);
         let response = result.recordset[0];
@@ -32,19 +32,19 @@ function configure_routes(app, connection_pool) {
     }));
     app.get("/api/operators", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
-            .query(`select * 
-                from vwPerson v 
-                where is_operator = 1 or is_director = 1 or is_manager = 1 
+            .query(`select *
+                from vwPerson v
+                where is_operator = 1 or is_director = 1 or is_manager = 1
                 order by name for json path`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
     app.get("/api/card_templates", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
-            .query(`select * 
-                from card_template 
+            .query(`select *
+                from card_template
                 where active = 1
-                order by [order] 
+                order by [order]
                 for json path`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
