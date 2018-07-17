@@ -9,16 +9,11 @@
         <span class="icon-bar"></span>
       </button>
       <form class="navbar-form navbar-right mt-1" role="search">
-        <div class="position-relative has-icon-right">          
+        <div class="position-relative has-icon-right">
           <div class="form-group" [class.has-danger]="search_failed">
-            <input type="text" class="form-control round" id="new_incident_search_people" 
-                [ngbTypeahead]="search_people" 
-                placeholder="Pesquisar"
-                [resultTemplate]="person_typeahead_template" 
-                [inputFormatter]="people_typeahead_formatter"   
-                [(ngModel)]="current_person"  
-                name="search_person_input"          
-                (ngModelChange)="navegate_to($event)" />
+            <input type="text" class="form-control round" id="new_incident_search_people" [ngbTypeahead]="search_people" placeholder="Pesquisar"
+              [resultTemplate]="person_typeahead_template" [inputFormatter]="people_typeahead_formatter" [(ngModel)]="current_person"
+              name="search_person_input" (ngModelChange)="navegate_to($event)" />
             <span *ngIf="searching_people">buscando...</span>
             <div class="form-control-feedback" *ngIf="search_failed">
               ops... ocorreu algum erro na busca</div>
@@ -51,7 +46,7 @@
                 <img src="https://myvtmiim.blob.core.windows.net/avatars/{{ current_user.avatar_img }}" style="max-width: 40px;border-radius: 50%;top: 0;position: absolute"
                 />
               </div>
-              <span class="text align-middle">
+              <span class="text align-middle" style="position:relative;top:-3px">
                 {{ current_user.name }}
               </span>
             </a>
@@ -117,6 +112,23 @@
                 </a>
               </div>
               <a class="noti-footer primary text-center d-block border-top border-top-blue-grey border-top-lighten-4 text-bold-400 py-1">Read All Notifications</a>
+            </div>
+          </li>
+          <li class="nav-item sticky-top" ngbDropdown placement="bottom-right" *ngIf="current_user">
+            <a class="nav-link position-relative" id="dropdownBasic4" ngbDropdownToggle>
+              <i class="far fa-plus-square font-medium-3 blue-grey darken-4"></i>
+            </a>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic4">
+              <a class="dropdown-item py-1" (click)="open_new_activity_modal();">
+                <i class="ft-plus"></i>
+                <i class="far fa-calendar mr-2"></i>
+                <span>Registrar Atividade</span>
+              </a>
+              <a class="dropdown-item py-1" (click)="open_new_person_modal();">
+                <i class="ft-plus"></i>
+                <i class="fas fa-user mr-2"></i>
+                <span>Registrar Pessoa</span>
+              </a>
             </div>
           </li>
           <!-- li class="nav-item">

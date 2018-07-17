@@ -1,14 +1,14 @@
 import { LightIncident } from 'app/shared/models/incident-model';
 import { ApplicationEventService } from 'app/services/application-event-service';
 import { SecurityService } from 'app/services/security-service';
-import { Component, Input, ViewChild, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit, OnInit, OnDestroy, ViewChildren, QueryList } from '@angular/core';
 
 import { PersonService, DailyMonitorDisplayType } from 'app/services/person-service';
 import { ParameterService } from 'app/services/parameter-service';
-import { 
-  IncidentService, 
-  INCIDENT_ADDED, 
-  INCIDENT_CANCELLED, 
+import {
+  IncidentService,
+  INCIDENT_ADDED,
+  INCIDENT_CANCELLED,
   INCIDENT_RESCHEDULED
 } from 'app/services/incident-service';
 
@@ -34,6 +34,7 @@ import { filter } from 'rxjs/operators';
 import { CurrentActivitiesComponent } from 'app/shared/components/current-activities/current-activities.component';
 import { Result } from 'app/shared/models/result';
 import { isArray } from 'util';
+import { LateralSummaryComponent } from 'app/shared/components/lateral-summary/lateral-summary.component';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -57,10 +58,13 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
   current_date;
   manual_incident_types;
 
+  @ViewChildren(LateralSummaryComponent)
+  lateralSummaryComponent : QueryList<LateralSummaryComponent>;
+
   @ViewChild(CurrentActivitiesComponent)
   private current_activities : CurrentActivitiesComponent;
 
-  private incidents_subscriber : Subscription;  
+  private incidents_subscriber : Subscription;
 
   constructor(private personService: PersonService,
               private incidentService: IncidentService,
@@ -77,7 +81,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear()
-    }        
+    }
   }
 
   ngAfterViewInit(): void {
@@ -100,12 +104,12 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.incidents_subscriber = this.eventManager
-    .event$     
+    .event$
     .pipe(filter(
-      (result : Result<LightIncident[]>) => 
+      (result : Result<LightIncident[]>) =>
         result.type == INCIDENT_ADDED || result.type == INCIDENT_RESCHEDULED
-    ))    
-    .subscribe((result : Result<LightIncident[]>) => {    
+    ))
+    .subscribe((result : Result<LightIncident[]>) => {
       if(result.type == INCIDENT_RESCHEDULED) {
         const new_incident_date = new Date(result.data[1].date);
         const date = new Date();
@@ -115,7 +119,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
           || new_incident_date.getFullYear() != date.getFullYear()) {
             return;
         }
-      }        
+      }
 
       this.getAgendaData();
     });
@@ -144,6 +148,13 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
+    if(this.lateralSummaryComponent) {
+      this.lateralSummaryComponent.forEach(ls => {
+        ls.branch = this.current_branch;
+        ls.getPeopleSummaryData()
+      });
+    }
+
     const current = this.branches.find((b) => b.id == this.current_branch);
     this.current_branch_name = current.name;
   }
@@ -161,7 +172,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.personService.getDailyAgenda(0, this.current_date).subscribe(
       (result : Result<any>) => {
         this.agenda = isArray(result.data) ? result.data : [];
-        
+
         this.branchSelected(this.current_branch, true);
       }
     );
