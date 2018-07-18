@@ -24,10 +24,10 @@ import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModa
   templateUrl: './card-detail-modal.component.html',
   styleUrls: ['../../../../assets/customizations.scss'],
   providers: [ DatePickerI18n,
-    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
+    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter},
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
-export class CardDetailModalComponent implements OnInit {  
+export class CardDetailModalComponent implements OnInit {
   card: Card;
   commentaries: CardCommentary[];
   begin_remove = false;
@@ -38,30 +38,31 @@ export class CardDetailModalComponent implements OnInit {
   private card_actions : Subscription;
 
 
-  constructor(private personService: PersonService, 
+  constructor(private personService: PersonService,
     private parameterService: ParameterService,
-    private utilsService: UtilsService,    
+    private utilsService: UtilsService,
     private modalService: ModalService,
     private cardService: CardService,
-    private ngbModalService: NgbModal,    
+    private ngbModalService: NgbModal,
     private datePickerConfig: NgbDatepickerConfig) {
-   
+
       datePickerConfig.firstDayOfWeek = 7
   }
-  
 
-  ngOnInit() {  
+
+  ngOnInit() {
     this.reset_form();
-    
-    this.card_actions = this.cardService.cardChanges$.pipe(    
-    filter((ca: any) => ca.type == CARD_COMMENT_ADDED && this.card && ca.payload.card.id == this.card.id))
+
+    this.card_actions = this.cardService.cardChanges$.pipe(
+    filter((ca: any) => ca.type == CARD_COMMENT_ADDED
+      && this.card
+      && ca.payload.card.id == this.card.id))
     .subscribe((action) => {
       if(!this.card)
-        return; 
-      
-      this.commentaries = action.payload.commentaries.sort(cm => cm.id);
-    });    
-  }  
+        return;
+      this.load_commentaries();
+    });
+  }
 
   ngOnDestroy () {
     this.card_actions.unsubscribe();
@@ -75,9 +76,9 @@ export class CardDetailModalComponent implements OnInit {
     this.modalService.open(ModalType.AddCardComment, this.card);
   }
 
-  archive_card(close_action) { 
-    this.saving = true;   
-    this.cardService.archiveCard(this.card).subscribe((data) => {      
+  archive_card(close_action) {
+    this.saving = true;
+    this.cardService.archiveCard(this.card).subscribe((data) => {
       if(close_action) {
         close_action();
         this.saving = false;
@@ -89,31 +90,32 @@ export class CardDetailModalComponent implements OnInit {
     if(close_action) {
       close_action();
     }
-    this.modalService.open(ModalType.MoveCard, this.card);    
+    this.modalService.open(ModalType.MoveCard, this.card);
   }
 
   edit_card() {
     this.modalService.open(ModalType.EditCard, this.card);
   }
 
-  open(card) {    
+  open(card) {
     this.card = card;
     this.reset_form();
 
     if(!this.card.locations) {
       this.card.locations = [];
     }
-    
-    observableZip(      
-      this.parameterService.getActiveBranches(),
-      this.cardService.getCardCommentaries(this.card),
-      (branches, commentaries: CardCommentary[]) => {                
 
-        this.commentaries = commentaries;
+    this.load_commentaries(() => this.open_modal(this.card_detail_modal, true));
+  }
 
-        this.open_modal(this.card_detail_modal, true);
+  private load_commentaries(action = null) {
+    this.cardService.getCardCommentaries(this.card).subscribe((commentaries: CardCommentary[]) => {
+      this.commentaries = commentaries;
 
-      }).subscribe();              
+      if(action != null) {
+        action();
+      }
+    });
   }
 
   private reset_form() {
@@ -122,10 +124,10 @@ export class CardDetailModalComponent implements OnInit {
   }
 
   private open_modal(content, on_close_action = false) {
-    this.ngbModalService.open(content, { windowClass: 'custom-modal' }).result.then((result) => {                                  
-      
-    }, (reason) => {        
+    this.ngbModalService.open(content, { windowClass: 'custom-modal' }).result.then((result) => {
+
+    }, (reason) => {
         console.log(reason);
     });
-  }   
+  }
 }

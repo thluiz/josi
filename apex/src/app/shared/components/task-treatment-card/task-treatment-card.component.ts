@@ -14,24 +14,23 @@ import { Card } from 'app/shared/models/card.model';
   templateUrl: './task-treatment-card.component.html',
   styleUrls: ['./task-treatment-card.scss']
 })
-export class TaskTreatmentCardComponent implements OnInit, OnDestroy {  
+export class TaskTreatmentCardComponent implements OnInit, OnDestroy {
 
-  @Input() card : Card;  
+  @Input() card : Card;
   show_actions = false;
-  
+
   private card_actions : Subscription;
 
   constructor(private parameterService: ParameterService,
               private cardService: CardService,
               private modalService: ModalService) {
-      
-  }  
 
-  ngOnInit() {        
-    this.card_actions = this.cardService.cardChanges$      
+  }
+
+  ngOnInit() {
+    this.card_actions = this.cardService.cardChanges$
     .subscribe((action : any) => {
-      if(action.type == CARD_COMMENT_ADDED && action.payload.card.id == this.card.id) {      
-        this.card = action.payload.card;
+      if(action.type == CARD_COMMENT_ADDED && action.payload.card.id == this.card.id) {
         this.card.comment_count = action.payload.commentaries.length;
       }
 
@@ -51,7 +50,7 @@ export class TaskTreatmentCardComponent implements OnInit, OnDestroy {
     }
   }
 
-  open_detail_modal() {        
+  open_detail_modal() {
     this.modalService.open(ModalType.DetailTask, this.card);
   }
 
@@ -63,6 +62,6 @@ export class TaskTreatmentCardComponent implements OnInit, OnDestroy {
     if(close_action) {
       close_action();
     }
-    this.modalService.open(ModalType.MoveCard, this.card);    
+    this.modalService.open(ModalType.MoveCard, this.card);
   }
 }

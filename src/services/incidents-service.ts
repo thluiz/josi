@@ -115,7 +115,8 @@ export class IncidentsService {
                 "RegisterNewIncident",
                 { "description": incident.description },
                 { "responsible_id": responsible_id },
-                { "people": incident.people.filter(f => f.person_id > 0).map(p => p.person_id).join(",") },
+                { "people": incident.people.filter(f => f.person_id > 0)
+                                        .map(p => p.person_id).join(",") },
                 { "date": date },
                 { "type": incident.type.id },
                 { "branch": incident.branch_id },
@@ -124,7 +125,12 @@ export class IncidentsService {
                 { "start_activity": incident.start_activity ? 1 : 0 },
                 { "register_closed": incident.close_activity == 1 ? 1 : 0 },
                 { "register_treated": incident.close_activity == 2 ? 1 : 0 },
-                { "new_people": incident.people.filter(f => f.person_id == 0).map(p => p.name.trim()).join(",") },
+                { "new_people": incident.people.filter(f => f.person_id == 0)
+                                .map(p => p.name.trim()).join(",") },
+                { "add_to_ownernership": incident.add_to_ownernership},
+                { "new_owner_id": incident.new_owner_id },
+                { "new_support_id": incident.new_support_id },
+                { "ownership_id": incident.ownership_id }
         );
 
         return execution;

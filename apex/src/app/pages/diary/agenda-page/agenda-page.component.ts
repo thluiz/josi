@@ -35,6 +35,7 @@ import { CurrentActivitiesComponent } from 'app/shared/components/current-activi
 import { Result } from 'app/shared/models/result';
 import { isArray } from 'util';
 import { LateralSummaryComponent } from 'app/shared/components/lateral-summary/lateral-summary.component';
+import { ModalType, ModalService } from 'app/services/modal-service';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -69,7 +70,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private personService: PersonService,
               private incidentService: IncidentService,
               private parameterService: ParameterService,
-              private modalService: NgbModal,
+              private modalService: ModalService,
               private datePickerConfig: NgbDatepickerConfig,
               private eventManager: ApplicationEventService,
               private securityService: SecurityService) {
@@ -135,6 +136,19 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getAgendaData();
   }
 
+  open_new_person_modal() {
+      this.modalService.open(ModalType.AddPerson,
+          {
+              branch_id: this.current_branch
+          });
+  }
+
+  open_new_activity_modal() {
+      this.modalService.open(ModalType.AddIncident, {
+          branch_id: this.current_branch
+      });
+  }
+
   branchSelected(id, on_start = false) {
     this.current_branch = id;
     this.show_change_branch = false;
@@ -157,15 +171,6 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const current = this.branches.find((b) => b.id == this.current_branch);
     this.current_branch_name = current.name;
-  }
-
-  open(content, incident) {
-    this.current_incident = incident;
-    this.modalService.open(content).result.then((result) => {
-        this.current_incident = null;
-    }, (reason) => {
-        console.log(reason);
-    });
   }
 
   getAgendaData() {

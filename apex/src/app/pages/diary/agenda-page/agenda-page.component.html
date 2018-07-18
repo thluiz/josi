@@ -1,5 +1,19 @@
 <float-action-center [branch]="current_branch"></float-action-center>
 
+<style>
+  .action_container {
+    position:relative;
+    float:right;
+  }
+  .action_button {
+    color:silver !important;
+    font-size: 0.6em;
+  }
+  .action_button:hover {
+    color:black !important;
+  }
+</style>
+
 <div class="row">
   <div class="col-12">
     <div class="card">
@@ -51,7 +65,19 @@
 			  *ngIf="schedule.incidents && schedule.incidents.length > 0">
 
                 <h4 *ngIf="schedule.schedule_group <= 0"></h4>
-                <h4 *ngIf="schedule.schedule_group > 0" style="margin-top:12px">{{ ('00' + schedule.schedule_group).slice(-2) }}:00</h4>
+                <h4 *ngIf="schedule.schedule_group > 0" style="margin-top:12px">
+                  {{ ('00' + schedule.schedule_group).slice(-2) }}:00
+                  <div class="action_container">
+                    <a class="action_button" (click)="open_new_activity_modal();">
+                      <i class="ft-plus"></i>
+                      <i class="far fa-calendar mr-2"></i>
+                    </a>
+                    <a class="action_button" (click)="open_new_person_modal();">
+                      <i class="ft-plus"></i>
+                      <i class="fas fa-user mr-2"></i>
+                    </a>
+                  </div>
+                </h4>
                 <div class="row" *ngFor="let incident of schedule.incidents, let k = index">
                   <div class="col-12" style="line-height:2em;border:1px solid silver;border-left:0;border-right:0" *ngIf="current_branch <= 0 || incident.branch_id == current_branch"
                     [style.border-top]="k != 0 ? '0' : '1px solid silver'">
