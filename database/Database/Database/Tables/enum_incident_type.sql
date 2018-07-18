@@ -20,8 +20,12 @@
     [require_title]                BIT           DEFAULT ((0)) NOT NULL,
     [require_payment_method]       BIT           DEFAULT ((0)) NOT NULL,
     [require_contact_method]       BIT           DEFAULT ((0)) NOT NULL,
+    [need_fund_value]              BIT           DEFAULT ((0)) NOT NULL,
+    [require_ownership]            BIT           DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC)
 );
+
+
 
 
 

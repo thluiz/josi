@@ -11,8 +11,12 @@
     [contact_phone]       NVARCHAR (200) NULL,
     [contact_email]       NVARCHAR (200) NULL,
     [default_currency_id] INT            NULL,
-    PRIMARY KEY CLUSTERED ([id] ASC)
+    [timezone_id]         INT            DEFAULT ((1)) NOT NULL,
+    PRIMARY KEY CLUSTERED ([id] ASC),
+    CONSTRAINT [fk_branch_timezone] FOREIGN KEY ([timezone_id]) REFERENCES [dbo].[timezone] ([id])
 );
+
+
 
 
 
