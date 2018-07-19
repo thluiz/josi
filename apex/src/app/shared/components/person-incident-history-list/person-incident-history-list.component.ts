@@ -2,7 +2,7 @@ import { zip as observableZip, Subscription, Observable } from 'rxjs';
 
 import { filter } from 'rxjs/operators';
 import { CardService } from 'app/services/card-service';
-import { Component, Input, OnInit, OnDestroy, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 
 import { SecurityService } from 'app/services/security-service';
 import { ParameterService, Configurations } from 'app/services/parameter-service';
@@ -14,8 +14,7 @@ import { LightIncident } from '../../models/incident-model';
 @Component({
   selector: 'person-incident-history-list',
   templateUrl: './person-incident-history-list.component.html',
-  styleUrls: ['../../../../assets/customizations.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['../../../../assets/customizations.scss']
 })
 export class PersonIncidentHistoryListComponent implements OnInit, OnDestroy {
   ActivityTypes = ActivityType;

@@ -50,7 +50,10 @@
 
       <div class="row" *ngIf="person">
         <div class="col-12">
-          <person-incident-history-list [person]="person" [current]="current_incident" [start_date]="history_start_date" [end_date]="history_end_date"
+          <person-incident-history-list [person]="person"
+            [current]="current_incident"
+            [start_date]="history_start_date"
+            [end_date]="history_end_date"
             [activity_type]="current_incident.activity_type"></person-incident-history-list>
         </div>
       </div>
