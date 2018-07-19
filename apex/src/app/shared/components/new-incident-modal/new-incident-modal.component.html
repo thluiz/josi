@@ -279,7 +279,10 @@
             </div>
         </div>
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer" *ngIf="saving">
+        <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+    </div>
+    <div class="modal-footer" *ngIf="!saving">
         <button type="button"
             class="btn btn-success"
             (click)="register_new_incident(d);">

@@ -1,19 +1,18 @@
-<img alt="{{ person.name }}"	
-	class="img-border" 
-	src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
-	style="width:100%;"																												
-	[style.border-color]="person.is_leaving || person.is_inactive_member ? 'orange' : null " 	
-	[style.opacity]="person.is_leaving || person.is_inactive_member ? '0.5' : null " 
+<img alt="{{ person.name }}"
+	class="img-border"
+	src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}"
+	style="width:100%;"
+	[style.border-color]="person.is_leaving || person.is_inactive_member ? 'orange' : null "
+	[style.opacity]="person.is_leaving ? '0.5' : null "
 	[style.cursor]="editAvatarOnClick ? 'pointer' : 'normal' "
 	(click)="edit_avatar()"
 	*ngIf="person.avatar_img && person.avatar_img.length > 0" />
-	
-<img 	
-	class="img-border" 
-	src="/assets/img/portrait/avatars/avatar-08.png" 											
-	style="width:100%;cursor:pointer"																												
-	[style.border-color]="person.is_leaving || person.is_inactive_member ? 'orange' : null " 
-	[style.opacity]="person.is_leaving || person.is_inactive_member ? '0.5' : null " 
+
+<img
+	class="img-border"
+	src="/assets/img/portrait/avatars/avatar-08.png"
+	style="width:100%;cursor:pointer"
+	[style.border-color]="person.is_leaving || person.is_inactive_member ? 'orange' : null "
+	[style.opacity]="person.is_leaving  ? '0.5' : null "
 	(click)="open_send_avatar_image()"
-	*ngIf="!person.avatar_img || person.avatar_img.length <= 0" /> 
-	
+	*ngIf="!person.avatar_img || person.avatar_img.length <= 0" />

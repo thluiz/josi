@@ -219,7 +219,9 @@
               <i class="icon-ban"></i> Não
             </button>
           </div>
-          <i *ngIf="saving" class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+          <div *ngIf="saving">
+            <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+          </div>
         </div>
         <div class="col-12" *ngIf="current_incident.in_treatment">
           <div class="row">

@@ -33,6 +33,7 @@ export class NewInicidentModalComponent implements OnInit {
   branches: any;
   incident_types: any;
   errors: string[] = [];
+  saving = false;
 
   @ViewChild('add_incident_modal') add_incident_modal: ElementRef;
 
@@ -59,6 +60,7 @@ export class NewInicidentModalComponent implements OnInit {
   }
 
   open(initial_state = {}) {
+    this.saving = false;
     this.reset_new_incident(initial_state);
     observableZip(
       this.parameterService.getActiveBranches(),
@@ -235,6 +237,7 @@ export class NewInicidentModalComponent implements OnInit {
   }
 
   register_new_incident(close_action) {
+    this.saving = true;
     this.validate_new_event();
     if(!this.new_incident.correct)
       return;
@@ -242,6 +245,7 @@ export class NewInicidentModalComponent implements OnInit {
     this.incidentService.register_new_incident(this.new_incident).pipe(
       tap((next) => this.reset_new_incident()))
       .subscribe((result) => {
+        this.saving = false;
         if(close_action)
           close_action();
       });
