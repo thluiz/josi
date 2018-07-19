@@ -14,6 +14,10 @@ const security_service_1 = require("../services/security-service");
 const incidents_service_1 = require("../services/incidents-service");
 const IR = incidents_repository_1.IncidentsRepository;
 function routes(app) {
+    app.get("/api/available_ownerships/:branch/:date/:type", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield IR.getAvailableOwnerships(req.params.branch, req.params.date, req.params.type);
+        res.send(result);
+    }));
     app.get("/api/current_activities/:branch?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield IR.getCurrentActivities(req.params.branch > 0 ? req.params.branch : null);
         res.send(result);

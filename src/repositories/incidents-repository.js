@@ -29,6 +29,12 @@ class IncidentsRepository {
             return yield database_facility_1.DatabaseFacility.getRepository(Incident_1.Incident);
         });
     }
+    static getAvailableOwnerships(branch_id, date, type) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetAvailableOwnerships", { "branch_id": branch_id }, { "date": date }, { "type": type });
+            return result;
+        });
+    }
     static getCurrentActivities(branch_id) {
         return __awaiter(this, void 0, void 0, function* () {
             let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetCurrentActivities", { "branch_id": branch_id });
@@ -92,6 +98,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository, "getRepository", null);
+__decorate([
+    trylog_decorator_1.trylog(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository, "getAvailableOwnerships", null);
 __decorate([
     trylog_decorator_1.trylog(),
     __metadata("design:type", Function),

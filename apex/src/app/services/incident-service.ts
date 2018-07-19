@@ -21,14 +21,20 @@ export const INCIDENT_RESCHEDULED = INCIDENT_ACTION_PREFIX + "RESCHEDULED";
 
 @Injectable()
 export class IncidentService {
-  constructor(private http: HttpService) { 
+  constructor(private http: HttpService) {
 
-  }  
-  
+  }
+
   getSumary(branch, month, week, date) {
     return this.http
     .get(`/sumary/${branch}/${month}/${week}/${date}`);
   }
+
+  getAvailableOwnerships(branch, date, type) {
+    return this.http
+    .get(`/available_ownerships/${branch}/${date}/${type}`);
+  }
+
 
   getIncidentDetails(incident_id) {
     return this.http
@@ -36,15 +42,15 @@ export class IncidentService {
   }
 
   getCurrentActivities(branch) {
-    let date = new Date();    
+    let date = new Date();
 
     return this.http
     .get(`/current_activities/${branch}`);
   }
-  
+
   close_incident(incident) {
     return this.http
-    .post_and_emit<Result<LightIncident>>('/incident/close', { 
+    .post_and_emit<Result<LightIncident>>('/incident/close', {
       id: incident.id,
       close_text: incident.close_text,
       title: incident.title,
@@ -54,56 +60,56 @@ export class IncidentService {
 
   remove_incident(incident) {
     return this.http
-    .post_and_emit('/incident/remove', { 
+    .post_and_emit('/incident/remove', {
       id: incident.id
     });
   }
 
   reschedule_incident(incident, new_incident, contact) {
     return this.http
-    .post_and_emit('/incident/reschedule', { 
-      incident, new_incident, contact     
+    .post_and_emit('/incident/reschedule', {
+      incident, new_incident, contact
     });
   }
 
-  start_incident(incident) {    
+  start_incident(incident) {
     return this.http
-    .post_and_emit('/incident/start', { 
+    .post_and_emit('/incident/start', {
       id: incident.id
     });
   }
 
-  reopen_incident(incident) {    
+  reopen_incident(incident) {
     return this.http
-    .post_and_emit('/incident/reopen', { 
+    .post_and_emit('/incident/reopen', {
       id: incident.id
     });
   }
 
   cancel_start_incident(incident) {
     return this.http
-    .post_and_emit('/incident/start/cancel', { 
+    .post_and_emit('/incident/start/cancel', {
       id: incident.id
     });
   }
 
   register_contact_for_incident(incident, contact) {
     return this.http
-    .post_and_emit('/incident/register_contact', { 
-      incident, contact     
+    .post_and_emit('/incident/register_contact', {
+      incident, contact
     });
   }
 
-  register_new_incident(incident) {    
+  register_new_incident(incident) {
     return this.http
-    .post_and_emit('/incident/register_incident', { 
-      incident     
-    });    
+    .post_and_emit('/incident/register_incident', {
+      incident
+    });
   }
-  
+
   getComments(incident_id) {
     return this.http
-    .get(`/incident_comments/incident/${incident_id}`); 
+    .get(`/incident_comments/incident/${incident_id}`);
   }
 
   archiveComment(comment, incident) {
@@ -113,7 +119,7 @@ export class IncidentService {
     });
   }
 
-  saveComment(incident, comment) {    
+  saveComment(incident, comment) {
     return this.http
     .post_and_emit('/incident_comments', {
       incident_id: incident.id,
@@ -121,4 +127,3 @@ export class IncidentService {
     });
   }
 }
-

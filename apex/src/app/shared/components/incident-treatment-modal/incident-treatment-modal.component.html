@@ -49,61 +49,10 @@
       </div>
       <div class="row" *ngIf="person">
         <div class="col-12">
-          <person-incident-history-list [person]="person" [current]="current_incident" [start_date]="history_start_date" [end_date]="history_end_date"
-            [activity_type]="current_incident.activity_type"></person-incident-history-list>
+
         </div>
       </div>
-      <div class="row">
-        <div class="col-12 pb-3">
-          <div class="row" style="border-bottom: 1px solid black">
-            <div class="col-10 col-xl-10 col-sm-9">
-              <h6 style="padding:0;margin:0;font-weight:bold">Comentários </h6>
-            </div>
-            <div class="col-2 col-sm-3 col-xl-2 text-right">
-              <button type="button" class="btn btn-silver btn-sm" title="Registrar Comentário" style="margin:0;padding:3px;line-height:10px"
-                (click)="add_comment();">
-                <i class="ft-plus"></i>
-                <i class="far fa-sticky-note"></i>
-              </button>
-            </div>
-          </div>
-          <div class="row" *ngFor="let cm of comments">
-            <div class="col-12 pl-3">
-              <div class="row" style="border-bottom:1px solid silver;">
-                <div class="col-10" style="color:black;">
-                  <div class="row">
-                    <div class="col-12">
-                      <markdown [data]="cm.comment" style="margin-bottom:0 !important"></markdown>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12 text-right pr-0" style="font-style: italic;line-height:10px;font-size:10px">
-                      {{ cm.responsible }} - {{ cm.created_date_br }} {{ cm.created_hour_br }}
-                    </div>
-                  </div>
-                </div>
-                <div class="col-2 text-right pl-0">
-                  <button type="button" class="btn btn-silver btn-sm" style="margin: 0; padding:2px; line-height:10px" *ngIf="!cm.archive"
-                    (click)="cm.archive = true">
-                    <i class="fas fa-archive"></i>
-                  </button>
-                  <button type="button" class="btn btn-danger btn-sm" *ngIf="cm.archive" style="margin:0;padding:2px;line-height:10px" (click)="archive_comment(cm)">
-                    <i class="fas fa-archive"></i>
-                  </button>
-                  <button type="button" class="btn btn-secondary btn-sm" *ngIf="cm.archive" style="margin:0;padding:2px;line-height:10px" (click)="cm.archive = false">
-                    <i class="icon-action-undo"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row" *ngIf="!comments || comments.length == 0">
-            <div class="col-12 text-center">
-              Nenhum comentário adicionado
-            </div>
-          </div>
-        </div>
-      </div>
+
       <div class="row" *ngIf="current_incident.card_id > 0" style="margin-bottom:15px;">
         <div class="col-12">
           <label>Referente à: </label>

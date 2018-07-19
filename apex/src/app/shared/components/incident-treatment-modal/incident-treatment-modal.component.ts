@@ -2,7 +2,7 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { ApplicationEventService } from 'app/services/application-event-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 import { Observable, Subscription } from 'rxjs';
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ElementRef, ViewChild, ViewChildren, QueryList } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, ElementRef, ViewChild, ViewChildren, QueryList, ChangeDetectionStrategy } from '@angular/core';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 
@@ -24,7 +24,8 @@ import { PersonIncidentHistoryListComponent } from '../person-incident-history-l
   styleUrls: ['../../../../assets/customizations.scss'],
   providers: [DatePickerI18n,
     { provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter },
-    { provide: NgbDatepickerI18n, useClass: PortugueseDatepicker }]
+    { provide: NgbDatepickerI18n, useClass: PortugueseDatepicker }],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
@@ -128,6 +129,7 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
 
           }, (reason) => {
             console.log(reason);
+            this.ngOnDestroy();
           });
       })
       .subscribe();

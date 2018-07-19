@@ -130,7 +130,7 @@ export class IncidentsService {
                 { "add_to_ownernership": incident.add_to_ownernership},
                 { "new_owner_id": incident.new_owner_id },
                 { "new_support_id": incident.new_support_id },
-                { "ownership_id": incident.ownership_id }
+                { "ownership_id": incident.ownership ? incident.ownership.id : null }
         );
 
         return execution;

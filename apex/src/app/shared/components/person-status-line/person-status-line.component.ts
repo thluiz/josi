@@ -1,7 +1,7 @@
 
 import {filter} from 'rxjs/operators';
 
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ModalService, ModalType } from 'app/services/modal-service';
@@ -10,7 +10,8 @@ import { PersonService } from 'app/services/person-service';
 
 @Component({
   selector: 'person-status-line',
-  templateUrl: './person-status-line.component.html'
+  templateUrl: './person-status-line.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class PersonStatusLineComponent implements OnInit {
@@ -40,10 +41,10 @@ export class PersonStatusLineComponent implements OnInit {
         data_status: this.incident.data_status,
         financial_status: this.incident.financial_status,
         scheduling_status: this.incident.scheduling_status,
-        comunication_description: this.incident.comunication_description, 
-        data_status_description: this.incident.data_status_description, 
+        comunication_description: this.incident.comunication_description,
+        data_status_description: this.incident.data_status_description,
         financial_description: this.incident.financial_description,
-        scheduling_description: this.incident.scheduling_description										    								  
+        scheduling_description: this.incident.scheduling_description
       };
     }
 

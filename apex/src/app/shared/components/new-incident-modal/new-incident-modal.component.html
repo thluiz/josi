@@ -19,7 +19,6 @@
                             *ngIf="!current_branch || current_branch <= 0">
                             <select id="branch"
                                 [(ngModel)]="new_incident.branch_id"
-                                (ngModelChange)="validate_new_event()"
                                 class="form-control"
                                 >
                                 <option></option>
@@ -79,7 +78,9 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    <ngb-timepicker [spinners]="false" [(ngModel)]="new_incident.time"></ngb-timepicker>
+                    <ngb-timepicker [spinners]="false"
+                    [(ngModel)]="new_incident.time">
+                    </ngb-timepicker>
                 </div>
             </div>
             <div class="row" *ngIf="this.new_incident.type">
@@ -91,8 +92,7 @@
                     <div class="form-group">
                         <select id="new_incident_start_activity"
                             [(ngModel)]="new_incident.start_activity"
-                            class="form-control"
-                            >
+                            class="form-control">
                             <option [ngValue]="0">Não</option>
                             <option [ngValue]="1">Sim</option>
                         </select>
@@ -117,7 +117,9 @@
             </div>
             <div class="row" *ngIf="new_incident.type != null">
                 <div class="col-12">
-                    <label for="new_incident_search_people" style="font-weight: bold">Participante{{ new_incident.people == null || new_incident.people.length <= 1 ? '' : 's' }}</label>
+                <label for="new_incident_search_people" style="font-weight: bold">
+                    Participante{{ new_incident.people == null || new_incident.people.length <= 1 ? '' : 's' }}
+                </label>
                     <ul *ngIf="new_incident.people != null && new_incident.people.length > 0"
                         class="list-group">
                         <li *ngFor="let p of new_incident.people"
@@ -177,19 +179,39 @@
                         <select id="new_incident_add_to_ownernership"
                             [(ngModel)]="new_incident.add_to_ownernership"
                             class="form-control"
+                            (ngModelChange) ="get_available_ownerships()"
                             >
                             <option [ngValue]="1">Nova Titularidade</option>
-                            <option [ngValue]="0">Titularide Agendada/em Andamento</option>
+                            <option [ngValue]="2">Titularide Agendada/em Andamento</option>
                         </select>
                     </div>
                 </div>
             </div>
-            <div class="row" *ngIf="new_incident.add_to_ownernership == 0">
-                <div class="col-12 text-center" style="color:red">
-                    Não Suportado (Ainda)
+            <div class="row" *ngIf="new_incident.type != null
+                    && new_incident.people
+                    && new_incident.type.require_ownership
+                    && new_incident.add_to_ownernership == 2">
+                <div class="col-12" style="color:red">
+                    <label for="new_incident_ownership_id" style="font-weight: bold">
+                        Titularidades Disponíveis
+                    </label>
+                    <div class="form-group">
+                        <select id="new_incident_ownership_id"
+                            [(ngModel)]="new_incident.ownership"
+                            class="form-control"
+                            >
+                            <option></option>
+                            <option *ngFor="let ao of available_ownerships" [ngValue]="ao">
+                                {{ ao.start_hour }} - {{ ao.title || "ND" }} - {{ ao.person }}
+                            </option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="row" *ngIf="new_incident.add_to_ownernership == 1">
+            <div class="row" *ngIf="new_incident.type != null
+                    && new_incident.people
+                    && new_incident.type.require_ownership
+                    && new_incident.add_to_ownernership == 1">
                 <div class="col-6">
                     <label for="new_incident_new_owner_id" style="font-weight: bold">
                         Novo Titular
@@ -226,7 +248,6 @@
                 <div class="col-12 pb-1">
                     <label for="new_incident_title" style="font-weight: bold">Título</label>
                     <input class="form-control"
-                    (ngModelChange) ="validate_new_event()"
                     [(ngModel)]="new_incident.title" id="new_incident_title"
                     />
                 </div>
@@ -237,7 +258,6 @@
                     <textarea class="form-control"
                     id="new_incident_description"
                     [(ngModel)]="new_incident.description"
-                    (ngModelChange) ="validate_new_event()"
                     rows="3"></textarea>
                 </div>
             </div>
@@ -247,7 +267,6 @@
                     <input type="number" id="new_incident_value"
                         [(ngModel)]="new_incident.value"
                         class="form-control text-right"
-                        (ngModelChange) ="validate_new_event_value()"
                         />
                 </div>
             </div>
@@ -263,8 +282,7 @@
     <div class="modal-footer">
         <button type="button"
             class="btn btn-success"
-            (click)="register_new_incident();d('new incident!');"
-            *ngIf="new_incident.correct">
+            (click)="register_new_incident(d);">
             <i class="icon-check"></i>
             Registrar
         </button>

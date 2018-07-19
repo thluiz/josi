@@ -2,7 +2,7 @@ import { zip as observableZip, Subscription, Observable } from 'rxjs';
 
 import { filter } from 'rxjs/operators';
 import { CardService } from 'app/services/card-service';
-import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 import { SecurityService } from 'app/services/security-service';
 import { ParameterService, Configurations } from 'app/services/parameter-service';
@@ -14,7 +14,8 @@ import { LightIncident } from '../../models/incident-model';
 @Component({
   selector: 'person-incident-history-list',
   templateUrl: './person-incident-history-list.component.html',
-  styleUrls: ['../../../../assets/customizations.scss']
+  styleUrls: ['../../../../assets/customizations.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PersonIncidentHistoryListComponent implements OnInit, OnDestroy {
   ActivityTypes = ActivityType;
@@ -68,7 +69,7 @@ export class PersonIncidentHistoryListComponent implements OnInit, OnDestroy {
     this.show_full_history = false;
     this.load_items();
   }
-  
+
   ngOnDestroy() {
 
   }
@@ -77,11 +78,11 @@ export class PersonIncidentHistoryListComponent implements OnInit, OnDestroy {
     this.show_full_history = !this.show_full_history;
   }
 
-  load_items() {    
+  load_items() {
     let start = new Date(this.start_date.year, this.start_date.month - 1, this.start_date.day).getTime();
     let end = new Date(this.end_date.year, this.end_date.month - 1, this.end_date.day).getTime();
     let current_date_time = new Date();
-    let current_date = new Date(current_date_time.getFullYear(), 
+    let current_date = new Date(current_date_time.getFullYear(),
                             current_date_time.getMonth(), current_date_time.getDate()).getTime();
 
     let last_week = new Date(current_date_time.getFullYear(), current_date_time.getMonth(), current_date_time.getDate() - 7).getTime();
@@ -98,9 +99,9 @@ export class PersonIncidentHistoryListComponent implements OnInit, OnDestroy {
   }
 
   open_new_activity_modal() {
-    this.modalService.open(ModalType.AddIncident, {branch_id: this.person.branch_id, 
-      people: [ { person_id: this.person.id, 
-        name: this.person.name, 
+    this.modalService.open(ModalType.AddIncident, {branch_id: this.person.branch_id,
+      people: [ { person_id: this.person.id,
+        name: this.person.name,
         avatar_url: this.person.avatar_url }]
       }
     );
