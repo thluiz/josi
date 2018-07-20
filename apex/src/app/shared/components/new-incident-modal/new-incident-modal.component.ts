@@ -1,3 +1,4 @@
+import { ToastrService } from 'ngx-toastr';
 import { zip as observableZip, Observable, of } from 'rxjs';
 import { debounceTime, delay, map, distinctUntilChanged, catchError, tap, switchMap } from 'rxjs/operators';
 
@@ -32,7 +33,6 @@ export class NewInicidentModalComponent implements OnInit {
   modalRef;
   branches: any;
   incident_types: any;
-  errors: string[] = [];
   saving = false;
 
   @ViewChild('add_incident_modal') add_incident_modal: ElementRef;
@@ -42,7 +42,8 @@ export class NewInicidentModalComponent implements OnInit {
     private personService: PersonService,
     private incidentService: IncidentService,
     private utilsService: UtilsService,
-    private parameterService: ParameterService) {
+    private parameterService: ParameterService,
+    private toastr: ToastrService) {
 
     datePickerConfig.firstDayOfWeek = 7
   }
@@ -56,7 +57,6 @@ export class NewInicidentModalComponent implements OnInit {
     this.new_incident.tmp_type = null;
     this.new_incident.tmp_combo_type = null;
     this.new_incident.children_type = null;
-    this.validate_new_event();
   }
 
   open(initial_state = {}) {
@@ -117,26 +117,15 @@ export class NewInicidentModalComponent implements OnInit {
 
     this.new_incident.people.push(event);
     this.new_incident.tmp_person = "";
-    this.validate_new_event();
   }
 
   remove_person_from_new_incident(person) {
     this.new_incident.people = this.new_incident.people.filter(p => p.person_id != person.person_id);
-    this.validate_new_event();
-  }
-
-  validate_new_event_value() {
-    if (parseFloat(this.new_incident.value) != NaN) {
-      this.validate_new_event();
-      return;
-    }
-    this.new_incident.value = 0;
-    this.validate_new_event();
   }
 
   validate_new_event() {
     let new_incident = this.new_incident;
-    this.errors = [];
+    let errors = [];
 
     if (new_incident.people != null
       && new_incident.people.length > 0
@@ -162,31 +151,38 @@ export class NewInicidentModalComponent implements OnInit {
       return;
     }
 
+    if (!new_incident.people || new_incident.people.length == 0) {
+      this.new_incident.correct = false;
+      errors.push("Informe ao menos um participante");
+    }
+
     if (!new_incident.type) {
       this.new_incident.correct = false;
-      this.errors.push("Informe o tipo de evento");
+      errors.push("Informe o tipo de evento");
+      errors.forEach(e => this.toastr.error(e, 'Erro de Validação'));
       return;
     }
 
     if (new_incident.type.require_ownership
         && (this.new_incident.new_owner_id <= 0
             || (!this.new_incident.ownership || this.new_incident.ownership.id <= 0))) {
-      this.errors.push("Escolha uma titularidade para o evento ou indique quem será o titular e o suplente entre os participantes");
+      errors.push("Escolha uma titularidade para o evento ou indique quem será o titular e o suplente entre os participantes");
     }
 
     if (new_incident.type.require_title && (new_incident.title || "").length < 3) {
-      this.errors.push("Informe o título");
+      errors.push("Informe o título");
     }
 
     if (new_incident.type.require_title && (new_incident.title || "").length > 50) {
-      this.errors.push("O título precisa ser menor que 50 caracteres");
+      errors.push("O título precisa ser menor que 50 caracteres");
     }
 
     if (new_incident.type.need_description
       && (new_incident.description || "").length <= 5) {
-      this.errors.push("Informe a descrição");
+      errors.push("Informe a descrição");
     }
 
+    errors.forEach(e => this.toastr.error(e, 'Erro de Validação'));
     this.new_incident.correct = false;
   }
 
@@ -237,11 +233,11 @@ export class NewInicidentModalComponent implements OnInit {
   }
 
   register_new_incident(close_action) {
-    this.saving = true;
     this.validate_new_event();
     if(!this.new_incident.correct)
       return;
 
+    this.saving = true;
     this.incidentService.register_new_incident(this.new_incident).pipe(
       tap((next) => this.reset_new_incident()))
       .subscribe((result) => {

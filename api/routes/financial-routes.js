@@ -15,12 +15,12 @@ function configure_routes(app, connection_pool) {
     app.get("/api/financial/accounts/:branch_id?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input('branch_id', sql.Int, req.params.branch_id || null)
-            .query(`select a.*, isnull(b.abrev, 'Gestão Integrada') branch, isnull(b.initials, 'GI') branch_initials 
+            .query(`select a.*, isnull(b.abrev, 'Gestão Integrada') branch, isnull(b.initials, 'GI') branch_initials
                 from account a
                     left join branch b on b.id = a.branch_id
                 where a.active = 1
-                and isnull(a.branch_id, -1) = isnull(@branch_id, isnull(a.branch_id, -1))
-                order by [order] 
+                and ((@branch_id is null and a.branch_id is null) or (a.branch_id = @branch_id))
+                order by [order]
                 for json path`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);

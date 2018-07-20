@@ -17,36 +17,36 @@ const PROJECT_BAG_NAME = 'childrens';
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './overview-page.component.html',
-  styleUrls: ['../financial-customizations.scss']  
+  styleUrls: ['../financial-customizations.scss']
 })
-export class OverviewPageComponent implements OnInit, OnDestroy {    
+export class OverviewPageComponent implements OnInit, OnDestroy {
   private sub;
   branch_id: number;
   branches :any[];
   account_data: { data: any, account_status: any, expected_payments: any, missing_payments: any }[] = [];
 
 
-  constructor(private financialService: FinancialService, 
-              private securityService: SecurityService, 
+  constructor(private financialService: FinancialService,
+              private securityService: SecurityService,
               private modalService: ModalService,
               private parameterService: ParameterService,
-              private route: ActivatedRoute,              
-              private router: Router) {      
+              private route: ActivatedRoute,
+              private router: Router) {
 
-  }  
+  }
 
-  ngOnInit() {  
+  ngOnInit() {
     observableZip(
       this.parameterService.getActiveBranches(),
       this.securityService.getCurrentUserData(),
       this.route.params,
       (branches, user, params) => {
         this.branches = branches;
-        this.branch_id = user.default_branch_id || +params['branch_id'];      
-        this.load_data();          
+        this.branch_id = user.default_branch_id || +params['branch_id'];
+        this.load_data();
       }
-    ).subscribe();      
-  }  
+    ).subscribe();
+  }
 
   ngOnDestroy() {
     if(this.sub) {
@@ -54,38 +54,34 @@ export class OverviewPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  public change_branch() { 
+  public change_branch() {
     this.router.navigateByUrl(`financial/${this.branch_id}`);
-    this.account_data = null; 
-    this.account_data = [];        
+    this.account_data = null;
+    this.account_data = [];
     this.load_data();
   }
 
   private load_data() {
-    if(!this.branch_id || this.branch_id <= 0) {
-      return;
-    }
-
     this.financialService.getBranchAccounts(this.branch_id).subscribe((data : any[]) => {
-      data.forEach((account : any) => { 
-        var account_id = account.id;        
+      data.forEach((account : any) => {
+        var account_id = account.id;
 
-        let account_data = {data: account, account_status: null, expected_payments: null, missing_payments: null };        
+        let account_data = {data: account, account_status: null, expected_payments: null, missing_payments: null };
 
         this.financialService.getAccountStatus(account_id).subscribe((data : any[]) => {
           account_data.account_status = data;
         });
-    
+
         this.financialService.getExpectedPayments(account_id).subscribe((data : any[]) => {
           account_data.expected_payments = data;
         });
-    
+
         this.financialService.getMissingPayments(account_id).subscribe((data : any[]) => {
           account_data.missing_payments = data;
         });
-        
+
         this.account_data[this.account_data.length] = account_data;
-      })    
+      })
     });
   }
 

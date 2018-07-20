@@ -4,32 +4,33 @@
             <div class="col-5 col-md-2 pt-2 pb-0">
                 <div class="form-body">
                     <div class="form-group">
-                        <label for="branch">Núcleo</label>
-                        <select id="branch" 
-                            [(ngModel)]="branch_id" 
-                            (ngModelChange)="change_branch()"									                            
+                        <label for="branch">Organização</label>
+                        <select id="branch"
+                            [(ngModel)]="branch_id"
+                            (ngModelChange)="change_branch()"
                             class="form-control form-control-sm"
-                            [ngModelOptions]="{standalone: true}"                            
-                            >			                        		                            
+                            [ngModelOptions]="{standalone: true}"
+                            >
+                            <option value=-1>Gestão Integrada</option>
                             <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
                         </select>
-                    </div>                            
-                </div>                                                                  
+                    </div>
+                </div>
             </div>
-        </div>    
-        <ng-template ngFor let-account [ngForOf]="account_data" let-k=index let-m=first>																            
+        </div>
+        <ng-template ngFor let-account [ngForOf]="account_data" let-k=index let-m=first>
             <div class="row">
                 <div class="col-12">
                     <h2>{{ account.data.name }}</h2>
                 </div>
             </div>
-            <div class="row">                
+            <div class="row">
                 <div class="col-6">
                     <h6>Pagamentos Esperados</h6>
                     <div class="row">
                         <div class="col-12">
                             <div *ngFor="let exp of account.expected_payments">
-                                <div *ngFor="let pg of exp.payments">                                    
+                                <div *ngFor="let pg of exp.payments">
                                     <incident-financial-listitem [incident]="pg"></incident-financial-listitem>
                                 </div>
                             </div>
@@ -41,7 +42,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div *ngFor="let m of account.missing_payments">
-                                <div *ngFor="let missing of m.missing">                                    
+                                <div *ngFor="let missing of m.missing">
                                     <incident-financial-listitem [incident]="missing"></incident-financial-listitem>
                                 </div>
                                 <div>
@@ -51,7 +52,7 @@
                         </div>
                     </div>
                 </div>
-            </div>                                   
+            </div>
         </ng-template>
     </div>
 </div>

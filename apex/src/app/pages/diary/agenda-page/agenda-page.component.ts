@@ -102,6 +102,13 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.securityService.getCurrentUserData().subscribe((user) => {
       this.current_branch = user.default_branch_id || 0;
       this.getAgendaData();
+
+      if(this.lateralSummaryComponent) {
+        this.lateralSummaryComponent.forEach(ls => {
+          ls.branch = this.current_branch;
+          ls.getPeopleSummaryData()
+        });
+      }
     });
 
     this.incidents_subscriber = this.eventManager

@@ -13,21 +13,21 @@ export const ROUTES: RouteInfo[] = [
                 icon: '',
                 class: '', badge: '',
                 badgeClass: '', isExternalLink: false,
-                submenu: [] 
+                submenu: []
             },
             {
                 path: '/diary/week', title: 'Semana',
                 icon: '',
                 class: '', badge: '',
                 badgeClass: '', isExternalLink: false,
-                submenu: [] 
+                submenu: []
             },
             {
                 path: '/organizations', title: 'Gestores',
                 icon: '',
                 class: '', badge: '',
                 badgeClass: '', isExternalLink: false,
-                submenu: [] 
+                submenu: []
             }
         ]
     },
@@ -48,44 +48,44 @@ export const ROUTES: RouteInfo[] = [
                         icon: '',
                         class: '', badge: '',
                         badgeClass: '', isExternalLink: false,
-                        submenu: [] 
+                        submenu: []
                     }
-                ] 
+                ]
             }, {
                 path: '/people/voucher', title: 'Convidados',
                 icon: '',
                 class: '', badge: '',
                 badgeClass: '', isExternalLink: false,
-                submenu: [] 
-            }, 
+                submenu: []
+            },
             {
                 path: '/people/interested', title: 'Interessados',
                 icon: '',
                 class: '', badge: '',
                 badgeClass: '', isExternalLink: false,
-                submenu: [] 
-            }, 
+                submenu: []
+            },
             {
                 path: '/people/away', title: 'Afastados',
                 icon: '',
                 class: '', badge: '',
                 badgeClass: '', isExternalLink: false,
-                submenu: [] 
+                submenu: []
             },
             {
                 path: '/people/service_provider', title: 'Prestadores de Serviço',
                 icon: '',
                 class: '', badge: '',
                 badgeClass: '', isExternalLink: false,
-                submenu: [] 
+                submenu: []
             },
             {
                 path: '/under-construction', title: 'Não Interessados',
                 icon: 'icon-ban',
                 class: '', badge: '',
                 badgeClass: '', isExternalLink: false,
-                submenu: [] 
-            },                
+                submenu: []
+            },
         ]
     },
     {
@@ -100,7 +100,15 @@ export const ROUTES: RouteInfo[] = [
         icon: 'icon-wallet',
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,
-        submenu: []
+        submenu: [
+            {
+                path: '/under-construction', title: 'Contas',
+                icon: 'icon-ban',
+                class: '', badge: '',
+                badgeClass: '', isExternalLink: false,
+                submenu: []
+            }
+        ]
     },
     {
         path: '/parameters', title: 'Parâmetros',

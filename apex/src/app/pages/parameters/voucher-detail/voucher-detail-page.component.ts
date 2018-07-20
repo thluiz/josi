@@ -46,7 +46,7 @@ export class VoucherDetailPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  entity_compare(optionOne, optionTwo) {    
+  entity_compare(optionOne, optionTwo) {
     return optionOne.id == optionTwo.id;
   }
 

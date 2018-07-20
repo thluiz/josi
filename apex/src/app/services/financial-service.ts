@@ -7,15 +7,16 @@ import { Subject }    from 'rxjs';
 
 @Injectable()
 export class FinancialService {
-  private dataUrl = environment.api_url;    
+  private dataUrl = environment.api_url;
 
-  constructor(private http: HttpClient, private utilsService: UtilsService) { }  
+  constructor(private http: HttpClient, private utilsService: UtilsService) { }
 
-  getBranchAccounts(branch_id :number) {    
-    return this.http.get(this.dataUrl + `/financial/accounts/${branch_id}`);
+  getBranchAccounts(branch_id :number) {
+    let branch = branch_id > 0 ? `/${branch_id}` : "";
+    return this.http.get(`${this.dataUrl}/financial/accounts${branch}`);
   }
 
-  getAccounts() {    
+  getAccounts() {
     return this.http.get(this.dataUrl + `/financial/accounts`);
   }
 
@@ -63,4 +64,3 @@ export class FinancialService {
     return url;
   }
 }
-
