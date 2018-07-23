@@ -432,6 +432,10 @@ function configure_routes(app, connection_pool) {
         let result = yield person_service.archive_comment(request.body.id);
         response.send({ sucess: true });
     }));
+    app.post("/api/people_comments/pin", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield person_service.pin_comment(request.body.id);
+        response.send(result);
+    }));
 }
 exports.configure_routes = configure_routes;
 //# sourceMappingURL=people-routes.js.map

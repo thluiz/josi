@@ -617,4 +617,14 @@ export function configure_routes(app: any, connection_pool: any) {
             response.send({ sucess: true });
         });
 
+    app.post("/api/people_comments/pin",
+        auth.ensureLoggedIn(),
+        async (request, response, next) => {
+            let result = await person_service.pin_comment(
+                request.body.id
+            );
+
+            response.send(result);
+        });
+
 }

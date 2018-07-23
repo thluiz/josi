@@ -1,4 +1,9 @@
+import { DatabaseFacility } from './../../src/facilities/database-facility';
+import { Person } from '../../src/entity/Person';
+import { Result } from '../../src/helpers/result';
 const sql = require('mssql')
+
+const PERSON_UPDATED_ACTION = "PERSON_UPDATED_ACTION";
 
 export class PersonService {
     private sql_pool;
@@ -7,9 +12,9 @@ export class PersonService {
         this.sql_pool = sql_pool;
     }
 
-    async save_address(address) {        
+    async save_address(address) {
         const result = await new sql.Request(this.sql_pool)
-                                .input('person_id', sql.Int, address.person_id)                                
+                                .input('person_id', sql.Int, address.person_id)
                                 .input('country_id', sql.Int, address.country_id)
                                 .input('postal_code', sql.VarChar(30), address.postal_code)
                                 .input('street', sql.VarChar(200), address.street)
@@ -33,42 +38,42 @@ export class PersonService {
 
     public async add_role(person_id, role_id) {
         const result = await new sql.Request(this.sql_pool)
-                                .input('person_id', sql.Int, person_id)                                
+                                .input('person_id', sql.Int, person_id)
                                 .input('role_id', sql.Int, role_id)
                                 .execute(`AddPersonRole`);
 
-        return result;                        
-    }    
-    
+        return result;
+    }
+
     public async remove_role(person_id, role_id) {
         const result = await new sql.Request(this.sql_pool)
-                                .input('person_id', sql.Int, person_id)                                
+                                .input('person_id', sql.Int, person_id)
                                 .input('role_id', sql.Int, role_id)
                                 .execute(`RemovePersonRole`);
 
-        return result;                        
+        return result;
     }
 
     public async change_kf_name(person_id, kf_name, ideograms) {
         const result = await new sql.Request(this.sql_pool)
-                                .input('person_id', sql.Int, person_id)                                
+                                .input('person_id', sql.Int, person_id)
                                 .input('alias', sql.VarChar(150), kf_name)
                                 .input('kf_name', sql.Bit, 1)
                                 .input('ideograms', sql.NVarChar(100), ideograms)
                                 .execute(`AddAlias`);
 
-        return result;    
+        return result;
     }
-    
-    public async update_person_data(person) {                  
+
+    public async update_person_data(person) {
         return await new sql.Request(this.sql_pool)
-                                .input('id', sql.Int, person.id)                                                                                                             
+                                .input('id', sql.Int, person.id)
                                 .input('name', sql.VarChar(200), person.full_name || person.name)
                                 .input('birth_date', sql.VarChar(10), person.birth_date)
                                 .input('admission_date', sql.VarChar(10), person.admission_date)
-                                .input('enrollment_date', sql.VarChar(10), person.enrollment_date)                                
-                                .input('baaisi_date', sql.VarChar(10), person.baaisi_date)                                                                
-                                .input('passport_expiration_date', sql.VarChar(10), person.passport_expiration_date)                                                                
+                                .input('enrollment_date', sql.VarChar(10), person.enrollment_date)
+                                .input('baaisi_date', sql.VarChar(10), person.baaisi_date)
+                                .input('passport_expiration_date', sql.VarChar(10), person.passport_expiration_date)
                                 .input('kf_name', sql.VarChar(200), person.kf_name)
                                 .input('identification', sql.VarChar(50), person.identification)
                                 .input('identification2', sql.VarChar(50), person.identification2)
@@ -76,7 +81,7 @@ export class PersonService {
                                 .input('occupation', sql.VarChar(100), person.occupation)
                                 .input('kf_name_ideograms', sql.NVarChar(200), person.kf_name_ideograms)
                                 .input('family_id', sql.Int, person.family_id > 0 ? person.family_id : null )
-                                .input('destiny_family_id', sql.Int, person.destiny_family_id > 0 ? person.destiny_family_id : null )                                                                
+                                .input('destiny_family_id', sql.Int, person.destiny_family_id > 0 ? person.destiny_family_id : null )
                                 .input('branch_id', sql.Int, person.branch_id > 0 ? person.branch_id : null )
                                 .input('domain_id', sql.Int, person.domain_id > 0 ? person.domain_id : null )
                                 .input('program_id', sql.Int, person.program_id > 0 ? person.program_id : null )
@@ -84,19 +89,19 @@ export class PersonService {
                                 .execute(`UpdatePersonData`);
     }
 
-    public async register_new_person(person, user) {                  
-        return await new sql.Request(this.sql_pool)                                                                                                                                         
-                                .input('role_id', sql.Int, person.role_id > 0 ? person.role_id : null )                        
+    public async register_new_person(person, user) {
+        return await new sql.Request(this.sql_pool)
+                                .input('role_id', sql.Int, person.role_id > 0 ? person.role_id : null )
                                 .input('name', sql.VarChar(200), person.name)
                                 .input('branch_id', sql.Int, person.branch_id > 0 ? person.branch_id : null )
-                                
-                                .input('birth_date', sql.VarChar(10), person.birth_date)                                                                                                
+
+                                .input('birth_date', sql.VarChar(10), person.birth_date)
                                 .input('identification', sql.VarChar(50), person.identification)
-                                .input('identification2', sql.VarChar(50), person.identification2)                                
-                                .input('occupation', sql.VarChar(100), person.occupation)                                                                                                                                
+                                .input('identification2', sql.VarChar(50), person.identification2)
+                                .input('occupation', sql.VarChar(100), person.occupation)
 
                                 .input('next_incident_type', sql.Int, person.next_incident_type > 0 ? person.next_incident_type : null )
-                                .input('next_incident_date', sql.VarChar(10), person.next_incident_date && person.next_incident_date.length > 10 ? person.next_incident_date : null)                                                                                                
+                                .input('next_incident_date', sql.VarChar(10), person.next_incident_date && person.next_incident_date.length > 10 ? person.next_incident_date : null)
                                 .input('next_incident_description', sql.NVarChar(sql.MAX), person.next_incident_description)
 
                                 .input('initial_contact', sql.NVarChar(sql.MAX), person.initial_contact)
@@ -140,30 +145,39 @@ export class PersonService {
 
     async save_contact(contact_data) {
         return await new sql.Request(this.sql_pool)
-            .input('person_id', sql.Int, contact_data.person_id)            
-            .input('contact_type', sql.Int, contact_data.contact_type)                        
-            .input('contact', sql.VarChar(250), contact_data.contact)            
+            .input('person_id', sql.Int, contact_data.person_id)
+            .input('contact_type', sql.Int, contact_data.contact_type)
+            .input('contact', sql.VarChar(250), contact_data.contact)
             .input('details', sql.VarChar(sql.MAX), contact_data.details)
             .input('principal', sql.Int, contact_data.principal)
             .execute(`SavePersonContact`);
     }
 
-    
+
 
     async save_comment_about(person_id, comment, responsible_id) {
-        const result = await new sql.Request(this.sql_pool) 
+        const result = await new sql.Request(this.sql_pool)
                                 .input('person_id', sql.Int, person_id)
-                                .input('comment', sql.NVarChar(sql.MAX), comment)                               
+                                .input('comment', sql.NVarChar(sql.MAX), comment)
                                 .input('responsible_id', sql.Int, responsible_id)
                                 .execute(`SavePersonComment`);
 
-        return result;  
+        return result;
     }
 
-    async archive_comment(comment_id) {        
-        const result = await new sql.Request(this.sql_pool) 
-                                .input('comment_id', sql.Int, comment_id)                                
+    async archive_comment(comment_id) {
+        const result = await new sql.Request(this.sql_pool)
+                                .input('comment_id', sql.Int, comment_id)
                                 .execute(`ToglePersonCommentArchived`);
+
+        return result;
+    }
+
+    async pin_comment(comment_id) : Promise<Result<Person>> {
+        const result = await DatabaseFacility.ExecuteTypedJsonSP<Person>(PERSON_UPDATED_ACTION,
+            "ToglePersonCommentPinned", {
+            comment_id: comment_id
+        });
 
         return result;
     }

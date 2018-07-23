@@ -81,11 +81,10 @@
                 <div class="row" *ngFor="let incident of schedule.incidents, let k = index">
                   <div class="col-12" style="line-height:2em;border:1px solid silver;border-left:0;border-right:0" *ngIf="current_branch <= 0 || incident.branch_id == current_branch"
                     [style.border-top]="k != 0 ? '0' : '1px solid silver'">
-
-					<incident-agenda-listitem
-					[branch]="current_branch"
-					[incident]="incident">
-					</incident-agenda-listitem>
+                    <incident-agenda-listitem
+                    [branch]="current_branch"
+                    [incident]="incident">
+                    </incident-agenda-listitem>
                   </div>
                 </div>
               </div>

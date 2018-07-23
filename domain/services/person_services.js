@@ -8,7 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const database_facility_1 = require("./../../src/facilities/database-facility");
 const sql = require('mssql');
+const PERSON_UPDATED_ACTION = "PERSON_UPDATED_ACTION";
 class PersonService {
     constructor(sql_pool) {
         this.sql_pool = sql_pool;
@@ -170,6 +172,14 @@ class PersonService {
             const result = yield new sql.Request(this.sql_pool)
                 .input('comment_id', sql.Int, comment_id)
                 .execute(`ToglePersonCommentArchived`);
+            return result;
+        });
+    }
+    pin_comment(comment_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield database_facility_1.DatabaseFacility.ExecuteTypedJsonSP(PERSON_UPDATED_ACTION, "ToglePersonCommentPinned", {
+                comment_id: comment_id
+            });
             return result;
         });
     }

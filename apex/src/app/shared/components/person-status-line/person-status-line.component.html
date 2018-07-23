@@ -1,15 +1,15 @@
-<div class="col-12 d-none d-xl-block pl-1">  
-	<span *ngIf="person.comunication_status == 1 && !hideCommunicationStatus" 			
+<div class="col-12 d-none d-xl-block pl-1">
+	<span *ngIf="person.comunication_status == 1 && !hideCommunicationStatus"
 		(click)="begin_person_comunication_treatment()"
-		style="cursor:pointer">												
+		style="cursor:pointer">
 			<i class="fas fa-bullhorn"
 			style="color:red"></i>
-	</span>     	
+	</span>
 	<span *ngIf="person.scheduling_status > 0 && !hideScheduleStatus"
 		(click)="begin_person_schedule_treatment()"
 		[title]="person.scheduling_description"
 		style="cursor:pointer">
-			<i class="ft-calendar" 
+			<i class="ft-calendar"
 			style="color:red"></i>
 	</span>
 	<span *ngIf="person.financial_status > 0 && !hideFinancialStatus"
@@ -17,64 +17,76 @@
 		[title]="person.financial_description"
 		style="cursor:pointer"
 	>
-			<i class="icon-wallet" 
-			style="color:red"													
+			<i class="icon-wallet"
+			style="color:red"
 			[title]="person.financial_description"></i>
 	</span>
-	<span *ngIf="person.data_status == 1 && !hideDataStatus" 
+	<span *ngIf="person.data_status == 1 && !hideDataStatus"
 		[title]="person.data_status_description"
 		(click)="begin_person_data_treatment()"
-		style="cursor:pointer">												
+		style="cursor:pointer">
 			<i class="fas fa-user"
 			style="color:red"></i>
-	</span>	
-	<span *ngFor="let v of person.vouchers" [title]="v.voucher">		
+	</span>
+	<span *ngIf="person.pinned_comment_count > 0 && !hidePinnedCommentCount"
+		title="Comentários Marcados"
+		(click)="show_person_comments()"
+		style="font-weight:normal;cursor:pointer;color:grey;margin-left:5px;margin-right:5px">
+		<i class="far fa-sticky-note"></i> {{ person.pinned_comment_count }}
+	</span>
+	<span *ngFor="let v of person.vouchers" [title]="v.voucher">
 		{{ v.voucher_initials}}
-	</span>		
+	</span>
 	<span *ngIf="person.has_birthday_this_month">
 		&#160;
 		<i  class="icon-present"
-			[style.color]="'silver'"					
+			[style.color]="'silver'"
 			title="Aniversariante do mês">
 		</i>
 	</span>
 </div>
-<div class="col-12 d-block d-xl-none" style="line-height:10px">  
-	<span *ngIf="person.comunication_status == 1 && !hideCommunicationStatus" 
-		style="cursor:pointer"			
+<div class="col-12 d-block d-xl-none" style="line-height:10px">
+	<span *ngIf="person.comunication_status == 1 && !hideCommunicationStatus"
+		style="cursor:pointer"
 		(click)="begin_person_comunication_treatment()"
-		style="cursor:pointer">												
+		style="cursor:pointer">
 			<i class="fas fa-user"
 			style="color:red"></i>
-	</span>     	                  
+	</span>
 	<span *ngIf="person.scheduling_status > 0 && !hideScheduleStatus"
 		(click)="begin_person_schedule_treatment()"
 		[title]="person.scheduling_description"
 		style="cursor:pointer">
-			<i class="ft-calendar" 
+			<i class="ft-calendar"
 			style="color:red"></i>
 	</span>
 	<span *ngIf="person.financial_status > 0 && !hideFinancialStatus"
 	(click)="begin_person_financial_treatment()"
 	[title]="person.financial_description"
 	style="cursor:pointer">
-			<i class="icon-wallet" 
+			<i class="icon-wallet"
 			style="color:red"></i>
 	</span>
-	<span *ngIf="person.data_status == 1 && !hideDataStatus" 
-		[title]="person.data_status_description"	
+	<span *ngIf="person.data_status == 1 && !hideDataStatus"
+		[title]="person.data_status_description"
 		(click)="begin_person_data_treatment()"
-		style="cursor:pointer">												
+		style="cursor:pointer">
 			<i class="fas fa-user"
 			style="color:red"></i>
-	</span>	
-	<span *ngFor="let v of person.vouchers" [title]="v.voucher">		
+	</span>
+	<span *ngIf="person.pinned_comment_count > 0 && !hidePinnedCommentCount"
+		title="Comentários Marcados"
+		(click)="show_person_comments()"
+		style="font-weight:normal;cursor:pointer;color:grey;margin-left:5px;margin-right:5px">
+		<i class="far fa-sticky-note"></i> {{ person.pinned_comment_count }}
+	</span>
+	<span *ngFor="let v of person.vouchers" [title]="v.voucher">
 		{{ v.voucher_initials}}
-	</span>			
+	</span>
 	<span *ngIf="person.has_birthday_this_month">
 		&#160;
 		<i  class="icon-present"
-			[style.color]="'silver'"					
+			[style.color]="'silver'"
 			title="Aniversariante do mês">
 		</i>
 	</span>

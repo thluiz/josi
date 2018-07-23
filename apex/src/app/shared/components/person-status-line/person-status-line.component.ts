@@ -22,6 +22,7 @@ export class PersonStatusLineComponent implements OnInit {
   @Input() hideScheduleStatus = false;
   @Input() hideFinancialStatus = false;
   @Input() hideDataStatus = false;
+  @Input() hidePinnedCommentCount = false;
 
   private person_changes_subscriber: Subscription;
 
@@ -44,7 +45,8 @@ export class PersonStatusLineComponent implements OnInit {
         comunication_description: this.incident.comunication_description,
         data_status_description: this.incident.data_status_description,
         financial_description: this.incident.financial_description,
-        scheduling_description: this.incident.scheduling_description
+        scheduling_description: this.incident.scheduling_description,
+        pinned_comment_count: this.incident.pinned_comment_count
       };
     }
 
@@ -57,6 +59,10 @@ export class PersonStatusLineComponent implements OnInit {
 
   ngOnDestroy() {
     this.person_changes_subscriber.unsubscribe();
+  }
+
+  show_person_comments() {
+
   }
 
   begin_person_data_treatment() {

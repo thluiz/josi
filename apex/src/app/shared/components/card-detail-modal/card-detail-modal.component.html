@@ -6,58 +6,60 @@
             <div class="col-8">
                 <h5 class="modal-title" style="font-weight: bold">
                     {{  card.title || 'Comunicação' }}
-                </h5>   
+                </h5>
             </div>
-            <div class="col-4 pr-0 text-right">                                 
-                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <div class="col-4 pr-0 text-right">
+                <button type="button" class="close"
+                aria-label="Close" (click)="d('Cross click')">
                     <span aria-hidden="true">&times;</span>
-                </button>                    
+                </button>
             </div>
-        </div> 
+        </div>
     </div>
     <div class="modal-body">
-        <div class="row" 
+        <div class="row"
         *ngFor="let person of card.people">
-            <div class="col-12">                                
-                <person-card [person]="person" 
-                    showContacts="true" 
-                    [useContactButton]="false"></person-card>
+            <div class="col-12">
+                <person-card [person]="person"
+                    showContacts="true"
+                    [useContactButton]="false"
+                    [hidePinnedComments]="false"></person-card>
             </div>
         </div>
         <div class="row">
-            <div class="col-12" style="margin-bottom:10px;">                
-                <markdown [data]="card.description"></markdown>				        
+            <div class="col-12" style="margin-bottom:10px;">
+                <markdown [data]="card.description"></markdown>
             </div>
-        </div>          		
-        <div class="row" *ngFor="let r of card.relationships">	
+        </div>
+        <div class="row" *ngFor="let r of card.relationships">
             <div class="col-12" style="margin-bottom:10px;">
                 <b>{{ r.relationship_description }}:</b>
                 <a
                     style="cursor:pointer;color:gray"
                     target="_blank"
-                    href="http://myvtmi.im/voucher/membros/{{ r.identifier.substring(0, 5) }}">            
-                    {{ r.identifier.substring(0, 5) }}        
+                    href="http://myvtmi.im/voucher/membros/{{ r.identifier.substring(0, 5) }}">
+                    {{ r.identifier.substring(0, 5) }}
                 </a>
 			</div>
-		</div>  
+		</div>
         <div class="row">
-            <div class="col-12">                    
-                <div class="row" 
+            <div class="col-12">
+                <div class="row"
                     style="border-bottom: 1px solid black;" >
-                    <div class="col-10">        
-                        <h6 style="font-weight:bold;margin-bottom:0"> 
-                            <i class="far fa-sticky-note"></i> Comentários </h6>        
+                    <div class="col-10">
+                        <h6 style="font-weight:bold;margin-bottom:0">
+                            <i class="far fa-sticky-note"></i> Comentários </h6>
                     </div>
                     <div class="col-2 text-right">
-                        <button type="button" class="btn btn-silver btn-sm" 
+                        <button type="button" class="btn btn-silver btn-sm"
                             style="margin:0;padding:2px;line-height:10px"
                             (click)="add_comment();">
-                            <i class="ft-plus"></i>                                        
+                            <i class="ft-plus"></i>
                             <i class="far fa-sticky-note"></i>
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="row" *ngIf="!commentaries || commentaries.length == 0">
                     <div class="col-12 text-center">
                         Nenhum comentário encontrado
@@ -65,57 +67,57 @@
                 </div>
 
 
-                <div *ngFor="let cm of commentaries">                        
+                <div *ngFor="let cm of commentaries">
                     <div class="col-12 pl-3">
                         <div class="row">
                             <div class="col-2 text-right pr-0">
-                                    <img alt="{{ cm.responsible }}"                                    
-                                    class="img-border" 
-                                    src="https://myvtmiim.blob.core.windows.net/avatars/{{ cm.avatar_img }}" 											
-                                    style="width:100%;"																												                                    
+                                    <img alt="{{ cm.responsible }}"
+                                    class="img-border"
+                                    src="https://myvtmiim.blob.core.windows.net/avatars/{{ cm.avatar_img }}"
+                                    style="width:100%;"
                                     *ngIf="cm.avatar_img && cm.avatar_img.length > 0" />
-                                    
-                                    <img                                     
-                                    class="img-border" 
-                                    src="/assets/img/portrait/avatars/avatar-08.png" 											
-                                    style="width:100%;"																												                                    
-                                    *ngIf="!cm.avatar_img || cm.avatar_img.length <= 0" /> 
+
+                                    <img
+                                    class="img-border"
+                                    src="/assets/img/portrait/avatars/avatar-08.png"
+                                    style="width:100%;"
+                                    *ngIf="!cm.avatar_img || cm.avatar_img.length <= 0" />
                             </div>
-                            <div class="col-8" style="color:black;">     
+                            <div class="col-8" style="color:black;">
                                 <div class="row">
                                     <div class="col-12">
                                         <b> {{ cm.responsible }} </b> <i style="font-size:10px">({{ cm.created_date_br }} {{ cm.created_hour_br  }})</i>
-                                        <markdown [data]="cm.commentary" style="margin-bottom:0 !important"></markdown>			
+                                        <markdown [data]="cm.commentary" style="margin-bottom:0 !important"></markdown>
                                     </div>
-                                </div>                          
+                                </div>
                             </div>
                             <div class="col-2 text-right pl-0" style="display:none">
-                                <button type="button" class="btn btn-silver btn-sm" 
-                                    style="margin: 0; padding:2px; line-height:10px"			                                        
+                                <button type="button" class="btn btn-silver btn-sm"
+                                    style="margin: 0; padding:2px; line-height:10px"
                                     *ngIf="!cm.archive"
                                     (click)="cm.archive = true">
-                                    <i class="fas fa-archive"></i>                                        
-                                </button>                                    
-                                <button type="button" class="btn btn-danger btn-sm" 
-                                    *ngIf="cm.archive"
-                                    style="margin:0;padding:2px;line-height:10px"			                                        
-                                    (click)="archive_comment(cm)">
-                                    <i class="fas fa-archive"></i>                                        
+                                    <i class="fas fa-archive"></i>
                                 </button>
-                                <button type="button" class="btn btn-secondary btn-sm" 
+                                <button type="button" class="btn btn-danger btn-sm"
                                     *ngIf="cm.archive"
-                                    style="margin:0;padding:2px;line-height:10px"			                                        
+                                    style="margin:0;padding:2px;line-height:10px"
+                                    (click)="archive_comment(cm)">
+                                    <i class="fas fa-archive"></i>
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm"
+                                    *ngIf="cm.archive"
+                                    style="margin:0;padding:2px;line-height:10px"
                                     (click)="cm.archive = false">
-                                    <i class="icon-action-undo"></i>                                        
-                                </button>                                    
+                                    <i class="icon-action-undo"></i>
+                                </button>
                             </div>
-                        </div>        
-                    </div> 
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>    
+        </div>
     </div>
-    <div class="modal-footer" *ngIf="saving">        
+    <div class="modal-footer" *ngIf="saving">
         <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
     </div>
     <div class="modal-footer" *ngIf="!saving">
@@ -126,13 +128,13 @@
             <i class="fas fa-edit"></i>
             Alterar
         </button>
-        <button type="button" class="btn btn-silver" 			
+        <button type="button" class="btn btn-silver"
             *ngIf="!begin_remove"
             (click)="open_move_modal(d)">
             <i class="fas fa-expand-arrows-alt"></i>
             Mover
         </button>
-        <button type="button" class="btn btn-silver" 			
+        <button type="button" class="btn btn-silver"
             *ngIf="!begin_remove && card.is_task"
             (click)="begin_remove = true">
             <i class="fas fa-archive"></i>
@@ -141,13 +143,13 @@
         <span *ngIf="begin_remove">
             Confirma Arquivamento?
         </span>
-        <button type="button" class="btn btn-danger" 
+        <button type="button" class="btn btn-danger"
             *ngIf="begin_remove && card.is_task"
             (click)="archive_card(d);">
             <i class="fas fa-archive"></i>
             Arquivar!
         </button>
-        <button type="button" class="btn btn-secondary" 
+        <button type="button" class="btn btn-secondary"
             *ngIf="begin_remove && card.is_task"
             (click)="begin_remove = false">
             <i class="icon-action-undo"></i>

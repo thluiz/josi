@@ -54,7 +54,7 @@
 				<div *ngIf="person.kf_name"
 					style="float:right;">
 					{{ person.kf_name }}
-				</div>				
+				</div>
 				<div *ngIf="person.program_id == 1"
 				[style.color]="person.contracted_p1_sessions  < person.p1_sessions_current_month ? 'red' : null"
 					style="float:right;">
@@ -86,13 +86,28 @@
 			</div>
 		</div>
 		<div class="row" style="line-height:10px">
-			<person-status-line
-			[person]="person"
-				[hideCommunicationStatus]="hideCommunicationStatus"
-				[hideScheduleStatus]="hideScheduleStatus"
-				[hideFinancialStatus]="hideFinancialStatus"
-				[hideDataStatus]="hideDataStatus">
-			</person-status-line>
+			<div class="col-12 pl-0">
+				<person-status-line
+				[person]="person"
+					[hideCommunicationStatus]="hideCommunicationStatus"
+					[hideScheduleStatus]="hideScheduleStatus"
+					[hideFinancialStatus]="hideFinancialStatus"
+					[hidePinnedCommentCount]="!hidePinnedComments"
+					[hideDataStatus]="hideDataStatus">
+				</person-status-line>
+			</div>
+		</div>
+		<div class="row"
+			*ngIf="!hidePinnedComments && person.pinned_comments && person.pinned_comments.length > 0"
+			>
+			<div class="col-12 pl-0">
+				<div class="row" *ngFor="let cm of person.pinned_comments">
+					<div class="col-12">
+						<markdown [data]="cm.comment"
+						style="margin-bottom:0 !important;"></markdown>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

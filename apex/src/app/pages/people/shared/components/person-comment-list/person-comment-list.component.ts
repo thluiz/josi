@@ -13,38 +13,39 @@ import { MarkdownService } from 'ngx-markdown';
 
 @Component({
   selector: 'person-comment-list',
-  templateUrl: './person-comment-list.component.html',  
+  templateUrl: './person-comment-list.component.html',
   styleUrls: ['./person-comment-list.scss']
 })
-export class PersonCommentListComponent implements OnInit, OnDestroy { 
+export class PersonCommentListComponent implements OnInit, OnDestroy {
 
-  comments: any;     
-  @Input() person:any;  
+  comments: any;
+  saving = false;
+  @Input() person:any;
 
   private comment_changes_subscriber: Subscription;
   private last_call : Date;
 
-  constructor(private modalService: ModalService, 
+  constructor(private modalService: ModalService,
     private parameterService: ParameterService,
     private personService: PersonService,
-    private markdownService: MarkdownService) {   
+    private markdownService: MarkdownService) {
 
   }
 
   ngOnInit() {
     this.comment_changes_subscriber = this.personService.commentChanges$.pipe(
-      filter((data) => {         
+      filter((data) => {
         return data != null && data.person.id == this.person.id
       }))
-      .subscribe((data) => {            
-        this.load_comments();      
+      .subscribe((data) => {
+        this.load_comments();
       });
 
     this.markdownService.renderer.paragraph = (text: string) => {
       const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
       return `<p style="margin-bottom:0">${text}</p>`;
-    };      
-    
+    };
+
     this.load_comments();
   }
 
@@ -62,12 +63,22 @@ export class PersonCommentListComponent implements OnInit, OnDestroy {
 
     this.last_call = new Date();
   }
-       
-  add_comment(){             
-      this.modalService.open(ModalType.AddPersonComment, this.person);    
-  } 
 
-  archive_comment(comment) {    
-    this.personService.archiveComment(comment, this.person).subscribe();
+  add_comment(){
+      this.modalService.open(ModalType.AddPersonComment, this.person);
+  }
+
+  archive_comment(comment) {
+    this.saving = true;
+    this.personService.archiveComment(comment, this.person).subscribe((data) => {
+      this.saving = false;
+    });
+  }
+
+  toggle_pin_comment(comment) {
+    this.saving = true;
+    this.personService.togglePinComment(comment, this.person).subscribe((data) => {
+      this.saving = false;
+    });
   }
 }

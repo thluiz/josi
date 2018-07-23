@@ -89,7 +89,10 @@
                     </tr>
                     <tr *ngFor="let person of d.daily, let k4 = index">
                       <td>
-                        <person-card [person]="person"></person-card>
+                        <person-card
+                          [person]="person"
+                          [hidePinnedComments]="true">
+                        </person-card>
                       </td>
                       <td valign="middle" align="center" *ngFor="let item of person.dates, let k2 = index" style="border-right:1px solid grey"
                         [ngClass]=" selected_week.current && k2 == current_week_day ? (k4 % 2 == 0 ? 'current2' : 'current') : '' ">
@@ -123,7 +126,7 @@
               </tr>
               <tr *ngFor="let visitant of external_people, let ke = index">
                 <td>
-                  <person-card [person]="visitant"></person-card>
+                  <person-card [person]="visitant" [hidePinnedComments]="true"></person-card>
                 </td>
                 <td valign="middle" align="center" *ngFor="let item of visitant.dates, let k2 = index" style="border-right:1px solid grey"
                   [ngClass]=" selected_week.current && k2 == current_week_day ? (ke % 2 == 0 ? 'current2' : 'current') : '' ">

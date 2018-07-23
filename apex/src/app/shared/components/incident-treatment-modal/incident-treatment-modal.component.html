@@ -19,7 +19,8 @@
     <form class="form" #f="ngForm">
       <div class="row" *ngIf="person">
         <div class="col-12">
-          <person-card [person]="person">
+          <person-card [person]="person"
+            [hidePinnedComments]="false">
           </person-card>
         </div>
       </div>

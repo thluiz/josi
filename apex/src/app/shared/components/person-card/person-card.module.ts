@@ -11,6 +11,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { FilterPrincipalPipeModule } from 'app/shared/pipes/filter-principal/filter-principal.module';
 import { FilterPrincipalPipe } from 'app/shared/pipes/filter-principal/filter-principal.pipe';
+import { MarkdownModule } from 'ngx-markdown';
 
 @NgModule({
     imports: [
@@ -21,9 +22,10 @@ import { FilterPrincipalPipe } from 'app/shared/pipes/filter-principal/filter-pr
         ContactListitemModule,
         ContactButtonitemModule,
         FilterPrincipalPipeModule,
-        PersonAvatarImageModule      
+        PersonAvatarImageModule,
+        MarkdownModule.forRoot()
     ],
-    declarations: [       
+    declarations: [
         PersonCardComponent, FilterPrincipalPipe
     ], exports: [
         PersonCardComponent

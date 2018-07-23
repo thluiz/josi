@@ -16,6 +16,7 @@ export class PersonCardComponent implements OnInit {
   @Input() hideScheduleStatus = false;
   @Input() hideFinancialStatus = false;
   @Input() hideDataStatus = false;
+  @Input() hidePinnedComments = true;
   @Input() editAvatarOnClick = false;
 
   constructor() {
