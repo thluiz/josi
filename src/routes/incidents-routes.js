@@ -53,7 +53,8 @@ function routes(app) {
             id: req.body.id,
             close_text: req.body.close_text,
             title: req.body.title,
-            payment_method_id: req.body.payment_method_id
+            payment_method_id: req.body.payment_method_id,
+            fund_value: req.body.fund_value
         }, yield user.getPersonId());
         response.send(result);
     }));

@@ -436,7 +436,9 @@
                                     </div>
                                 </div>
 
-                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;" *ngIf="person.is_active_member || person.is_leaving || person.is_inactive_member || person.is_interested">
+                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;"
+                                *ngIf="person.is_active_member || person.is_leaving || person.is_inactive_member
+                                    || person.is_interested || person.is_disciple">
                                     <person-indication-list
                                     [navigateToIndication]="true"
                                     (onNavigateToIndication)="changePerson($event)"

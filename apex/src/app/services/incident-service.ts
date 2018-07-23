@@ -54,7 +54,8 @@ export class IncidentService {
       id: incident.id,
       close_text: incident.close_text,
       title: incident.title,
-      payment_method_id: incident.payment_method_id
+      payment_method_id: incident.payment_method_id,
+      fund_value: incident.fund_value
     });
   }
 

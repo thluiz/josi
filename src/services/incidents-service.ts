@@ -62,6 +62,7 @@ export class IncidentsService {
     @trylog()
     @firebaseEmitter(EVENTS_COLLECTION)
     static async close_incident(incident, responsible_id): Promise<Result> {
+        console.log(incident);
         let execution = await DatabaseFacility.ExecuteTypedJsonSP(
             INCIDENT_ENDED,
             "CloseIncident",
@@ -69,7 +70,9 @@ export class IncidentsService {
             { "close_description": incident.close_text || "" },
             { "title": incident.title || "" },
             { "responsible_id": responsible_id },
-            { "payment_method_id": incident.payment_method_id > 0 ? incident.payment_method_id : null }
+            { "fund_value": incident.fund_value },
+            { "payment_method_id": incident.payment_method_id > 0 ?
+                                    incident.payment_method_id : null }
         );
 
         if (execution.success) {

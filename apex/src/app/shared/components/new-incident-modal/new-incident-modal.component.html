@@ -179,8 +179,7 @@
                         <select id="new_incident_add_to_ownernership"
                             [(ngModel)]="new_incident.add_to_ownernership"
                             class="form-control"
-                            (ngModelChange) ="get_available_ownerships()"
-                            >
+                            (ngModelChange) ="get_available_ownerships()">
                             <option [ngValue]="1">Nova Titularidade</option>
                             <option [ngValue]="2">Titularide Agendada/em Andamento</option>
                         </select>
@@ -245,7 +244,7 @@
                 </div>
             </div>
             <div class="row" *ngIf="new_incident.type != null && new_incident.type.require_title">
-                <div class="col-12 pb-1">
+                <div class="col-12 pb-2">
                     <label for="new_incident_title" style="font-weight: bold">Título</label>
                     <input class="form-control"
                     [(ngModel)]="new_incident.title" id="new_incident_title"
@@ -253,7 +252,7 @@
                 </div>
             </div>
             <div class="row" *ngIf="new_incident.type != null">
-                <div class="col-12">
+                <div class="col-12 pb-2">
                     <label for="new_incident_description" style="font-weight: bold">Descrição</label>
                     <textarea class="form-control"
                     id="new_incident_description"
@@ -262,7 +261,7 @@
                 </div>
             </div>
             <div class="row" *ngIf="new_incident.type != null && new_incident.type.need_value">
-                <div class="col-12">
+                <div class="col-12 pb-2">
                     <label for="new_incident_value" style="font-weight: bold">Valor</label>
                     <input type="number" id="new_incident_value"
                         [(ngModel)]="new_incident.value"

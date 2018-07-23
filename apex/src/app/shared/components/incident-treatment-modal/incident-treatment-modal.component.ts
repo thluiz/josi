@@ -193,6 +193,12 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if ((incident.require_fund_value || incident.define_fund_value)
+        && incident.fund_value <= 0) {
+      incident.valid_for_closing = false;
+      return;
+    }
+
     incident.valid_for_closing = true;
   }
 

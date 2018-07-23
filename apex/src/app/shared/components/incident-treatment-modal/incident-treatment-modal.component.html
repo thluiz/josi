@@ -29,6 +29,11 @@
           <markdown [data]="current_incident.title"></markdown>
         </div>
       </div>
+      <div class="row" *ngIf="current_incident.fund_value > 0">
+        <div class="col-6 pb-3">
+          <label>Valor para o Fundo:</label> {{ current_incident.fund_value }}
+        </div>
+      </div>
       <div class="row" *ngIf="current_incident.description">
         <div class="col-12 pb-3">
           <label>Descrição</label>
@@ -50,10 +55,7 @@
 
       <div class="row" *ngIf="person">
         <div class="col-12">
-          <person-incident-history-list [person]="person"
-            [current]="current_incident"
-            [start_date]="history_start_date"
-            [end_date]="history_end_date"
+          <person-incident-history-list [person]="person" [current]="current_incident" [start_date]="history_start_date" [end_date]="history_end_date"
             [activity_type]="current_incident.activity_type"></person-incident-history-list>
         </div>
       </div>
@@ -143,13 +145,10 @@
         <div class="col-4" *ngIf="!current_incident.closed_on_hour">
           {{ current_incident.started_on_hour }}
 
-          <i class="ft-trash-2" (click)="current_incident.cancelling_start = true"
-            title="Cancelar inicio da atividade"
-            *ngIf="!current_incident.closed_on_hour && !current_incident.cancelling_start"
+          <i class="ft-trash-2" (click)="current_incident.cancelling_start = true" title="Cancelar inicio da atividade" *ngIf="!current_incident.closed_on_hour && !current_incident.cancelling_start"
             style="cursor: pointer;">
           </i>
-          <i class="ft-rotate-ccw" title="Manter inicio da atividade"
-          *ngIf="current_incident.cancelling_start" (click)="current_incident.cancelling_start = false"
+          <i class="ft-rotate-ccw" title="Manter inicio da atividade" *ngIf="current_incident.cancelling_start" (click)="current_incident.cancelling_start = false"
             style="cursor: pointer;">
           </i>
           <i class="ft-trash-2" title="Confirmar cancelamento inicio da atividade" *ngIf="current_incident.cancelling_start" (click)="cancel_start_incident(current_incident, d);"
@@ -187,7 +186,7 @@
                                       && !current_incident.treated
                                       && (!current_incident.need_to_be_started
                                       || current_incident.started_on_hour)">
-            <div class="col-12 pt-3">
+            <div class="col-12 pt-1">
               <fieldset class="form-group">
                 <label for="current_incident_title">Título</label>
                 <input class="form-control" id="current_incident_title" name="current_incident_title" (ngModelChange)="validate_for_closing(current_incident)"
@@ -208,7 +207,7 @@
                                   && !current_incident.treated
                                   && (!current_incident.need_to_be_started
                                   || current_incident.started_on_hour)">
-            <div class="col-12">
+            <div class="col-12 pt-1">
               <fieldset class="form-group">
                 <label for="closing_contact_text">Como foi?</label>
                 <textarea class="form-control" id="closing_contact_text" name="closing_contact_text" [(ngModel)]="current_incident.close_text"
@@ -222,12 +221,13 @@
             </div>
           </div>
           <div class="row" *ngIf="!current_incident.in_treatment
-                                    && current_incident.require_payment_method
+                                    && (current_incident.require_payment_method
+                                        || current_incident.define_fund_value)
                                     && !current_incident.closed
                                     && !current_incident.treated
                                     && (!current_incident.need_to_be_started
                                     || current_incident.started_on_hour)">
-            <div class="col-12 pt-3">
+            <div class="col-12 pt-1">
               <fieldset class="form-group">
                 <label for="current_incident_payment_method">Forma de Pagamento</label>
                 <select id="current_incident_payment_method" name="current_incident_payment_method" [(ngModel)]="current_incident.payment_method_id"
@@ -241,6 +241,31 @@
                   && !current_incident.valid_for_closing
                   && !current_incident.payment_method_id">
                 * Informe a forma de pagamento para finalizar
+              </span>
+            </div>
+          </div>
+          <div class="row" *ngIf="!current_incident.in_treatment
+          && (current_incident.define_fund_value || current_incident.need_fund_value)
+          && !current_incident.closed
+          && !current_incident.treated
+          && (!current_incident.need_to_be_started
+              || current_incident.started_on_hour)">
+            <div class="col-12 pt-1">
+              <fieldset class="form-group">
+                <label for="current_incident_fund_value">Valor para o Fundo</label>
+                <input type="number"
+                  id="current_incident_fund_value" name="current_incident_fund_value"
+                  [(ngModel)]="current_incident.fund_value"
+                  (ngModelChange)="validate_for_closing(current_incident)"
+                  class="form-control text-right"/>
+              </fieldset>
+              <span style="font-style: italic;color:red"
+              *ngIf="current_incident.valid_for_closing != null
+                  && current_incident.valid_for_closing != undefined
+                  && !current_incident.valid_for_closing
+                  && (current_incident.define_fund_value || current_incident.need_fund_value)
+                  && current_incident.fund_value <= 0">
+                * Informe o valor para o fundo para finalizar
               </span>
             </div>
           </div>

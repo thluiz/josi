@@ -54,7 +54,9 @@ class IncidentsService {
     }
     static close_incident(incident, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let execution = yield database_facility_1.DatabaseFacility.ExecuteTypedJsonSP(exports.INCIDENT_ENDED, "CloseIncident", { "incident": incident.id }, { "close_description": incident.close_text || "" }, { "title": incident.title || "" }, { "responsible_id": responsible_id }, { "payment_method_id": incident.payment_method_id > 0 ? incident.payment_method_id : null });
+            console.log(incident);
+            let execution = yield database_facility_1.DatabaseFacility.ExecuteTypedJsonSP(exports.INCIDENT_ENDED, "CloseIncident", { "incident": incident.id }, { "close_description": incident.close_text || "" }, { "title": incident.title || "" }, { "responsible_id": responsible_id }, { "fund_value": incident.fund_value }, { "payment_method_id": incident.payment_method_id > 0 ?
+                    incident.payment_method_id : null });
             if (execution.success) {
                 try {
                     const IR = yield database_facility_1.DatabaseFacility.getRepository(Incident_1.Incident);
