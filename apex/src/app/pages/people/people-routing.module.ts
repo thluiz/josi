@@ -16,39 +16,39 @@ import { Routes, RouterModule } from '@angular/router';
 
 let routes: Routes = [
   {
-    path: 'members/management/:branch/:filter',
+    path: 'members/management/:branch/:filter/:program/:domain',
     component: ManagementPanelPageComponent,
     data: {
       title: 'Painel de Gerência de Membros'
-    },    
+    },
   },
   {
     path: 'members/management',
     component: ManagementPanelPageComponent,
     data: {
       title: 'Painel de Gerência de Membros'
-    },    
+    },
   },
   {
     path: 'members',
     component: MembersPanelPageComponent,
     data: {
       title: 'Painel de Membros'
-    },    
-  }, 
+    },
+  },
   {
     path: 'person/:id',
     component: PersonPageComponent,
     data: {
       title: 'Detalhe da Pessoa'
-    },    
+    },
   },
   {
     path: 'person/edit/:id',
     component: PersonEditPageComponent,
     data: {
       title: 'Detalhe da Pessoa'
-    },    
+    },
   },
   {
     path: 'operator/:id',
@@ -61,22 +61,22 @@ let routes: Routes = [
   {
     path: 'interested',
     component: InterestedPanelPageComponent,
-    data: { },    
+    data: { },
   },
   {
     path: 'away',
     component: PeopleAwayPageComponent,
-    data: { },    
+    data: { },
   },
   {
     path: 'service_provider',
     component: PeopleServiceProviderPageComponent,
-    data: { },    
+    data: { },
   },
   {
     path: 'voucher',
     component: VoucherPeoplePageComponent,
-    data: { },    
+    data: { },
   }
 ];
 

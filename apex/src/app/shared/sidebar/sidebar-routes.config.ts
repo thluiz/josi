@@ -38,19 +38,11 @@ export const ROUTES: RouteInfo[] = [
         badgeClass: '', isExternalLink: false,
         submenu: [
             {
-                path: '/people/members', title: 'Membros',
+                path: '/people/members/management', title: 'Membros',
                 icon: '',
                 class: '', badge: '',
                 badgeClass: '', isExternalLink: false,
-                submenu: [
-                    {
-                        path: '/people/members/management', title: 'Gerenciamento',
-                        icon: '',
-                        class: '', badge: '',
-                        badgeClass: '', isExternalLink: false,
-                        submenu: []
-                    }
-                ]
+                submenu: []
             }, {
                 path: '/people/voucher', title: 'Convidados',
                 icon: '',

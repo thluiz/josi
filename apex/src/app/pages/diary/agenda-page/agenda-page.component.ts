@@ -164,16 +164,16 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.current_activities.filter_activities(this.current_branch);
     }
 
-    if(this.current_branch == 0) {
-      this.current_branch_name = "Todos os Núcleos";
-      return;
-    }
-
     if(this.lateralSummaryComponent) {
       this.lateralSummaryComponent.forEach(ls => {
         ls.branch = this.current_branch;
         ls.getPeopleSummaryData()
       });
+    }
+
+    if(this.current_branch == 0) {
+      this.current_branch_name = "Todos os Núcleos";
+      return;
     }
 
     const current = this.branches.find((b) => b.id == this.current_branch);

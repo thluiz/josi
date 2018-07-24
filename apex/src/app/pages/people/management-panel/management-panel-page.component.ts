@@ -12,64 +12,69 @@ import { SecurityService } from 'app/services/security-service';
   templateUrl: './management-panel-page.component.html',
   styleUrls: ['../people-customizations.scss'],
   providers: [DatePickerI18n,
-    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
+    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter},
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
 export class ManagementPanelPageComponent implements OnInit, OnDestroy {
-  people: any;    
+  people: any;
   all_people: any;
   current_view = 0;
   filters = "1";
-  current_branch = 0; 
+  current_branch = 0;
+  program = 0;
+  domain = 0;
   branches: any;
+  domains = [];
 
 
-  private person_list_sub: Subscription;  
+  private person_list_sub: Subscription;
   private router_sub : any;
 
   constructor(
-    private personService: PersonService, 
-    private securityService: SecurityService, 
+    private personService: PersonService,
+    private securityService: SecurityService,
     private route: ActivatedRoute,
-    private router: Router, 
-    private modalService: NgbModal,
-    private parameterService: ParameterService,
-    private datePickerConfig: NgbDatepickerConfig) {      
-  
-  }  
+    private router: Router,
+    private parameterService: ParameterService) {
 
-  ngOnInit() {    
-    this.router_sub = this.route.params.subscribe(params => {      
-      this.current_branch = params['branch'] || 0;            
-      this.filters = params['filter'] || 1;           
-      
-      this.parameterService.getActiveBranches().subscribe((branches) => {
-        this.branches = branches;
-      });
+  }
+
+  ngOnInit() {
+    this.router_sub = this.route.params.subscribe(params => {
+      this.current_branch = params['branch'] || 0;
+      this.program = params['program'] || 0;
+      this.domain = params['domain'] || 0;
+      this.filters = params['filter'] || 1;
 
       this.parameterService.getActiveBranches().subscribe((branches) => {
-        this.branches = branches;
+        this.branches = branches.filter(b => b.category_id == 1);
       });
 
-      this.securityService.getCurrentUserData().subscribe((user) => {      
+      if(this.program > 0) {
+        this.parameterService.getDomains().subscribe((domains) => {
+          this.domains = domains.filter(b => b.program_id == this.program);
+        });
+      }
+
+      this.securityService.getCurrentUserData().subscribe((user) => {
         this.current_branch = params['branch'] || user.default_branch_id || 0;
         this.load_members_list();
-      });       
-    });    
+      });
+    });
   }
-  
+
   ngOnDestroy() {
     this.person_list_sub.unsubscribe();
     this.router_sub.unsubscribe();
   }
 
-  apply_filters() {  
+  apply_filters() {
     let people = this.all_people;
-    
-    switch(this.filters) {      
+
+    switch(this.filters) {
       case "1":
         people = people.filter((p : any) => {
-          return p.comunication_status 
+          return p.comunication_status
                 || p.financial_status != 0
                 || p.scheduling_status != 0
                 || p.data_status != 0;
@@ -91,7 +96,7 @@ export class ManagementPanelPageComponent implements OnInit, OnDestroy {
         });
       break;
       case "5":
-        people = people.filter((p : any) => {          
+        people = people.filter((p : any) => {
           return p.comunication_status;
         });
       break;
@@ -108,25 +113,37 @@ export class ManagementPanelPageComponent implements OnInit, OnDestroy {
       });
     }
 
+    if(this.program > 0) {
+      people = people.filter((p : any) => {
+        return p.program_id == this.program;
+      });
+    }
+
+    if(this.domain > 0) {
+      people = people.filter((p : any) => {
+        return p.domain_id == this.domain;
+      });
+    }
+
     this.people = people;
   }
 
   filter_people() {
-    this.router.navigateByUrl(`people/members/management/${this.current_branch}/${this.filters}`);
+    this.router.navigateByUrl(`people/members/management/${this.current_branch}/${this.filters}/${this.program}/${this.domain}`);
   }
 
-  load_members_list() {    
+  load_members_list() {
     if(this.person_list_sub) {
       this.person_list_sub.unsubscribe();
     }
 
     this.person_list_sub = this.personService.getPeopleList().subscribe(
-      data => {           
-        const result = data;   
+      data => {
+        const result = data;
         this.all_people = result;
 
         this.apply_filters();
       }
-    );  
+    );
   }
 }
