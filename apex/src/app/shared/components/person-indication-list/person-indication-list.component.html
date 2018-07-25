@@ -41,7 +41,9 @@
         {{ item.indicated_name }}
       </div>
       <div class="col-2 text-center">
-        <a (click)="open_card(item.monitoring_card_id)" *ngIf="item.monitoring_card_id > 0">
+        <a (click)="open_card(item.monitoring_card_id)"
+        [style.color]="item.current_step_number == 1 && item.due_date_ts < current_date ? 'red' : null"
+        *ngIf="item.monitoring_card_id > 0">
           {{ (item.current_step || "").replace("Aguardando", "Ag.") }}
         </a>
       </div>
@@ -94,7 +96,9 @@
     {{ item.indicated_name }}
   </div>
   <div class="col-2 text-center">
-    <a (click)="open_card(item.monitoring_card_id)" *ngIf="item.monitoring_card_id > 0">
+    <a (click)="open_card(item.monitoring_card_id)"
+      [style.color]="item.current_step_number == 1 && item.due_date_ts < current_date ? 'red' : null"
+      *ngIf="item.monitoring_card_id > 0">
       {{ (item.current_step || "").replace("Aguardando", "Ag.") }}
     </a>
   </div>

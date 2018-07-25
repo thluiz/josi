@@ -21,6 +21,7 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
   indications: any[];
   indirect_indications: any[];
   invites: any[];
+  current_date : number;
 
   @Input() d: any;
   @Input() person: any;
@@ -93,6 +94,7 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
   }
 
   load_indications() {
+    this.current_date = (new Date().getTime())/1000;
     this.loading = true;
     if (this.last_call != null && ((new Date()).getTime() - (this.last_call.getTime()) <= this.parameterService.getTimeReloadComponents())) {
       this.loading = false;

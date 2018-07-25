@@ -104,6 +104,10 @@ export class ManagementPanelPageComponent implements OnInit, OnDestroy {
         people = people.filter((p : any) => {
           return p.has_birthday_this_month;
         });
+      case "7":
+        people = people.filter((p : any) => {
+          return p.is_disciple;
+        });
       break;
     }
 
