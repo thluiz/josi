@@ -44,14 +44,7 @@ export const ROUTES: RouteInfo[] = [
                 badgeClass: '', isExternalLink: false,
                 submenu: []
             }, {
-                path: '/people/voucher', title: 'Convidados',
-                icon: '',
-                class: '', badge: '',
-                badgeClass: '', isExternalLink: false,
-                submenu: []
-            },
-            {
-                path: '/people/interested', title: 'Interessados',
+                path: '/people/external_contacts', title: 'Contatos Externos',
                 icon: '',
                 class: '', badge: '',
                 badgeClass: '', isExternalLink: false,
@@ -65,7 +58,7 @@ export const ROUTES: RouteInfo[] = [
                 submenu: []
             },
             {
-                path: '/people/service_provider', title: 'Prestadores de Serviço',
+                path: '/people/service_provider', title: 'Prest. Serviços',
                 icon: '',
                 class: '', badge: '',
                 badgeClass: '', isExternalLink: false,

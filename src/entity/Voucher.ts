@@ -6,7 +6,7 @@ import { VoucherType } from "./VoucherType";
 export class Voucher {
     @PrimaryGeneratedColumn()
     id: number;
-    
+
     @Column()
     title: string;
 
@@ -20,7 +20,7 @@ export class Voucher {
     @Column()
     youtube_url: string;
 
-    @Column()    
+    @Column()
     header_text: string;
 
     @Column()
@@ -44,11 +44,14 @@ export class Voucher {
     @Column()
     active: boolean;
 
+    @Column()
+    order: number;
+
     @ManyToMany(type => Branch)
-    @JoinTable({    
+    @JoinTable({
         name: "branch_voucher",
         joinColumns : [ {name: "voucher_id" }],
         inverseJoinColumns: [{name: "branch_id"}]
     })
     branches: Branch[];
-} 
+}

@@ -68,6 +68,10 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Voucher.prototype, "active", void 0);
 __decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], Voucher.prototype, "order", void 0);
+__decorate([
     typeorm_1.ManyToMany(type => Branch_1.Branch),
     typeorm_1.JoinTable({
         name: "branch_voucher",

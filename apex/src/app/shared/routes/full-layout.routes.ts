@@ -38,6 +38,10 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/people/people.module#PeopleModule'
   },
   {
+    path: 'people/external_contacts',
+    loadChildren: './pages/people/people.module#PeopleModule'
+  },
+  {
     path: 'people/members',
     loadChildren: './pages/people/people.module#PeopleModule'
   },
@@ -56,11 +60,11 @@ export const Full_ROUTES: Routes = [
   {
     path: 'people/interested',
     loadChildren: './pages/people/people.module#PeopleModule'
-  },  
+  },
   {
     path: 'people/away',
     loadChildren: './pages/people/people.module#PeopleModule'
-  },   
+  },
   {
     path: 'people/voucher',
     loadChildren: './pages/people/people.module#PeopleModule'

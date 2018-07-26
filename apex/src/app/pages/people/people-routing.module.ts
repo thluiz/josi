@@ -8,6 +8,7 @@ import { ManagementPanelPageComponent } from './management-panel/management-pane
 import { PersonPageComponent } from './person/person-page.component';
 import { PersonEditPageComponent } from './edit/person-edit-page.component';
 import { VoucherPeoplePageComponent } from './voucher/voucher-people-page.component';
+import { ExternalContactsPageComponent } from './external-contacts/external-contacts-page.component';
 
 
 import { NgModule } from '@angular/core';
@@ -27,6 +28,13 @@ let routes: Routes = [
     component: ManagementPanelPageComponent,
     data: {
       title: 'Painel de Gerência de Membros'
+    },
+  },
+  {
+    path: 'external_contacts',
+    component: ExternalContactsPageComponent,
+    data: {
+      title: 'Contatos Externos'
     },
   },
   {

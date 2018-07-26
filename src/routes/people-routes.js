@@ -12,6 +12,7 @@ const auth = require("../../src/middlewares/auth");
 const multer = require("multer");
 const multer_azure_blob_storage_1 = require("multer-azure-blob-storage");
 const people_service_1 = require("../services/people-service");
+const people_repository_1 = require("../repositories/people-repository");
 const azureStorage = new multer_azure_blob_storage_1.MulterAzureStorage({
     connectionString: process.env.AZURE_AVATAR_STORAGE,
     containerName: 'avatars',
@@ -24,6 +25,10 @@ const upload = multer({
 function routes(app) {
     app.post("/api/people/avatar_image", auth.ensureLoggedIn(), upload.any(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield people_service_1.PeopleService.save_avatar_image(req.body.id, req.files[0].blobName);
+        res.send(result);
+    }));
+    app.get("/api/external_contacts", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield people_repository_1.PeopleRepository.getExternalContacts(req.query.branch > 0 ? req.query.branch : null, req.query.voucher > 0 ? req.query.voucher : null, req.query.name, req.query.voucher_status > 0 ? req.query.voucher_status : null, req.query.people_per_page > 0 ? req.query.people_per_page : null, req.query.page > 1 ? req.query.page : 1);
         res.send(result);
     }));
 }

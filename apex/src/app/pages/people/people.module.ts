@@ -15,19 +15,20 @@ import { ManagementPanelPageComponent } from './management-panel/management-pane
 import { MembersPanelPageComponent } from './members-panel/members-panel-page.component';
 import { OperatorPageComponent } from 'app/pages/people/operator/operator-page.component';
 import { OperatorConfigPageComponent } from './operator-config/operator-config-page.component';
+import { ExternalContactsPageComponent } from './external-contacts/external-contacts-page.component';
 
 import { PeopleRoutingModule } from './people-routing.module';
 
-import { NgbModal, 
-    NgbDateStruct, 
-    NgbDatepickerI18n, 
+import { NgbModal,
+    NgbDateStruct,
+    NgbDatepickerI18n,
     NgbDatepickerModule,
-    NgbCalendar, 
-    NgbTimeStruct,      
-    ModalDismissReasons, 
+    NgbCalendar,
+    NgbTimeStruct,
+    ModalDismissReasons,
     NgbTimepickerModule,
     NgbActiveModal,
-    NgbModule     
+    NgbModule
 } from '@ng-bootstrap/ng-bootstrap';
 import { MarkdownModule } from 'ngx-markdown';
 import { PeopleHeaderModule } from 'app/pages/people/shared/components/people-header/people-header.module';
@@ -46,16 +47,17 @@ import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-ima
 import { PersonIncidentHistoryListModule } from 'app/shared/components/person-incident-history-list/person-incident-history-list.module';
 
 
+
 @NgModule({
     imports: [
         CommonModule,
         PeopleRoutingModule,
-        FormsModule,                                 
-        ReactiveFormsModule,                        
+        FormsModule,
+        ReactiveFormsModule,
         NgbModule,
         NgbDatepickerModule.forRoot(),
-        NgbTimepickerModule.forRoot(),        
-        MarkdownModule.forRoot(),        
+        NgbTimepickerModule.forRoot(),
+        MarkdownModule.forRoot(),
         PersonCardModule,
         PersonContactListModule,
         PersonStatusLineModule,
@@ -74,7 +76,7 @@ import { PersonIncidentHistoryListModule } from 'app/shared/components/person-in
         PersonAvatarImageModule,
         PersonIncidentHistoryListModule
     ],
-    declarations: [       
+    declarations: [
         MembersPanelPageComponent,
         ManagementPanelPageComponent,
         PersonPageComponent,
@@ -84,7 +86,8 @@ import { PersonIncidentHistoryListModule } from 'app/shared/components/person-in
         PeopleServiceProviderPageComponent,
         OperatorPageComponent,
         OperatorConfigPageComponent,
-        VoucherPeoplePageComponent
+        VoucherPeoplePageComponent,
+        ExternalContactsPageComponent
     ]
 })
 export class PeopleModule { }

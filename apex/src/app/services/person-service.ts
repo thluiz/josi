@@ -101,6 +101,21 @@ export class PersonService {
     return this.http.get(this.dataUrl + `/invited_people?branch=${branch || 0}&name=${name || ""}&voucher=${voucher || 0}`);
   }
 
+  getExternalContactsList(branch, name, voucher, voucher_status) {
+    let query = `branch=${branch || 0}`;
+
+    if(name && name.length > 0)
+      query += `&name=${name}`;
+
+    if(voucher > 0)
+      query += `&voucher=${voucher}`;
+
+    if(voucher_status > 0)
+      query += `&voucher_status=${voucher_status}`;
+
+    return this.http.get(this.dataUrl + `/external_contacts?${query}`);
+  }
+
   getPeopleAwayList(branch, name) {
     return this.http.get(this.dataUrl + `/people-away?branch=${branch || 0}&name=${name || ""}`);
   }

@@ -1,0 +1,125 @@
+<float-action-center [branch]="current_branch">
+</float-action-center>
+<div class="card">
+  <people-header panel="voucher"></people-header>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12 col-md-2 pt-2 pb-0">
+        <div class="form-body">
+          <div class="form-group">
+            <label for="branch">Núcleo</label>
+            <select id="branch" [(ngModel)]="current_branch" class="form-control form-control-sm" [ngModelOptions]="{standalone: true}">
+              <option value="0">Todos</option>
+              <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-2 pt-2 pb-0">
+        <div class="form-body">
+          <div class="form-group">
+            <label for="branch">Voucher</label>
+            <select id="branch" [(ngModel)]="current_voucher"
+                class="form-control form-control-sm"
+                [ngModelOptions]="{standalone: true}">
+              <option value="0">Todos</option>
+              <option *ngFor="let v of vouchers" [value]="v.id">{{v.title}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-2 pt-2 pb-0">
+        <div class="form-body">
+          <div class="form-group">
+            <label for="branch">Estado</label>
+            <select id="branch" [(ngModel)]="voucher_status"
+                class="form-control form-control-sm"
+                [ngModelOptions]="{standalone: true}">
+              <option value="0">Todos</option>
+              <option value="1">Enviar</option>
+              <option value="2">Aguardando</option>
+              <option value="3">Agendar</option>
+              <option value="4">Praticando</option>
+              <option value="5">Matriculado</option>
+              <option value="6">Negociar</option>
+              <option value="7">Não Efetivado</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-2 pt-2 pb-0">
+        <div class="form-body">
+          <label for="search_name">Nome</label>
+          <div class="input-group">
+            <input class="form-control form-control-sm" placeholder=""
+            [(ngModel)]="search_name" (keydown)="keyDownFunction($event)"
+            name="search_name" />
+            <button type="button" class="input-group-addon" class="btn btn-silver btn-sm" style="margin:0;" (click)="filter_people()">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12  text-left">
+        <table class="table table-striped table-sm" *ngIf="people && people.length > 0">
+          <colgroup>
+            <col style="width:30%;" />
+            <col style="width:5%;" />
+            <col style="width:10%;text-align:center" />
+            <col style="width:10%;" />
+            <col style="width:10%;" />
+            <col style="width:20%;" />
+            <col style="width:15%;" />
+          </colgroup>
+          <thead style="font-size:10px;font-weight:bold">
+            <td>Nome</td>
+            <td>Núcleo</td>
+            <td></td>
+            <td>Estado</td>
+            <td>Próx. Ativ</td>
+            <td>Contatos</td>
+            <td>Comentários</td>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of people">
+              <td style="cursor:pointer" [routerLink]="['/people/person', p.id]">
+                {{ p.name }}
+              </td>
+              <td>
+                {{ p.branch_abrev.replace("Núcleo", "") }}
+              </td>
+              <td>
+                <person-status-line [person]="p"></person-status-line>
+              </td>
+              <td>
+                <a (click)="open_card_details(p.monitoring_card_id)" *ngIf="p.monitoring_card_id > 0">{{ p.current_step }}</a>
+                <span *ngIf="!p.monitoring_card_id">{{ p.current_step }}</span>
+                <ng-template [ngIf]="p.relationship_identifier != null && p.relationship_identifier.length > 0">
+                  <br />
+                  <a style="cursor:pointer;color:gray" target="_blank" href="http://myvtmi.im/voucher/membros/{{ p.relationship_identifier.substring(0, 5) }}">
+                    {{ p.relationship_identifier.substring(0, 5) }}
+                  </a>
+                </ng-template>
+              </td>
+              <td> {{ p.last_activity_description }} </td>
+              <td>
+                <ng-template ngFor let-pc [ngForOf]="p.contacts" let-k=index let-m=first>
+                  <div>
+                    <contact-listitem [contact]="pc"></contact-listitem>
+                  </div>
+                </ng-template>
+              </td>
+              <td>
+                <ng-template ngFor let-pc [ngForOf]="p.commentaries" let-k=index let-m=first>
+                  <p style="margin-bottom:0">{{ pc.comment }}</p>
+                </ng-template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
