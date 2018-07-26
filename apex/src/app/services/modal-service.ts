@@ -19,7 +19,8 @@ export enum ModalType{
     MoveCard,
     PersonFinancialTreatment,
     PersonScheduleTreatment,
-    FileUpload
+    FileUpload,
+    PersonOffering
 }
 
 export interface IModalOpening {
@@ -30,7 +31,7 @@ export interface IModalOpening {
 @Injectable()
 export class ModalService {
 
-    private open_modal = new Subject<IModalOpening>();    
+    private open_modal = new Subject<IModalOpening>();
     openModal$ = this.open_modal.asObservable();
 
     open(type: ModalType, parameters) {

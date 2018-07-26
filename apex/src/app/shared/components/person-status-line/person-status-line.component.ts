@@ -11,9 +11,9 @@ import { PersonService } from 'app/services/person-service';
 @Component({
   selector: 'person-status-line',
   templateUrl: './person-status-line.component.html',
+  styleUrls: ['./person-status-line.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class PersonStatusLineComponent implements OnInit {
 
   @Input() person: any;
@@ -46,7 +46,9 @@ export class PersonStatusLineComponent implements OnInit {
         data_status_description: this.incident.data_status_description,
         financial_description: this.incident.financial_description,
         scheduling_description: this.incident.scheduling_description,
-        pinned_comment_count: this.incident.pinned_comment_count
+        pinned_comment_count: this.incident.pinned_comment_count,
+        offering_status: this.incident.offering_status,
+        offering_status_description: this.incident.offering_status_description
       };
     }
 
@@ -63,6 +65,10 @@ export class PersonStatusLineComponent implements OnInit {
 
   show_person_comments() {
 
+  }
+
+  show_person_offers() {
+    this.modalService.open(ModalType.PersonOffering, this.person);
   }
 
   begin_person_data_treatment() {

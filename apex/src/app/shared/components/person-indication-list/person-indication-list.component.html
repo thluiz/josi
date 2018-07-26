@@ -31,33 +31,38 @@
 
 <div class="row indication" *ngFor="let item of invites">
   <div class="col-12">
-    <div class="row">
-      <div class="col-6" *ngIf="navigateToIndication">
-        <a style="cursor:pointer;color:gray" (click)="navigateToPerson(item.person2_id)">
+      <div class="row">
+        <div class="col-5" *ngIf="navigateToIndication">
+          <a style="cursor:pointer;color:gray" (click)="navigateToPerson(item.person2_id)">
+            {{ item.indicated_name }}
+          </a>
+        </div>
+        <div class="col-5" *ngIf="!navigateToIndication">
           {{ item.indicated_name }}
-        </a>
+        </div>
+        <div class="col-2 text-center">
+          <a (click)="open_card(item.monitoring_card_id)"
+          [style.color]="item.current_step_number == 1 && item.due_date_ts < current_date ? 'red' : null"
+          *ngIf="item.monitoring_card_id > 0">
+            {{ (item.current_step || "").replace("Aguardando", "Ag.") }}
+          </a>
+        </div>
+        <div class="col-2 text-center">
+          <a style="cursor:pointer;color:gray" (click)="openChangeIndicationType(item, modal_change_indication_type)">
+            {{ item.relationship_description.replace("Convite ", "") }}
+          </a>
+        </div>
+        <div class="col-2 text-center">
+          <a style="cursor:pointer;color:gray" target="_blank" href="http://myvtmi.im/voucher/membros/{{ item.identifier.substring(0, 5) }}">
+            {{ item.identifier.substring(0, 5) }}
+          </a>
+        </div>
+        <div class="col-1 text-center">
+          <a (click)="show_share(item)">
+            <i class="icon-share"></i>
+          </a>
+        </div>
       </div>
-      <div class="col-6" *ngIf="!navigateToIndication">
-        {{ item.indicated_name }}
-      </div>
-      <div class="col-2 text-center">
-        <a (click)="open_card(item.monitoring_card_id)"
-        [style.color]="item.current_step_number == 1 && item.due_date_ts < current_date ? 'red' : null"
-        *ngIf="item.monitoring_card_id > 0">
-          {{ (item.current_step || "").replace("Aguardando", "Ag.") }}
-        </a>
-      </div>
-      <div class="col-2 text-center">
-        <a style="cursor:pointer;color:gray" (click)="openChangeIndicationType(item, modal_change_indication_type)">
-          {{ item.relationship_description.replace("Convite ", "") }}
-        </a>
-      </div>
-      <div class="col-2 text-center">
-        <a style="cursor:pointer;color:gray" target="_blank" href="http://myvtmi.im/voucher/membros/{{ item.identifier.substring(0, 5) }}">
-          {{ item.identifier.substring(0, 5) }}
-        </a>
-      </div>
-    </div>
   </div>
 </div>
 <div class="row" *ngIf="needed_direct_indications > 0">

@@ -26,7 +26,7 @@
         </td>
         <td>
             <a
-            [routerLink]="['/people/members/management', branch, 4, s.program_id, 0]"
+            [routerLink]="['/people/members/management', branch || 0, 4, s.program_id || 0, 0]"
             [style.font-weight]="s.scheduling > 0 ? 'bold' : 'normal'"
             [style.color]="s.scheduling > 0 ? 'red' : ''"
             *ngIf="s.scheduling > 0">
@@ -36,7 +36,7 @@
         </td>
         <td>
             <a
-            [routerLink]="['/people/members/management', branch, 3, s.program_id, 0]"
+            [routerLink]="['/people/members/management', branch || 0, 3, s.program_id || 0, 0]"
             [style.font-weight]="s.financial > 0 ? 'bold' : 'normal'"
             [style.color]="s.financial > 0 ? 'red' : ''"
             *ngIf="s.financial > 0">
@@ -46,7 +46,7 @@
         </td>
         <td>
             <a
-            [routerLink]="['/people/members/management', branch, 5, s.program_id, 0]"
+            [routerLink]="['/people/members/management', branch || 0, 5, s.program_id || 0, 0]"
             [style.font-weight]="s.comunications > 0 ? 'bold' : 'normal'"
             [style.color]="s.comunications > 0 ? 'red' : ''"
             *ngIf="s.comunications > 0">

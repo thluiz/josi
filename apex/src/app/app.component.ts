@@ -17,6 +17,7 @@ import { NewPersonModalComponent } from 'app/shared/components/new-person-modal/
 import { NewCardModalComponent, CardType } from 'app/shared/components/new-card-modal/new-card-modal.component';
 import { PersonFinancialTreatmentModalComponent } from 'app/shared/components/person-financial-treatment-modal/person-financial-treatment-modal.component';
 import { PersonScheduleTreatmentModalComponent } from 'app/shared/components/person-schedule-treatment-modal/person-schedule-treatment-modal.component';
+import { PersonOfferingModalComponent } from './shared/components/person-offering-modal/person-offering-modal.component';
 
 import { AngularFirestore } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -43,24 +44,25 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild(PersonFinancialTreatmentModalComponent) personFinancialTreatmentModal : PersonFinancialTreatmentModalComponent;
     @ViewChild(PersonScheduleTreatmentModalComponent) personScheduleTreatmentModal : PersonScheduleTreatmentModalComponent;
     @ViewChild(FileUploadModalComponent) fileUploadModal : FileUploadModalComponent;
-    
-    constructor(private modalService: ModalService, 
+    @ViewChild(PersonOfferingModalComponent) personOfferingModal : PersonOfferingModalComponent;
+
+    constructor(private modalService: ModalService,
         private firebaseService: FirebaseService) {
-        
+
     }
 
     ngAfterViewInit() {
-    
+
     }
 
-    ngOnInit() {    
+    ngOnInit() {
         this.modal_subscriber = this.modalService.openModal$
             .subscribe((data) => {
                 switch(data.type) {
-                    case ModalType.PersonTreatment:                        
+                    case ModalType.PersonTreatment:
                         this.personDataTreatmentModal.open(data.parameters);
                         break;
-                    case ModalType.PersonComunicationTreatment:                        
+                    case ModalType.PersonComunicationTreatment:
                         this.personComunicationTreatmentModal.open(data.parameters);
                         break;
                     case ModalType.IncidentTreatment:
@@ -77,7 +79,7 @@ export class AppComponent implements OnInit, OnDestroy {
                         break;
                     case ModalType.IncidentCommentList:
                         this.incidentCommentsList.open(data.parameters);
-                        break;  
+                        break;
                     case ModalType.AddPerson:
                         this.newPersonModal.open(data.parameters);
                         break;
@@ -105,19 +107,22 @@ export class AppComponent implements OnInit, OnDestroy {
                         data.parameters.card_type = CardType.ProjectTask;
                         this.newCardModal.open(data.parameters);
                         break;
-                    case ModalType.DetailTask:                        
+                    case ModalType.DetailTask:
                         this.cardDetailModal.open(data.parameters);
                         break;
-                    case ModalType.EditCard:                        
+                    case ModalType.EditCard:
                         this.cardEditModal.open(data.parameters);
                         break;
-                    case ModalType.MoveCard: 
+                    case ModalType.MoveCard:
                         this.moveCardModal.open(data.parameters);
                         break;
-                    case ModalType.PersonFinancialTreatment: 
+                    case ModalType.PersonFinancialTreatment:
                         this.personFinancialTreatmentModal.open(data.parameters);
                         break;
-                    case ModalType.PersonScheduleTreatment: 
+                    case ModalType.PersonOffering:
+                        this.personOfferingModal.open(data.parameters)
+                        break;
+                    case ModalType.PersonScheduleTreatment:
                         this.personScheduleTreatmentModal.open(data.parameters);
                         break;
                     case ModalType.FileUpload:
@@ -125,8 +130,8 @@ export class AppComponent implements OnInit, OnDestroy {
                 }
             });
     }
-    
+
     ngOnDestroy() {
-        this.modal_subscriber.unsubscribe();    
+        this.modal_subscriber.unsubscribe();
     }
 }

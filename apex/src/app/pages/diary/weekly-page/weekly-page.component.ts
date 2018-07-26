@@ -30,6 +30,7 @@ import { LateralSummaryComponent } from 'app/shared/components/lateral-summary/l
 import { filter } from 'rxjs/operators';
 import { Result } from 'app/shared/models/result';
 import { LightIncident } from 'app/shared/models/incident-model';
+import { CurrentActivitiesComponent } from '../../../shared/components/current-activities/current-activities.component';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -43,6 +44,9 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
 
   @ViewChildren(LateralSummaryComponent)
   lateralSummaryComponent : QueryList<LateralSummaryComponent>;
+
+  @ViewChildren(CurrentActivitiesComponent)
+  currentActivitiesComponent : QueryList<CurrentActivitiesComponent>;
 
   daily: Observable<any[]>;
   cols;
@@ -122,6 +126,13 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
         ls.getPeopleSummaryData()
       });
     }
+
+    if(this.currentActivitiesComponent) {
+      this.currentActivitiesComponent.forEach(ls => {
+        ls.branch = this.current_branch;
+        ls.filter_activities(ls.branch);
+      });
+    }
   }
 
   change_week(modifier) {
@@ -132,6 +143,8 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   getMonitorData() {
     this.personService.getDailyMonitor(this.current_branch, DailyMonitorDisplayType.Week, this.current_week)
     .subscribe((result : Result<any>) => {
+
+
         const data = result.data[0] as any;
 
         this.branches = data.branches as any;

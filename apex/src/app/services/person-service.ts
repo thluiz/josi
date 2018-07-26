@@ -146,6 +146,10 @@ export class PersonService {
     return this.http.get(this.dataUrl + `/person_schedule/pending/${person_id}`);
   }
 
+  getPersonAvailableOffering(person_id) {
+    return this.http.get(this.dataUrl + `/person/offering?person_id=${person_id}`);
+  }
+
   getPersonMissingData(person_id) {
     return this.http.get(this.dataUrl + `/person/missing_data/${person_id}`);
   }

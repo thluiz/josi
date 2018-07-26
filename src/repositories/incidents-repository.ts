@@ -1,4 +1,3 @@
-import { LightIncident } from 'app/shared/models/incident-model';
 import { Repository } from 'typeorm';
 import { DatabaseFacility } from "../facilities/database-facility";
 import { Result } from "../helpers/result";
@@ -16,8 +15,8 @@ export class IncidentsRepository {
     }
 
     @trylog()
-    static async getAvailableOwnerships(branch_id, date, type): Promise<Result<LightIncident>> {
-        let result = await DatabaseFacility.ExecuteJsonSP<LightIncident>("GetAvailableOwnerships",
+    static async getAvailableOwnerships(branch_id, date, type): Promise<Result<Incident>> {
+        let result = await DatabaseFacility.ExecuteJsonSP<Incident>("GetAvailableOwnerships",
             { "branch_id": branch_id },
             { "date": date },
             { "type": type }

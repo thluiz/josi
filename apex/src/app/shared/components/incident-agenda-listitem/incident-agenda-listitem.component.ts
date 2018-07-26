@@ -60,6 +60,7 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
     }
 
     show_incident_details(incident) {
+      console.log(incident);
       this.modalService.open(ModalType.IncidentTreatment, incident);
     }
 

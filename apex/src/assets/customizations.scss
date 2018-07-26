@@ -1,4 +1,4 @@
-.white {    
+.white {
     color:white;
 }
 
@@ -69,7 +69,7 @@ task-treatment-card {
     border:1px solid silver;
     margin: auto;
     margin-right:5px;
-    margin-bottom:5px;    
+    margin-bottom:5px;
 }
 
 .card_due_date {
@@ -90,7 +90,7 @@ task-treatment-card {
 .card_actions {
     font-size:10px;
     padding:3px;
-    padding-top:5px;        
+    padding-top:5px;
     line-height: 10px;
     display: inline-block;
     margin-right: 1px;
@@ -100,7 +100,7 @@ task-treatment-card {
 }
 
 .contact_title {
-    font-size:10px;    
+    font-size:10px;
 }
 
 .card_comment_count {
@@ -119,17 +119,17 @@ task-treatment-card {
 .option_container {
     display: block;
     position: relative;
-    padding-left: 20px;    
+    padding-left: 20px;
     padding-top: 2px;
-    cursor: pointer;    
+    cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none;    
+    user-select: none;
 }
 
 .option_container:hover  {
-    text-decoration: underline; 
+    text-decoration: underline;
 }
 
 .option_container input {
@@ -148,7 +148,7 @@ task-treatment-card {
 }
 
 .option_container:hover input ~ .checkmark {
-    background-color: #ddd;      
+    background-color: #ddd;
 }
 
 .option_container input:checked ~ .checkmark {

@@ -1,3 +1,4 @@
+
 import { ApplicationEventService } from 'app/services/application-event-service';
 import { FirebaseService } from './services/firebase-service';
 import { AppInsightsService, ApplicationInsightsModule } from '@markpieszak/ng-application-insights';
@@ -47,13 +48,13 @@ import { PersonComunicationTreatmentModalModule } from 'app/shared/components/pe
 import { PersonDataTreatmentModalModule } from 'app/shared/components/person-data-treatment-modal/person-data-treatment-modal.module';
 import { PersonFinancialTreatmentModalModule } from 'app/shared/components/person-financial-treatment-modal/person-financial-treatment-modal.module';
 import { PersonScheduleTreatmentModalModule } from 'app/shared/components/person-schedule-treatment-modal/person-schedule-treatment-modal.module';
+import { PersonOfferingModalModule } from './shared/components/person-offering-modal/person-offering-modal.module';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { HttpService } from './services/http-service';
-
 
 @NgModule({
     declarations: [
@@ -65,7 +66,7 @@ import { HttpService } from './services/http-service';
         BrowserAnimationsModule,
         AppRoutingModule,
         SharedModule,
-        NgbModule.forRoot(),                        
+        NgbModule.forRoot(),
         HttpClientModule,
         PersonDataTreatmentModalModule,
         PersonComunicationTreatmentModalModule,
@@ -76,28 +77,29 @@ import { HttpService } from './services/http-service';
         NewIncidentModalModule,
         NewCardModalModule,
         CardDetailModalModule,
-        CardEditModalModule,  
-        MoveCardModalModule, 
+        CardEditModalModule,
+        MoveCardModalModule,
         FileUploadModalModule,
-        PersonFinancialTreatmentModalModule, 
-        PersonScheduleTreatmentModalModule,            
+        PersonFinancialTreatmentModalModule,
+        PersonScheduleTreatmentModalModule,
         ApplicationInsightsModule.forRoot({
             instrumentationKey: 'afcbdd7f-c599-45cd-8555-812c83b75ae6'
         }),
         AngularFireModule.initializeApp(environment.firebase),
         AngularFirestoreModule,
-        AngularFireAuthModule, 
-        AngularFireStorageModule,             
-        ToastrModule.forRoot()
+        AngularFireAuthModule,
+        AngularFireStorageModule,
+        ToastrModule.forRoot(),
+        PersonOfferingModalModule,
         //BrowserModule,
-        //FormsModule, 
+        //FormsModule,
         //JsonpModule
     ],
     providers: [
-        { 
-            provide: HTTP_INTERCEPTORS, 
-            useClass: SecurityHttpInterceptor, 
-            multi: true 
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: SecurityHttpInterceptor,
+            multi: true
         },
         AuthService,
         AuthGuard,
@@ -108,12 +110,12 @@ import { HttpService } from './services/http-service';
         ModalService,
         SecurityService,
         CardService,
-        FinancialService,        
-        AppInsightsService,        
+        FinancialService,
+        AppInsightsService,
         FirebaseService,
         ApplicationEventService,
         HttpService,
-        
+
     ],
     bootstrap: [AppComponent]
 })
