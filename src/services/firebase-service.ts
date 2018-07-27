@@ -2,7 +2,7 @@ import { Result } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
 
 import * as admin from 'firebase-admin';
-import { LoggerService, ErrorOrigins } from './logger-service';
+import { LoggerService } from './logger-service';
 import { trylog } from '../decorators/trylog-decorator';
 
 let db = null;
@@ -21,33 +21,33 @@ try {
                 "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                 "client_x509_cert_url": process.env.FIREBASE_CLIENT_CERT_URL
             } as any
-        )    
+        )
     });
 
     db = admin.firestore();
-} catch(error) {        
-    LoggerService.error(ErrorOrigins.Firebase, error, "Initializing");
+} catch(error) {
+    LoggerService.error(ErrorCode.Firebase, error, "Initializing");
 }
-    
+
 export class FirebaseService {
     @trylog()
-    static async get_token() : Promise<Result<string>> {        
-        let customToken = await admin.auth().createCustomToken(process.env.FIREBASE_UID);    
+    static async get_token() : Promise<Result<string>> {
+        let customToken = await admin.auth().createCustomToken(process.env.FIREBASE_UID);
 
-        return Result.GeneralOk(customToken);        
+        return Result.GeneralOk(customToken);
     }
 
     @trylog()
-    static emit_event<T>(collection, event : { id: string, data: Result<T> | Error, time?:number }): Result {                
+    static emit_event<T>(collection, event : { id: string, data: Result<T> | Error, time?:number }): Result {
         if(!db) {
             return Result.Fail(ErrorCode.GenericError, new Error('DB not set- Error emitting event'));
         }
-        
+
         var docRef = db.collection(collection).doc();
         event.time = event.time || (new Date()).getTime();
         event.data = JSON.stringify(event.data) as any;
-        docRef.set(event);            
+        docRef.set(event);
 
-        return Result.GeneralOk();                    
+        return Result.GeneralOk();
     }
 }

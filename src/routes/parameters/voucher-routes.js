@@ -18,6 +18,7 @@ const parameters_service_1 = require("../../services/parameters-service");
 const Branch_1 = require("../../entity/Branch");
 const Voucher_1 = require("./../../entity/Voucher");
 const voucher_person_registered_report_1 = require("../../services/reports/voucher-person-registered-report");
+const logger_service_1 = require("../../services/logger-service");
 function routes(app) {
     app.get("/api/vouchers/:id?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
@@ -33,7 +34,7 @@ function routes(app) {
         let voucher = yield VR.findOne(req.body.voucher.id);
         res.send(yield parameters_service_1.ParametersService.create_branch_voucher(branch, voucher));
     }));
-    app.post("/api/parameters/voucher_branch/remove", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/parameters/voucher_branch/remove", auth.ensureLoggedIn(), (req, res, _next) => __awaiter(this, void 0, void 0, function* () {
         const BR = yield database_facility_1.DatabaseFacility.getRepository(Branch_1.Branch);
         const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
         let branch = yield BR.findOne(req.body.branch.id);
@@ -61,15 +62,16 @@ function routes(app) {
     /**********************************************
      * EXTERNAL ROUTES
      **********************************************/
-    app.post("/api/voucher", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/voucher", (req, res, _next) => __awaiter(this, void 0, void 0, function* () {
         try {
+            logger_service_1.LoggerService.info(logger_service_1.LogOrigins.ExternalResource, req.body);
             let data = {
                 name: req.body.name,
                 email: req.body.email,
                 cpf: req.body.cpf,
                 phone: req.body.phone,
                 socialLinks: req.body.socialLinks,
-                branch_id: req.body.unit,
+                branch_id: isNaN(req.body.unit) ? 1 : parseInt(req.body.unit),
                 branch_map_id: req.body.schedule || 0,
                 voucher_id: req.body.voucher_id || 1,
                 additionalAnswer: req.body.additionalAnswer || '',
@@ -79,7 +81,7 @@ function routes(app) {
             yield people_service_1.PeopleService.create_person_from_voucher(data);
         }
         catch (error) {
-            console.log(error);
+            logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.ExternalResource, error);
         }
         res.send({ sucess: true });
     }));

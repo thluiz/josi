@@ -4,5 +4,12 @@ export enum ErrorCode {
     FailedGetConnection,
     ExternalRequestError,
     ParcialExecution,
-    NothingChanged
+    NothingChanged,
+    IncidentsActions,
+    Firebase,
+    UnhandledRejection,
+    SessionControl,
+    SendingEmail,
+    ExternalResource,
+    CardsActions
 }

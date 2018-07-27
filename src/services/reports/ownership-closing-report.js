@@ -42,6 +42,7 @@ class OwnershipClosingReport extends base_report_1.BaseReport {
                 subject: `Fechamento de titularidade - ${data.branch_name} `,
                 html: generated_content.data,
             };
+            console.log(msg.to);
             yield this.send_email(msg);
             return result_1.Result.GeneralOk({ content: generated_content.data, data });
         });

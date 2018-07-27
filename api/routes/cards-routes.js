@@ -14,6 +14,7 @@ const card_services_1 = require("../../domain/services/card_services");
 const auth = require("../../src/middlewares/auth");
 const security_service_1 = require("../../src/services/security-service");
 const cards_repository_1 = require("../../src/repositories/cards-repository");
+const errors_codes_1 = require("../../src/helpers/errors-codes");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     const card_service = new card_services_1.CardService(pool);
@@ -62,7 +63,7 @@ function configure_routes(app, connection_pool) {
             res.send(response[0].empty ? [] : req.params.id > 0 ? response[0] : response);
         }
         catch (error) {
-            logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.UnhandledRejection, error, { method: 'getOrganizations' });
+            logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.CardsActions, error);
             res.status(500).json(error);
         }
     }));
@@ -74,7 +75,7 @@ function configure_routes(app, connection_pool) {
                 req.params.id > 0 ? response[0] : response);
         }
         catch (error) {
-            logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.UnhandledRejection, error, { method: 'getProject' });
+            logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.CardsActions, error);
             res.status(500).json(error);
         }
     }));

@@ -1,81 +1,71 @@
 import { AzureTableService } from './azure-tables-service';
+import { ErrorCode } from '../helpers/errors-codes';
 
 const LOG_TABLE = "ServerLogs";
 const ERROR_TABLE = "Errors";
 
 export enum LogLevel {
-    Info,    
+    Info,
     Error,
     Benchmark
 }
 
 export enum LogOrigins {
-    General, 
-    Debug    
-}
-
-export enum ErrorOrigins {    
-    Incidents,
-    Firebase,
-    UnhandledRejection,
-    SessionControl,
-    SendingEmail
+    General,
+    Debug,
+    ExternalResource
 }
 
 export class LoggerService {
-    private static tableService;    
-    
-    static error(origin : ErrorOrigins, error: Error, details?: any) {
-        this.log(error, origin);
-    }
+    private static tableService;
 
-    static info(message?: string, details? :any) {
-        this.log({}, LogOrigins.General, LogLevel.Info, message, details);
-    }
+    static error(origin : ErrorCode, error: Error, details? :any) {
+        let obj = error as any;
 
-    static benchmark(operation_key : string, message?: string, details? :any) {
-        this.log({}, LogOrigins.General, LogLevel.Benchmark, message, details, operation_key);
-    }
-
-    static log(obj, origin: ErrorOrigins | LogOrigins, level : LogLevel | string = LogLevel.Info, 
-        message?: string, details? :any, customKey? : number | string) {   
-
-        let data : any = { object: obj }
-        
         if(details) {
-            data.details = details;
+            obj.details = details;
         }
 
-        if(message) {
-            data.message = message;
-        }
-        
+        this.log(obj, origin, LogLevel.Error);
+    }
+
+    static info(origin : LogOrigins, details? :any) {
+        this.log(details, origin, LogLevel.Info);
+    }
+
+    static benchmark(operation_key : string, details? :any) {
+        this.log(details, LogOrigins.General, LogLevel.Benchmark, operation_key);
+    }
+
+    static log(obj, origin: ErrorCode | LogOrigins, level : LogLevel | string = LogLevel.Info,
+        customKey? : number | string) {
+
+        let tbl = (level == LogLevel.Info || level == LogLevel.Benchmark) ?
+                        LOG_TABLE : ERROR_TABLE;
+        let partition = (level == LogLevel.Info || level == LogLevel.Benchmark) ?
+                        LogLevel[level] : ErrorCode[origin];
+
         let entity = AzureTableService.buildEntity(
-            customKey || new Date().getTime().toString(), 
-            data, level.toString());
-    
+            customKey || new Date().getTime().toString(),
+            obj, partition);
+
         AzureTableService.insertOrMergeEntity(
-            this.get_table_service(level == LogLevel.Info || LogLevel.Benchmark ? LOG_TABLE : ERROR_TABLE), 
-            level == LogLevel.Info || LogLevel.Benchmark ? LOG_TABLE : ERROR_TABLE, 
-            entity, (err, results) => {
+            this.get_table_service(), tbl,
+            entity, (err, _results) => {
             if (err) {
                 console.log(err);
-                console.log("AzureSessionStore.set: " + err);                        
+                console.log("AzureSessionStore.set: " + err);
             }
         });
     }
 
-    private static get_table_service(tbl) {           
+    private static get_table_service() {
         if (this.tableService == null) {
             let tableSvc = AzureTableService.createTableService();
 
-            AzureTableService.createTableIfNotExists(tableSvc, tbl, (err) => {
-                
-            });    
-
             this.tableService = tableSvc;
         }
-        
+
         return this.tableService;
     }
 }

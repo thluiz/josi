@@ -31,13 +31,12 @@ class BaseReport {
         });
     }
     static render_template(name, data) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, _reject) => {
             try {
-                console.log(name);
                 var template_path = path.join(__dirname, `templates/${name}.html`);
                 Ejs.renderFile(template_path, { data: data }, (err, content) => {
                     if (err) {
-                        logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.SendingEmail, err);
+                        logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.SendingEmail, err);
                         resolve(result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, err, "Error sending report email"));
                         return;
                     }
@@ -45,7 +44,7 @@ class BaseReport {
                 });
             }
             catch (error) {
-                logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.SendingEmail, error);
+                logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.SendingEmail, error);
                 resolve(result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error, "Error sending report email"));
             }
         });

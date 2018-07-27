@@ -1,8 +1,9 @@
 import { isArray } from 'util';
 import sgMail = require('@sendgrid/mail');
-import { LoggerService, ErrorOrigins } from '../../../src/services/logger-service';
+import { LoggerService } from '../../../src/services/logger-service';
 import { Result } from '../../helpers/result';
 import { ConfigurationsService } from '../configurations-services';
+import { ErrorCode } from '../../helpers/errors-codes';
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export interface IMessage {
@@ -33,7 +34,7 @@ export class EmailManager {
                     //const { message, code, response } = error;
                     //Extract response msg
                     //const { headers, body } = response;
-                    LoggerService.error(ErrorOrigins.SendingEmail, error,
+                    LoggerService.error(ErrorCode.SendingEmail, error,
                         `ERROR EMAIL :: ${msg.subject || "NO SUBJECT" }`);
                     reject(error);
                 });

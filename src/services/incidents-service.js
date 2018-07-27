@@ -18,6 +18,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_facility_1 = require("./../facilities/database-facility");
+const errors_codes_1 = require("../helpers/errors-codes");
 const logger_service_1 = require("./logger-service");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const firebase_emitter_decorator_1 = require("../decorators/firebase-emitter-decorator");
@@ -61,10 +62,12 @@ class IncidentsService {
                 try {
                     const IR = yield database_facility_1.DatabaseFacility.getRepository(Incident_1.Incident);
                     const light_incident = yield IR.findOne(incident.id);
-                    yield ownership_closing_report_1.OwnershipClosingReport.send(light_incident.id);
+                    if (light_incident.incident_type == 36) {
+                        yield ownership_closing_report_1.OwnershipClosingReport.send(light_incident.id);
+                    }
                 }
                 catch (ex) {
-                    logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.SendingEmail, ex);
+                    logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.SendingEmail, ex);
                 }
             }
             return execution;

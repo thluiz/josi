@@ -1,6 +1,6 @@
 import { Branch } from './../../entity/Branch';
 import { DatabaseFacility } from './../../facilities/database-facility';
-import { LoggerService, ErrorOrigins } from './../logger-service';
+import { LoggerService } from './../logger-service';
 import { EmailManager, IMessage } from './../managers/email-manager';
 import path = require('path');
 import Ejs = require('ejs');
@@ -21,14 +21,13 @@ export class BaseReport {
     }
 
     protected static render_template(name, data): Promise<Result<any>> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, _reject) => {
             try {
-                console.log(name);
                 var template_path = path.join(__dirname, `templates/${name}.html`);
 
                 Ejs.renderFile(template_path, { data: data }, (err, content) => {
                     if (err) {
-                        LoggerService.error(ErrorOrigins.SendingEmail, err);
+                        LoggerService.error(ErrorCode.SendingEmail, err);
 
                         resolve(Result.Fail(ErrorCode.GenericError, err, "Error sending report email"));
                         return;
@@ -37,7 +36,7 @@ export class BaseReport {
                     resolve(Result.GeneralOk(content));
                 });
             } catch (error) {
-                LoggerService.error(ErrorOrigins.SendingEmail, error);
+                LoggerService.error(ErrorCode.SendingEmail, error);
                 resolve(Result.Fail(ErrorCode.GenericError, error, "Error sending report email"));
             }
         });

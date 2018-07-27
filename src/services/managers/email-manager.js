@@ -5,6 +5,7 @@ const sgMail = require("@sendgrid/mail");
 const logger_service_1 = require("../../../src/services/logger-service");
 const result_1 = require("../../helpers/result");
 const configurations_services_1 = require("../configurations-services");
+const errors_codes_1 = require("../../helpers/errors-codes");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 class EmailManager {
     static send_email(msg) {
@@ -25,7 +26,7 @@ class EmailManager {
                 //const { message, code, response } = error;
                 //Extract response msg
                 //const { headers, body } = response;
-                logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.SendingEmail, error, `ERROR EMAIL :: ${msg.subject || "NO SUBJECT"}`);
+                logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.SendingEmail, error, `ERROR EMAIL :: ${msg.subject || "NO SUBJECT"}`);
                 reject(error);
             });
         });

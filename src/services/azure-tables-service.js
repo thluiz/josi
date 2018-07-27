@@ -21,16 +21,18 @@ class AzureTableService {
     }
     static buildEntity(id, data = {}, partition = 'principal') {
         const entGen = azure.TableUtilities.entityGenerator;
-        const date = new Date();
         return {
             PartitionKey: entGen.String(partition),
             RowKey: entGen.String(id),
             CreatedOn: entGen.Int64(Math.floor(Date.now() / 1000)),
             Test: entGen.Boolean(process.env.LOAD_ENV === 'true'),
-            Content: JSON.stringify(data)
+            Content: entGen.String(JSON.stringify(data, this.replaceErrors))
         };
     }
     static insertOrMergeEntity(tableService, table, entity, callback) {
+        this.createTableIfNotExists(tableService, table, (err) => {
+            console.log(err);
+        });
         tableService.insertOrReplaceEntity(table, entity, callback);
     }
     static retriveEntity(tableService, table, id, callback, partition = 'principal') {
@@ -83,6 +85,16 @@ class AzureTableService {
         if (!data)
             return null;
         return JSON.parse(data.Content._);
+    }
+    static replaceErrors(key, value) {
+        if (value instanceof Error) {
+            var error = {};
+            Object.getOwnPropertyNames(value).forEach(function (key) {
+                error[key] = value[key];
+            });
+            return error;
+        }
+        return value;
     }
 }
 exports.AzureTableService = AzureTableService;

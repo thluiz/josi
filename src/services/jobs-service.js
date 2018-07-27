@@ -29,14 +29,13 @@ const uuid = require("uuid/v4");
 const await_to_js_1 = require("await-to-js");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-exports.HOURLY_JOB_EXECUTION = "HOURLY_JOB_EXECUTION";
 class JobsService {
     static execute_hourly_jobs() {
         return __awaiter(this, void 0, void 0, function* () {
             console.log('Start running jobs...');
             let start_time = new Date().getTime();
             let key = uuid();
-            logger_service_1.LoggerService.benchmark(key, "Starting Running Jobs", { start_time });
+            logger_service_1.LoggerService.benchmark(key, `Starting Running Jobs :: ${start_time}`);
             let results = [];
             results.push(yield people_service_1.PeopleService.generate_birthdate_incidents());
             results.push(yield people_service_1.PeopleService.cancel_expired_people_scheduling());
@@ -52,7 +51,7 @@ class JobsService {
             results.push(yield this.cleanup_sessions());
             let end_time = new Date().getTime();
             let err = results.find(r => !r.success);
-            logger_service_1.LoggerService.benchmark(key, exports.HOURLY_JOB_EXECUTION, {
+            logger_service_1.LoggerService.benchmark(key, {
                 start_time,
                 success: err == null,
                 end_time,

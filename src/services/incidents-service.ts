@@ -3,7 +3,7 @@ import { DatabaseFacility } from './../facilities/database-facility';
 import { Result } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
 import { FirebaseService } from './firebase-service';
-import { LoggerService, ErrorOrigins } from './logger-service';
+import { LoggerService } from './logger-service';
 import { trylog } from '../decorators/trylog-decorator';
 import { firebaseEmitter } from '../decorators/firebase-emitter-decorator';
 import { Incident } from '../entity/Incident';
@@ -81,9 +81,11 @@ export class IncidentsService {
                 const IR = await DatabaseFacility.getRepository<Incident>(Incident);
                 const light_incident = await IR.findOne(incident.id as number);
 
-                await OwnershipClosingReport.send(light_incident.id);
+                if (light_incident.incident_type == 36) {
+                    await OwnershipClosingReport.send(light_incident.id);
+                }
             } catch (ex) {
-                LoggerService.error(ErrorOrigins.SendingEmail, ex);
+                LoggerService.error(ErrorCode.SendingEmail, ex);
             }
         }
 

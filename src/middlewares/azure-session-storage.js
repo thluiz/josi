@@ -55,7 +55,7 @@ function deleteEntity(self, sid) {
     return new Promise((resolve, reject) => {
         azure_tables_service_1.AzureTableService.deleteEntity(self.tableSvc, tableName, sid, (errDel, result) => {
             if (errDel) {
-                logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.SessionControl, errDel);
+                logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.SessionControl, errDel);
                 return;
             }
             resolve(result_1.Result.GeneralOk());

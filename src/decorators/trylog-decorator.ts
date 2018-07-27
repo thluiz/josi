@@ -9,13 +9,14 @@ export function trylog() {
             try {
                 return originalMethod.apply(this, args);
             } catch (error) {
-                LoggerService.error(target, error, {
+                LoggerService.error(ErrorCode.GenericError, error, {
                     action: method,
+                    target,
                     args
                 });
-                
-                return Result.Fail(ErrorCode.GenericError, error);       
-            }            
+
+                return Result.Fail(ErrorCode.GenericError, error);
+            }
         };
 
         return descriptor;

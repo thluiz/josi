@@ -17,11 +17,11 @@ class ConfigurationsService {
     static getConfiguration(configuration) {
         return __awaiter(this, void 0, void 0, function* () {
             let con = yield database_facility_1.DatabaseFacility.getConnection();
-            let result = yield con.query(`select [value] from configuration where id = @id`, [{ "id": configuration.toFixed() }]);
+            let result = yield con.query(`select [value] from configuration where id = @0`, [configuration.toFixed()]);
             return result[0].value;
         });
     }
 }
-ConfigurationsService.EMAIL_DEV = process.env.EMAIL_DEVELOPMENT;
+ConfigurationsService.EMAIL_DEV = process.env.EMAIL_DEV;
 exports.ConfigurationsService = ConfigurationsService;
 //# sourceMappingURL=configurations-services.js.map

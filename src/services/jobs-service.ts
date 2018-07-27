@@ -14,9 +14,6 @@ import to from 'await-to-js'
 import sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-
-export const HOURLY_JOB_EXECUTION = "HOURLY_JOB_EXECUTION";
-
 export class JobsService {
 
     @trylog()
@@ -24,7 +21,7 @@ export class JobsService {
         console.log('Start running jobs...');
         let start_time = new Date().getTime();
         let key = uuid();
-        LoggerService.benchmark(key, "Starting Running Jobs", { start_time });
+        LoggerService.benchmark(key, `Starting Running Jobs :: ${start_time }`);
 
         let results = [];
         results.push(await PeopleService.generate_birthdate_incidents());
@@ -44,7 +41,7 @@ export class JobsService {
 
         let err = results.find(r => !r.success);
 
-        LoggerService.benchmark(key, HOURLY_JOB_EXECUTION, {
+        LoggerService.benchmark(key, {
             start_time,
             success: err == null,
             end_time,

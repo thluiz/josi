@@ -7,18 +7,18 @@ if (process.env.LOAD_ENV === 'true') {
     appInsights.start();
 }
 
-import { LoggerService, ErrorOrigins } from './src/services/logger-service';
+import { LoggerService } from './src/services/logger-service';
 import "reflect-metadata";
-import { DatabaseFacility } from './src/facilities/database-facility';
 import { SecurityService } from './domain/services/security_services';
 import * as old_routes from './src/initializers/old-routes';
 import * as passport  from './src/initializers/passport';
 import * as routes  from './src/initializers/routes';
+import { ErrorCode } from './src/helpers/errors-codes';
 
 process.on('unhandledRejection', (reason, p) => {
     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
     let error = new Error('Unhandled Rejection');
-    LoggerService.error(ErrorOrigins.UnhandledRejection, error, { reason, p});
+    LoggerService.error(ErrorCode.UnhandledRejection, error, { reason, p});
 });
 
 const express = require('express');
@@ -35,11 +35,11 @@ app.use(bodyParser.json());
 
 SecurityService.create_pool().then((pool) => {
     passport.initialize(app);
-    
+
     old_routes.initialize(app, pool);
-    
-    routes.initialize(app, "./src/routes");    
-    
+
+    routes.initialize(app, "./src/routes");
+
     app.get(/^((?!\.).)*$/, (req, res) => {
         var path = "index.html";
         res.sendfile(path, { root: "./apex/public" });
@@ -48,6 +48,6 @@ SecurityService.create_pool().then((pool) => {
     app.use(express.static("./apex/public"));
 
     app.listen(port, () => {
-        console.log(`server listening to ${port}`); 
-    });    
+        console.log(`server listening to ${port}`);
+    });
 });

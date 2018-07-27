@@ -41,7 +41,7 @@ try {
     db = admin.firestore();
 }
 catch (error) {
-    logger_service_1.LoggerService.error(logger_service_1.ErrorOrigins.Firebase, error, "Initializing");
+    logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.Firebase, error, "Initializing");
 }
 class FirebaseService {
     static get_token() {

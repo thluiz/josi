@@ -11,8 +11,9 @@ function trylog() {
                 return originalMethod.apply(this, args);
             }
             catch (error) {
-                logger_service_1.LoggerService.error(target, error, {
+                logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.GenericError, error, {
                     action: method,
+                    target,
                     args
                 });
                 return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);

@@ -1,9 +1,10 @@
-import { LoggerService, ErrorOrigins } from './../../src/services/logger-service';
+import { LoggerService } from './../../src/services/logger-service';
 import * as sql from 'mssql';
 import { CardService } from '../../domain/services/card_services';
 import * as auth from '../../src/middlewares/auth';
 import { SecurityService } from '../../src/services/security-service';
 import { CardsRepository } from '../../src/repositories/cards-repository';
+import { ErrorCode } from '../../src/helpers/errors-codes';
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
@@ -92,7 +93,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
                 res.send(response[0].empty ? [] : req.params.id > 0 ? response[0] : response);
             } catch (error) {
-                LoggerService.error(ErrorOrigins.UnhandledRejection, error, { method: 'getOrganizations' });
+                LoggerService.error(ErrorCode.CardsActions, error);
                 res.status(500).json(error);
             }
         });
@@ -108,7 +109,7 @@ export function configure_routes(app: any, connection_pool: any) {
                 res.send(response[0].empty ? [] :
                     req.params.id > 0 ? response[0] : response);
             } catch (error) {
-                LoggerService.error(ErrorOrigins.UnhandledRejection, error, { method: 'getProject' });
+                LoggerService.error(ErrorCode.CardsActions, error);
                 res.status(500).json(error);
             }
         });

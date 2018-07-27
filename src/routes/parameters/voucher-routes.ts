@@ -13,6 +13,7 @@ import { Branch } from '../../entity/Branch';
 import { Voucher } from './../../entity/Voucher';
 import { IPersonVoucherData } from '../../services/people-service';
 import { VoucherPersonRegisterdReport } from '../../services/reports/voucher-person-registered-report';
+import { LoggerService, LogOrigins } from '../../services/logger-service';
 
 
 export function routes(app) {
@@ -43,7 +44,7 @@ export function routes(app) {
 
     app.post("/api/parameters/voucher_branch/remove",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
+        async (req, res, _next) => {
             const BR = await DatabaseFacility.getRepository<Branch>(Branch);
             const VR = await DatabaseFacility.getRepository<Voucher>(Voucher);
 
@@ -84,15 +85,17 @@ export function routes(app) {
      **********************************************/
 
     app.post("/api/voucher",
-    async (req, res, next) => {
+    async (req, res, _next) => {
         try {
+            LoggerService.info(LogOrigins.ExternalResource, req.body);
+
             let data : IPersonVoucherData = {
                 name: req.body.name,
                 email: req.body.email,
                 cpf: req.body.cpf,
                 phone: req.body.phone,
                 socialLinks: req.body.socialLinks,
-                branch_id: req.body.unit,
+                branch_id: isNaN(req.body.unit) ? 1 : parseInt(req.body.unit),
                 branch_map_id: req.body.schedule || 0,
                 voucher_id: req.body.voucher_id || 1,
                 additionalAnswer: req.body.additionalAnswer || '',
@@ -103,7 +106,7 @@ export function routes(app) {
 
             await PeopleService.create_person_from_voucher(data);
         } catch (error) {
-            console.log(error);
+            LoggerService.error(ErrorCode.ExternalResource, error);
         }
         res.send({ sucess: true});
     });

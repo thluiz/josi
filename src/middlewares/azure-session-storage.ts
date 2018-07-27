@@ -1,8 +1,8 @@
-import { LoggerService, ErrorOrigins } from './../services/logger-service';
+import { LoggerService } from './../services/logger-service';
 
 /* AzureSessionStore
     License: MIT
-    Description: An express session store using Azure Storage Tables. 
+    Description: An express session store using Azure Storage Tables.
     Based on https://github.com/asilvas/express-session-azure
 */
 
@@ -47,7 +47,7 @@ function _retriveEntites(self, query, parameters) {
 
 async function retriveOldEntites(self) {
     var current_date = Math.floor(Date.now() / 1000);
-    var expiration = current_date - (parseFloat(process.env.SESSION_DURATION_MINUTES) 
+    var expiration = current_date - (parseFloat(process.env.SESSION_DURATION_MINUTES)
                                     || (3600 * 6 /*default 6 hours*/))
 
     return await _retriveEntites(self, "CreatedOn le ?", expiration);
@@ -65,7 +65,7 @@ function deleteEntity(self, sid) {
             (errDel, result) => {
                 if (errDel) {
                     LoggerService.error(
-                        ErrorOrigins.SessionControl, errDel
+                        ErrorCode.SessionControl, errDel
                     );
                     return;
                 }
