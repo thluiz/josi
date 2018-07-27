@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const people_service_1 = require("./../../services/people-service");
 const auth = require("../../../src/middlewares/auth");
 const database_facility_1 = require("../../facilities/database-facility");
 const result_1 = require("../../helpers/result");
@@ -16,6 +17,7 @@ const jobs_service_1 = require("../../services/jobs-service");
 const parameters_service_1 = require("../../services/parameters-service");
 const Branch_1 = require("../../entity/Branch");
 const Voucher_1 = require("./../../entity/Voucher");
+const voucher_person_registered_report_1 = require("../../services/reports/voucher-person-registered-report");
 function routes(app) {
     app.get("/api/vouchers/:id?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
@@ -55,6 +57,39 @@ function routes(app) {
         catch (error) {
             res.send(result_1.Result.Fail(errors_codes_1.ErrorCode.ParcialExecution, error));
         }
+    }));
+    /**********************************************
+     * EXTERNAL ROUTES
+     **********************************************/
+    app.post("/api/voucher", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            let data = {
+                name: req.body.name,
+                email: req.body.email,
+                cpf: req.body.cpf,
+                phone: req.body.phone,
+                socialLinks: req.body.socialLinks,
+                branch_id: req.body.unit,
+                branch_map_id: req.body.schedule || 0,
+                voucher_id: req.body.voucher_id || 1,
+                additionalAnswer: req.body.additionalAnswer || '',
+                invite_key: req.body.invite
+            };
+            yield voucher_person_registered_report_1.VoucherPersonRegisterdReport.send(data);
+            yield people_service_1.PeopleService.create_person_from_voucher(data);
+        }
+        catch (error) {
+            console.log(error);
+        }
+        res.send({ sucess: true });
+    }));
+    app.get("/api/voucher/invites", (_req, res, _next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetInvitesForVoucher");
+        res.send(result.data);
+    }));
+    app.get("/api/voucher/data", (_req, res, _next) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetDataForVoucher");
+        res.send(result.data);
     }));
 }
 exports.routes = routes;

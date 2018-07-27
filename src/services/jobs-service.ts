@@ -7,18 +7,13 @@ import { ErrorCode } from "../helpers/errors-codes";
 import { Observable, from, concat, zip } from 'rxjs';
 import { trylog } from "../decorators/trylog-decorator";
 import { LoggerService, LogOrigins, LogLevel } from "./logger-service";
-import { IncidentsRepository } from "../repositories/incidents-repository";
+
 
 import * as uuid from "uuid/v4";
 import to from 'await-to-js'
 import sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-import path = require('path');
-import Ejs = require('ejs');
-import { Incident } from "../entity/Incident";
-
-let IR = IncidentsRepository;
 
 export const HOURLY_JOB_EXECUTION = "HOURLY_JOB_EXECUTION";
 
@@ -38,6 +33,7 @@ export class JobsService {
         results.push(await PeopleService.check_people_comunication_status());
         results.push(await PeopleService.check_people_financial_status());
         results.push(await PeopleService.check_people_scheduling_status());
+        results.push(await PeopleService.check_people_offering_status());
         results.push(await CardsService.correct_card_out_of_parent_step());
         results.push(await CardsService.check_cards_has_overdue_cards());
         results.push(await this.consolidate_members_sumary());
@@ -90,79 +86,6 @@ export class JobsService {
             return Result.Fail(ErrorCode.ExternalRequestError, err_invites || new Error(result_invites.statusText), null);
 
         return Result.GeneralOk();
-    }
-
-    @trylog()
-    static async send_ownership_closing_report(id: number): Promise<Result> {
-        //const IR = await DatabaseFacility.getRepository<Incident>(Incident);
-        const light_incident = await (await IR.getRepository()).findOne(
-            { id },
-            { relations: ["branch"] }
-        );
-
-        var templatePath = path.join(__dirname, "../template/ownership_closing_report.html");
-        let ow_data_request = await IR.getOwnershipData(id);
-        let data = ow_data_request.data;
-        let content = "";
-        try {
-            const generated_content = await this.render_template(templatePath, data);
-            content = generated_content.data;
-        } catch (error) {
-            content = `Error rendering content ${error.message}`
-        }
-
-        const msg = {
-            to: 'th.luiz@gmail.com',
-            from: 'contato@myvtmi.im',
-            subject: `Fechamento de titularidade - ${data.branch_name} `,
-            html: content,
-        };
-
-        try {
-            console.log(msg.to);
-            await this.send_email(msg);
-        } catch (error) {
-            return Result.Fail(ErrorCode.GenericError, error);
-        }
-
-        return Result.Ok("GENERIC_ACTION", { content, data });
-    }
-
-    private static render_template(template_path, data): Promise<Result<any>> {
-        return new Promise((resolve, reject) => {
-            Ejs.renderFile(template_path, { data: data }, (err, content) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-
-                resolve(Result.GeneralOk(content));
-            });
-        });
-    }
-
-    private static send_email(msg): Promise<Result<any>> {
-        return new Promise((resolve, reject) => {
-            sgMail.send(msg)
-                .then(r2 => {
-                    console.log(r2);
-                    resolve(Result.GeneralOk(r2));
-                })
-                .catch(error => {
-                    console.error(error.toString());
-
-                    //Extract error msg
-                    const { message, code, response } = error;
-                    //Extract response msg
-                    const { headers, body } = response;
-
-                    console.log(code);
-                    console.log(headers);
-                    console.log(body);
-
-                    reject(error);
-                });
-        });
     }
 
     @trylog()

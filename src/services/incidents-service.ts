@@ -7,6 +7,7 @@ import { LoggerService, ErrorOrigins } from './logger-service';
 import { trylog } from '../decorators/trylog-decorator';
 import { firebaseEmitter } from '../decorators/firebase-emitter-decorator';
 import { Incident } from '../entity/Incident';
+import { OwnershipClosingReport } from './reports/ownership-closing-report';
 
 export const EVENTS_COLLECTION = "incident-events";
 export const INCIDENT_ADDED = "INCIDENT_ADDED";
@@ -80,9 +81,7 @@ export class IncidentsService {
                 const IR = await DatabaseFacility.getRepository<Incident>(Incident);
                 const light_incident = await IR.findOne(incident.id as number);
 
-                if (light_incident.incident_type == 36) {
-                    await JobsService.send_ownership_closing_report(light_incident.id);
-                }
+                await OwnershipClosingReport.send(light_incident.id);
             } catch (ex) {
                 LoggerService.error(ErrorOrigins.SendingEmail, ex);
             }

@@ -38,9 +38,21 @@ class PeopleService {
             return yield database_facility_1.DatabaseFacility.ExecuteSPNoResults("GenerateBirthDateIncidents");
         });
     }
+    static check_people_offering_status() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield database_facility_1.DatabaseFacility.ExecuteSPNoResults("GetPersonOfferingAvailable", {
+                "save_data": true
+            });
+        });
+    }
     static cancel_expired_people_scheduling() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield database_facility_1.DatabaseFacility.ExecuteSPNoResults("CancelExpiredPeopleScheduling");
+        });
+    }
+    static create_person_from_voucher(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield database_facility_1.DatabaseFacility.ExecuteSPNoResults("CreatePersonFromVoucher", { "name": data.name }, { "email": data.email }, { "cpf": data.cpf }, { "phone": data.phone }, { "socialLinks": data.socialLinks }, { "branch_id": data.branch_id }, { "voucher_id": data.voucher_id }, { "additionalAnswer": data.additionalAnswer }, { "invite_key": data.invite_key }, { "branch_map_id": data.branch_map_id });
         });
     }
     static save_avatar_image(person_id, blob_image) {
@@ -50,7 +62,7 @@ class PeopleService {
                 const person = yield PR.findOne({ id: person_id });
                 person.avatar_img = blob_image;
                 yield PR.save(person);
-                //TODO: Validar tamanho da imagem
+                //TODO: Validate image size
                 return result_1.Result.GeneralOk(person);
             }
             catch (error) {

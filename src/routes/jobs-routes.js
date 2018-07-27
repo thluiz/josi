@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const ownership_closing_report_1 = require("./../services/reports/ownership-closing-report");
 const jobs_service_1 = require("../services/jobs-service");
 const sgMail = require('@sendgrid/mail');
 function routes(app) {
@@ -20,8 +21,8 @@ function routes(app) {
         res.send(result);
     }));
     app.get("/api/ownership_report", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield jobs_service_1.JobsService.send_ownership_closing_report(69836);
-        res.send(result.data.content);
+        let result = yield ownership_closing_report_1.OwnershipClosingReport.send(69836);
+        res.send(result.success ? result.data.content : result);
     }));
 }
 exports.routes = routes;
