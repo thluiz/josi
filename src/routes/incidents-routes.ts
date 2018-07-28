@@ -1,7 +1,6 @@
 import { IncidentsRepository } from '../repositories/incidents-repository';
 
-import * as auth from '../../src/middlewares/auth';
-import { InvitationsService } from '../services/invitations-service';
+import * as auth from '../middlewares/auth';
 import { SecurityService } from '../services/security-service';
 import { IncidentsService } from '../services/incidents-service';
 

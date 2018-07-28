@@ -1,4 +1,4 @@
-import { DatabaseFacility } from './../../src/facilities/database-facility';
+import { DatabaseFacility } from '../../src/facilities/database-facility';
 import { Person } from '../../src/entity/Person';
 import { Result } from '../../src/helpers/result';
 const sql = require('mssql')

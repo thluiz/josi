@@ -1,4 +1,4 @@
-import { DatabaseFacility } from './../facilities/database-facility';
+import { DatabaseFacility } from '../facilities/database-facility';
 import { User } from '../entity/User';
 
 export enum Permissions {
@@ -8,11 +8,11 @@ export enum Permissions {
 }
 
 export class SecurityService {
-    
+
     static async serializeUser(user: User) : Promise<any> {
-        if(user == null) 
+        if(user == null)
             return null;
-            
+
         if(!user.person || !user.person.default_page) {
             const UR = await DatabaseFacility.getRepository<User>(User);
             user = await UR.findOne(

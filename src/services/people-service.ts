@@ -1,5 +1,4 @@
-import { DatabaseFacility } from './../facilities/database-facility';
-import to from 'await-to-js';
+import { DatabaseFacility } from '../facilities/database-facility';
 import { Result } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
 import { Person } from '../entity/Person';

@@ -1,6 +1,6 @@
-import * as auth from '../../src/middlewares/auth';
+import * as auth from '../middlewares/auth';
 import * as multer from 'multer';
-import { MulterAzureStorage, MASNameResolver, MASObjectResolver } from 'multer-azure-blob-storage';
+import { MulterAzureStorage } from 'multer-azure-blob-storage';
 
 import { PeopleService } from '../services/people-service';
 import { PeopleRepository } from '../repositories/people-repository';

@@ -1,7 +1,7 @@
-import { Branch } from './../../entity/Branch';
-import { DatabaseFacility } from './../../facilities/database-facility';
-import { LoggerService } from './../logger-service';
-import { EmailManager, IMessage } from './../managers/email-manager';
+import { Branch } from '../../entity/Branch';
+import { DatabaseFacility } from '../../facilities/database-facility';
+import { LoggerService } from '../logger-service';
+import { EmailManager, IMessage } from '../managers/email-manager';
 import path = require('path');
 import Ejs = require('ejs');
 import { Result } from '../../helpers/result';

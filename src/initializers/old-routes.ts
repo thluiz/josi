@@ -1,10 +1,3 @@
-import { FirebaseService } from './../services/firebase-service';
-import { DatabaseFacility } from './../facilities/database-facility';
-import * as sql from 'mssql';
-import * as OldSecurityService from "../../domain/services/security_services";
-import { Permissions, SecurityService } from '../services/security-service';
-import * as auth from '../middlewares/auth';
-
 import * as people_routes from "../../api/routes/people-routes";
 import * as parameters_routes from "../../api/routes/parameters-routes";
 import * as incidents_routes from "../../api/routes/incidents-routes";

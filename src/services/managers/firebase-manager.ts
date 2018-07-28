@@ -1,9 +1,9 @@
-import { Result } from '../helpers/result';
-import { ErrorCode } from '../helpers/errors-codes';
+import { Result } from '../../helpers/result';
+import { ErrorCode } from '../../helpers/errors-codes';
 
 import * as admin from 'firebase-admin';
-import { LoggerService } from './logger-service';
-import { trylog } from '../decorators/trylog-decorator';
+import { LoggerService } from '../logger-service';
+import { trylog } from '../../decorators/trylog-decorator';
 
 let db = null;
 try {
@@ -29,7 +29,7 @@ try {
     LoggerService.error(ErrorCode.Firebase, error, "Initializing");
 }
 
-export class FirebaseService {
+export class FirebaseManager {
     @trylog()
     static async get_token() : Promise<Result<string>> {
         let customToken = await admin.auth().createCustomToken(process.env.FIREBASE_UID);

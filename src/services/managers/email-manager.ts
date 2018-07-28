@@ -1,6 +1,6 @@
 import { isArray } from 'util';
 import sgMail = require('@sendgrid/mail');
-import { LoggerService } from '../../../src/services/logger-service';
+import { LoggerService } from '../logger-service';
 import { Result } from '../../helpers/result';
 import { ConfigurationsService } from '../configurations-services';
 import { ErrorCode } from '../../helpers/errors-codes';

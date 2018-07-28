@@ -1,4 +1,4 @@
-import { LoggerService } from './../../src/services/logger-service';
+import { LoggerService } from '../../src/services/logger-service';
 import * as sql from 'mssql';
 import { CardService } from '../../domain/services/card_services';
 import * as auth from '../../src/middlewares/auth';
@@ -13,7 +13,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.get("/api/cards/:id",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
+        async (req, res, _next) => {
 
             const result = await new sql.Request(pool)
                 .input("card", sql.Int, req.params.id)
@@ -40,7 +40,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.get("/api/operators",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
+        async (_req, res) => {
 
             const result = await new sql.Request(pool)
                 .query(`select *
@@ -56,7 +56,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.get("/api/card_templates",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
+        async (_, res) => {
 
             const result = await new sql.Request(pool)
                 .query(`select *
@@ -73,7 +73,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.get("/api/organizations/flat",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
+        async (_, res) => {
 
             const result = await new sql.Request(pool)
                 .execute(`GetFlatOrganizationsData`);
@@ -85,7 +85,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.get("/api/organizations/:id?/:include_childrens?",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
+        async (req, res) => {
             try {
                 let result = await CardsRepository.getOrganizations(req.params.id, req.params.include_childrens);
 
@@ -100,7 +100,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.get("/api/projects/:id",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
+        async (req, res) => {
             try {
                 let result = await CardsRepository.getProject(req.params.id);
 
@@ -116,16 +116,15 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.post("/api/person_cards",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
-
+        async (req, res) => {
             let result = await card_service.save_person_card(req.body.person_card);
 
-            res.send({ sucess: true });
+            res.send(result);
         });
 
     app.post("/api/cards",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
+        async (req, res) => {
             let user = await SecurityService.getUserFromRequest(req);
             let result = await card_service.save_card(req.body.card, await user.getPersonId());
 
@@ -137,7 +136,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.post("/api/move_card",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
+        async (req, res) => {
             let user = await SecurityService.getUserFromRequest(req);
 
             const result = await new sql.Request(pool)
@@ -154,7 +153,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.post("/api/cards_comments",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
+        async (req, res) => {
             let user = await SecurityService.getUserFromRequest(req);
             let result = await card_service.save_card_comment(req.body.card, req.body.comment,
                 req.body.commentary_type, await user.getPersonId());
@@ -166,7 +165,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.get("/api/cards_comments/:card_id",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
+        async (req, res) => {
 
             const result = await new sql.Request(pool)
                 .input("card_id", sql.Int, req.params.card_id)
@@ -180,7 +179,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.post("/api/cards/steps",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
+        async (req, res) => {
             let user = await SecurityService.getUserFromRequest(req);
             let result = await card_service.save_card_step(req.body.card_id, req.body.step_id, await user.getPersonId());
 
@@ -191,10 +190,10 @@ export function configure_routes(app: any, connection_pool: any) {
 
     app.post("/api/cards/steps/card_order",
         auth.ensureLoggedIn(),
-        async (req, res, next) => {
+        async (req, res) => {
             let result = await card_service.save_card_order(req.body.card_id, req.body.order);
 
-            res.send({ sucess: true });
+            res.send(result);
         });
 
     app.post("/api/person_cards/delete",
@@ -203,7 +202,7 @@ export function configure_routes(app: any, connection_pool: any) {
 
             let result = await card_service.remove_person_card(req.body.person_card);
 
-            res.send({ sucess: true });
+            res.send(result);
         });
 
     app.post("/api/archive_card",

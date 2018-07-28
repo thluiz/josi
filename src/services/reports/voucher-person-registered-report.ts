@@ -1,4 +1,3 @@
-import { IMessage } from './../managers/email-manager';
 import { BaseReport } from "./base-report";
 import { Result } from "../../helpers/result";
 

@@ -1,6 +1,5 @@
-import { PeopleService } from './../../services/people-service';
-import { EmailManager } from './../../services/managers/email-manager';
-import * as auth from '../../../src/middlewares/auth';
+import { PeopleService } from '../../services/people-service';
+import * as auth from '../../middlewares/auth';
 
 import { DatabaseFacility } from '../../facilities/database-facility';
 import { Result } from '../../helpers/result';
@@ -10,7 +9,7 @@ import { JobsService } from '../../services/jobs-service';
 import { ParametersService } from '../../services/parameters-service';
 
 import { Branch } from '../../entity/Branch';
-import { Voucher } from './../../entity/Voucher';
+import { Voucher } from '../../entity/Voucher';
 import { IPersonVoucherData } from '../../services/people-service';
 import { VoucherPersonRegisterdReport } from '../../services/reports/voucher-person-registered-report';
 import { LoggerService, LogOrigins } from '../../services/logger-service';

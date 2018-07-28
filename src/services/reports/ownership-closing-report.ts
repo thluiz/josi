@@ -1,9 +1,8 @@
-import { IMessage } from './../managers/email-manager';
+import { IMessage } from '../managers/email-manager';
 import { BaseReport } from "./base-report";
 import { Result } from "../../helpers/result";
 
 import { IncidentsRepository } from "../../repositories/incidents-repository";
-import { ErrorCode } from "../../helpers/errors-codes";
 import { ConfigurationsService } from '../configurations-services';
 
 let IR = IncidentsRepository;

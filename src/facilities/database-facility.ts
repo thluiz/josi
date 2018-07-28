@@ -5,8 +5,8 @@ import to from 'await-to-js';
 import { Result } from "../helpers/result";
 import { ErrorCode } from "../helpers/errors-codes";
 
-export class DatabaseFacility {    
-    private static _connection: Connection;    
+export class DatabaseFacility {
+    private static _connection: Connection;
 
     static async getRepository<T>(type: string | Function | (new () => any) | EntitySchema<T> )  : Promise<Repository<T>> {
         let connection = await this.getConnection();
@@ -14,22 +14,22 @@ export class DatabaseFacility {
         return await connection.getRepository(type);
     }
 
-    static async ExecuteWithinTransaction<T>(fun: (queryRunner: QueryRunner) => Promise<Result<T>>, 
-        queryRunner? :QueryRunner ): Promise<Result<T>> {        
+    static async ExecuteWithinTransaction<T>(fun: (queryRunner: QueryRunner) => Promise<Result<T>>,
+        queryRunner? :QueryRunner ): Promise<Result<T>> {
 
         if(queryRunner) {
             return fun(queryRunner);
         }
 
         const conn = await DatabaseFacility.getConnection();
-        queryRunner = conn.createQueryRunner(); 
+        queryRunner = conn.createQueryRunner();
 
-        try {            
-            
-            await queryRunner.startTransaction();            
+        try {
+
+            await queryRunner.startTransaction();
 
             let result = await fun(queryRunner);
-            
+
             await queryRunner.commitTransaction();
 
             return result;
@@ -44,27 +44,27 @@ export class DatabaseFacility {
     static async ExecuteSPNoResults(procedure: string, ...parameters: any[]) : Promise<Result<void>> {
         let [conn_error, connection] = await to<Connection>(this.getConnection());
 
-        if(conn_error) return Result.Fail(ErrorCode.FailedGetConnection, conn_error);        
+        if(conn_error) return Result.Fail(ErrorCode.FailedGetConnection, conn_error);
 
         let {query, values} = this.buildSPParameters(procedure, parameters);
-    
-        let [err, result] = await to(connection.query(query, values));        
 
-        if(err) return Result.Fail(ErrorCode.GenericError, err);                
+        let [err, _] = await to(connection.query(query, values));
+
+        if(err) return Result.Fail(ErrorCode.GenericError, err);
 
         return Result.GeneralOk();
-    } 
+    }
 
     static async ExecuteJsonSQL<T>(sql: string, ...parameters: any[]) : Promise<Result<T>> {
         try {
             let connection = await this.getConnection();        ;
-        
+
             const result = await connection.query(sql, parameters);
-                              
-            return Result.GeneralOk(JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]) as T);            
+
+            return Result.GeneralOk(JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]) as T);
         } catch (error) {
             if(error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
-                return Result.GeneralOk({} as T);                
+                return Result.GeneralOk({} as T);
             }
 
             return Result.Fail(ErrorCode.GenericError, error);
@@ -83,15 +83,15 @@ export class DatabaseFacility {
         try {
             let connection = await this.getConnection();
             let {query, values} = this.buildSPParameters(procedure, parameters);
-            
+
             const result = await connection.query(query, values);
-            const data = result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"];                   
-            
-            return parseResults ?  
-                    Result.Ok(result_type, JSON.parse(data)) : Result.Ok(data);            
+            const data = result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"];
+
+            return parseResults ?
+                    Result.Ok(result_type, JSON.parse(data)) : Result.Ok(data);
         } catch (error) {
             if(error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
-                return Result.Ok(result_type, new Array() as any);                
+                return Result.Ok(result_type, new Array() as any);
             }
 
             return Result.Fail(ErrorCode.GenericError, error);
@@ -109,7 +109,7 @@ export class DatabaseFacility {
 
             parameters.map((p) => p[Object.keys(p)[0]])
             .forEach(p => values.push(p));
-        }  
+        }
 
         return { query, values };
     }
@@ -118,7 +118,7 @@ export class DatabaseFacility {
         if(!this._connection) {
             this._connection = await createConnection({
                 type: 'mssql',
-                host: process.env.SQL_HOST,        
+                host: process.env.SQL_HOST,
                 username: process.env.SQL_DATABASE,
                 password: process.env.SQL_PASSWORD,
                 database: process.env.SQL_DATABASE,

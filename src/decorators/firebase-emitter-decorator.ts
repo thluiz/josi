@@ -1,4 +1,4 @@
-import { FirebaseService } from "../services/firebase-service";
+import { FirebaseManager } from "../services/managers/firebase-manager";
 import { Result } from "../helpers/result";
 
 export function firebaseEmitter(collection) {
@@ -8,10 +8,10 @@ export function firebaseEmitter(collection) {
             let result : Result = await originalMethod.apply(this, args);
 
             if(result.success) {
-                FirebaseService.emit_event(collection, {                    
+                FirebaseManager.emit_event(collection, {
                     id: result.id,
                     data: result
-                });            
+                });
             }
 
             return result;

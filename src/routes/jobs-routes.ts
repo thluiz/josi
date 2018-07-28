@@ -1,11 +1,7 @@
-import { OwnershipClosingReport } from './../services/reports/ownership-closing-report';
+import { OwnershipClosingReport } from '../services/reports/ownership-closing-report';
 import { JobsService } from "../services/jobs-service";
 
-const sgMail = require('@sendgrid/mail');
-
 export function routes(app) {
-
-
     app.get("/api/hourly-jobs", async (req, res, next) => {
         let result = await JobsService.execute_hourly_jobs();
 

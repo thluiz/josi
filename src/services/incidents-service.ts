@@ -1,8 +1,6 @@
-import { JobsService } from './jobs-service';
-import { DatabaseFacility } from './../facilities/database-facility';
+import { DatabaseFacility } from '../facilities/database-facility';
 import { Result } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
-import { FirebaseService } from './firebase-service';
 import { LoggerService } from './logger-service';
 import { trylog } from '../decorators/trylog-decorator';
 import { firebaseEmitter } from '../decorators/firebase-emitter-decorator';
@@ -63,7 +61,6 @@ export class IncidentsService {
     @trylog()
     @firebaseEmitter(EVENTS_COLLECTION)
     static async close_incident(incident, responsible_id): Promise<Result> {
-        console.log(incident);
         let execution = await DatabaseFacility.ExecuteTypedJsonSP(
             INCIDENT_ENDED,
             "CloseIncident",

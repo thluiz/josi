@@ -1,4 +1,4 @@
-import { LoggerService } from './../services/logger-service';
+import { LoggerService } from '../services/logger-service';
 
 /* AzureSessionStore
     License: MIT
@@ -6,7 +6,7 @@ import { LoggerService } from './../services/logger-service';
     Based on https://github.com/asilvas/express-session-azure
 */
 
-import { AzureTableService } from './../services/azure-tables-service';
+import { AzureTableService } from '../services/azure-tables-service';
 import { Result } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
 
