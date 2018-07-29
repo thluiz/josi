@@ -1,3 +1,4 @@
+require('dotenv').load();
 import { DatabaseManager } from './../services/managers/database-manager';
 
 after(function (done) {

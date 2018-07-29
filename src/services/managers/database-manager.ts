@@ -23,7 +23,7 @@ async function getConnection() : Promise<Connection> {
             password: process.env.SQL_PASSWORD,
             database: process.env.SQL_DATABASE,
             extra: { options: { encrypt: true } },
-            logging: process.env.PRODUCTION !== "true",
+            logging: process.env.SQL_SHOW_LOGGING === "true",
             synchronize: false,
             entities: [
                 "src/entity/*.js"

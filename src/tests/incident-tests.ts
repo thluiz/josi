@@ -47,7 +47,7 @@ describe('Incidents Tests', async function() {
             registering.error.message : "").to.be.true;
     });
 
-    it('should create incident with people ', async () => {
+    it('should create incident with people', async () => {
         let incident = await IF.create(runner, await ITR.findOne(1));
         let registering = await IS.register_incident2({
             incident,
