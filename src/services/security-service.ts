@@ -1,5 +1,7 @@
-import { DatabaseFacility } from '../facilities/database-facility';
+import { DatabaseManager } from './managers/database-manager';
 import { User } from '../entity/User';
+
+const DBM = new DatabaseManager();
 
 export enum Permissions {
     Operator,
@@ -14,7 +16,7 @@ export class SecurityService {
             return null;
 
         if(!user.person || !user.person.default_page) {
-            const UR = await DatabaseFacility.getRepository<User>(User);
+            const UR = await DBM.getRepository<User>(User);
             user = await UR.findOne(
                 { id: user.id },
                 { relations: [ "person", "person.default_page" ] }
@@ -39,7 +41,7 @@ export class SecurityService {
 
     static async getUserFromRequest(req): Promise<User> {
         if (process.env.LOAD_ENV === 'true') {
-            const connection = await DatabaseFacility.getConnection();
+            const connection = await DBM.getConnection();
 
             const user = await connection
             .createQueryBuilder(User, "user")

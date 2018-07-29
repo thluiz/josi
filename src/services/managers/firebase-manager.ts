@@ -38,7 +38,10 @@ export class FirebaseManager {
     }
 
     @trylog()
-    static emit_event<T>(collection, event : { id: string, data: Result<T> | Error, time?:number }): Result {
+    static async emit_event<T>(collection,
+        event : { id: string, data: Result<T> | Error, time?:number })
+        : Promise<Result> {
+
         if(!db) {
             return Result.Fail(ErrorCode.GenericError, new Error('DB not set- Error emitting event'));
         }
@@ -46,7 +49,7 @@ export class FirebaseManager {
         var docRef = db.collection(collection).doc();
         event.time = event.time || (new Date()).getTime();
         event.data = JSON.stringify(event.data) as any;
-        docRef.set(event);
+        var r = await docRef.set(event);
 
         return Result.GeneralOk();
     }

@@ -1,32 +1,35 @@
 import * as azure from 'azure-storage';
 
-export class AzureTableService {
+export class AzureTableManager {
     private static config;
 
     static createTableService() {
-        if(!this.config) {
+        if (!this.config) {
             this.config = this.loadConfig();
         }
 
-        return azure.createTableService(this.config.name, this.config.accessKey);
+        return azure.createTableService(
+            this.config.name,
+            this.config.accessKey
+        );
     }
 
     static createTableIfNotExists(tableService: azure.TableService, table: string, callback: (error, result, response) => void) {
         tableService.createTableIfNotExists(table, callback);
     }
 
-    static buildEntity(id, data :any = {}, partition = 'principal') : any {
+    static buildEntity(id, data: any = {}, partition = 'principal'): any {
         const entGen = azure.TableUtilities.entityGenerator;
         return {
             PartitionKey: entGen.String(partition),
             RowKey: entGen.String(id),
-            CreatedOn: entGen.Int64(Math.floor( Date.now() / 1000 )),
+            CreatedOn: entGen.Int64(Math.floor(Date.now() / 1000)),
             Test: entGen.Boolean(process.env.LOAD_ENV === 'true'),
             Content: entGen.String(JSON.stringify(data, this.replaceErrors))
         };
     }
 
-    static insertOrMergeEntity(tableService: azure.TableService, table: string, entity:any, callback: (error, result, response) => void) {
+    static insertOrMergeEntity(tableService: azure.TableService, table: string, entity: any, callback: (error, result, response) => void) {
 
         this.createTableIfNotExists(tableService, table, (err) => {
             console.log(err);
@@ -42,8 +45,8 @@ export class AzureTableService {
         });
     }
 
-    static deleteEntity(tableService: azure.TableService, table : string,  id: string, callback: (error, response) => void) {
-        tableService.deleteEntity(table, this.buildEntity(id), function(error, response){
+    static deleteEntity(tableService: azure.TableService, table: string, id: string, callback: (error, response) => void) {
+        tableService.deleteEntity(table, this.buildEntity(id), function (error, response) {
             callback(error, response);
         });
     }
@@ -52,10 +55,10 @@ export class AzureTableService {
         return new azure.TableBatch();
     }
 
-    static async executeBatch(tableService: azure.TableService, table: string, batch : azure.TableBatch) {
+    static async executeBatch(tableService: azure.TableService, table: string, batch: azure.TableBatch) {
         return new Promise((resolve, reject) => {
-            tableService.executeBatch(table, batch, function(error, result) {
-                if(error) {
+            tableService.executeBatch(table, batch, function (error, result) {
+                if (error) {
                     reject(error);
                     return;
                 }
@@ -66,16 +69,16 @@ export class AzureTableService {
 
     static retrieveEntities(tableService: azure.TableService,
         table: string, query: string, parameters: string[],
-        callback: (error, result) => void, limit : number = 0) {
+        callback: (error, result) => void, limit: number = 0) {
         var azure_query = new azure.TableQuery().where(query, parameters);
 
-        if(limit > 0) {
+        if (limit > 0) {
             azure_query = azure_query.top(limit);
         }
 
-        tableService.queryEntities(table, azure_query, null, function(error, result, response) {
-            if(error) {
-              callback(error, null)
+        tableService.queryEntities(table, azure_query, null, function (error, result, response) {
+            if (error) {
+                callback(error, null)
             }
             callback(null, result);
         });
@@ -90,7 +93,7 @@ export class AzureTableService {
 
     private static treatDataRetrieved(data: any) {
         let new_data = {};
-        if(!data)
+        if (!data)
             return null;
 
         return JSON.parse(data.Content._);

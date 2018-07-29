@@ -8,16 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_facility_1 = require("./../facilities/database-facility");
+const database_manager_1 = require("./managers/database-manager");
+const DBM = new database_manager_1.DatabaseManager();
 class CardsService {
     static check_cards_has_overdue_cards() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteSPNoResults("CheckCardsHasOverdueCards");
+            return yield DBM.ExecuteSPNoResults("CheckCardsHasOverdueCards");
         });
     }
     static correct_card_out_of_parent_step() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteSPNoResults("CorrectCardOutOfParentStep");
+            return yield DBM.ExecuteSPNoResults("CorrectCardOutOfParentStep");
         });
     }
 }

@@ -4,7 +4,7 @@ import { PersonCard } from '../entity/PersonCard';
 import { QueryRunner } from 'typeorm';
 import { Location } from '../entity/Location';
 import { BranchCategory } from '../entity/BranchCategory';
-import { DatabaseFacility } from '../facilities/database-facility';
+import { DatabaseManager } from './managers/database-manager';
 import { Result } from "../helpers/result";
 import { Branch } from "../entity/Branch";
 import { trylog } from "../decorators/trylog-decorator";
@@ -24,6 +24,8 @@ const BRANCHVOUCHER_CREATED = "BRANCH_VOUCHER_CREATED";
 const BRANCHVOUCHER_REMOVED = "BRANCH_VOUCHER_REMOVED";
 const NOTHING_CHANGED = "NOTHING_CHANGED";
 
+const DBM = new DatabaseManager();
+
 export interface IBranchData {
     abrev : string,
     name: string,
@@ -40,7 +42,7 @@ export class ParametersService {
     @trylog()
     @firebaseEmitter(PARAMETERS_COLLECTION)
     static async save_voucher(voucher_data : Voucher ) : Promise<Result<Voucher>> {
-        const VR = await DatabaseFacility.getRepository(Voucher);
+        const VR = await DBM.getRepository(Voucher);
 
         return Result.Ok(voucher_data.id > 0 ? VOUCHER_UPDATED : VOUCHER_CREATED,
             await VR.save(voucher_data)
@@ -51,7 +53,7 @@ export class ParametersService {
     @firebaseEmitter(PARAMETERS_COLLECTION)
     static async create_branch_voucher(branch : Branch, voucher : Voucher ) : Promise<Result<{branch: Branch, voucher: Voucher}>> {
         try {
-            const VR = await DatabaseFacility.getRepository<Voucher>(Voucher);
+            const VR = await DBM.getRepository<Voucher>(Voucher);
 
             voucher = await VR.findOne(voucher.id, { relations: ["branches"] }); //load relation
 
@@ -76,7 +78,7 @@ export class ParametersService {
     @firebaseEmitter(PARAMETERS_COLLECTION)
     static async remove_branch_voucher(branch : Branch, voucher : Voucher ) : Promise<Result<{branch: Branch, voucher: Voucher}>> {
         try {
-            const VR = await DatabaseFacility.getRepository<Voucher>(Voucher);
+            const VR = await DBM.getRepository<Voucher>(Voucher);
 
             const voucher_branches = await VR.findOne(voucher.id, { relations: ["branches"] });
 
@@ -98,14 +100,14 @@ export class ParametersService {
     @trylog()
     @firebaseEmitter(PARAMETERS_COLLECTION)
     static async update_branch(branch : Branch) : Promise<Result<Branch>> {
-        const BR = await DatabaseFacility.getRepository<Branch>(Branch);
+        const BR = await DBM.getRepository<Branch>(Branch);
         return Result.Ok(BRANCH_UPDATED, await BR.save(branch));
     }
 
     @trylog()
     @firebaseEmitter(PARAMETERS_COLLECTION)
     static async create_branch(branch_data : IBranchData) : Promise<Result<Branch>> {
-        return await DatabaseFacility.ExecuteWithinTransaction(async (qr) => {
+        return await DBM.ExecuteWithinTransaction(async (qr) => {
             const BR = qr.manager.getRepository(Branch);
             const BCR = qr.manager.getRepository(BranchCategory);
 

@@ -6,9 +6,8 @@ export function firebaseEmitter(collection) {
         var originalMethod = descriptor.value;
         descriptor.value = async function (...args) {
             let result : Result = await originalMethod.apply(this, args);
-
             if(result.success) {
-                FirebaseManager.emit_event(collection, {
+                await FirebaseManager.emit_event(collection, {
                     id: result.id,
                     data: result
                 });

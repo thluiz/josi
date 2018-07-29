@@ -1,6 +1,6 @@
 import { PeopleService } from "./people-service";
 import { CardsService } from "./cards-service";
-import { DatabaseFacility } from "../facilities/database-facility";
+import { DatabaseManager } from "./managers/database-manager";
 import { Result } from "../helpers/result";
 import axios, { AxiosResponse } from 'axios';
 import { ErrorCode } from "../helpers/errors-codes";
@@ -14,6 +14,9 @@ import to from 'await-to-js'
 import sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+let DBM = new DatabaseManager();
+let PS = new PeopleService(DBM);
+
 export class JobsService {
 
     @trylog()
@@ -24,13 +27,13 @@ export class JobsService {
         LoggerService.benchmark(key, `Starting Running Jobs :: ${start_time }`);
 
         let results = [];
-        results.push(await PeopleService.generate_birthdate_incidents());
-        results.push(await PeopleService.cancel_expired_people_scheduling());
-        results.push(await PeopleService.check_people_status());
-        results.push(await PeopleService.check_people_comunication_status());
-        results.push(await PeopleService.check_people_financial_status());
-        results.push(await PeopleService.check_people_scheduling_status());
-        results.push(await PeopleService.check_people_offering_status());
+        results.push(await PS.generate_birthdate_incidents());
+        results.push(await PS.cancel_expired_people_scheduling());
+        results.push(await PS.check_people_status());
+        results.push(await PS.check_people_comunication_status());
+        results.push(await PS.check_people_financial_status());
+        results.push(await PS.check_people_scheduling_status());
+        results.push(await PS.check_people_offering_status());
         results.push(await CardsService.correct_card_out_of_parent_step());
         results.push(await CardsService.check_cards_has_overdue_cards());
         results.push(await this.consolidate_members_sumary());
@@ -87,11 +90,11 @@ export class JobsService {
 
     @trylog()
     static async consolidate_members_sumary(): Promise<Result> {
-        return await DatabaseFacility.ExecuteSPNoResults("ConsolidateMembersSumary");
+        return await DBM.ExecuteSPNoResults("ConsolidateMembersSumary");
     }
 
     @trylog()
     static async consolidate_activity_sumary(): Promise<Result> {
-        return await DatabaseFacility.ExecuteSPNoResults("ConsolidateActivitySumary");
+        return await DBM.ExecuteSPNoResults("ConsolidateActivitySumary");
     }
 }

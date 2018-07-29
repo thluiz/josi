@@ -3,7 +3,7 @@ import * as uuid from "uuid/v4";
 
 export class Result<T = any> {
     public id : string;
-    
+
     public static GeneralOk<T>(data?: T): Result<T> {
         return new Result<T>(true, "GENERIC_ACTION", data);
     }
@@ -13,10 +13,11 @@ export class Result<T = any> {
     }
 
     public static Fail<T>(code: ErrorCode, error: Error, message?: string, data?: T): Result<T> {
-        return new Result<T>(false, 'Fail', data, error, message || error != null? error.message : null, code);
+        return new Result<T>(false, 'Fail', error as any,
+        error, message || (error != null? error.message : null), code);
     }
 
-    private constructor(public success: boolean, public type:string, public data: T|Error, public error?: Error, public message?: string, public error_code?: ErrorCode) {        
+    private constructor(public success: boolean, public type:string, public data: T, public error?: Error, public message?: string, public error_code?: ErrorCode) {
         this.id = uuid();
     }
 }

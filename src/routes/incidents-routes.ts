@@ -5,6 +5,7 @@ import { SecurityService } from '../services/security-service';
 import { IncidentsService } from '../services/incidents-service';
 
 const IR = IncidentsRepository;
+const IS = new IncidentsService();
 
 export function routes(app) {
     app.get("/api/available_ownerships/:branch/:date/:type",
@@ -35,7 +36,7 @@ export function routes(app) {
 
     app.get("/api/incidents/:id",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {
+    async (request, response) => {
         let result = await IR.getIncidentDetails( request.params.id );
 
         response.send(result);
@@ -43,7 +44,7 @@ export function routes(app) {
 
     app.get("/api/agenda/:branch?/:date?",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {
+    async (req, res) => {
         let result = await IR.getAgenda(
             req.params.branch > 0 ? req.params.branch : null,
             req.params.date
@@ -54,7 +55,7 @@ export function routes(app) {
 
     app.get("/api/daily/:branch?/:display?/:display_modifier?",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {
+    async (request, response) => {
         let result = await IR.getDailyMonitor(
             request.params.branch > 0 ? request.params.branch : null,
             request.params.display || 0,
@@ -66,7 +67,7 @@ export function routes(app) {
 
     app.get("/api/people_summary/:branch?/:week?",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {
+    async (req, res) => {
         let result = await IR.getPeopleSummary(
             req.params.branch > 0 ? req.params.branch : null,
             req.params.week || 0,
@@ -78,7 +79,7 @@ export function routes(app) {
 
     app.get("/api/sumary/:branch?/:month?/:week?/:date?",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {
+    async (req, res) => {
         let result = await IR.getSummary(
             req.params.branch > 0 ? req.params.branch : null,
             req.params.month || 0,
@@ -91,10 +92,10 @@ export function routes(app) {
 
     app.post("/api/incident/close",
     auth.ensureLoggedIn(),
-    async (req, response, next) => {
+    async (req, response) => {
         console.log(req.body);
         let user = await SecurityService.getUserFromRequest(req);
-        let result = await IncidentsService.close_incident({
+        let result = await IS.close_incident({
             id: req.body.id,
             close_text: req.body.close_text,
             title: req.body.title,
@@ -109,7 +110,7 @@ export function routes(app) {
     auth.ensureLoggedIn(),
     async (req, response, next) => {
         let user = await SecurityService.getUserFromRequest(req);
-        let result = await IncidentsService.start_incident({ id: req.body.id }, await user.getPersonId());
+        let result = await IS.start_incident({ id: req.body.id }, await user.getPersonId());
 
         response.send(result);
     });
@@ -118,7 +119,7 @@ export function routes(app) {
     auth.ensureLoggedIn(),
     async (req, response, next) => {
         let user = await SecurityService.getUserFromRequest(req);
-        let result = await IncidentsService.reopen_incident({ id: req.body.id }, await user.getPersonId());
+        let result = await IS.reopen_incident({ id: req.body.id }, await user.getPersonId());
 
         response.send(result);
     });
@@ -127,7 +128,7 @@ export function routes(app) {
     auth.ensureLoggedIn(),
     async (req, response, next) => {
         let user = await SecurityService.getUserFromRequest(req);
-        let result = await IncidentsService.cancel_start_incident({ id: req.body.id }, await user.getPersonId());
+        let result = await IS.cancel_start_incident({ id: req.body.id }, await user.getPersonId());
 
         response.send(result);
     });
@@ -136,7 +137,7 @@ export function routes(app) {
     auth.ensureLoggedIn(),
     async (request, response, next) => {
         let user = await SecurityService.getUserFromRequest(request);
-        let result = await IncidentsService.remove_incident({ id: request.body.id },
+        let result = await IS.remove_incident({ id: request.body.id },
             await user.getPersonId());
 
         response.send(result);
@@ -144,10 +145,10 @@ export function routes(app) {
 
     app.post("/api/incident/reschedule",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {
+    async (request, response) => {
         let user = await SecurityService.getUserFromRequest(request);
 
-        let result = await IncidentsService.reschedule_incident(
+        let result = await IS.reschedule_incident(
             request.body.incident,
             request.body.new_incident,
             request.body.contact.contact_text,
@@ -159,9 +160,9 @@ export function routes(app) {
 
     app.post("/api/incident/register_incident",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {
+    async (request, response) => {
         let user = await SecurityService.getUserFromRequest(request);
-        let result = await IncidentsService.register_incident(
+        let result = await IS.register_incident(
             request.body.incident,
             await user.getPersonId()
         );
@@ -171,10 +172,10 @@ export function routes(app) {
 
     app.post("/api/incident/register_contact",
     auth.ensureLoggedIn(),
-    async (request, response, next) => {
+    async (request, response) => {
         let user = await SecurityService.getUserFromRequest(request);
 
-        let result = await IncidentsService.register_contact_for_incident(
+        let result = await IS.register_contact_for_incident(
             request.body.incident,
             request.body.contact.contact_text,
             await user.getPersonId()

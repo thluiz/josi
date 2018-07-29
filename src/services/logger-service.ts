@@ -1,4 +1,4 @@
-import { AzureTableService } from './azure-tables-service';
+import { AzureTableManager } from './managers/azure-tables-manager';
 import { ErrorCode } from '../helpers/errors-codes';
 
 const LOG_TABLE = "ServerLogs";
@@ -45,11 +45,11 @@ export class LoggerService {
         let partition = (level == LogLevel.Info || level == LogLevel.Benchmark) ?
                         LogLevel[level] : ErrorCode[origin];
 
-        let entity = AzureTableService.buildEntity(
+        let entity = AzureTableManager.buildEntity(
             customKey || new Date().getTime().toString(),
             obj, partition);
 
-        AzureTableService.insertOrMergeEntity(
+        AzureTableManager.insertOrMergeEntity(
             this.get_table_service(), tbl,
             entity, (err, _results) => {
             if (err) {
@@ -61,7 +61,7 @@ export class LoggerService {
 
     private static get_table_service() {
         if (this.tableService == null) {
-            let tableSvc = AzureTableService.createTableService();
+            let tableSvc = AzureTableManager.createTableService();
 
             this.tableService = tableSvc;
         }

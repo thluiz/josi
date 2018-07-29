@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const azure = require("azure-storage");
-class AzureTableService {
+class AzureTableManager {
     static createTableService() {
         if (!this.config) {
             this.config = this.loadConfig();
@@ -97,5 +97,5 @@ class AzureTableService {
         return value;
     }
 }
-exports.AzureTableService = AzureTableService;
-//# sourceMappingURL=azure-tables-service.js.map
+exports.AzureTableManager = AzureTableManager;
+//# sourceMappingURL=azure-tables-manager.js.map

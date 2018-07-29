@@ -13,7 +13,8 @@ const person_services_1 = require("../../domain/services/person_services");
 const auth = require("../../src/middlewares/auth");
 const security_service_1 = require("../../src/services/security-service");
 const jobs_service_1 = require("../../src/services/jobs-service");
-const database_facility_1 = require("../../src/facilities/database-facility");
+const database_manager_1 = require("../../src/services/managers/database-manager");
+let DBM = new database_manager_1.DatabaseManager();
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     const person_service = new person_services_1.PersonService(pool);
@@ -28,7 +29,7 @@ function configure_routes(app, connection_pool) {
         response.send(result.recordset[0]);
     }));
     app.get("/api/people/:id", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetPersonData", { "id": request.params.id });
+        let result = yield DBM.ExecuteJsonSP("GetPersonData", { "id": request.params.id });
         response.send(result.data && result.data.length > 0 ?
             result.data[0] : []);
     }));
@@ -439,14 +440,10 @@ function configure_routes(app, connection_pool) {
         const user = yield security_service_1.SecurityService.getUserFromRequest(request);
         const responsible_id = yield user.getPersonId();
         let result = yield person_service.save_comment_about(request.body.person_id, request.body.comment, responsible_id);
-        response.send({ sucess: true });
+        response.send(result);
     }));
     app.post("/api/people_comments/archive", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield person_service.archive_comment(request.body.id);
-        response.send({ sucess: true });
-    }));
-    app.post("/api/people_comments/pin", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield person_service.pin_comment(request.body.id);
         response.send(result);
     }));
 }

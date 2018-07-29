@@ -4,7 +4,7 @@
    "description": "",
    "main": "server.js",
    "scripts": {
-      "test": "test.js",
+      "test": "mocha src/tests/*-tests.js src/tests/**/*-tests.js",
       "start": "ts-node src/index.ts"
    },
    "repository": {
@@ -55,7 +55,7 @@
       "rxjs": "^6.0.0",
       "showdown": "^1.8.6",
       "ts-node": "^6.0.2",
-      "typeorm": "0.2.3",
+      "typeorm": "^0.2.3",
       "typescript": "^2.8.3",
       "typings": "^2.1.1",
       "uuid": "^3.2.1",
@@ -64,9 +64,13 @@
       "yargs": "^11.0.0"
    },
    "devDependencies": {
+      "@types/chai": "^4.1.4",
+      "@types/mocha": "^5.2.5",
       "@types/node": "^8.0.29",
+      "chai": "^4.1.2",
       "gulp": "^3.9.1",
       "gulp-rename": "^1.2.2",
+      "mocha": "^5.2.0",
       "ncp": "^2.0.0"
    }
 }

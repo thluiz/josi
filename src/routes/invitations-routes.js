@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const auth = require("../../src/middlewares/auth");
+const auth = require("../middlewares/auth");
 const invitations_service_1 = require("../services/invitations-service");
 function routes(app) {
     app.post("/api/invitations/change_type", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {

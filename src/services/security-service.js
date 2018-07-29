@@ -8,8 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_facility_1 = require("./../facilities/database-facility");
+const database_manager_1 = require("./managers/database-manager");
 const User_1 = require("../entity/User");
+const DBM = new database_manager_1.DatabaseManager();
 var Permissions;
 (function (Permissions) {
     Permissions[Permissions["Operator"] = 0] = "Operator";
@@ -22,7 +23,7 @@ class SecurityService {
             if (user == null)
                 return null;
             if (!user.person || !user.person.default_page) {
-                const UR = yield database_facility_1.DatabaseFacility.getRepository(User_1.User);
+                const UR = yield DBM.getRepository(User_1.User);
                 user = yield UR.findOne({ id: user.id }, { relations: ["person", "person.default_page"] });
             }
             return {
@@ -44,7 +45,7 @@ class SecurityService {
     static getUserFromRequest(req) {
         return __awaiter(this, void 0, void 0, function* () {
             if (process.env.LOAD_ENV === 'true') {
-                const connection = yield database_facility_1.DatabaseFacility.getConnection();
+                const connection = yield DBM.getConnection();
                 const user = yield connection
                     .createQueryBuilder(User_1.User, "user")
                     .where("user.token = :token", { token: process.env.TOKEN_USER_DEV })

@@ -8,18 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const auth = require("../../../src/middlewares/auth");
-const database_facility_1 = require("../../facilities/database-facility");
+const auth = require("../../middlewares/auth");
+const database_manager_1 = require("../../services/managers/database-manager");
 const parameters_service_1 = require("../../services/parameters-service");
 const jobs_service_1 = require("../../services/jobs-service");
 const result_1 = require("../../helpers/result");
 const errors_codes_1 = require("../../helpers/errors-codes");
+let DBM = new database_manager_1.DatabaseManager();
 function routes(app) {
     app.get("/api/branches/:id?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = !req.params.id ?
-                yield database_facility_1.DatabaseFacility.ExecuteJsonSP(`GetBranches`)
-                : yield database_facility_1.DatabaseFacility.ExecuteJsonSQL(`select * from vwBranch where id = @0 for json path`, req.params.id);
+                yield DBM.ExecuteJsonSP(`GetBranches`)
+                : yield DBM.ExecuteJsonSQL(`select * from vwBranch where id = @0 for json path`, req.params.id);
             res.send(result.data);
         }
         catch (error) {
@@ -29,8 +30,8 @@ function routes(app) {
     app.get("/api/all_branches/:id?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = !req.params.id ?
-                yield database_facility_1.DatabaseFacility.ExecuteJsonSP(`GetBranches`, { 'active': null })
-                : yield database_facility_1.DatabaseFacility.ExecuteJsonSQL(`select * from vwBranch where id = @0 for json path`, req.params.id);
+                yield DBM.ExecuteJsonSP(`GetBranches`, { 'active': null })
+                : yield DBM.ExecuteJsonSQL(`select * from vwBranch where id = @0 for json path`, req.params.id);
             res.send(result.data);
         }
         catch (error) {

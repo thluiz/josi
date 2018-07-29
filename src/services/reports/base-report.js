@@ -8,15 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Branch_1 = require("./../../entity/Branch");
-const database_facility_1 = require("./../../facilities/database-facility");
-const logger_service_1 = require("./../logger-service");
-const email_manager_1 = require("./../managers/email-manager");
+const Branch_1 = require("../../entity/Branch");
+const database_manager_1 = require("../managers/database-manager");
+const logger_service_1 = require("../logger-service");
+const email_manager_1 = require("../managers/email-manager");
 const path = require("path");
 const Ejs = require("ejs");
 const result_1 = require("../../helpers/result");
 const errors_codes_1 = require("../../helpers/errors-codes");
 const configurations_services_1 = require("../configurations-services");
+const DBM = new database_manager_1.DatabaseManager();
 class BaseReport {
     static getIMEmail() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -25,7 +26,7 @@ class BaseReport {
     }
     static getBranchEmail(branch_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let BR = yield database_facility_1.DatabaseFacility.getRepository(Branch_1.Branch);
+            let BR = yield DBM.getRepository(Branch_1.Branch);
             let branch = yield BR.findOne(branch_id);
             return branch.contact_email;
         });

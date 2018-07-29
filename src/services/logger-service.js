@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const azure_tables_service_1 = require("./azure-tables-service");
+const azure_tables_manager_1 = require("./managers/azure-tables-manager");
 const errors_codes_1 = require("../helpers/errors-codes");
 const LOG_TABLE = "ServerLogs";
 const ERROR_TABLE = "Errors";
@@ -35,8 +35,8 @@ class LoggerService {
             LOG_TABLE : ERROR_TABLE;
         let partition = (level == LogLevel.Info || level == LogLevel.Benchmark) ?
             LogLevel[level] : errors_codes_1.ErrorCode[origin];
-        let entity = azure_tables_service_1.AzureTableService.buildEntity(customKey || new Date().getTime().toString(), obj, partition);
-        azure_tables_service_1.AzureTableService.insertOrMergeEntity(this.get_table_service(), tbl, entity, (err, _results) => {
+        let entity = azure_tables_manager_1.AzureTableManager.buildEntity(customKey || new Date().getTime().toString(), obj, partition);
+        azure_tables_manager_1.AzureTableManager.insertOrMergeEntity(this.get_table_service(), tbl, entity, (err, _results) => {
             if (err) {
                 console.log(err);
                 console.log("AzureSessionStore.set: " + err);
@@ -45,7 +45,7 @@ class LoggerService {
     }
     static get_table_service() {
         if (this.tableService == null) {
-            let tableSvc = azure_tables_service_1.AzureTableService.createTableService();
+            let tableSvc = azure_tables_manager_1.AzureTableManager.createTableService();
             this.tableService = tableSvc;
         }
         return this.tableService;

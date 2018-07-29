@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const Url_1 = require("./Url");
+const Role_1 = require("./Role");
 let Person = class Person {
 };
 __decorate([
@@ -21,6 +22,10 @@ __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
 ], Person.prototype, "name", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Boolean)
+], Person.prototype, "is_interested", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Boolean)
@@ -46,6 +51,10 @@ __decorate([
     typeorm_1.JoinColumn({ name: "default_page_id" }),
     __metadata("design:type", Url_1.Url)
 ], Person.prototype, "default_page", void 0);
+__decorate([
+    typeorm_1.ManyToMany(type => Role_1.Role, role => role.people),
+    __metadata("design:type", Array)
+], Person.prototype, "roles", void 0);
 Person = __decorate([
     typeorm_1.Entity()
 ], Person);

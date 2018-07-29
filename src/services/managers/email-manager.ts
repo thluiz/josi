@@ -16,7 +16,7 @@ export interface IMessage {
 export class EmailManager {
     static send_email(msg : IMessage): Promise<Result<any>> {
         return new Promise((resolve, reject) => {
-            if(process.env.SEND_EMAIL_AS_PRODUCTION !== "true") {
+            if(process.env.PRODUCTION !== "true") {
                 msg.subject += "[DEST:" +
                                     (isArray(msg.to) ?
                                         (msg.to as string[]).join(", ") : msg.to) +

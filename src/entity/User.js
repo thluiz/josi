@@ -19,7 +19,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const Person_1 = require("./Person");
-const database_facility_1 = require("../facilities/database-facility");
+const database_manager_1 = require("../services/managers/database-manager");
+let DBM = new database_manager_1.DatabaseManager();
 let User = User_1 = class User {
     is_director() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -49,7 +50,7 @@ let User = User_1 = class User {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.person != null)
                 return;
-            const UR = yield database_facility_1.DatabaseFacility.getRepository(User_1);
+            const UR = yield DBM.getRepository(User_1);
             let user = yield UR.findOne({ id: this.id }, { relations: ["person"] });
             this.person = user.person;
         });

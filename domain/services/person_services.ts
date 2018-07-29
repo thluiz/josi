@@ -1,9 +1,4 @@
-import { DatabaseFacility } from '../../src/facilities/database-facility';
-import { Person } from '../../src/entity/Person';
-import { Result } from '../../src/helpers/result';
 const sql = require('mssql')
-
-const PERSON_UPDATED_ACTION = "PERSON_UPDATED_ACTION";
 
 export class PersonService {
     private sql_pool;
@@ -169,15 +164,6 @@ export class PersonService {
         const result = await new sql.Request(this.sql_pool)
                                 .input('comment_id', sql.Int, comment_id)
                                 .execute(`ToglePersonCommentArchived`);
-
-        return result;
-    }
-
-    async pin_comment(comment_id) : Promise<Result<Person>> {
-        const result = await DatabaseFacility.ExecuteTypedJsonSP<Person>(PERSON_UPDATED_ACTION,
-            "ToglePersonCommentPinned", {
-            comment_id: comment_id
-        });
 
         return result;
     }

@@ -1,22 +1,24 @@
-import { Repository } from 'typeorm';
-import { DatabaseFacility } from "../facilities/database-facility";
+import { Repository, QueryRunner } from 'typeorm';
+import { DatabaseManager } from "../services/managers/database-manager";
 import { Result } from "../helpers/result";
 import { ErrorCode } from "../helpers/errors-codes";
 import { trylog } from "../decorators/trylog-decorator";
 import showdown = require('showdown');
 import { Incident } from "../entity/Incident";
+
 const converter = new showdown.Converter();
+const DBM = new DatabaseManager();
 
 export class IncidentsRepository {
 
     @trylog()
-    static async getRepository(): Promise<Repository<Incident>> {
-        return await DatabaseFacility.getRepository<Incident>(Incident);
+    static async getRepository(runner? : QueryRunner): Promise<Repository<Incident>> {
+        return await DBM.getRepository<Incident>(Incident, runner);
     }
 
     @trylog()
     static async getAvailableOwnerships(branch_id, date, type): Promise<Result<Incident>> {
-        let result = await DatabaseFacility.ExecuteJsonSP<Incident>("GetAvailableOwnerships",
+        let result = await DBM.ExecuteJsonSP<Incident>("GetAvailableOwnerships",
             { "branch_id": branch_id },
             { "date": date },
             { "type": type }
@@ -27,7 +29,7 @@ export class IncidentsRepository {
 
     @trylog()
     static async getCurrentActivities(branch_id): Promise<Result<any>> {
-        let result = await DatabaseFacility.ExecuteJsonSP("GetCurrentActivities",
+        let result = await DBM.ExecuteJsonSP("GetCurrentActivities",
             { "branch_id": branch_id }
         );
 
@@ -36,7 +38,7 @@ export class IncidentsRepository {
 
     @trylog()
     static async getPeopleSummary(branch_id, week_modifier, date): Promise<Result<any>> {
-        return await DatabaseFacility.ExecuteJsonSP("GetPeopleSummary",
+        return await DBM.ExecuteJsonSP("GetPeopleSummary",
             { "branch": branch_id },
             { "week_modifier": week_modifier },
             { "date": date }
@@ -45,7 +47,7 @@ export class IncidentsRepository {
 
     @trylog()
     static async getSummary(branch_id, month_modifier, week_modifier, date): Promise<Result<any>> {
-        return await DatabaseFacility.ExecuteJsonSP("GetPeopleSummary",
+        return await DBM.ExecuteJsonSP("GetPeopleSummary",
             { "branch": branch_id },
             { "month_modifier": month_modifier },
             { "week_modifier": week_modifier },
@@ -55,7 +57,7 @@ export class IncidentsRepository {
 
     @trylog()
     static async getDailyMonitor(branch_id, display, display_modifier): Promise<Result<any>> {
-        return await DatabaseFacility.ExecuteJsonSP("GetDailyMonitor2",
+        return await DBM.ExecuteJsonSP("GetDailyMonitor2",
             { "branch": branch_id },
             { "display_modifier": display_modifier },
             { "display": display }
@@ -64,7 +66,7 @@ export class IncidentsRepository {
 
     @trylog()
     static async getPersonIncidentsHistory(person_id, start_date, end_date, activity_type): Promise<Result<any>> {
-        return await DatabaseFacility.ExecuteJsonSP("GetPersonIncidentHistory2",
+        return await DBM.ExecuteJsonSP("GetPersonIncidentHistory2",
             { "person_id": person_id },
             { "start_date": start_date },
             { "end_date": end_date },
@@ -74,14 +76,14 @@ export class IncidentsRepository {
 
     @trylog()
     static async getIncidentDetails(incident_id): Promise<Result<any>> {
-        return await DatabaseFacility.ExecuteJsonSP("GetIncidentDetails",
+        return await DBM.ExecuteJsonSP("GetIncidentDetails",
             { "id": incident_id }
         );
     }
 
     @trylog()
     static async getAgenda(branch_id, date): Promise<Result<any>> {
-        return await DatabaseFacility.ExecuteJsonSP("GetAgenda2",
+        return await DBM.ExecuteJsonSP("GetAgenda2",
             { "branch_id": branch_id },
             { "date": date }
         );
@@ -89,7 +91,7 @@ export class IncidentsRepository {
 
     @trylog()
     static async getOwnershipData(id: number): Promise<Result<any>> {
-        const ownership_data = await DatabaseFacility.ExecuteJsonSP("getOwnershipData", {
+        const ownership_data = await DBM.ExecuteJsonSP("getOwnershipData", {
             "ownership_id": id
         });
 

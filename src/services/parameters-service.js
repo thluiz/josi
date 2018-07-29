@@ -17,12 +17,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Voucher_1 = require("./../entity/Voucher");
-const PersonCardPosition_1 = require("./../entity/PersonCardPosition");
-const PersonCard_1 = require("./../entity/PersonCard");
-const Location_1 = require("./../entity/Location");
-const BranchCategory_1 = require("./../entity/BranchCategory");
-const database_facility_1 = require("./../facilities/database-facility");
+const Voucher_1 = require("../entity/Voucher");
+const PersonCardPosition_1 = require("../entity/PersonCardPosition");
+const PersonCard_1 = require("../entity/PersonCard");
+const Location_1 = require("../entity/Location");
+const BranchCategory_1 = require("../entity/BranchCategory");
+const database_manager_1 = require("./managers/database-manager");
 const result_1 = require("../helpers/result");
 const Branch_1 = require("../entity/Branch");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
@@ -40,17 +40,18 @@ const VOUCHER_UPDATED = "VOUCHER_UPDATED";
 const BRANCHVOUCHER_CREATED = "BRANCH_VOUCHER_CREATED";
 const BRANCHVOUCHER_REMOVED = "BRANCH_VOUCHER_REMOVED";
 const NOTHING_CHANGED = "NOTHING_CHANGED";
+const DBM = new database_manager_1.DatabaseManager();
 class ParametersService {
     static save_voucher(voucher_data) {
         return __awaiter(this, void 0, void 0, function* () {
-            const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
+            const VR = yield DBM.getRepository(Voucher_1.Voucher);
             return result_1.Result.Ok(voucher_data.id > 0 ? VOUCHER_UPDATED : VOUCHER_CREATED, yield VR.save(voucher_data));
         });
     }
     static create_branch_voucher(branch, voucher) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
+                const VR = yield DBM.getRepository(Voucher_1.Voucher);
                 voucher = yield VR.findOne(voucher.id, { relations: ["branches"] }); //load relation
                 if (voucher.branches.find(b => b.id == branch.id) != null) {
                     console.log(voucher.branches);
@@ -71,7 +72,7 @@ class ParametersService {
     static remove_branch_voucher(branch, voucher) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
+                const VR = yield DBM.getRepository(Voucher_1.Voucher);
                 const voucher_branches = yield VR.findOne(voucher.id, { relations: ["branches"] });
                 if (!voucher_branches.branches.find(b => b.id == branch.id)) {
                     return result_1.Result.Fail(errors_codes_1.ErrorCode.NothingChanged, null);
@@ -89,13 +90,13 @@ class ParametersService {
     }
     static update_branch(branch) {
         return __awaiter(this, void 0, void 0, function* () {
-            const BR = yield database_facility_1.DatabaseFacility.getRepository(Branch_1.Branch);
+            const BR = yield DBM.getRepository(Branch_1.Branch);
             return result_1.Result.Ok(BRANCH_UPDATED, yield BR.save(branch));
         });
     }
     static create_branch(branch_data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteWithinTransaction((qr) => __awaiter(this, void 0, void 0, function* () {
+            return yield DBM.ExecuteWithinTransaction((qr) => __awaiter(this, void 0, void 0, function* () {
                 const BR = qr.manager.getRepository(Branch_1.Branch);
                 const BCR = qr.manager.getRepository(BranchCategory_1.BranchCategory);
                 let location = yield this.create_location(qr, branch_data);

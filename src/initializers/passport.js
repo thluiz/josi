@@ -8,20 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_facility_1 = require("../facilities/database-facility");
+const database_manager_1 = require("../services/managers/database-manager");
 const User_1 = require("../entity/User");
 const express = require('express');
 const AzureSessionStore = require('../middlewares/azure-session-storage');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
+let DBM = new database_manager_1.DatabaseManager();
 function initialize(app) {
     passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: process.env.GOOGLE_CALLBACK_URL
     }, (accessToken, refreshToken, profile, cb) => __awaiter(this, void 0, void 0, function* () {
-        let ru = yield database_facility_1.DatabaseFacility.getRepository(User_1.User);
+        let ru = yield DBM.getRepository(User_1.User);
         let user = yield ru.findOne({ email: profile.emails[0].value });
         if (user == null) {
             cb(null, false);
@@ -34,7 +35,7 @@ function initialize(app) {
     });
     passport.deserializeUser(function (token, done) {
         return __awaiter(this, void 0, void 0, function* () {
-            let ru = yield database_facility_1.DatabaseFacility.getRepository(User_1.User);
+            let ru = yield DBM.getRepository(User_1.User);
             let user = yield ru.findOne({ token: token });
             if (user == null && done) {
                 done("USER_NOT_FOUND", false);

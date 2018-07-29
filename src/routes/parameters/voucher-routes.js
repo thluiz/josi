@@ -8,35 +8,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const people_service_1 = require("./../../services/people-service");
-const auth = require("../../../src/middlewares/auth");
-const database_facility_1 = require("../../facilities/database-facility");
+const auth = require("../../middlewares/auth");
+const people_service_1 = require("../../services/people-service");
+const database_manager_1 = require("../../services/managers/database-manager");
 const result_1 = require("../../helpers/result");
 const errors_codes_1 = require("../../helpers/errors-codes");
 const jobs_service_1 = require("../../services/jobs-service");
 const parameters_service_1 = require("../../services/parameters-service");
 const Branch_1 = require("../../entity/Branch");
-const Voucher_1 = require("./../../entity/Voucher");
+const Voucher_1 = require("../../entity/Voucher");
 const voucher_person_registered_report_1 = require("../../services/reports/voucher-person-registered-report");
 const logger_service_1 = require("../../services/logger-service");
+const PS = new people_service_1.PeopleService();
+const DBM = new database_manager_1.DatabaseManager();
 function routes(app) {
     app.get("/api/vouchers/:id?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
+        const VR = yield DBM.getRepository(Voucher_1.Voucher);
         let vouchers = req.params.id > 0 ?
             yield VR.find({ where: { id: req.params.id }, relations: ['branches', 'voucher_type'] })
             : yield VR.find({ order: { "active": "DESC" }, relations: ['voucher_type'] });
         res.send(result_1.Result.GeneralOk(vouchers));
     }));
     app.post("/api/parameters/voucher_branch/add", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        const BR = yield database_facility_1.DatabaseFacility.getRepository(Branch_1.Branch);
-        const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
+        const BR = yield DBM.getRepository(Branch_1.Branch);
+        const VR = yield DBM.getRepository(Voucher_1.Voucher);
         let branch = yield BR.findOne(req.body.branch.id);
         let voucher = yield VR.findOne(req.body.voucher.id);
         res.send(yield parameters_service_1.ParametersService.create_branch_voucher(branch, voucher));
     }));
     app.post("/api/parameters/voucher_branch/remove", auth.ensureLoggedIn(), (req, res, _next) => __awaiter(this, void 0, void 0, function* () {
-        const BR = yield database_facility_1.DatabaseFacility.getRepository(Branch_1.Branch);
-        const VR = yield database_facility_1.DatabaseFacility.getRepository(Voucher_1.Voucher);
+        const BR = yield DBM.getRepository(Branch_1.Branch);
+        const VR = yield DBM.getRepository(Voucher_1.Voucher);
         let branch = yield BR.findOne(req.body.branch.id);
         let voucher = yield VR.findOne(req.body.voucher.id);
         res.send(yield parameters_service_1.ParametersService.remove_branch_voucher(branch, voucher));
@@ -78,7 +80,7 @@ function routes(app) {
                 invite_key: req.body.invite
             };
             yield voucher_person_registered_report_1.VoucherPersonRegisterdReport.send(data);
-            yield people_service_1.PeopleService.create_person_from_voucher(data);
+            yield PS.create_person_from_voucher(data);
         }
         catch (error) {
             logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.ExternalResource, error);
@@ -86,11 +88,11 @@ function routes(app) {
         res.send({ sucess: true });
     }));
     app.get("/api/voucher/invites", (_req, res, _next) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetInvitesForVoucher");
+        const result = yield DBM.ExecuteJsonSP("GetInvitesForVoucher");
         res.send(result.data);
     }));
     app.get("/api/voucher/data", (_req, res, _next) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetDataForVoucher");
+        const result = yield DBM.ExecuteJsonSP("GetDataForVoucher");
         res.send(result.data);
     }));
 }

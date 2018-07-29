@@ -8,5 +8,7 @@
         "**/.DS_Store": true,
         "**/*.js": { "when": "$(basename).ts"},
         "**/*.js.map": { "when": "$(basename)"}
-    }
+    },
+    "mocha.env": ".env",
+    "mocha.files.glob": "src/tests/*-tests.js",
 }

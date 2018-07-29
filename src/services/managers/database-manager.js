@@ -11,21 +11,74 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const typeorm_1 = require("typeorm");
 const await_to_js_1 = require("await-to-js");
-const result_1 = require("../helpers/result");
-const errors_codes_1 = require("../helpers/errors-codes");
-class DatabaseFacility {
-    static getRepository(type) {
+const result_1 = require("../../helpers/result");
+const errors_codes_1 = require("../../helpers/errors-codes");
+let connection = null;
+function getConnection() {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!connection) {
+            connection = yield typeorm_1.createConnection({
+                type: 'mssql',
+                host: process.env.SQL_HOST,
+                username: process.env.SQL_USER,
+                password: process.env.SQL_PASSWORD,
+                database: process.env.SQL_DATABASE,
+                extra: { options: { encrypt: true } },
+                logging: process.env.PRODUCTION !== "true",
+                synchronize: false,
+                entities: [
+                    "src/entity/*.js"
+                ],
+                subscribers: [
+                    "src/subscriber/*.js"
+                ],
+                migrations: [
+                    "src/migration/*.js"
+                ],
+                cli: {
+                    entitiesDir: "entity",
+                    migrationsDir: "migration",
+                    subscribersDir: "subscriber"
+                }
+            });
+        }
+        return connection;
+    });
+}
+class DatabaseManager {
+    getRepository(type, runner) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield this.getConnection();
+            let connection = yield (runner ? runner.connection : getConnection());
             return yield connection.getRepository(type);
         });
     }
-    static ExecuteWithinTransaction(fun, queryRunner) {
+    StartTransaction() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const conn = yield getConnection();
+            const queryRunner = conn.createQueryRunner();
+            if (!queryRunner.connection.isConnected) {
+                yield queryRunner.connection.connect();
+            }
+            yield queryRunner.startTransaction();
+            return queryRunner;
+        });
+    }
+    CommitTransaction(queryRunner) {
+        return __awaiter(this, void 0, void 0, function* () {
+            queryRunner.commitTransaction();
+        });
+    }
+    RollbackTransaction(queryRunner) {
+        return __awaiter(this, void 0, void 0, function* () {
+            queryRunner.rollbackTransaction();
+        });
+    }
+    ExecuteWithinTransaction(fun, queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
             if (queryRunner) {
                 return fun(queryRunner);
             }
-            const conn = yield DatabaseFacility.getConnection();
+            const conn = yield getConnection();
             queryRunner = conn.createQueryRunner();
             try {
                 yield queryRunner.startTransaction();
@@ -39,23 +92,22 @@ class DatabaseFacility {
             }
         });
     }
-    static ExecuteSPNoResults(procedure, ...parameters) {
+    ExecuteSPNoResults(procedure, ...parameters) {
         return __awaiter(this, void 0, void 0, function* () {
-            let [conn_error, connection] = yield await_to_js_1.default(this.getConnection());
+            let [conn_error, connection] = yield await_to_js_1.default(getConnection());
             if (conn_error)
                 return result_1.Result.Fail(errors_codes_1.ErrorCode.FailedGetConnection, conn_error);
             let { query, values } = this.buildSPParameters(procedure, parameters);
-            let [err, result] = yield await_to_js_1.default(connection.query(query, values));
+            let [err, _] = yield await_to_js_1.default(connection.query(query, values));
             if (err)
                 return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, err);
             return result_1.Result.GeneralOk();
         });
     }
-    static ExecuteJsonSQL(sql, ...parameters) {
+    ExecuteJsonSQL(sql, ...parameters) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let connection = yield this.getConnection();
-                ;
+                let connection = yield getConnection();
                 const result = yield connection.query(sql, parameters);
                 return result_1.Result.GeneralOk(JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]));
             }
@@ -67,35 +119,52 @@ class DatabaseFacility {
             }
         });
     }
-    static ExecuteTypedJsonSP(result_type, procedure, ...parameters) {
+    ExecuteTypedJsonSP(result_type, procedure, parameters, runner) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.ExecuteSP(result_type, procedure, true, parameters);
+            return this.ExecuteSP(result_type, procedure, true, parameters, runner);
         });
     }
-    static ExecuteJsonSP(procedure, ...parameters) {
+    ExecuteJsonSP(procedure, ...parameters) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.ExecuteSP("GENERIC_ACTION", procedure, true, parameters);
         });
     }
-    static ExecuteSP(result_type, procedure, parseResults, parameters) {
+    CloseConnection() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let conn = yield getConnection();
+            conn.close();
+        });
+    }
+    ExecuteSP(result_type, procedure, parseResults, parameters, data_runner) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let connection = yield this.getConnection();
+                if (!data_runner) {
+                    data_runner = {
+                        runner: yield this.StartTransaction(),
+                        shouldCommit: true
+                    };
+                }
+                let connection = yield getConnection();
                 let { query, values } = this.buildSPParameters(procedure, parameters);
                 const result = yield connection.query(query, values);
                 const data = result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"];
+                if (data_runner.shouldCommit)
+                    yield data_runner.runner.commitTransaction();
                 return parseResults ?
                     result_1.Result.Ok(result_type, JSON.parse(data)) : result_1.Result.Ok(data);
             }
             catch (error) {
                 if (error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
+                    if (data_runner.shouldCommit)
+                        yield data_runner.runner.commitTransaction();
                     return result_1.Result.Ok(result_type, new Array());
                 }
+                yield data_runner.runner.rollbackTransaction();
                 return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
             }
         });
     }
-    static buildSPParameters(procedure, parameters) {
+    buildSPParameters(procedure, parameters) {
         let values = [];
         let query = `exec ${procedure} `;
         if (parameters != null) {
@@ -107,37 +176,6 @@ class DatabaseFacility {
         }
         return { query, values };
     }
-    static getConnection() {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!this._connection) {
-                this._connection = yield typeorm_1.createConnection({
-                    type: 'mssql',
-                    host: process.env.SQL_HOST,
-                    username: process.env.SQL_DATABASE,
-                    password: process.env.SQL_PASSWORD,
-                    database: process.env.SQL_DATABASE,
-                    extra: { options: { encrypt: true } },
-                    logging: true,
-                    synchronize: false,
-                    entities: [
-                        "src/entity/*.js"
-                    ],
-                    subscribers: [
-                        "src/subscriber/*.js"
-                    ],
-                    migrations: [
-                        "src/migration/*.js"
-                    ],
-                    cli: {
-                        entitiesDir: "entity",
-                        migrationsDir: "migration",
-                        subscribersDir: "subscriber"
-                    }
-                });
-            }
-            return this._connection;
-        });
-    }
 }
-exports.DatabaseFacility = DatabaseFacility;
-//# sourceMappingURL=database-facility.js.map
+exports.DatabaseManager = DatabaseManager;
+//# sourceMappingURL=database-manager.js.map

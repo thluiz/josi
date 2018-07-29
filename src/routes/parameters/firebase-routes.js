@@ -8,14 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const auth = require("../../../src/middlewares/auth");
-const firebase_service_1 = require("../../services/firebase-service");
+const auth = require("../../middlewares/auth");
+const firebase_manager_1 = require("../../services/managers/firebase-manager");
 function routes(app) {
-    app.get("/api/firebase/token", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield firebase_service_1.FirebaseService.get_token();
+    app.get("/api/firebase/token", auth.ensureLoggedIn(), (_, res) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield firebase_manager_1.FirebaseManager.get_token();
         res.send(result);
     }));
-    app.get("/api/firebase/current_time", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/firebase/current_time", (_, res) => __awaiter(this, void 0, void 0, function* () {
         const dt = new Date();
         res.send({
             milliseconds: dt.getTime(),

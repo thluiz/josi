@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const logger_service_1 = require("./../../src/services/logger-service");
+const logger_service_1 = require("../../src/services/logger-service");
 const sql = require("mssql");
 const card_services_1 = require("../../domain/services/card_services");
 const auth = require("../../src/middlewares/auth");
@@ -18,7 +18,7 @@ const errors_codes_1 = require("../../src/helpers/errors-codes");
 function configure_routes(app, connection_pool) {
     const pool = connection_pool;
     const card_service = new card_services_1.CardService(pool);
-    app.get("/api/cards/:id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/cards/:id", auth.ensureLoggedIn(), (req, res, _next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input("card", sql.Int, req.params.id)
             .query(`select * from vwCard where id = @card for json path`);
@@ -31,7 +31,7 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/operators", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/operators", auth.ensureLoggedIn(), (_req, res) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select *
                 from vwPerson v
@@ -40,7 +40,7 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/card_templates", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/card_templates", auth.ensureLoggedIn(), (_, res) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select *
                 from card_template
@@ -50,13 +50,13 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/organizations/flat", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/organizations/flat", auth.ensureLoggedIn(), (_, res) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .execute(`GetFlatOrganizationsData`);
         let response = result.recordset[0];
         res.send(response);
     }));
-    app.get("/api/organizations/:id?/:include_childrens?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/organizations/:id?/:include_childrens?", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         try {
             let result = yield cards_repository_1.CardsRepository.getOrganizations(req.params.id, req.params.include_childrens);
             let response = result.data;
@@ -67,7 +67,7 @@ function configure_routes(app, connection_pool) {
             res.status(500).json(error);
         }
     }));
-    app.get("/api/projects/:id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/projects/:id", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         try {
             let result = yield cards_repository_1.CardsRepository.getProject(req.params.id);
             let response = result.data;
@@ -79,18 +79,18 @@ function configure_routes(app, connection_pool) {
             res.status(500).json(error);
         }
     }));
-    app.post("/api/person_cards", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/person_cards", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         let result = yield card_service.save_person_card(req.body.person_card);
-        res.send({ sucess: true });
+        res.send(result);
     }));
-    app.post("/api/cards", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/cards", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         let user = yield security_service_1.SecurityService.getUserFromRequest(req);
         let result = yield card_service.save_card(req.body.card, yield user.getPersonId());
         let response = result.recordset[0];
         res.send(response[0].empty ? [] :
             req.params.id > 0 ? response[0] : response);
     }));
-    app.post("/api/move_card", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/move_card", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         let user = yield security_service_1.SecurityService.getUserFromRequest(req);
         const result = yield new sql.Request(pool)
             .input("card_id", sql.Int, req.body.card_id)
@@ -101,32 +101,32 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response);
     }));
-    app.post("/api/cards_comments", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/cards_comments", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         let user = yield security_service_1.SecurityService.getUserFromRequest(req);
         let result = yield card_service.save_card_comment(req.body.card, req.body.comment, req.body.commentary_type, yield user.getPersonId());
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/cards_comments/:card_id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/cards_comments/:card_id", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .input("card_id", sql.Int, req.params.card_id)
             .execute(`GetCardCommentaries`);
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.post("/api/cards/steps", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/cards/steps", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         let user = yield security_service_1.SecurityService.getUserFromRequest(req);
         let result = yield card_service.save_card_step(req.body.card_id, req.body.step_id, yield user.getPersonId());
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response[0]);
     }));
-    app.post("/api/cards/steps/card_order", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/cards/steps/card_order", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         let result = yield card_service.save_card_order(req.body.card_id, req.body.order);
-        res.send({ sucess: true });
+        res.send(result);
     }));
     app.post("/api/person_cards/delete", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let result = yield card_service.remove_person_card(req.body.person_card);
-        res.send({ sucess: true });
+        res.send(result);
     }));
     app.post("/api/archive_card", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         let user = yield security_service_1.SecurityService.getUserFromRequest(req);

@@ -1,6 +1,8 @@
 import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from "typeorm";
 import { Person } from "./Person";
-import { DatabaseFacility } from "../facilities/database-facility";
+import { DatabaseManager } from "../services/managers/database-manager";
+
+let DBM = new DatabaseManager();
 
 @Entity()
 export class User {
@@ -50,9 +52,9 @@ export class User {
     private async ensurePersonLoaded() {
         if (this.person != null)
             return;
-            
-        const UR = await DatabaseFacility.getRepository<User>(User);
+
+        const UR = await DBM.getRepository<User>(User);
         let user = await UR.findOne({ id: this.id }, { relations: ["person"] });
-        this.person = user.person;        
+        this.person = user.person;
     }
 }

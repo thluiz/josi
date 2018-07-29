@@ -8,9 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const EnumRelationshipType_1 = require("./../entity/EnumRelationshipType");
-const PersonRelationship_1 = require("./../entity/PersonRelationship");
-const database_facility_1 = require("./../facilities/database-facility");
+const EnumRelationshipType_1 = require("../entity/EnumRelationshipType");
+const PersonRelationship_1 = require("../entity/PersonRelationship");
+const database_manager_1 = require("./managers/database-manager");
 const result_1 = require("../helpers/result");
 class InvitationsService {
     static change_invite_type(invite_id, new_type) {
@@ -25,6 +25,6 @@ class InvitationsService {
         });
     }
 }
-InvitationsService.DBF = database_facility_1.DatabaseFacility;
+InvitationsService.DBF = new database_manager_1.DatabaseManager();
 exports.InvitationsService = InvitationsService;
 //# sourceMappingURL=invitations-service.js.map

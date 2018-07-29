@@ -1,7 +1,7 @@
-import { PeopleService } from '../../services/people-service';
 import * as auth from '../../middlewares/auth';
+import { PeopleService } from '../../services/people-service';
 
-import { DatabaseFacility } from '../../facilities/database-facility';
+import { DatabaseManager } from '../../services/managers/database-manager';
 import { Result } from '../../helpers/result';
 import { ErrorCode } from '../../helpers/errors-codes';
 
@@ -14,12 +14,14 @@ import { IPersonVoucherData } from '../../services/people-service';
 import { VoucherPersonRegisterdReport } from '../../services/reports/voucher-person-registered-report';
 import { LoggerService, LogOrigins } from '../../services/logger-service';
 
+const PS = new PeopleService();
+const DBM = new DatabaseManager();
 
 export function routes(app) {
     app.get("/api/vouchers/:id?",
     auth.ensureLoggedIn(),
     async (req, res, next) => {
-        const VR = await DatabaseFacility.getRepository<Voucher>(Voucher);
+        const VR = await DBM.getRepository<Voucher>(Voucher);
 
         let vouchers = req.params.id > 0 ?
                         await VR.find({ where: { id : req.params.id }, relations: ['branches', 'voucher_type']})
@@ -31,8 +33,8 @@ export function routes(app) {
     app.post("/api/parameters/voucher_branch/add",
         auth.ensureLoggedIn(),
         async (req, res, next) => {
-            const BR = await DatabaseFacility.getRepository<Branch>(Branch);
-            const VR = await DatabaseFacility.getRepository<Voucher>(Voucher);
+            const BR = await DBM.getRepository<Branch>(Branch);
+            const VR = await DBM.getRepository<Voucher>(Voucher);
 
             let branch = await BR.findOne(req.body.branch.id);
             let voucher = await VR.findOne(req.body.voucher.id);
@@ -44,8 +46,8 @@ export function routes(app) {
     app.post("/api/parameters/voucher_branch/remove",
         auth.ensureLoggedIn(),
         async (req, res, _next) => {
-            const BR = await DatabaseFacility.getRepository<Branch>(Branch);
-            const VR = await DatabaseFacility.getRepository<Voucher>(Voucher);
+            const BR = await DBM.getRepository<Branch>(Branch);
+            const VR = await DBM.getRepository<Voucher>(Voucher);
 
             let branch = await BR.findOne(req.body.branch.id);
             let voucher = await VR.findOne(req.body.voucher.id);
@@ -103,7 +105,7 @@ export function routes(app) {
 
             await VoucherPersonRegisterdReport.send(data);
 
-            await PeopleService.create_person_from_voucher(data);
+            await PS.create_person_from_voucher(data);
         } catch (error) {
             LoggerService.error(ErrorCode.ExternalResource, error);
         }
@@ -111,12 +113,12 @@ export function routes(app) {
     });
 
     app.get("/api/voucher/invites", async(_req, res, _next) => {
-        const result = await DatabaseFacility.ExecuteJsonSP("GetInvitesForVoucher");
+        const result = await DBM.ExecuteJsonSP("GetInvitesForVoucher");
         res.send(result.data);
     });
 
     app.get("/api/voucher/data", async(_req, res, _next) => {
-        const result = await DatabaseFacility.ExecuteJsonSP("GetDataForVoucher");
+        const result = await DBM.ExecuteJsonSP("GetDataForVoucher");
         res.send(result.data);
     });
 }

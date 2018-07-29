@@ -1,5 +1,6 @@
 export enum ErrorCode {
     NoError,
+    ValidationError,
     GenericError,
     FailedGetConnection,
     ExternalRequestError,
@@ -11,5 +12,6 @@ export enum ErrorCode {
     SessionControl,
     SendingEmail,
     ExternalResource,
-    CardsActions
+    CardsActions,
+    PeopleActions
 }

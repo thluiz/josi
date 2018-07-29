@@ -17,63 +17,64 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_facility_1 = require("../facilities/database-facility");
+const database_manager_1 = require("../services/managers/database-manager");
 const result_1 = require("../helpers/result");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const showdown = require("showdown");
 const Incident_1 = require("../entity/Incident");
 const converter = new showdown.Converter();
+const DBM = new database_manager_1.DatabaseManager();
 class IncidentsRepository {
-    static getRepository() {
+    static getRepository(runner) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.getRepository(Incident_1.Incident);
+            return yield DBM.getRepository(Incident_1.Incident, runner);
         });
     }
     static getAvailableOwnerships(branch_id, date, type) {
         return __awaiter(this, void 0, void 0, function* () {
-            let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetAvailableOwnerships", { "branch_id": branch_id }, { "date": date }, { "type": type });
+            let result = yield DBM.ExecuteJsonSP("GetAvailableOwnerships", { "branch_id": branch_id }, { "date": date }, { "type": type });
             return result;
         });
     }
     static getCurrentActivities(branch_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetCurrentActivities", { "branch_id": branch_id });
+            let result = yield DBM.ExecuteJsonSP("GetCurrentActivities", { "branch_id": branch_id });
             return result;
         });
     }
     static getPeopleSummary(branch_id, week_modifier, date) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetPeopleSummary", { "branch": branch_id }, { "week_modifier": week_modifier }, { "date": date });
+            return yield DBM.ExecuteJsonSP("GetPeopleSummary", { "branch": branch_id }, { "week_modifier": week_modifier }, { "date": date });
         });
     }
     static getSummary(branch_id, month_modifier, week_modifier, date) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetPeopleSummary", { "branch": branch_id }, { "month_modifier": month_modifier }, { "week_modifier": week_modifier }, { "date": date });
+            return yield DBM.ExecuteJsonSP("GetPeopleSummary", { "branch": branch_id }, { "month_modifier": month_modifier }, { "week_modifier": week_modifier }, { "date": date });
         });
     }
     static getDailyMonitor(branch_id, display, display_modifier) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetDailyMonitor2", { "branch": branch_id }, { "display_modifier": display_modifier }, { "display": display });
+            return yield DBM.ExecuteJsonSP("GetDailyMonitor2", { "branch": branch_id }, { "display_modifier": display_modifier }, { "display": display });
         });
     }
     static getPersonIncidentsHistory(person_id, start_date, end_date, activity_type) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetPersonIncidentHistory2", { "person_id": person_id }, { "start_date": start_date }, { "end_date": end_date }, { "activity_type": activity_type });
+            return yield DBM.ExecuteJsonSP("GetPersonIncidentHistory2", { "person_id": person_id }, { "start_date": start_date }, { "end_date": end_date }, { "activity_type": activity_type });
         });
     }
     static getIncidentDetails(incident_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetIncidentDetails", { "id": incident_id });
+            return yield DBM.ExecuteJsonSP("GetIncidentDetails", { "id": incident_id });
         });
     }
     static getAgenda(branch_id, date) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetAgenda2", { "branch_id": branch_id }, { "date": date });
+            return yield DBM.ExecuteJsonSP("GetAgenda2", { "branch_id": branch_id }, { "date": date });
         });
     }
     static getOwnershipData(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const ownership_data = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("getOwnershipData", {
+            const ownership_data = yield DBM.ExecuteJsonSP("getOwnershipData", {
                 "ownership_id": id
             });
             const data = ownership_data.data[0];
@@ -95,7 +96,7 @@ class IncidentsRepository {
 __decorate([
     trylog_decorator_1.trylog(),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository, "getRepository", null);
 __decorate([

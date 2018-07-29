@@ -17,18 +17,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_facility_1 = require("../facilities/database-facility");
+const database_manager_1 = require("../services/managers/database-manager");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
+let DBM = new database_manager_1.DatabaseManager();
 class CardsRepository {
     static getOrganizations(id, include_childrens = false) {
         return __awaiter(this, void 0, void 0, function* () {
-            let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetOrganizations", { "organization_id": id > 0 ? id : null }, { "include_childrens": include_childrens ? 1 : 0 });
+            let result = yield DBM.ExecuteJsonSP("GetOrganizations", { "organization_id": id > 0 ? id : null }, { "include_childrens": include_childrens ? 1 : 0 });
             return result;
         });
     }
     static getProject(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let result = yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetProject", { "project_id": id });
+            let result = yield DBM.ExecuteJsonSP("GetProject", { "project_id": id });
             return result;
         });
     }

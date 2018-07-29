@@ -6,7 +6,7 @@ import { LoggerService } from '../services/logger-service';
     Based on https://github.com/asilvas/express-session-azure
 */
 
-import { AzureTableService } from '../services/azure-tables-service';
+import { AzureTableManager } from '../services/managers/azure-tables-manager';
 import { Result } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
 
@@ -19,8 +19,8 @@ module.exports = AzureSessionStore;
 function AzureSessionStore(options) {
     Session.Store.call(this, options);
 
-    this.tableSvc = AzureTableService.createTableService();
-    AzureTableService.createTableIfNotExists(this.tableSvc, tableName, (err) => {
+    this.tableSvc = AzureTableManager.createTableService();
+    AzureTableManager.createTableIfNotExists(this.tableSvc, tableName, (err) => {
 
     });
 }
@@ -31,7 +31,7 @@ var p = AzureSessionStore.prototype;
 
 function _retriveEntites(self, query, parameters) {
     return new Promise((resolve, reject) => {
-        AzureTableService.retrieveEntities(self.tableSvc, tableName,
+        AzureTableManager.retrieveEntities(self.tableSvc, tableName,
             query, parameters,
             (err, result) => {
                 if (err) {
@@ -59,7 +59,7 @@ async function retriveTestEntites(self) {
 
 function deleteEntity(self, sid) {
     return new Promise((resolve, reject) => {
-        AzureTableService.deleteEntity(
+        AzureTableManager.deleteEntity(
             self.tableSvc, tableName, sid,
 
             (errDel, result) => {
@@ -88,19 +88,19 @@ p.cleanup = function cleanup() {
 
             let entries = old_entries.concat(test_entries);
 
-            let batch = AzureTableService.createTableBatch();
+            let batch = AzureTableManager.createTableBatch();
             for (let i = 0; i < entries.length; i++) {
                 batch.deleteEntity(entries[i]);
 
                 if (i > 0 && i % 99 == 0) {
-                    let result = await AzureTableService.executeBatch(self.tableSvc, tableName, batch);
+                    let result = await AzureTableManager.executeBatch(self.tableSvc, tableName, batch);
                     console.log(`deleted ${batch.operations.length} entries!`);
-                    batch = AzureTableService.createTableBatch();
+                    batch = AzureTableManager.createTableBatch();
                 }
             }
 
             if (batch.operations.length > 0) {
-                await AzureTableService.executeBatch(self.tableSvc, tableName, batch);
+                await AzureTableManager.executeBatch(self.tableSvc, tableName, batch);
                 console.log(`finally: deleted ${batch.operations.length} entries!`);
             }
 
@@ -120,7 +120,7 @@ p.reap = function (ms) {
 
 p.get = function (sid, cb) {
     var me = this;
-    AzureTableService.retriveEntity(this.tableSvc, tableName, sid, function (err, result) {
+    AzureTableManager.retriveEntity(this.tableSvc, tableName, sid, function (err, result) {
         if (err) {
             if (err.code == "ResourceNotFound") {
                 cb();
@@ -136,9 +136,9 @@ p.get = function (sid, cb) {
 p.set = function (sid, session, cb) {
     const me = this;
 
-    let entity = AzureTableService.buildEntity(sid, session);
+    let entity = AzureTableManager.buildEntity(sid, session);
 
-    AzureTableService.insertOrMergeEntity(this.tableSvc, tableName, entity, (err, results) => {
+    AzureTableManager.insertOrMergeEntity(this.tableSvc, tableName, entity, (err, results) => {
         if (err) {
             console.log("AzureSessionStore.set: " + err);
             cb(err.toString(), null);

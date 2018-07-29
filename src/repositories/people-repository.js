@@ -17,25 +17,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_facility_1 = require("../facilities/database-facility");
+const database_manager_1 = require("../services/managers/database-manager");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const Person_1 = require("../entity/Person");
+const DBM = new database_manager_1.DatabaseManager();
 class PeopleRepository {
-    static getRepository() {
+    static getRepository(runner) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.getRepository(Person_1.Person);
+            return yield DBM.getRepository(Person_1.Person, runner);
         });
     }
     static getExternalContacts(branch_id, voucher_id, name, voucher_status, people_per_page, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteJsonSP("GetExternalContacts", { "branch_id": branch_id }, { "voucher_id": voucher_id }, { "name": name }, { "voucher_status": voucher_status }, { "people_per_page": people_per_page }, { "page": page });
+            return yield DBM.ExecuteJsonSP("GetExternalContacts", { "branch_id": branch_id }, { "voucher_id": voucher_id }, { "name": name }, { "voucher_status": voucher_status }, { "people_per_page": people_per_page }, { "page": page });
         });
     }
 }
 __decorate([
     trylog_decorator_1.trylog(),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], PeopleRepository, "getRepository", null);
 __decorate([

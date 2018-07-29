@@ -3,7 +3,9 @@ import { PersonService } from '../../domain/services/person_services';
 import * as auth from '../../src/middlewares/auth';
 import { SecurityService } from '../../src/services/security-service';
 import { JobsService } from '../../src/services/jobs-service';
-import { DatabaseFacility } from '../../src/facilities/database-facility';
+import { DatabaseManager } from '../../src/services/managers/database-manager';
+
+let DBM = new DatabaseManager();
 
 export function configure_routes(app: any, connection_pool: any) {
     const pool = connection_pool;
@@ -31,7 +33,7 @@ export function configure_routes(app: any, connection_pool: any) {
     app.get("/api/people/:id",
         auth.ensureLoggedIn(),
         async (request, response, next) => {
-            let result = await DatabaseFacility.ExecuteJsonSP<any[]>("GetPersonData",
+            let result = await DBM.ExecuteJsonSP<any[]>("GetPersonData",
                 { "id": request.params.id }
             );
 
@@ -621,7 +623,7 @@ export function configure_routes(app: any, connection_pool: any) {
                 responsible_id
             );
 
-            response.send({ sucess: true });
+            response.send(result);
         });
 
     app.post("/api/people_comments/archive",
@@ -631,17 +633,6 @@ export function configure_routes(app: any, connection_pool: any) {
                 request.body.id
             );
 
-            response.send({ sucess: true });
-        });
-
-    app.post("/api/people_comments/pin",
-        auth.ensureLoggedIn(),
-        async (request, response, next) => {
-            let result = await person_service.pin_comment(
-                request.body.id
-            );
-
             response.send(result);
         });
-
 }

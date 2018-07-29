@@ -8,28 +8,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const logger_service_1 = require("./../services/logger-service");
+const logger_service_1 = require("../services/logger-service");
 /* AzureSessionStore
     License: MIT
     Description: An express session store using Azure Storage Tables.
     Based on https://github.com/asilvas/express-session-azure
 */
-const azure_tables_service_1 = require("./../services/azure-tables-service");
+const azure_tables_manager_1 = require("../services/managers/azure-tables-manager");
 const result_1 = require("../helpers/result");
 const errors_codes_1 = require("../helpers/errors-codes");
 const util = require('util'), Session = require('express-session'), tableName = 'AzureSessionStore';
 module.exports = AzureSessionStore;
 function AzureSessionStore(options) {
     Session.Store.call(this, options);
-    this.tableSvc = azure_tables_service_1.AzureTableService.createTableService();
-    azure_tables_service_1.AzureTableService.createTableIfNotExists(this.tableSvc, tableName, (err) => {
+    this.tableSvc = azure_tables_manager_1.AzureTableManager.createTableService();
+    azure_tables_manager_1.AzureTableManager.createTableIfNotExists(this.tableSvc, tableName, (err) => {
     });
 }
 util.inherits(AzureSessionStore, Session.Store);
 var p = AzureSessionStore.prototype;
 function _retriveEntites(self, query, parameters) {
     return new Promise((resolve, reject) => {
-        azure_tables_service_1.AzureTableService.retrieveEntities(self.tableSvc, tableName, query, parameters, (err, result) => {
+        azure_tables_manager_1.AzureTableManager.retrieveEntities(self.tableSvc, tableName, query, parameters, (err, result) => {
             if (err) {
                 reject(err);
                 return;
@@ -53,7 +53,7 @@ function retriveTestEntites(self) {
 }
 function deleteEntity(self, sid) {
     return new Promise((resolve, reject) => {
-        azure_tables_service_1.AzureTableService.deleteEntity(self.tableSvc, tableName, sid, (errDel, result) => {
+        azure_tables_manager_1.AzureTableManager.deleteEntity(self.tableSvc, tableName, sid, (errDel, result) => {
             if (errDel) {
                 logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.SessionControl, errDel);
                 return;
@@ -70,17 +70,17 @@ p.cleanup = function cleanup() {
             const old_entries = yield retriveOldEntites(self);
             const test_entries = yield retriveTestEntites(self);
             let entries = old_entries.concat(test_entries);
-            let batch = azure_tables_service_1.AzureTableService.createTableBatch();
+            let batch = azure_tables_manager_1.AzureTableManager.createTableBatch();
             for (let i = 0; i < entries.length; i++) {
                 batch.deleteEntity(entries[i]);
                 if (i > 0 && i % 99 == 0) {
-                    let result = yield azure_tables_service_1.AzureTableService.executeBatch(self.tableSvc, tableName, batch);
+                    let result = yield azure_tables_manager_1.AzureTableManager.executeBatch(self.tableSvc, tableName, batch);
                     console.log(`deleted ${batch.operations.length} entries!`);
-                    batch = azure_tables_service_1.AzureTableService.createTableBatch();
+                    batch = azure_tables_manager_1.AzureTableManager.createTableBatch();
                 }
             }
             if (batch.operations.length > 0) {
-                yield azure_tables_service_1.AzureTableService.executeBatch(self.tableSvc, tableName, batch);
+                yield azure_tables_manager_1.AzureTableManager.executeBatch(self.tableSvc, tableName, batch);
                 console.log(`finally: deleted ${batch.operations.length} entries!`);
             }
             console.log("AzureSessionStore.end_session_cleaning");
@@ -97,7 +97,7 @@ p.reap = function (ms) {
 };
 p.get = function (sid, cb) {
     var me = this;
-    azure_tables_service_1.AzureTableService.retriveEntity(this.tableSvc, tableName, sid, function (err, result) {
+    azure_tables_manager_1.AzureTableManager.retriveEntity(this.tableSvc, tableName, sid, function (err, result) {
         if (err) {
             if (err.code == "ResourceNotFound") {
                 cb();
@@ -113,8 +113,8 @@ p.get = function (sid, cb) {
 };
 p.set = function (sid, session, cb) {
     const me = this;
-    let entity = azure_tables_service_1.AzureTableService.buildEntity(sid, session);
-    azure_tables_service_1.AzureTableService.insertOrMergeEntity(this.tableSvc, tableName, entity, (err, results) => {
+    let entity = azure_tables_manager_1.AzureTableManager.buildEntity(sid, session);
+    azure_tables_manager_1.AzureTableManager.insertOrMergeEntity(this.tableSvc, tableName, entity, (err, results) => {
         if (err) {
             console.log("AzureSessionStore.set: " + err);
             cb(err.toString(), null);

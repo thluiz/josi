@@ -19,7 +19,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const people_service_1 = require("./people-service");
 const cards_service_1 = require("./cards-service");
-const database_facility_1 = require("../facilities/database-facility");
+const database_manager_1 = require("./managers/database-manager");
 const result_1 = require("../helpers/result");
 const axios_1 = require("axios");
 const errors_codes_1 = require("../helpers/errors-codes");
@@ -29,6 +29,8 @@ const uuid = require("uuid/v4");
 const await_to_js_1 = require("await-to-js");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+let DBM = new database_manager_1.DatabaseManager();
+let PS = new people_service_1.PeopleService(DBM);
 class JobsService {
     static execute_hourly_jobs() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -37,13 +39,13 @@ class JobsService {
             let key = uuid();
             logger_service_1.LoggerService.benchmark(key, `Starting Running Jobs :: ${start_time}`);
             let results = [];
-            results.push(yield people_service_1.PeopleService.generate_birthdate_incidents());
-            results.push(yield people_service_1.PeopleService.cancel_expired_people_scheduling());
-            results.push(yield people_service_1.PeopleService.check_people_status());
-            results.push(yield people_service_1.PeopleService.check_people_comunication_status());
-            results.push(yield people_service_1.PeopleService.check_people_financial_status());
-            results.push(yield people_service_1.PeopleService.check_people_scheduling_status());
-            results.push(yield people_service_1.PeopleService.check_people_offering_status());
+            results.push(yield PS.generate_birthdate_incidents());
+            results.push(yield PS.cancel_expired_people_scheduling());
+            results.push(yield PS.check_people_status());
+            results.push(yield PS.check_people_comunication_status());
+            results.push(yield PS.check_people_financial_status());
+            results.push(yield PS.check_people_scheduling_status());
+            results.push(yield PS.check_people_offering_status());
             results.push(yield cards_service_1.CardsService.correct_card_out_of_parent_step());
             results.push(yield cards_service_1.CardsService.check_cards_has_overdue_cards());
             results.push(yield this.consolidate_members_sumary());
@@ -90,12 +92,12 @@ class JobsService {
     }
     static consolidate_members_sumary() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteSPNoResults("ConsolidateMembersSumary");
+            return yield DBM.ExecuteSPNoResults("ConsolidateMembersSumary");
         });
     }
     static consolidate_activity_sumary() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_facility_1.DatabaseFacility.ExecuteSPNoResults("ConsolidateActivitySumary");
+            return yield DBM.ExecuteSPNoResults("ConsolidateActivitySumary");
         });
     }
 }

@@ -16,20 +16,23 @@ const upload: multer.Instance = multer({
     storage: azureStorage
 });
 
+const PS = new PeopleService();
+const PR = PeopleRepository;
+
 export function routes(app) {
     app.post("/api/people/avatar_image",
     auth.ensureLoggedIn(),
     upload.any(),
-    async (req, res, next) => {
-        let result = await PeopleService.save_avatar_image(req.body.id, req.files[0].blobName);
+    async (req, res) => {
+        let result = await PS.save_avatar_image(req.body.id, req.files[0].blobName);
 
         res.send(result);
     });
 
     app.get("/api/external_contacts",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {
-        let result = await PeopleRepository.getExternalContacts(
+    async (req, res) => {
+        let result = await PR.getExternalContacts(
             req.query.branch > 0 ? req.query.branch : null,
             req.query.voucher > 0 ? req.query.voucher : null,
             req.query.name,
@@ -40,4 +43,15 @@ export function routes(app) {
 
         res.send(result);
     });
+
+
+    app.post("/api/people_comments/pin",
+        auth.ensureLoggedIn(),
+        async (request, response) => {
+            let result = await PS.pin_comment(
+                request.body.id
+            );
+
+            response.send(result);
+        });
 }

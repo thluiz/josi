@@ -1,9 +1,11 @@
 import * as auth from '../../middlewares/auth';
-import { DatabaseFacility } from '../../facilities/database-facility';
+import { DatabaseManager } from '../../services/managers/database-manager';
 import { ParametersService } from '../../services/parameters-service';
 import { JobsService } from '../../services/jobs-service';
 import { Result } from '../../helpers/result';
 import { ErrorCode } from '../../helpers/errors-codes';
+
+let DBM = new DatabaseManager();
 
 export function routes(app) {
     app.get("/api/branches/:id?",
@@ -11,8 +13,8 @@ export function routes(app) {
     async (req, res, next) => {
         try {
             const result = !req.params.id ?
-                await DatabaseFacility.ExecuteJsonSP(`GetBranches`)
-                : await DatabaseFacility.ExecuteJsonSQL(
+                await DBM.ExecuteJsonSP(`GetBranches`)
+                : await DBM.ExecuteJsonSQL(
                         `select * from vwBranch where id = @0 for json path`,
                         req.params.id);
 
@@ -27,8 +29,8 @@ export function routes(app) {
     async (req, res, next) => {
         try {
             const result = !req.params.id ?
-                await DatabaseFacility.ExecuteJsonSP(`GetBranches`, { 'active': null })
-                : await DatabaseFacility.ExecuteJsonSQL(
+                await DBM.ExecuteJsonSP(`GetBranches`, { 'active': null })
+                : await DBM.ExecuteJsonSQL(
                         `select * from vwBranch where id = @0 for json path`,
                         req.params.id);
 

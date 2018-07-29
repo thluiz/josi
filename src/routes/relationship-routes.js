@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const auth = require("../../src/middlewares/auth");
+const auth = require("../middlewares/auth");
 const relationship_service_1 = require("../services/relationship-service");
 function routes(app) {
     app.get("/api/relationships/person/:id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {

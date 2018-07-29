@@ -23,4 +23,25 @@ function trylog() {
     };
 }
 exports.trylog = trylog;
+function trylog2() {
+    return function (target, method, descriptor) {
+        var originalMethod = descriptor.value;
+        descriptor.value = function (...args) {
+            try {
+                let result = originalMethod.apply(this, args);
+                return result;
+            }
+            catch (error) {
+                logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.GenericError, error, {
+                    action: method,
+                    target,
+                    args
+                });
+                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+            }
+        };
+        return descriptor;
+    };
+}
+exports.trylog2 = trylog2;
 //# sourceMappingURL=trylog-decorator.js.map

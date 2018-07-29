@@ -1,5 +1,5 @@
 import { Branch } from '../../entity/Branch';
-import { DatabaseFacility } from '../../facilities/database-facility';
+import { DatabaseManager } from '../managers/database-manager';
 import { LoggerService } from '../logger-service';
 import { EmailManager, IMessage } from '../managers/email-manager';
 import path = require('path');
@@ -8,13 +8,15 @@ import { Result } from '../../helpers/result';
 import { ErrorCode } from '../../helpers/errors-codes';
 import { ConfigurationsService, Configurations } from '../configurations-services';
 
+const DBM = new DatabaseManager();
+
 export class BaseReport {
     protected static async getIMEmail() : Promise<string> {
         return ConfigurationsService.getConfiguration(Configurations.EMAIL_IM);
     }
 
     protected static async getBranchEmail(branch_id : number) : Promise<string> {
-        let BR = await DatabaseFacility.getRepository<Branch>(Branch);
+        let BR = await DBM.getRepository<Branch>(Branch);
         let branch = await BR.findOne(branch_id);
 
         return branch.contact_email;
