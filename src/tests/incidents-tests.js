@@ -24,29 +24,28 @@ describe('Incidents Tests', function () {
         let IS;
         let ITR;
         beforeEach(() => __awaiter(this, void 0, void 0, function* () {
-            runner = yield dbm.StartTransaction();
-            IS = new incidents_service_1.IncidentsService(dbm, { runner, shouldCommit: false });
+            runner = yield dbm.CreateQueryRunner();
+            IS = new incidents_service_1.IncidentsService(dbm, { runner, useTransaction: true, shouldCommit: false });
             ITR = yield runner.manager.getRepository(IncidentType_1.IncidentType);
+            yield runner.startTransaction();
         }));
         afterEach(() => __awaiter(this, void 0, void 0, function* () {
             yield dbm.RollbackTransaction(runner);
         }));
-        /*
-        it('should create incident', async () => {
-            let incident = await IF.create(runner, await ITR.findOne(1));
-            let registering = await IS.register_incident2({
+        it('should create incident', () => __awaiter(this, void 0, void 0, function* () {
+            let incident = yield IF.create(runner, yield ITR.findOne(1));
+            let registering = yield IS.register_incident2({
                 incident,
-                people: [(await GF.create_person(runner))],
-                responsible: (await GF.create_responsible(runner)),
+                people: [(yield GF.create_person(runner))],
+                responsible: (yield GF.create_responsible(runner)),
                 register_closed: false,
                 register_treated: false,
                 start_activity: false,
-                addToOwnership: AddToOwnership.DoNotAddToOwnership,
+                addToOwnership: incidents_service_1.AddToOwnership.DoNotAddToOwnership,
             });
-    
-            expect(registering.success, registering.error ?
+            chai_1.expect(registering.success, registering.error ?
                 registering.error.message : "").to.be.true;
-        }); */
+        }));
         it('should create incident with people', () => __awaiter(this, void 0, void 0, function* () {
             let incident = yield IF.create(runner, yield ITR.findOne(1));
             let registering = yield IS.register_incident2({

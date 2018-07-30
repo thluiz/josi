@@ -88,7 +88,7 @@ class IncidentsService extends base_service_1.BaseService {
                 { "responsible_id": responsible_id },
                 { "fund_value": incident.fund_value },
                 { "payment_method_id": incident.payment_method_id > 0 ?
-                        incident.payment_method_id : null }], (yield this.dataRunner));
+                        incident.payment_method_id : null }]);
             if (execution.success) {
                 try {
                     const IR = yield (yield this.databaseManager).getRepository(Incident_1.Incident);

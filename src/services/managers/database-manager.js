@@ -57,13 +57,18 @@ class DatabaseManager {
             return yield connection.getRepository(type);
         });
     }
-    StartTransaction() {
+    CreateQueryRunner() {
         return __awaiter(this, void 0, void 0, function* () {
             const conn = yield getGlobalConnection();
             const queryRunner = conn.createQueryRunner();
             if (!queryRunner.connection.isConnected) {
                 yield queryRunner.connection.connect();
             }
+            return queryRunner;
+        });
+    }
+    StartTransaction(queryRunner) {
+        return __awaiter(this, void 0, void 0, function* () {
             yield queryRunner.startTransaction();
             return queryRunner;
         });
@@ -145,8 +150,9 @@ class DatabaseManager {
             try {
                 if (!data_runner) {
                     data_runner = {
-                        runner: yield this.StartTransaction(),
-                        shouldCommit: true
+                        runner: yield this.CreateQueryRunner(),
+                        useTransaction: false,
+                        shouldCommit: false
                     };
                 }
                 let connection = yield getGlobalConnection();

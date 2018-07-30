@@ -93,7 +93,6 @@ export function routes(app) {
     app.post("/api/incident/close",
     auth.ensureLoggedIn(),
     async (req, response) => {
-        console.log(req.body);
         let user = await SecurityService.getUserFromRequest(req);
         let result = await IS.close_incident({
             id: req.body.id,

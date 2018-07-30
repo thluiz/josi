@@ -29,13 +29,11 @@ function configure_routes(app, connection_pool) {
             res.send(response[0].empty ? [] : response);
         }
         catch (error) {
-            console.log(error);
             res.status(500).json(error);
         }
     }));
     app.post("/api/incident_comments", auth.ensureLoggedIn(), (request, res, next) => __awaiter(this, void 0, void 0, function* () {
         let user = yield security_service_1.SecurityService.getUserFromRequest(request);
-        console.log(user);
         let result = yield incident_service.save_comment(request.body.incident_id, request.body.comment, yield user.getPersonId());
         res.send(result_1.Result.Ok("INCIDENT_COMMENT_ADDED", [result.recordset[0][0]]));
     }));

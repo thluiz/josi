@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { Repository, QueryRunner } from 'typeorm';
 import { DatabaseManager } from "../services/managers/database-manager";
 import { Result } from "../helpers/result";
@@ -5,6 +6,7 @@ import { ErrorCode } from "../helpers/errors-codes";
 import { trylog } from "../decorators/trylog-decorator";
 import showdown = require('showdown');
 import { Incident } from "../entity/Incident";
+import { cache } from '../../node_modules/@types/ejs';
 
 const converter = new showdown.Converter();
 const DBM = new DatabaseManager();
@@ -36,13 +38,42 @@ export class IncidentsRepository {
         return result;
     }
 
+    private static summary_cache : { branch: number,
+        date: any,
+        week_modifier: number,
+        lastcall: number,
+        result: Result<any>
+    }[] = [];
+
     @trylog()
     static async getPeopleSummary(branch_id, week_modifier, date): Promise<Result<any>> {
-        return await DBM.ExecuteJsonSP("GetPeopleSummary",
+        this.summary_cache = this.summary_cache
+        .filter(c => c.lastcall < ((new Date()).getTime() - 10000)); // clear every 10 seconds
+
+        let cached = this.summary_cache = this.summary_cache
+        .filter(c => c.branch == branch_id
+                    && c.week_modifier == week_modifier
+                    && c.date == date);
+
+        if(cached.length > 0) {
+            return cached[0].result;
+        }
+
+        let result = await DBM.ExecuteJsonSP("GetPeopleSummary",
             { "branch": branch_id },
             { "week_modifier": week_modifier },
             { "date": date }
         );
+
+        this.summary_cache.push({
+            branch: branch_id,
+            week_modifier: week_modifier,
+            date: date,
+            lastcall: (new Date()).getTime(),
+            result
+        })
+
+        return result;
     }
 
     @trylog()

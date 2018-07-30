@@ -88,7 +88,7 @@
                 {{ p.name }}
               </td>
               <td>
-                {{ p.branch_abrev.replace("Núcleo", "") }}
+                {{ (p.branch_abrev || "").replace("Núcleo", "") }}
               </td>
               <td>
                 <person-status-line [person]="p"></person-status-line>

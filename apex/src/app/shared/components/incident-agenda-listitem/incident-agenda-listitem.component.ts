@@ -1,7 +1,7 @@
 import { LightIncident } from './../../models/incident-model';
 import { ApplicationEventService } from 'app/services/application-event-service';
 
-import { OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { IncidentService, INCIDENT_ACTION_PREFIX } from 'app/services/incident-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 
@@ -36,7 +36,8 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
 
     constructor(private incidentService: IncidentService,
               private eventManager: ApplicationEventService,
-              private modalService: ModalService) {
+              private modalService: ModalService,
+              private cd: ChangeDetectorRef) {
 
     }
 
@@ -50,6 +51,8 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
         && result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1)
       ).subscribe((result) => {
         this.incident = result.data[0];
+        this.saving = false;
+        this.cd.detectChanges();
       });
     }
 
@@ -60,7 +63,6 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
     }
 
     show_incident_details(incident) {
-      console.log(incident);
       this.modalService.open(ModalType.IncidentTreatment, incident);
     }
 

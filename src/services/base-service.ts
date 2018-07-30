@@ -26,7 +26,8 @@ export class BaseService {
 
             this._dataRunner = {
                 runner: await conn.createQueryRunner(),
-                shouldCommit: true
+                useTransaction: false,
+                shouldCommit: false
             }
 
             return this._dataRunner;

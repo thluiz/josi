@@ -13,8 +13,9 @@ describe('People Tests', async function() {
     let PS: PeopleService;
 
     beforeEach(async () => {
-        runner = await dbm.StartTransaction();
-        PS = new PeopleService(dbm, { runner, shouldCommit: false })
+        runner = await dbm.CreateQueryRunner();
+        PS = new PeopleService(dbm, { runner, useTransaction: true, shouldCommit: false })
+        await dbm.StartTransaction(runner);
     })
 
     afterEach(async() => {

@@ -58,7 +58,6 @@ function configure_routes(app, connection_pool) {
         }
     }));
     app.get("/api/invited_people", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        console.log(req.query.voucher);
         const result = yield new sql.Request(pool)
             .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
             .input('voucher', sql.Int, req.query.voucher > 0 ? req.query.voucher : null)
@@ -203,7 +202,6 @@ function configure_routes(app, connection_pool) {
             res.send(response[0].empty ? [] : response);
         }
         catch (error) {
-            console.log(error);
             res.status(500).json(error);
         }
     }));
@@ -216,7 +214,6 @@ function configure_routes(app, connection_pool) {
             res.send(response[0].empty ? [] : response);
         }
         catch (error) {
-            console.log(error);
             res.status(500).json(error);
         }
     }));
@@ -229,7 +226,6 @@ function configure_routes(app, connection_pool) {
             res.send(response[0].empty ? [] : response);
         }
         catch (error) {
-            console.log(error);
             res.status(500).json(error);
         }
     }));
@@ -251,7 +247,6 @@ function configure_routes(app, connection_pool) {
                 res.send([]);
             }
             else {
-                console.log(error);
                 res.status(500).json(error);
             }
         }
@@ -259,7 +254,6 @@ function configure_routes(app, connection_pool) {
     app.post("/api/person_partnerships", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             let partnership = req.body.partnership;
-            console.log(partnership);
             const result = yield new sql.Request(pool)
                 .input("person_id", sql.Int, partnership.person_id)
                 .input('comments', sql.VarChar(sql.MAX), partnership.comment)
@@ -275,7 +269,6 @@ function configure_routes(app, connection_pool) {
                 res.send([]);
             }
             else {
-                console.log(error);
                 res.status(500).json(error);
             }
         }
@@ -298,7 +291,6 @@ function configure_routes(app, connection_pool) {
                 res.send([]);
             }
             else {
-                console.log(error);
                 res.status(500).json(error);
             }
         }
@@ -321,7 +313,6 @@ function configure_routes(app, connection_pool) {
                 res.send([]);
             }
             else {
-                console.log(error);
                 res.status(500).json(error);
             }
         }
@@ -344,7 +335,6 @@ function configure_routes(app, connection_pool) {
                 res.send([]);
             }
             else {
-                console.log(error);
                 res.status(500).json(error);
             }
         }
@@ -377,7 +367,6 @@ function configure_routes(app, connection_pool) {
                 }
             }
             catch (error) {
-                console.log(error);
                 res.status(500).json(error);
                 return;
             }
@@ -385,11 +374,9 @@ function configure_routes(app, connection_pool) {
         }
         catch (error) {
             if (error.code = 'EJSON') {
-                console.log(error);
                 res.send([]);
             }
             else {
-                console.log(error);
                 res.status(500).json(error);
             }
         }
@@ -432,7 +419,6 @@ function configure_routes(app, connection_pool) {
             res.send(response[0].empty ? [] : response);
         }
         catch (error) {
-            console.log(error);
             res.status(500).json(error);
         }
     }));

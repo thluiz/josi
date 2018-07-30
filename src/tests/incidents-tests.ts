@@ -19,16 +19,17 @@ describe('Incidents Tests', async function() {
     let ITR : Repository<IncidentType>;
 
     beforeEach(async () => {
-        runner = await dbm.StartTransaction();
-        IS = new IncidentsService(dbm, { runner, shouldCommit: false });
+        runner = await dbm.CreateQueryRunner();
+        IS = new IncidentsService(dbm, { runner, useTransaction: true, shouldCommit: false });
         ITR = await runner.manager.getRepository<IncidentType>(IncidentType);
+
+        await runner.startTransaction();
     })
 
     afterEach(async() => {
         await dbm.RollbackTransaction(runner);
     });
 
-    /*
     it('should create incident', async () => {
         let incident = await IF.create(runner, await ITR.findOne(1));
         let registering = await IS.register_incident2({
@@ -43,7 +44,7 @@ describe('Incidents Tests', async function() {
 
         expect(registering.success, registering.error ?
             registering.error.message : "").to.be.true;
-    }); */
+    });
 
     it('should create incident with people', async () => {
         let incident = await IF.create(runner, await ITR.findOne(1));

@@ -30,7 +30,8 @@ class BaseService {
             let conn = yield (yield this.databaseManager).getConnection();
             this._dataRunner = {
                 runner: yield conn.createQueryRunner(),
-                shouldCommit: true
+                useTransaction: false,
+                shouldCommit: false
             };
             return this._dataRunner;
         }))();

@@ -28,7 +28,6 @@ export class HttpService {
     post_and_emit<T>(method, data) : Observable<Result<T>> {
         return  this.http.post<Result<T>>(this.dataUrl + method, data)
         .do<Result<T>>((next: Result<T>) => {
-            console.log(next);
             this.eventManager.emit(next);
         });
     }

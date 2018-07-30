@@ -44,7 +44,24 @@ class IncidentsRepository {
     }
     static getPeopleSummary(branch_id, week_modifier, date) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DBM.ExecuteJsonSP("GetPeopleSummary", { "branch": branch_id }, { "week_modifier": week_modifier }, { "date": date });
+            this.summary_cache = this.summary_cache
+                .filter(c => c.lastcall < ((new Date()).getTime() - 10000)); // clear every 10 seconds
+            let cached = this.summary_cache = this.summary_cache
+                .filter(c => c.branch == branch_id
+                && c.week_modifier == week_modifier
+                && c.date == date);
+            if (cached.length > 0) {
+                return cached[0].result;
+            }
+            let result = yield DBM.ExecuteJsonSP("GetPeopleSummary", { "branch": branch_id }, { "week_modifier": week_modifier }, { "date": date });
+            this.summary_cache.push({
+                branch: branch_id,
+                week_modifier: week_modifier,
+                date: date,
+                lastcall: (new Date()).getTime(),
+                result
+            });
+            return result;
         });
     }
     static getSummary(branch_id, month_modifier, week_modifier, date) {
@@ -93,6 +110,7 @@ class IncidentsRepository {
         });
     }
 }
+IncidentsRepository.summary_cache = [];
 __decorate([
     trylog_decorator_1.trylog(),
     __metadata("design:type", Function),

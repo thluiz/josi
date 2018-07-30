@@ -20,8 +20,9 @@ describe('People Tests', function () {
         let runner;
         let PS;
         beforeEach(() => __awaiter(this, void 0, void 0, function* () {
-            runner = yield dbm.StartTransaction();
-            PS = new people_service_1.PeopleService(dbm, { runner, shouldCommit: false });
+            runner = yield dbm.CreateQueryRunner();
+            PS = new people_service_1.PeopleService(dbm, { runner, useTransaction: true, shouldCommit: false });
+            yield dbm.StartTransaction(runner);
         }));
         afterEach(() => __awaiter(this, void 0, void 0, function* () {
             yield dbm.RollbackTransaction(runner);

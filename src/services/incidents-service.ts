@@ -111,8 +111,7 @@ export class IncidentsService extends BaseService {
             { "responsible_id": responsible_id },
             { "fund_value": incident.fund_value },
             { "payment_method_id": incident.payment_method_id > 0 ?
-                                    incident.payment_method_id : null }],
-            (await this.dataRunner)
+                                    incident.payment_method_id : null }]
         );
 
         if (execution.success) {

@@ -9,6 +9,7 @@ import { ErrorCode } from "../../helpers/errors-codes";
 export interface DataRunner<T = any> {
     data?: T,
     runner: QueryRunner,
+    useTransaction: boolean,
     shouldCommit: boolean
 }
 
@@ -60,13 +61,18 @@ export class DatabaseManager {
         return await connection.getRepository(type);
     }
 
-    async StartTransaction(): Promise<QueryRunner> {
+    async CreateQueryRunner(): Promise<QueryRunner> {
         const conn = await getGlobalConnection();
         const queryRunner = conn.createQueryRunner();
 
         if(!queryRunner.connection.isConnected) {
             await queryRunner.connection.connect();
         }
+
+        return queryRunner;
+    }
+
+    async StartTransaction(queryRunner): Promise<QueryRunner> {
         await queryRunner.startTransaction();
 
         return queryRunner;
@@ -157,8 +163,9 @@ export class DatabaseManager {
         try {
             if (!data_runner) {
                 data_runner = {
-                    runner: await this.StartTransaction(),
-                    shouldCommit: true
+                    runner: await this.CreateQueryRunner(),
+                    useTransaction: false,
+                    shouldCommit: false
                 }
             }
 

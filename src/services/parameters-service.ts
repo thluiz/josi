@@ -58,8 +58,6 @@ export class ParametersService {
             voucher = await VR.findOne(voucher.id, { relations: ["branches"] }); //load relation
 
             if(voucher.branches.find(b => b.id == branch.id) != null) {
-                console.log(voucher.branches);
-                console.log(branch.id)
                 return Result.Fail(ErrorCode.NothingChanged, null);
             }
 

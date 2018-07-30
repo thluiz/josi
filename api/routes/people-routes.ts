@@ -82,7 +82,6 @@ export function configure_routes(app: any, connection_pool: any) {
     app.get("/api/invited_people",
         auth.ensureLoggedIn(),
         async (req, res, next) => {
-            console.log(req.query.voucher);
             const result = await new sql.Request(pool)
                 .input('branch', sql.Int, req.query.branch > 0 ? req.query.branch : null)
                 .input('voucher', sql.Int, req.query.voucher > 0 ? req.query.voucher : null)
@@ -323,7 +322,6 @@ export function configure_routes(app: any, connection_pool: any) {
                 res.send(response[0].empty ? [] : response);
 
             } catch (error) {
-                console.log(error);
                 res.status(500).json(error);
             }
         });
@@ -340,7 +338,6 @@ export function configure_routes(app: any, connection_pool: any) {
                 res.send(response[0].empty ? [] : response);
 
             } catch (error) {
-                console.log(error);
                 res.status(500).json(error);
             }
         });
@@ -357,7 +354,6 @@ export function configure_routes(app: any, connection_pool: any) {
                 res.send(response[0].empty ? [] : response);
 
             } catch (error) {
-                console.log(error);
                 res.status(500).json(error);
             }
         });
@@ -383,7 +379,6 @@ export function configure_routes(app: any, connection_pool: any) {
                 if (error.code = 'EJSON') {
                     res.send([]);
                 } else {
-                    console.log(error);
                     res.status(500).json(error);
                 }
             }
@@ -394,7 +389,6 @@ export function configure_routes(app: any, connection_pool: any) {
         async (req, res, next) => {
             try {
                 let partnership = req.body.partnership;
-                console.log(partnership)
 
                 const result = await new sql.Request(pool)
                     .input("person_id", sql.Int, partnership.person_id)
@@ -410,7 +404,6 @@ export function configure_routes(app: any, connection_pool: any) {
                 if (error.code = 'EJSON') {
                     res.send([]);
                 } else {
-                    console.log(error);
                     res.status(500).json(error);
                 }
             }
@@ -437,7 +430,6 @@ export function configure_routes(app: any, connection_pool: any) {
                 if (error.code = 'EJSON') {
                     res.send([]);
                 } else {
-                    console.log(error);
                     res.status(500).json(error);
                 }
             }
@@ -463,7 +455,6 @@ export function configure_routes(app: any, connection_pool: any) {
                 if (error.code = 'EJSON') {
                     res.send([]);
                 } else {
-                    console.log(error);
                     res.status(500).json(error);
                 }
             }
@@ -492,7 +483,6 @@ export function configure_routes(app: any, connection_pool: any) {
                 if (error.code = 'EJSON') {
                     res.send([]);
                 } else {
-                    console.log(error);
                     res.status(500).json(error);
                 }
             }
@@ -529,7 +519,6 @@ export function configure_routes(app: any, connection_pool: any) {
                         return;
                     }
                 } catch (error) {
-                    console.log(error);
                     res.status(500).json(error);
                     return;
                 }
@@ -537,10 +526,8 @@ export function configure_routes(app: any, connection_pool: any) {
                 res.send({ success: true });
             } catch (error) {
                 if (error.code = 'EJSON') {
-                    console.log(error);
                     res.send([]);
                 } else {
-                    console.log(error);
                     res.status(500).json(error);
                 }
             }
@@ -606,7 +593,6 @@ export function configure_routes(app: any, connection_pool: any) {
                 res.send(response[0].empty ? [] : response);
 
             } catch (error) {
-                console.log(error);
                 res.status(500).json(error);
             }
         });
