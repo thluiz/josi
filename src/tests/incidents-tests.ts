@@ -60,11 +60,9 @@ describe('Incidents Tests', async function() {
         expect(registering.success, registering.error ?
             registering.error.message : "").to.be.true;
 
-        console.log(registering);
         expect(registering.data[0].people_incidents.length).to.be.eq(1);
     });
 
-    /*
     it('should create one incident for each participant', async () => {
         let incident = await IF.create(runner, await ITR.findOne(1));
         let people = [(await GF.create_person(runner)), (await GF.create_person(runner))];
@@ -120,5 +118,5 @@ describe('Incidents Tests', async function() {
 
         expect(registering.success).to.be.false;
         expect(registering.error.message).to.be.eq(IncidentErrors[IncidentErrors.ValueNeeded]);
-    }); */
+    });
 });
