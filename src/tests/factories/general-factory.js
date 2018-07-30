@@ -18,7 +18,7 @@ exports.create_responsible = create_responsible;
 function create_person(runner) {
     return __awaiter(this, void 0, void 0, function* () {
         let person = new Person_1.Person();
-        person.id = 4;
+        person.name = "Teste Person";
         yield runner.manager.save(person);
         return person;
     });

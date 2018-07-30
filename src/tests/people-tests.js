@@ -10,24 +10,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 require('dotenv').load();
 require("mocha");
-const incidents_service_1 = require("../services/incidents-service");
 const database_manager_1 = require("../services/managers/database-manager");
 const chai_1 = require("chai");
 const people_service_1 = require("../services/people-service");
-const IncidentType_1 = require("../entity/IncidentType");
 describe('People Tests', function () {
     return __awaiter(this, void 0, void 0, function* () {
         this.timeout(15000);
         const dbm = new database_manager_1.DatabaseManager();
         let runner;
-        let IS;
         let PS;
-        let ITR;
         beforeEach(() => __awaiter(this, void 0, void 0, function* () {
             runner = yield dbm.StartTransaction();
-            IS = new incidents_service_1.IncidentsService(dbm, { runner, shouldCommit: false });
             PS = new people_service_1.PeopleService(dbm, { runner, shouldCommit: false });
-            ITR = yield runner.manager.getRepository(IncidentType_1.IncidentType);
         }));
         afterEach(() => __awaiter(this, void 0, void 0, function* () {
             yield dbm.RollbackTransaction(runner);

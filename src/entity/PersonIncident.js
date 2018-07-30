@@ -14,7 +14,15 @@ const typeorm_2 = require("typeorm");
 const typeorm_3 = require("typeorm");
 const Person_1 = require("./Person");
 const Incident_1 = require("./Incident");
-let PersonIncident = class PersonIncident {
+let PersonIncident = PersonIncident_1 = class PersonIncident {
+    static create(incident, person) {
+        let result = new PersonIncident_1();
+        result.closed = false;
+        result.participation_type = 1;
+        result.incident = incident;
+        result.person = person;
+        return result;
+    }
 };
 __decorate([
     typeorm_3.PrimaryGeneratedColumn(),
@@ -38,8 +46,9 @@ __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Boolean)
 ], PersonIncident.prototype, "closed", void 0);
-PersonIncident = __decorate([
+PersonIncident = PersonIncident_1 = __decorate([
     typeorm_2.Entity()
 ], PersonIncident);
 exports.PersonIncident = PersonIncident;
+var PersonIncident_1;
 //# sourceMappingURL=PersonIncident.js.map

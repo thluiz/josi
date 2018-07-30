@@ -8,7 +8,7 @@ export async function create_responsible(runner: QueryRunner) {
 
 export async function create_person(runner : QueryRunner) {
     let person = new Person();
-    person.id = 4;
+    person.name = "Teste Person";
     await runner.manager.save(person);
 
     return person;

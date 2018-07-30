@@ -3,7 +3,7 @@ import { ErrorCode } from '../../helpers/errors-codes';
 
 import * as admin from 'firebase-admin';
 import { LoggerService } from '../logger-service';
-import { trylog } from '../../decorators/trylog-decorator';
+import { trylog, trylog2 } from '../../decorators/trylog-decorator';
 
 let db = null;
 try {
@@ -37,7 +37,7 @@ export class FirebaseManager {
         return Result.GeneralOk(customToken);
     }
 
-    @trylog()
+    @trylog2()
     static async emit_event<T>(collection,
         event : { id: string, data: Result<T> | Error, time?:number })
         : Promise<Result> {
@@ -48,7 +48,24 @@ export class FirebaseManager {
 
         var docRef = db.collection(collection).doc();
         event.time = event.time || (new Date()).getTime();
-        event.data = JSON.stringify(event.data) as any;
+        var cache = [];
+        event.data = JSON.stringify(event.data, function(key, value) {
+            if (typeof value === 'object' && value !== null) {
+                if (cache.indexOf(value) !== -1) {
+                    // Duplicate reference found
+                    try {
+                        // If this value does not reference a parent it can be deduped
+                        return JSON.parse(JSON.stringify(value));
+                    } catch (error) {
+                        // discard key if value cannot be deduped
+                        return;
+                    }
+                }
+                // Store value in our collection
+                cache.push(value);
+            }
+            return value;
+        }) as any;
         var r = await docRef.set(event);
 
         return Result.GeneralOk();

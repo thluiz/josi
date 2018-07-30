@@ -1,3 +1,4 @@
+import { concat } from 'rxjs';
 import { PersonIncident } from './../entity/PersonIncident';
 import { IncidentType } from './../entity/IncidentType';
 import { DataRunner, DatabaseManager } from './managers/database-manager';
@@ -143,10 +144,10 @@ export class IncidentsService extends BaseService {
         return execution;
     }
 
-
-    //@firebaseEmitter(EVENTS_COLLECTION)
-    async register_incident2(data: IRegisterIncident) : Promise<Result<Incident[] | Incident>> {
-        let incidents : Incident[] = [];
+    @trylog2()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async register_incident2(data: IRegisterIncident) : Promise<Result<Incident[]>> {
+        const incidents : Incident[] = [];
 
         for(let person of data.people) {
             let incident_data = data;
@@ -155,15 +156,17 @@ export class IncidentsService extends BaseService {
             if(!incident_register.success) {
                 return incident_register;
             }
-            incidents.push(incident_register.data);
+
+            incidents.push(...incident_register.data);
         }
 
+        console.log(incidents);
         return Result.Ok(INCIDENT_ADDED, incidents);
     }
 
 
     async register_incident_for_person(data: IRegisterIncident)
-    : Promise<Result<Incident>> {
+    : Promise<Result<Incident[]>> {
         if(!data.responsible) {
             return Result.Fail(ErrorCode.ValidationError,
                 new Error(IncidentErrors[IncidentErrors.MissingResponsible])
@@ -216,22 +219,16 @@ export class IncidentsService extends BaseService {
             return get_ownership;
         }
 
-        incident.ownership = get_ownership.data;
+        incident.ownership = get_ownership.data ? get_ownership.data[0] : null;
 
-        let incident_person = new PersonIncident();
-        incident_person.incident = incident;
-        incident_person.person = data.people[0];
-        incident_person.closed = false;
-        incident_person.participation_type = 1;
-
-        incident.people_incidents = [incident_person];
+        incident.people_incidents = [ PersonIncident.create(incident, data.people[0]) ];
 
         await this.save(incident);
 
-        return Result.GeneralOk();
+        return Result.Ok(INCIDENT_ADDED, [ incident ]);
     }
 
-    private async get_ownership_for_incident(data: IRegisterIncident) : Promise<Result<Incident>> {
+    private async get_ownership_for_incident(data: IRegisterIncident) : Promise<Result<Incident[]>> {
         if(data.incident.type.require_ownership
             && data.addToOwnership === AddToOwnership.DoNotAddToOwnership) {
             return Result.Fail(ErrorCode.ValidationError,
@@ -245,7 +242,7 @@ export class IncidentsService extends BaseService {
                         new Error(IncidentErrors[IncidentErrors.MissingOwnership])
                     );
                 }
-                return Result.GeneralOk(data.ownership);
+                return Result.GeneralOk(data.ownership[0]);
             case AddToOwnership.AddToNewOwnership:
                 let ownership_result = await this.generate_ownership_for_incident(data);
 
@@ -257,7 +254,8 @@ export class IncidentsService extends BaseService {
         return Result.GeneralOk(null);
     }
 
-    private async generate_ownership_for_incident(data: IRegisterIncident) : Promise<Result<Incident>> {
+    private async generate_ownership_for_incident(data: IRegisterIncident)
+    : Promise<Result<Incident[]>> {
         if(!data.new_owner || !data.new_support) {
             return Result.Fail(
                 ErrorCode.ValidationError,
@@ -266,7 +264,6 @@ export class IncidentsService extends BaseService {
         }
 
         let ownership = data.incident;
-        ownership.people = [ data.new_owner ];
         ownership.type = (await (await this.getRepository(IncidentType))
                                 .findOne(Constants.IncidentTypeOwnership))
         if(data.incident.type.need_fund_value) {
@@ -275,6 +272,7 @@ export class IncidentsService extends BaseService {
 
         const ownership_result = await this.register_incident_for_person({
                 incident: ownership,
+                people: [data.new_owner],
                 register_closed: data.register_closed,
                 register_treated: data.register_treated,
                 start_activity: data.start_activity,
@@ -288,18 +286,18 @@ export class IncidentsService extends BaseService {
         }
 
         let support = data.incident;
-        support.people = [ data.new_support ];
         support.type = (await (await this.getRepository(IncidentType))
                                 .findOne(Constants.IncidentTypeSupport))
 
         const support_result = await this.register_incident_for_person({
                 incident: support,
+                people: [ data.new_support ],
                 register_closed: data.register_closed,
                 register_treated: data.register_treated,
                 start_activity: data.start_activity,
                 responsible: data.responsible,
                 addToOwnership: AddToOwnership.AddToExistingOwnership,
-                ownership: ownership_result.data
+                ownership: ownership_result.data[0]
             }
         );
 

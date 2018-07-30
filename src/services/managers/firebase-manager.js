@@ -57,7 +57,25 @@ class FirebaseManager {
             }
             var docRef = db.collection(collection).doc();
             event.time = event.time || (new Date()).getTime();
-            event.data = JSON.stringify(event.data);
+            var cache = [];
+            event.data = JSON.stringify(event.data, function (key, value) {
+                if (typeof value === 'object' && value !== null) {
+                    if (cache.indexOf(value) !== -1) {
+                        // Duplicate reference found
+                        try {
+                            // If this value does not reference a parent it can be deduped
+                            return JSON.parse(JSON.stringify(value));
+                        }
+                        catch (error) {
+                            // discard key if value cannot be deduped
+                            return;
+                        }
+                    }
+                    // Store value in our collection
+                    cache.push(value);
+                }
+                return value;
+            });
             var r = yield docRef.set(event);
             return result_1.Result.GeneralOk();
         });
@@ -70,7 +88,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], FirebaseManager, "get_token", null);
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.trylog2(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)

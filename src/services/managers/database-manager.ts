@@ -14,7 +14,7 @@ export interface DataRunner<T = any> {
 
 let connection : Connection = null;
 
-async function getConnection() : Promise<Connection> {
+async function getGlobalConnection() : Promise<Connection> {
     if (!connection) {
         connection = await createConnection({
             type: 'mssql',
@@ -46,18 +46,22 @@ async function getConnection() : Promise<Connection> {
 }
 
 export class DatabaseManager {
+    async getConnection() {
+        return getGlobalConnection();
+    }
+
     async getRepository<T>(
         type: string | Function | (new () => any) | EntitySchema<T>,
         runner?: QueryRunner
     ): Promise<Repository<T>> {
 
-        let connection = await (runner ? runner.connection : getConnection());
+        let connection = await (runner ? runner.connection : getGlobalConnection());
 
         return await connection.getRepository(type);
     }
 
     async StartTransaction(): Promise<QueryRunner> {
-        const conn = await getConnection();
+        const conn = await getGlobalConnection();
         const queryRunner = conn.createQueryRunner();
 
         if(!queryRunner.connection.isConnected) {
@@ -83,7 +87,7 @@ export class DatabaseManager {
             return fun(queryRunner);
         }
 
-        const conn = await getConnection();
+        const conn = await getGlobalConnection();
         queryRunner = conn.createQueryRunner();
 
         try {
@@ -104,7 +108,7 @@ export class DatabaseManager {
     }
 
     async ExecuteSPNoResults(procedure: string, ...parameters: any[]): Promise<Result<void>> {
-        let [conn_error, connection] = await to<Connection>(getConnection());
+        let [conn_error, connection] = await to<Connection>(getGlobalConnection());
 
         if (conn_error) return Result.Fail(ErrorCode.FailedGetConnection, conn_error);
 
@@ -119,7 +123,7 @@ export class DatabaseManager {
 
     async ExecuteJsonSQL<T>(sql: string, ...parameters: any[]): Promise<Result<T>> {
         try {
-            let connection = await getConnection();
+            let connection = await getGlobalConnection();
 
             const result = await connection.query(sql, parameters);
 
@@ -143,7 +147,7 @@ export class DatabaseManager {
     }
 
     async CloseConnection() {
-        let conn = await getConnection();
+        let conn = await getGlobalConnection();
         conn.close();
     }
 
@@ -158,7 +162,7 @@ export class DatabaseManager {
                 }
             }
 
-            let connection = await getConnection();
+            let connection = await getGlobalConnection();
             let { query, values } = this.buildSPParameters(procedure, parameters);
 
             const result = await connection.query(query, values);

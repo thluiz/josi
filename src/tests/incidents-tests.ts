@@ -2,7 +2,6 @@ require('dotenv').load();
 import 'mocha';
 import { QueryRunner, Repository } from 'typeorm';
 
-import { Person } from './../entity/Person';
 import { IncidentsService, AddToOwnership, IncidentErrors } from '../services/incidents-service';
 import * as IF from './factories/incident-factory';
 import * as GF from './factories/general-factory';
@@ -17,13 +16,11 @@ describe('Incidents Tests', async function() {
     const dbm = new DatabaseManager();
     let runner : QueryRunner;
     let IS: IncidentsService;
-    let PS: PeopleService;
     let ITR : Repository<IncidentType>;
 
     beforeEach(async () => {
         runner = await dbm.StartTransaction();
         IS = new IncidentsService(dbm, { runner, shouldCommit: false });
-        PS = new PeopleService(dbm, { runner, shouldCommit: false })
         ITR = await runner.manager.getRepository<IncidentType>(IncidentType);
     })
 
@@ -31,6 +28,7 @@ describe('Incidents Tests', async function() {
         await dbm.RollbackTransaction(runner);
     });
 
+    /*
     it('should create incident', async () => {
         let incident = await IF.create(runner, await ITR.findOne(1));
         let registering = await IS.register_incident2({
@@ -45,7 +43,7 @@ describe('Incidents Tests', async function() {
 
         expect(registering.success, registering.error ?
             registering.error.message : "").to.be.true;
-    });
+    }); */
 
     it('should create incident with people', async () => {
         let incident = await IF.create(runner, await ITR.findOne(1));
@@ -62,13 +60,28 @@ describe('Incidents Tests', async function() {
         expect(registering.success, registering.error ?
             registering.error.message : "").to.be.true;
 
-        let ir = runner.manager.getRepository<Incident>(Incident);
-        let result = await ir.findOne(incident.id, {
-            relations: ["people_incidents"]
-        });
-        console.log(result);
+        console.log(registering);
+        expect(registering.data[0].people_incidents.length).to.be.eq(1);
+    });
 
-        expect(result.people_incidents.length).to.be.eq(1);
+    /*
+    it('should create one incident for each participant', async () => {
+        let incident = await IF.create(runner, await ITR.findOne(1));
+        let people = [(await GF.create_person(runner)), (await GF.create_person(runner))];
+        let registering = await IS.register_incident2({
+            incident,
+            people: people,
+            responsible: (await GF.create_responsible(runner)),
+            register_closed: false,
+            register_treated: false,
+            start_activity: false,
+            addToOwnership: AddToOwnership.DoNotAddToOwnership,
+        });
+
+        expect(registering.success, registering.error ?
+            registering.error.message : "").to.be.true;
+
+        expect((registering.data as Incident[]).length).to.be.eq(people.length);
     });
 
     it('should block incident without title if type require title', async () => {
@@ -107,5 +120,5 @@ describe('Incidents Tests', async function() {
 
         expect(registering.success).to.be.false;
         expect(registering.error.message).to.be.eq(IncidentErrors[IncidentErrors.ValueNeeded]);
-    });
+    }); */
 });

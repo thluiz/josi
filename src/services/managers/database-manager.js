@@ -14,7 +14,7 @@ const await_to_js_1 = require("await-to-js");
 const result_1 = require("../../helpers/result");
 const errors_codes_1 = require("../../helpers/errors-codes");
 let connection = null;
-function getConnection() {
+function getGlobalConnection() {
     return __awaiter(this, void 0, void 0, function* () {
         if (!connection) {
             connection = yield typeorm_1.createConnection({
@@ -24,7 +24,7 @@ function getConnection() {
                 password: process.env.SQL_PASSWORD,
                 database: process.env.SQL_DATABASE,
                 extra: { options: { encrypt: true } },
-                logging: process.env.PRODUCTION !== "true",
+                logging: process.env.SQL_SHOW_LOGGING === "true",
                 synchronize: false,
                 entities: [
                     "src/entity/*.js"
@@ -46,15 +46,20 @@ function getConnection() {
     });
 }
 class DatabaseManager {
+    getConnection() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return getGlobalConnection();
+        });
+    }
     getRepository(type, runner) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield (runner ? runner.connection : getConnection());
+            let connection = yield (runner ? runner.connection : getGlobalConnection());
             return yield connection.getRepository(type);
         });
     }
     StartTransaction() {
         return __awaiter(this, void 0, void 0, function* () {
-            const conn = yield getConnection();
+            const conn = yield getGlobalConnection();
             const queryRunner = conn.createQueryRunner();
             if (!queryRunner.connection.isConnected) {
                 yield queryRunner.connection.connect();
@@ -78,7 +83,7 @@ class DatabaseManager {
             if (queryRunner) {
                 return fun(queryRunner);
             }
-            const conn = yield getConnection();
+            const conn = yield getGlobalConnection();
             queryRunner = conn.createQueryRunner();
             try {
                 yield queryRunner.startTransaction();
@@ -94,7 +99,7 @@ class DatabaseManager {
     }
     ExecuteSPNoResults(procedure, ...parameters) {
         return __awaiter(this, void 0, void 0, function* () {
-            let [conn_error, connection] = yield await_to_js_1.default(getConnection());
+            let [conn_error, connection] = yield await_to_js_1.default(getGlobalConnection());
             if (conn_error)
                 return result_1.Result.Fail(errors_codes_1.ErrorCode.FailedGetConnection, conn_error);
             let { query, values } = this.buildSPParameters(procedure, parameters);
@@ -107,7 +112,7 @@ class DatabaseManager {
     ExecuteJsonSQL(sql, ...parameters) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let connection = yield getConnection();
+                let connection = yield getGlobalConnection();
                 const result = yield connection.query(sql, parameters);
                 return result_1.Result.GeneralOk(JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]));
             }
@@ -131,7 +136,7 @@ class DatabaseManager {
     }
     CloseConnection() {
         return __awaiter(this, void 0, void 0, function* () {
-            let conn = yield getConnection();
+            let conn = yield getGlobalConnection();
             conn.close();
         });
     }
@@ -144,7 +149,7 @@ class DatabaseManager {
                         shouldCommit: true
                     };
                 }
-                let connection = yield getConnection();
+                let connection = yield getGlobalConnection();
                 let { query, values } = this.buildSPParameters(procedure, parameters);
                 const result = yield connection.query(query, values);
                 const data = result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"];

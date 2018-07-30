@@ -111,10 +111,9 @@ class IncidentsService extends base_service_1.BaseService {
             return execution;
         });
     }
-    //@firebaseEmitter(EVENTS_COLLECTION)
     register_incident2(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            let incidents = [];
+            const incidents = [];
             for (let person of data.people) {
                 let incident_data = data;
                 incident_data.people = [person];
@@ -122,8 +121,9 @@ class IncidentsService extends base_service_1.BaseService {
                 if (!incident_register.success) {
                     return incident_register;
                 }
-                incidents.push(incident_register.data);
+                incidents.push(...incident_register.data);
             }
+            console.log(incidents);
             return result_1.Result.Ok(exports.INCIDENT_ADDED, incidents);
         });
     }
@@ -165,15 +165,10 @@ class IncidentsService extends base_service_1.BaseService {
             if (!get_ownership.success) {
                 return get_ownership;
             }
-            incident.ownership = get_ownership.data;
-            let incident_person = new PersonIncident_1.PersonIncident();
-            incident_person.incident = incident;
-            incident_person.person = data.people[0];
-            incident_person.closed = false;
-            incident_person.participation_type = 1;
-            incident.people_incidents = [incident_person];
+            incident.ownership = get_ownership.data ? get_ownership.data[0] : null;
+            incident.people_incidents = [PersonIncident_1.PersonIncident.create(incident, data.people[0])];
             yield this.save(incident);
-            return result_1.Result.GeneralOk();
+            return result_1.Result.Ok(exports.INCIDENT_ADDED, [incident]);
         });
     }
     get_ownership_for_incident(data) {
@@ -187,7 +182,7 @@ class IncidentsService extends base_service_1.BaseService {
                     if (!data.ownership) {
                         return result_1.Result.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.MissingOwnership]));
                     }
-                    return result_1.Result.GeneralOk(data.ownership);
+                    return result_1.Result.GeneralOk(data.ownership[0]);
                 case AddToOwnership.AddToNewOwnership:
                     let ownership_result = yield this.generate_ownership_for_incident(data);
                     return ownership_result;
@@ -203,7 +198,6 @@ class IncidentsService extends base_service_1.BaseService {
                 return result_1.Result.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.MissingOwnerOrSupport]));
             }
             let ownership = data.incident;
-            ownership.people = [data.new_owner];
             ownership.type = (yield (yield this.getRepository(IncidentType_1.IncidentType))
                 .findOne(configurations_services_1.Constants.IncidentTypeOwnership));
             if (data.incident.type.need_fund_value) {
@@ -211,6 +205,7 @@ class IncidentsService extends base_service_1.BaseService {
             }
             const ownership_result = yield this.register_incident_for_person({
                 incident: ownership,
+                people: [data.new_owner],
                 register_closed: data.register_closed,
                 register_treated: data.register_treated,
                 start_activity: data.start_activity,
@@ -221,17 +216,17 @@ class IncidentsService extends base_service_1.BaseService {
                 return ownership_result;
             }
             let support = data.incident;
-            support.people = [data.new_support];
             support.type = (yield (yield this.getRepository(IncidentType_1.IncidentType))
                 .findOne(configurations_services_1.Constants.IncidentTypeSupport));
             const support_result = yield this.register_incident_for_person({
                 incident: support,
+                people: [data.new_support],
                 register_closed: data.register_closed,
                 register_treated: data.register_treated,
                 start_activity: data.start_activity,
                 responsible: data.responsible,
                 addToOwnership: AddToOwnership.AddToExistingOwnership,
-                ownership: ownership_result.data
+                ownership: ownership_result.data[0]
             });
             if (!support_result.success) {
                 return support_result;
@@ -323,6 +318,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "remove_incident", null);
+__decorate([
+    trylog_decorator_1.trylog2(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "register_incident2", null);
 __decorate([
     trylog_decorator_1.trylog(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),

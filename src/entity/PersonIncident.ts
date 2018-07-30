@@ -22,4 +22,13 @@ export class PersonIncident {
 
     @Column()
     closed: boolean;
+
+    static create(incident: Incident, person: Person) : PersonIncident {
+        let result = new PersonIncident();
+        result.closed = false;
+        result.participation_type = 1;
+        result.incident = incident;
+        result.person = person;
+        return result;
+    }
 }
