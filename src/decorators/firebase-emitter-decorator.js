@@ -15,7 +15,7 @@ function firebaseEmitter(collection) {
         descriptor.value = function (...args) {
             return __awaiter(this, void 0, void 0, function* () {
                 let result = yield originalMethod.apply(this, args);
-                if (result.success) {
+                if (result.success && process.env.FIREBASE_EMIT_EVENTS !== "false") {
                     yield firebase_manager_1.FirebaseManager.emit_event(collection, {
                         id: result.id,
                         data: result

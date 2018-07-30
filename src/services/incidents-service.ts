@@ -160,7 +160,6 @@ export class IncidentsService extends BaseService {
             incidents.push(...incident_register.data);
         }
 
-        console.log(incidents);
         return Result.Ok(INCIDENT_ADDED, incidents);
     }
 

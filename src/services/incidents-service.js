@@ -123,7 +123,6 @@ class IncidentsService extends base_service_1.BaseService {
                 }
                 incidents.push(...incident_register.data);
             }
-            console.log(incidents);
             return result_1.Result.Ok(exports.INCIDENT_ADDED, incidents);
         });
     }
