@@ -1,5 +1,5 @@
 import { LoggerService } from "../services/logger-service";
-import { Result } from "../helpers/result";
+import { Result, ErrorResult } from "../helpers/result";
 import { ErrorCode } from "../helpers/errors-codes";
 
 export function trylog() {
@@ -15,7 +15,7 @@ export function trylog() {
                     args
                 });
 
-                return Result.Fail(ErrorCode.GenericError, error);
+                return ErrorResult.Fail(ErrorCode.GenericError, error);
             }
         };
 
@@ -38,7 +38,7 @@ export function trylog2() {
                     args
                 });
 
-                return Result.Fail(ErrorCode.GenericError, error);
+                return ErrorResult.Fail(ErrorCode.GenericError, error);
             }
         };
 

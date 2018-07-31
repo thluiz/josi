@@ -1,4 +1,4 @@
-import { Result } from '../../helpers/result';
+import { Result, SuccessResult, ErrorResult } from '../../helpers/result';
 import { ErrorCode } from '../../helpers/errors-codes';
 
 import * as admin from 'firebase-admin';
@@ -34,7 +34,7 @@ export class FirebaseManager {
     static async get_token() : Promise<Result<string>> {
         let customToken = await admin.auth().createCustomToken(process.env.FIREBASE_UID);
 
-        return Result.GeneralOk(customToken);
+        return SuccessResult.GeneralOk(customToken);
     }
 
     @trylog2()
@@ -43,7 +43,7 @@ export class FirebaseManager {
         : Promise<Result> {
 
         if(!db) {
-            return Result.Fail(ErrorCode.GenericError, new Error('DB not set- Error emitting event'));
+            return ErrorResult.Fail(ErrorCode.GenericError, new Error('DB not set- Error emitting event'));
         }
 
         var docRef = db.collection(collection).doc();
@@ -68,6 +68,6 @@ export class FirebaseManager {
         }) as any;
         var r = await docRef.set(event);
 
-        return Result.GeneralOk();
+        return SuccessResult.GeneralOk();
     }
 }

@@ -28,9 +28,9 @@ class OwnershipClosingReport extends base_report_1.BaseReport {
             return result;
         });
     }
-    static send(ownership_id) {
+    static send(ownership) {
         return __awaiter(this, void 0, void 0, function* () {
-            let ow_data_request = yield IR.getOwnershipData(ownership_id);
+            let ow_data_request = yield IR.getOwnershipData(ownership.id);
             let data = ow_data_request.data;
             const generated_content = yield this.render_template(this.template_name, data);
             if (!generated_content.success) {
@@ -42,9 +42,8 @@ class OwnershipClosingReport extends base_report_1.BaseReport {
                 subject: `Fechamento de titularidade - ${data.branch_name} `,
                 html: generated_content.data,
             };
-            console.log(msg.to);
             yield this.send_email(msg);
-            return result_1.Result.GeneralOk({ content: generated_content.data, data });
+            return result_1.SuccessResult.GeneralOk({ content: generated_content.data, data });
         });
     }
 }

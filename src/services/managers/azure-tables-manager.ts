@@ -32,7 +32,9 @@ export class AzureTableManager {
     static insertOrMergeEntity(tableService: azure.TableService, table: string, entity: any, callback: (error, result, response) => void) {
 
         this.createTableIfNotExists(tableService, table, (err) => {
-            console.log(err);
+            if(err) {
+                console.log(err);
+            }
         });
 
         tableService.insertOrReplaceEntity(table, entity, callback);

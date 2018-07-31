@@ -39,7 +39,7 @@ class PeopleService extends base_service_1.BaseService {
             person.is_interested = role_id == 4;
             person.roles = [(yield RR.findOne(role_id))];
             yield this.save(person);
-            return result_1.Result.Ok(exports.PERSON_ADDED, person);
+            return result_1.SuccessResult.Ok(exports.PERSON_ADDED, person);
         });
     }
     check_people_comunication_status() {
@@ -93,11 +93,11 @@ class PeopleService extends base_service_1.BaseService {
                 person.avatar_img = blob_image;
                 yield PR.save(person);
                 //TODO: Validate image size
-                return result_1.Result.GeneralOk(person);
+                return result_1.SuccessResult.GeneralOk(person);
             }
             catch (error) {
                 //TODO: Remove file from blob
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error);
             }
         });
     }

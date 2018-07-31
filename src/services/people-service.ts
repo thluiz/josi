@@ -1,6 +1,6 @@
 import { DataRunner } from './managers/database-manager';
 import { DatabaseManager } from './managers/database-manager';
-import { Result } from '../helpers/result';
+import { Result, SuccessResult, ErrorResult } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
 import { Person } from '../entity/Person';
 import { BaseService } from './base-service';
@@ -38,7 +38,7 @@ export class PeopleService extends BaseService {
 
         await this.save(person);
 
-        return Result.Ok(PERSON_ADDED, person);
+        return SuccessResult.Ok(PERSON_ADDED, person);
     }
 
     async check_people_comunication_status(): Promise<Result> {
@@ -97,10 +97,10 @@ export class PeopleService extends BaseService {
 
             //TODO: Validate image size
 
-            return Result.GeneralOk(person);
+            return SuccessResult.GeneralOk(person);
         } catch (error) {
             //TODO: Remove file from blob
-            return Result.Fail(ErrorCode.GenericError, error);
+            return ErrorResult.Fail(ErrorCode.GenericError, error);
         }
     }
 

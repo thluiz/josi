@@ -7,7 +7,7 @@ import { LoggerService } from '../services/logger-service';
 */
 
 import { AzureTableManager } from '../services/managers/azure-tables-manager';
-import { Result } from '../helpers/result';
+import { Result, SuccessResult, ErrorResult } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
 
 const util = require('util'),
@@ -70,7 +70,7 @@ function deleteEntity(self, sid) {
                     return;
                 }
 
-                resolve(Result.GeneralOk());
+                resolve(SuccessResult.GeneralOk());
             }
         );
     });
@@ -105,10 +105,10 @@ p.cleanup = function cleanup() {
             }
 
             console.log("AzureSessionStore.end_session_cleaning");
-            resolve(Result.GeneralOk());
+            resolve(SuccessResult.GeneralOk());
 
         } catch (error) {
-            reject(Result.Fail(ErrorCode.GenericError, error));
+            reject(ErrorResult.Fail(ErrorCode.GenericError, error));
         }
     });
 };

@@ -27,7 +27,7 @@ function routes(app) {
         let vouchers = req.params.id > 0 ?
             yield VR.find({ where: { id: req.params.id }, relations: ['branches', 'voucher_type'] })
             : yield VR.find({ order: { "active": "DESC" }, relations: ['voucher_type'] });
-        res.send(result_1.Result.GeneralOk(vouchers));
+        res.send(result_1.SuccessResult.GeneralOk(vouchers));
     }));
     app.post("/api/parameters/voucher_branch/add", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const BR = yield DBM.getRepository(Branch_1.Branch);
@@ -43,7 +43,7 @@ function routes(app) {
         let voucher = yield VR.findOne(req.body.voucher.id);
         res.send(yield parameters_service_1.ParametersService.remove_branch_voucher(branch, voucher));
     }));
-    app.post("/api/parameters/vouchers", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/parameters/vouchers", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         const voucher_data = req.body.voucher;
         let result = yield parameters_service_1.ParametersService.save_voucher(voucher_data);
         if (!result.success) {
@@ -53,12 +53,14 @@ function routes(app) {
         try {
             let result_voucher = yield jobs_service_1.JobsService.update_voucher_site();
             if (!result_voucher.success) {
-                result_voucher.error_code == errors_codes_1.ErrorCode.ParcialExecution;
+                let e = result_voucher;
+                e.inner_error = e;
+                e.error_code == errors_codes_1.ErrorCode.ParcialExecution;
             }
             res.send(result_voucher);
         }
         catch (error) {
-            res.send(result_1.Result.Fail(errors_codes_1.ErrorCode.ParcialExecution, error));
+            res.send(result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ParcialExecution, error));
         }
     }));
     /**********************************************

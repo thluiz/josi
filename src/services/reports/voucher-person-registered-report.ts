@@ -1,5 +1,5 @@
 import { BaseReport } from "./base-report";
-import { Result } from "../../helpers/result";
+import { Result, SuccessResult } from "../../helpers/result";
 
 import { IPersonVoucherData } from '../people-service';
 import { ConfigurationsService } from '../configurations-services';
@@ -42,6 +42,6 @@ export class VoucherPersonRegisterdReport extends BaseReport {
 
         await this.send_email(msg);
 
-        return Result.GeneralOk(msg);
+        return SuccessResult.GeneralOk(msg);
     }
 }

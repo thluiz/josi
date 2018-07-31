@@ -5,7 +5,7 @@ import { QueryRunner } from 'typeorm';
 import { Location } from '../entity/Location';
 import { BranchCategory } from '../entity/BranchCategory';
 import { DatabaseManager } from './managers/database-manager';
-import { Result } from "../helpers/result";
+import { Result, SuccessResult, ErrorResult } from "../helpers/result";
 import { Branch } from "../entity/Branch";
 import { trylog } from "../decorators/trylog-decorator";
 import { firebaseEmitter } from "../decorators/firebase-emitter-decorator";
@@ -44,7 +44,7 @@ export class ParametersService {
     static async save_voucher(voucher_data : Voucher ) : Promise<Result<Voucher>> {
         const VR = await DBM.getRepository(Voucher);
 
-        return Result.Ok(voucher_data.id > 0 ? VOUCHER_UPDATED : VOUCHER_CREATED,
+        return SuccessResult.Ok(voucher_data.id > 0 ? VOUCHER_UPDATED : VOUCHER_CREATED,
             await VR.save(voucher_data)
         );
     }
@@ -58,17 +58,17 @@ export class ParametersService {
             voucher = await VR.findOne(voucher.id, { relations: ["branches"] }); //load relation
 
             if(voucher.branches.find(b => b.id == branch.id) != null) {
-                return Result.Fail(ErrorCode.NothingChanged, null);
+                return ErrorResult.Fail(ErrorCode.NothingChanged, null);
             }
 
             voucher.branches.push(branch);
             await VR.save(voucher);
 
-            return Result.Ok(BRANCHVOUCHER_CREATED, {
+            return SuccessResult.Ok(BRANCHVOUCHER_CREATED, {
                 branch, voucher
             })
         } catch (error) {
-            return Result.Fail(ErrorCode.GenericError, error);
+            return ErrorResult.Fail(ErrorCode.GenericError, error);
         }
     }
 
@@ -81,17 +81,17 @@ export class ParametersService {
             const voucher_branches = await VR.findOne(voucher.id, { relations: ["branches"] });
 
             if(!voucher_branches.branches.find(b => b.id == branch.id)) {
-                return Result.Fail(ErrorCode.NothingChanged, null);
+                return ErrorResult.Fail(ErrorCode.NothingChanged, null);
             }
 
             voucher_branches.branches = voucher_branches.branches.filter(b => b.id != branch.id);
             await VR.save(voucher_branches);
 
-            return Result.Ok(BRANCHVOUCHER_REMOVED, {
+            return SuccessResult.Ok(BRANCHVOUCHER_REMOVED, {
                 branch, voucher
             })
         } catch (error) {
-            return Result.Fail(ErrorCode.GenericError, error);
+            return ErrorResult.Fail(ErrorCode.GenericError, error);
         }
     }
 
@@ -99,7 +99,7 @@ export class ParametersService {
     @firebaseEmitter(PARAMETERS_COLLECTION)
     static async update_branch(branch : Branch) : Promise<Result<Branch>> {
         const BR = await DBM.getRepository<Branch>(Branch);
-        return Result.Ok(BRANCH_UPDATED, await BR.save(branch));
+        return SuccessResult.Ok(BRANCH_UPDATED, await BR.save(branch));
     }
 
     @trylog()
@@ -131,7 +131,7 @@ export class ParametersService {
                 await this.create_organization(qr, branch, location, director, second_director);
             }
 
-            return Result.Ok<Branch>(BRANCH_CREATED, branch);
+            return SuccessResult.Ok<Branch>(BRANCH_CREATED, branch);
         });
 
     }

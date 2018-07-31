@@ -16,8 +16,30 @@
                 "999999",
                 "--inspect-brk",
                 "--colors",
+                "${workspaceFolder}/src/tests/initializer.js",
                 "${workspaceFolder}/src/tests/*-tests.js",
                 "${workspaceFolder}/src/tests/**/*-tests.js"
+            ],
+            "envFile":"${workspaceRoot}/.env",
+            "cwd": "${workspaceRoot}",
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha Current Tests",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "-u",
+                "tdd",
+                "--timeout",
+                "999999",
+                "--inspect-brk",
+                "--colors",
+                "--require",
+                "ts-node/register",
+                "${workspaceFolder}/src/tests/initializer.js",
+                "${relativeFile}"
             ],
             "envFile":"${workspaceRoot}/.env",
             "cwd": "${workspaceRoot}",

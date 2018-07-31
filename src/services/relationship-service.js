@@ -27,11 +27,10 @@ class RelationshipService {
                     .innerJoinAndSelect("pr.target_person", "target_person")
                     .where(`(pr.person_id = :id or pr.person2_id = :id) ${exclude_indications}`, { id: person_id })
                     .getMany();
-                console.log(entities);
-                return result_1.Result.GeneralOk(entities);
+                return result_1.SuccessResult.GeneralOk(entities);
             }
             catch (error) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error);
             }
         });
     }

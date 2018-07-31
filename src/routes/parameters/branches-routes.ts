@@ -2,7 +2,7 @@ import * as auth from '../../middlewares/auth';
 import { DatabaseManager } from '../../services/managers/database-manager';
 import { ParametersService } from '../../services/parameters-service';
 import { JobsService } from '../../services/jobs-service';
-import { Result } from '../../helpers/result';
+import { Result, ErrorResult } from '../../helpers/result';
 import { ErrorCode } from '../../helpers/errors-codes';
 
 let DBM = new DatabaseManager();
@@ -42,7 +42,7 @@ export function routes(app) {
 
     app.post("/api/branches_new",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {
+    async (req, res) => {
         let result = await ParametersService.create_branch(req.body.branch);
 
         if(!result.success) {
@@ -54,8 +54,9 @@ export function routes(app) {
 
         if(!update_voucher.success) {
             res.send(
-                Result.Fail(ErrorCode.ParcialExecution,
-                    update_voucher.error, null, result.data
+                ErrorResult.Fail(
+                    ErrorCode.ParcialExecution, update_voucher.data as Error,
+                    update_voucher as ErrorResult
                 )
             );
             return;

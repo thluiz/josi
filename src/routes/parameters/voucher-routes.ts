@@ -2,7 +2,7 @@ import * as auth from '../../middlewares/auth';
 import { PeopleService } from '../../services/people-service';
 
 import { DatabaseManager } from '../../services/managers/database-manager';
-import { Result } from '../../helpers/result';
+import { Result, SuccessResult, ErrorResult } from '../../helpers/result';
 import { ErrorCode } from '../../helpers/errors-codes';
 
 import { JobsService } from '../../services/jobs-service';
@@ -27,7 +27,7 @@ export function routes(app) {
                         await VR.find({ where: { id : req.params.id }, relations: ['branches', 'voucher_type']})
                         : await VR.find({ order: { "active": "DESC" }, relations: ['voucher_type'] });
 
-        res.send(Result.GeneralOk(vouchers));
+        res.send(SuccessResult.GeneralOk(vouchers));
     });
 
     app.post("/api/parameters/voucher_branch/add",
@@ -58,7 +58,7 @@ export function routes(app) {
 
     app.post("/api/parameters/vouchers",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {
+    async (req, res) => {
         const voucher_data = req.body.voucher;
 
         let result = await ParametersService.save_voucher(voucher_data);
@@ -72,12 +72,14 @@ export function routes(app) {
             let result_voucher = await JobsService.update_voucher_site();
 
             if(!result_voucher.success) {
-                result_voucher.error_code == ErrorCode.ParcialExecution;
+                let e = result_voucher as ErrorResult;
+                e.inner_error = e;
+                e.error_code == ErrorCode.ParcialExecution;
             }
 
             res.send(result_voucher);
         } catch (error) {
-            res.send(Result.Fail(ErrorCode.ParcialExecution, error));
+            res.send(ErrorResult.Fail(ErrorCode.ParcialExecution, error));
         }
     });
 

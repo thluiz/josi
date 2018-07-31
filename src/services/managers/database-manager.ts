@@ -3,7 +3,7 @@ import { Connection, EntitySchema, Repository, QueryRunner, getManager } from "t
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import to from 'await-to-js';
-import { Result } from "../../helpers/result";
+import { Result, ErrorResult, SuccessResult } from "../../helpers/result";
 import { ErrorCode } from "../../helpers/errors-codes";
 
 export interface DataRunner<T = any> {
@@ -13,9 +13,9 @@ export interface DataRunner<T = any> {
     shouldCommit: boolean
 }
 
-let connection : Connection = null;
+let connection: Connection = null;
 
-async function getGlobalConnection() : Promise<Connection> {
+async function getGlobalConnection(): Promise<Connection> {
     if (!connection) {
         connection = await createConnection({
             type: 'mssql',
@@ -56,16 +56,16 @@ export class DatabaseManager {
         runner?: QueryRunner
     ): Promise<Repository<T>> {
 
-        let connection = await (runner ? runner.connection : getGlobalConnection());
+        let manager = await (runner ? runner.manager : (await getGlobalConnection()).manager);
 
-        return await connection.getRepository(type);
+        return await manager.getRepository(type);
     }
 
     async CreateQueryRunner(): Promise<QueryRunner> {
         const conn = await getGlobalConnection();
         const queryRunner = conn.createQueryRunner();
 
-        if(!queryRunner.connection.isConnected) {
+        if (!queryRunner.connection.isConnected) {
             await queryRunner.connection.connect();
         }
 
@@ -109,22 +109,22 @@ export class DatabaseManager {
         } catch (error) {
             await queryRunner.rollbackTransaction();
 
-            return Result.Fail(ErrorCode.GenericError, error);
+            return ErrorResult.Fail(ErrorCode.GenericError, error);
         }
     }
 
     async ExecuteSPNoResults(procedure: string, ...parameters: any[]): Promise<Result<void>> {
         let [conn_error, connection] = await to<Connection>(getGlobalConnection());
 
-        if (conn_error) return Result.Fail(ErrorCode.FailedGetConnection, conn_error);
+        if (conn_error) return ErrorResult.Fail(ErrorCode.FailedGetConnection, conn_error);
 
         let { query, values } = this.buildSPParameters(procedure, parameters);
 
         let [err, _] = await to(connection.query(query, values));
 
-        if (err) return Result.Fail(ErrorCode.GenericError, err);
+        if (err) return ErrorResult.Fail(ErrorCode.GenericError, err);
 
-        return Result.GeneralOk();
+        return SuccessResult.GeneralOk();
     }
 
     async ExecuteJsonSQL<T>(sql: string, ...parameters: any[]): Promise<Result<T>> {
@@ -133,13 +133,13 @@ export class DatabaseManager {
 
             const result = await connection.query(sql, parameters);
 
-            return Result.GeneralOk(JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]) as T);
+            return SuccessResult.GeneralOk(JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]) as T);
         } catch (error) {
             if (error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
-                return Result.GeneralOk({} as T);
+                return SuccessResult.GeneralOk({} as T);
             }
 
-            return Result.Fail(ErrorCode.GenericError, error);
+            return ErrorResult.Fail(ErrorCode.GenericError, error);
         }
     }
 
@@ -169,26 +169,27 @@ export class DatabaseManager {
                 }
             }
 
-            let connection = await getGlobalConnection();
             let { query, values } = this.buildSPParameters(procedure, parameters);
 
-            const result = await connection.query(query, values);
+            const result = await data_runner.runner.manager.query(query, values);
             const data = result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"];
 
-            if (data_runner.shouldCommit)
+            if (data_runner.shouldCommit && data_runner.runner.isTransactionActive)
                 await data_runner.runner.commitTransaction();
 
             return parseResults ?
-                Result.Ok(result_type, JSON.parse(data)) : Result.Ok(data);
+                SuccessResult.Ok(result_type, JSON.parse(data)) : SuccessResult.Ok(data);
         } catch (error) {
             if (error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
-                if (data_runner.shouldCommit)
+                if (data_runner.shouldCommit && data_runner.runner.isTransactionActive)
                     await data_runner.runner.commitTransaction();
-                return Result.Ok(result_type, new Array() as any);
+                return SuccessResult.Ok(result_type, new Array() as any);
             }
 
-            await data_runner.runner.rollbackTransaction();
-            return Result.Fail(ErrorCode.GenericError, error);
+            if (data_runner.shouldCommit && data_runner.runner.isTransactionActive)
+                await data_runner.runner.rollbackTransaction();
+
+            return ErrorResult.Fail(ErrorCode.GenericError, error);
         }
     }
 

@@ -53,8 +53,8 @@ class DatabaseManager {
     }
     getRepository(type, runner) {
         return __awaiter(this, void 0, void 0, function* () {
-            let connection = yield (runner ? runner.connection : getGlobalConnection());
-            return yield connection.getRepository(type);
+            let manager = yield (runner ? runner.manager : (yield getGlobalConnection()).manager);
+            return yield manager.getRepository(type);
         });
     }
     CreateQueryRunner() {
@@ -98,7 +98,7 @@ class DatabaseManager {
             }
             catch (error) {
                 yield queryRunner.rollbackTransaction();
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error);
             }
         });
     }
@@ -106,12 +106,12 @@ class DatabaseManager {
         return __awaiter(this, void 0, void 0, function* () {
             let [conn_error, connection] = yield await_to_js_1.default(getGlobalConnection());
             if (conn_error)
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.FailedGetConnection, conn_error);
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.FailedGetConnection, conn_error);
             let { query, values } = this.buildSPParameters(procedure, parameters);
             let [err, _] = yield await_to_js_1.default(connection.query(query, values));
             if (err)
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, err);
-            return result_1.Result.GeneralOk();
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, err);
+            return result_1.SuccessResult.GeneralOk();
         });
     }
     ExecuteJsonSQL(sql, ...parameters) {
@@ -119,13 +119,13 @@ class DatabaseManager {
             try {
                 let connection = yield getGlobalConnection();
                 const result = yield connection.query(sql, parameters);
-                return result_1.Result.GeneralOk(JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]));
+                return result_1.SuccessResult.GeneralOk(JSON.parse(result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"]));
             }
             catch (error) {
                 if (error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
-                    return result_1.Result.GeneralOk({});
+                    return result_1.SuccessResult.GeneralOk({});
                 }
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error);
             }
         });
     }
@@ -155,23 +155,23 @@ class DatabaseManager {
                         shouldCommit: false
                     };
                 }
-                let connection = yield getGlobalConnection();
                 let { query, values } = this.buildSPParameters(procedure, parameters);
-                const result = yield connection.query(query, values);
+                const result = yield data_runner.runner.manager.query(query, values);
                 const data = result[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"];
-                if (data_runner.shouldCommit)
+                if (data_runner.shouldCommit && data_runner.runner.isTransactionActive)
                     yield data_runner.runner.commitTransaction();
                 return parseResults ?
-                    result_1.Result.Ok(result_type, JSON.parse(data)) : result_1.Result.Ok(data);
+                    result_1.SuccessResult.Ok(result_type, JSON.parse(data)) : result_1.SuccessResult.Ok(data);
             }
             catch (error) {
                 if (error instanceof SyntaxError && error.message.indexOf("Unexpected end of JSON input") >= 0) {
-                    if (data_runner.shouldCommit)
+                    if (data_runner.shouldCommit && data_runner.runner.isTransactionActive)
                         yield data_runner.runner.commitTransaction();
-                    return result_1.Result.Ok(result_type, new Array());
+                    return result_1.SuccessResult.Ok(result_type, new Array());
                 }
-                yield data_runner.runner.rollbackTransaction();
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+                if (data_runner.shouldCommit && data_runner.runner.isTransactionActive)
+                    yield data_runner.runner.rollbackTransaction();
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error);
             }
         });
     }

@@ -2,7 +2,7 @@ import { QueryRunner } from 'typeorm';
 import { EnumRelationshipType } from '../entity/EnumRelationshipType';
 import { PersonRelationship } from '../entity/PersonRelationship';
 import { DatabaseManager } from './managers/database-manager';
-import { Result } from '../helpers/result';
+import { Result, SuccessResult } from '../helpers/result';
 
 export class InvitationsService {
     static DBF = new DatabaseManager();
@@ -15,7 +15,7 @@ export class InvitationsService {
             invite.relationship_type = await qr.manager.findOne(EnumRelationshipType, {id: relationship_type});
             await qr.manager.save(invite);
 
-            return Result.GeneralOk();
+            return SuccessResult.GeneralOk();
         });
     }
 }

@@ -1,25 +1,34 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const uuid = require("uuid/v4");
-class Result {
-    constructor(success, type, data, error, message, error_code) {
-        this.success = success;
+class SuccessResult {
+    constructor(type, data, message) {
         this.type = type;
         this.data = data;
-        this.error = error;
         this.message = message;
-        this.error_code = error_code;
+        this.success = true;
         this.id = uuid();
     }
     static GeneralOk(data) {
-        return new Result(true, "GENERIC_ACTION", data);
+        return new SuccessResult("GENERIC_ACTION", data);
     }
     static Ok(type, data) {
-        return new Result(true, type, data);
-    }
-    static Fail(code, error, message, data) {
-        return new Result(false, 'Fail', error, error, message || (error != null ? error.message : null), code);
+        return new SuccessResult(type, data);
     }
 }
-exports.Result = Result;
+exports.SuccessResult = SuccessResult;
+class ErrorResult {
+    constructor(data, error_code, inner_error) {
+        this.data = data;
+        this.error_code = error_code;
+        this.inner_error = inner_error;
+        this.success = false;
+        this.id = uuid();
+        this.message = data.message;
+    }
+    static Fail(code, error, inner_error) {
+        return new ErrorResult(error, code, inner_error);
+    }
+}
+exports.ErrorResult = ErrorResult;
 //# sourceMappingURL=result.js.map

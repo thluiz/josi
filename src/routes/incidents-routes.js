@@ -15,7 +15,7 @@ const incidents_service_1 = require("../services/incidents-service");
 const IR = incidents_repository_1.IncidentsRepository;
 const IS = new incidents_service_1.IncidentsService();
 function routes(app) {
-    app.get("/api/available_ownerships/:branch/:date/:type", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/available_ownerships/:branch/:date/:type", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         let result = yield IR.getAvailableOwnerships(req.params.branch, req.params.date, req.params.type);
         res.send(result);
     }));
@@ -49,13 +49,13 @@ function routes(app) {
     }));
     app.post("/api/incident/close", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
         let user = yield security_service_1.SecurityService.getUserFromRequest(req);
-        let result = yield IS.close_incident({
-            id: req.body.id,
-            close_text: req.body.close_text,
-            title: req.body.title,
-            payment_method_id: req.body.payment_method_id,
-            fund_value: req.body.fund_value
-        }, yield user.getPersonId());
+        let ir = yield IR.getRepository();
+        let incident = yield ir.findOne(req.body.id);
+        incident.close_text = req.body.close_text;
+        incident.title = req.body.title;
+        incident.payment_method_id = req.body.payment_method_id;
+        incident.fund_value = req.body.fund_value;
+        let result = yield IS.close_incident(incident, yield user.getPerson());
         response.send(result);
     }));
     app.post("/api/incident/start", auth.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
@@ -92,6 +92,22 @@ function routes(app) {
         let user = yield security_service_1.SecurityService.getUserFromRequest(request);
         let result = yield IS.register_contact_for_incident(request.body.incident, request.body.contact.contact_text, yield user.getPersonId());
         response.send(result);
+    }));
+    /**
+     * COMMENTS
+     */
+    app.get("/api/incident_comments/incident/:id/:show_archived?", auth.ensureLoggedIn(), (request, res) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield IS.get_comments(request.params.id, request.params.show_archived || false);
+        res.send(result);
+    }));
+    app.post("/api/incident_comments", auth.ensureLoggedIn(), (request, res) => __awaiter(this, void 0, void 0, function* () {
+        let user = yield security_service_1.SecurityService.getUserFromRequest(request);
+        let result = yield IS.save_comment(request.body.incident_id, request.body.comment, yield user.getPersonId());
+        res.send(result);
+    }));
+    app.post("/api/incident_comments/archive", auth.ensureLoggedIn(), (request, res) => __awaiter(this, void 0, void 0, function* () {
+        let result = yield IS.archive_comment(request.body.id);
+        res.send(result);
     }));
 }
 exports.routes = routes;

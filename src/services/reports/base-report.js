@@ -38,15 +38,15 @@ class BaseReport {
                 Ejs.renderFile(template_path, { data: data }, (err, content) => {
                     if (err) {
                         logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.SendingEmail, err);
-                        resolve(result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, err, "Error sending report email"));
+                        resolve(result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, err));
                         return;
                     }
-                    resolve(result_1.Result.GeneralOk(content));
+                    resolve(result_1.SuccessResult.GeneralOk(content));
                 });
             }
             catch (error) {
                 logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.SendingEmail, error);
-                resolve(result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error, "Error sending report email"));
+                resolve(result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error));
             }
         });
     }

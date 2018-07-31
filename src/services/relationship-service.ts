@@ -1,6 +1,6 @@
 import { PersonRelationship } from '../entity/PersonRelationship';
 import { DatabaseManager } from './managers/database-manager';
-import { Result } from '../helpers/result';
+import { Result, SuccessResult, ErrorResult } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
 
 const DBM = new DatabaseManager();
@@ -20,11 +20,9 @@ export class RelationshipService {
                             .where(`(pr.person_id = :id or pr.person2_id = :id) ${exclude_indications}`, { id: person_id })
                             .getMany();
 
-            console.log(entities);
-
-            return Result.GeneralOk(entities);
+            return SuccessResult.GeneralOk(entities);
         } catch (error) {
-            return Result.Fail(ErrorCode.GenericError, error);
+            return ErrorResult.Fail(ErrorCode.GenericError, error);
         }
     }
 }

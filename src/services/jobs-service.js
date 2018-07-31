@@ -63,7 +63,7 @@ class JobsService {
             console.log("Finished running jobs!");
             if (err)
                 return err;
-            return result_1.Result.GeneralOk();
+            return result_1.SuccessResult.GeneralOk();
         });
     }
     static cleanup_sessions() {
@@ -75,7 +75,7 @@ class JobsService {
                 return results;
             }
             catch (error) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error);
             }
         });
     }
@@ -83,11 +83,11 @@ class JobsService {
         return __awaiter(this, void 0, void 0, function* () {
             let [err_voucher, result_voucher] = yield await_to_js_1.default(axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_URL));
             if (err_voucher || result_voucher.status != 200)
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.ExternalRequestError, err_voucher || new Error(result_voucher.statusText), null);
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ExternalRequestError, err_voucher || new Error(result_voucher.statusText), null);
             let [err_invites, result_invites] = yield await_to_js_1.default(axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_INVITES_URL));
             if (err_invites || result_invites.status != 200)
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.ExternalRequestError, err_invites || new Error(result_invites.statusText), null);
-            return result_1.Result.GeneralOk();
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ExternalRequestError, err_invites || new Error(result_invites.statusText), null);
+            return result_1.SuccessResult.GeneralOk();
         });
     }
     static consolidate_members_sumary() {

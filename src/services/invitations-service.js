@@ -20,7 +20,7 @@ class InvitationsService {
                 let relationship_type = new_type == 0 ? 13 : new_type == 1 ? 10 : 14;
                 invite.relationship_type = yield qr.manager.findOne(EnumRelationshipType_1.EnumRelationshipType, { id: relationship_type });
                 yield qr.manager.save(invite);
-                return result_1.Result.GeneralOk();
+                return result_1.SuccessResult.GeneralOk();
             }));
         });
     }

@@ -16,7 +16,7 @@ function trylog() {
                     target,
                     args
                 });
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error);
             }
         };
         return descriptor;
@@ -37,7 +37,7 @@ function trylog2() {
                     target,
                     args
                 });
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error);
             }
         };
         return descriptor;

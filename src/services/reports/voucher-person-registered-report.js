@@ -44,7 +44,7 @@ class VoucherPersonRegisterdReport extends base_report_1.BaseReport {
                 `,
             };
             yield this.send_email(msg);
-            return result_1.Result.GeneralOk(msg);
+            return result_1.SuccessResult.GeneralOk(msg);
         });
     }
 }

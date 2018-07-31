@@ -47,4 +47,9 @@ export class BaseService {
     async save<T>(entity : T) {
         return (await this.queryRunner).manager.save(entity);
     }
+    async create<T>(entityClass : string | Function | (new () => any) | EntitySchema<T>, object : any) {
+        let manager = (await this.queryRunner).manager;
+
+        return manager.create(entityClass, object);
+    }
 }

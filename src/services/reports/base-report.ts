@@ -4,7 +4,7 @@ import { LoggerService } from '../logger-service';
 import { EmailManager, IMessage } from '../managers/email-manager';
 import path = require('path');
 import Ejs = require('ejs');
-import { Result } from '../../helpers/result';
+import { Result, ErrorResult, SuccessResult } from '../../helpers/result';
 import { ErrorCode } from '../../helpers/errors-codes';
 import { ConfigurationsService, Configurations } from '../configurations-services';
 
@@ -31,15 +31,15 @@ export class BaseReport {
                     if (err) {
                         LoggerService.error(ErrorCode.SendingEmail, err);
 
-                        resolve(Result.Fail(ErrorCode.GenericError, err, "Error sending report email"));
+                        resolve(ErrorResult.Fail(ErrorCode.GenericError, err));
                         return;
                     }
 
-                    resolve(Result.GeneralOk(content));
+                    resolve(SuccessResult.GeneralOk(content));
                 });
             } catch (error) {
                 LoggerService.error(ErrorCode.SendingEmail, error);
-                resolve(Result.Fail(ErrorCode.GenericError, error, "Error sending report email"));
+                resolve(ErrorResult.Fail(ErrorCode.GenericError, error));
             }
         });
     }

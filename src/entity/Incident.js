@@ -16,6 +16,40 @@ const Branch_1 = require("./Branch");
 const Card_1 = require("./Card");
 const IncidentType_1 = require("./IncidentType");
 let Incident = Incident_1 = class Incident {
+    static duplicate(data) {
+        // Object.assign does not work as expected
+        let incident = new Incident_1();
+        incident.branch = data.branch;
+        incident.cancelled = data.cancelled;
+        incident.cancelled_by = data.cancelled_by;
+        incident.cancelled_on = data.cancelled_on;
+        incident.card_id = data.card_id;
+        incident.close_text = data.close_text;
+        incident.closed = data.closed;
+        incident.closed_by = data.closed_by;
+        incident.closed_on = data.closed_on;
+        incident.comment_count = data.comment_count;
+        incident.contact_method_id = data.contact_method_id;
+        incident.created_on = data.created_on;
+        incident.date = data.date;
+        incident.define_fund_value = data.define_fund_value;
+        incident.description = data.description;
+        incident.fund_value = data.fund_value;
+        incident.ownership = data.ownership;
+        incident.payment_method_id = data.payment_method_id;
+        incident.people_incidents = data.people_incidents;
+        incident.person_schedule_id = data.person_schedule_id;
+        incident.responsible = data.responsible;
+        incident.scheduled = data.scheduled;
+        incident.started_by = data.started_by;
+        incident.started_on = data.started_on;
+        incident.title = data.title;
+        incident.treated = data.treated;
+        incident.type = data.type;
+        incident.updated_at = data.updated_at;
+        incident.value = data.value;
+        return incident;
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn(),

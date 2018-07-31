@@ -38,7 +38,7 @@ function routes(app) {
             res.status(500).json({ error });
         }
     }));
-    app.post("/api/branches_new", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/branches_new", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         let result = yield parameters_service_1.ParametersService.create_branch(req.body.branch);
         if (!result.success) {
             res.send(result);
@@ -46,7 +46,7 @@ function routes(app) {
         }
         let update_voucher = yield jobs_service_1.JobsService.update_voucher_site();
         if (!update_voucher.success) {
-            res.send(result_1.Result.Fail(errors_codes_1.ErrorCode.ParcialExecution, update_voucher.error, null, result.data));
+            res.send(result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ParcialExecution, update_voucher.data, update_voucher));
             return;
         }
         res.send(result);

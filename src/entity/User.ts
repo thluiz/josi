@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { Person } from "./Person";
 import { DatabaseManager } from "../services/managers/database-manager";
 
@@ -43,10 +43,16 @@ export class User {
         return this.person.is_operator;
     }
 
-    async getPersonId() : Promise<number> {
+    async getPersonId(): Promise<number> {
         await this.ensurePersonLoaded();
 
-        return this.person.id[0];
+        return this.person.id;
+    }
+
+    async getPerson(): Promise<Person> {
+        await this.ensurePersonLoaded();
+
+        return this.person;
     }
 
     private async ensurePersonLoaded() {
@@ -54,7 +60,14 @@ export class User {
             return;
 
         const UR = await DBM.getRepository<User>(User);
-        let user = await UR.findOne({ id: this.id }, { relations: ["person"] });
+
+        let user = await UR
+            .createQueryBuilder("u")
+            .innerJoinAndSelect("u.person", "p")
+            .where("u.id = :id", { id: this.id })
+            .cache(10000)
+            .getOne();
+
         this.person = user.person;
     }
 }

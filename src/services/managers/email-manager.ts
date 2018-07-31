@@ -1,7 +1,8 @@
+import { ErrorResult } from './../../helpers/result';
 import { isArray } from 'util';
 import sgMail = require('@sendgrid/mail');
 import { LoggerService } from '../logger-service';
-import { Result } from '../../helpers/result';
+import { Result, SuccessResult } from '../../helpers/result';
 import { ConfigurationsService } from '../configurations-services';
 import { ErrorCode } from '../../helpers/errors-codes';
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -15,7 +16,7 @@ export interface IMessage {
 
 export class EmailManager {
     static send_email(msg : IMessage): Promise<Result<any>> {
-        return new Promise((resolve, reject) => {
+        return new Promise<Result>((resolve, reject) => {
             if(process.env.PRODUCTION !== "true") {
                 msg.subject += "[DEST:" +
                                     (isArray(msg.to) ?
@@ -27,7 +28,7 @@ export class EmailManager {
 
             sgMail.send(msg)
                 .then(r2 => {
-                    resolve(Result.GeneralOk(r2));
+                    resolve(SuccessResult.GeneralOk(r2));
                 })
                 .catch(error => {
                     //Extract error msg
@@ -36,7 +37,8 @@ export class EmailManager {
                     //const { headers, body } = response;
                     LoggerService.error(ErrorCode.SendingEmail, error,
                         `ERROR EMAIL :: ${msg.subject || "NO SUBJECT" }`);
-                    reject(error);
+
+                    reject(ErrorResult.Fail(ErrorCode.SendingEmail, error));
                 });
         });
     }

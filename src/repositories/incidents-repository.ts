@@ -1,7 +1,7 @@
 import { filter } from 'rxjs/operators';
 import { Repository, QueryRunner } from 'typeorm';
 import { DatabaseManager } from "../services/managers/database-manager";
-import { Result } from "../helpers/result";
+import { Result, SuccessResult } from "../helpers/result";
 import { ErrorCode } from "../helpers/errors-codes";
 import { trylog } from "../decorators/trylog-decorator";
 import showdown = require('showdown');
@@ -12,6 +12,7 @@ const converter = new showdown.Converter();
 const DBM = new DatabaseManager();
 
 export class IncidentsRepository {
+
 
     @trylog()
     static async getRepository(runner? : QueryRunner): Promise<Repository<Incident>> {
@@ -128,10 +129,13 @@ export class IncidentsRepository {
 
         const data = ownership_data.data[0];
 
+        if(!data.incidents) {
+            data.incidents = [];
+        }
+
         for (var i = 0; i < data.incidents.length; i++) {
             if (data.incidents[i].description) {
                 const d = data.incidents[i].description.replace(/\r?\n/g, "<br />");
-                console.log(d);
                 data.incidents[i].description = converter.makeHtml(d);
             }
             if (data.incidents[i].close_text) {
@@ -140,6 +144,6 @@ export class IncidentsRepository {
             }
         }
 
-        return Result.GeneralOk(data);
+        return SuccessResult.GeneralOk(data);
     }
 }

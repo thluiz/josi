@@ -31,7 +31,9 @@ class AzureTableManager {
     }
     static insertOrMergeEntity(tableService, table, entity, callback) {
         this.createTableIfNotExists(tableService, table, (err) => {
-            console.log(err);
+            if (err) {
+                console.log(err);
+            }
         });
         tableService.insertOrReplaceEntity(table, entity, callback);
     }

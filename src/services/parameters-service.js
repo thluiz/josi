@@ -45,7 +45,7 @@ class ParametersService {
     static save_voucher(voucher_data) {
         return __awaiter(this, void 0, void 0, function* () {
             const VR = yield DBM.getRepository(Voucher_1.Voucher);
-            return result_1.Result.Ok(voucher_data.id > 0 ? VOUCHER_UPDATED : VOUCHER_CREATED, yield VR.save(voucher_data));
+            return result_1.SuccessResult.Ok(voucher_data.id > 0 ? VOUCHER_UPDATED : VOUCHER_CREATED, yield VR.save(voucher_data));
         });
     }
     static create_branch_voucher(branch, voucher) {
@@ -54,16 +54,16 @@ class ParametersService {
                 const VR = yield DBM.getRepository(Voucher_1.Voucher);
                 voucher = yield VR.findOne(voucher.id, { relations: ["branches"] }); //load relation
                 if (voucher.branches.find(b => b.id == branch.id) != null) {
-                    return result_1.Result.Fail(errors_codes_1.ErrorCode.NothingChanged, null);
+                    return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.NothingChanged, null);
                 }
                 voucher.branches.push(branch);
                 yield VR.save(voucher);
-                return result_1.Result.Ok(BRANCHVOUCHER_CREATED, {
+                return result_1.SuccessResult.Ok(BRANCHVOUCHER_CREATED, {
                     branch, voucher
                 });
             }
             catch (error) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error);
             }
         });
     }
@@ -73,23 +73,23 @@ class ParametersService {
                 const VR = yield DBM.getRepository(Voucher_1.Voucher);
                 const voucher_branches = yield VR.findOne(voucher.id, { relations: ["branches"] });
                 if (!voucher_branches.branches.find(b => b.id == branch.id)) {
-                    return result_1.Result.Fail(errors_codes_1.ErrorCode.NothingChanged, null);
+                    return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.NothingChanged, null);
                 }
                 voucher_branches.branches = voucher_branches.branches.filter(b => b.id != branch.id);
                 yield VR.save(voucher_branches);
-                return result_1.Result.Ok(BRANCHVOUCHER_REMOVED, {
+                return result_1.SuccessResult.Ok(BRANCHVOUCHER_REMOVED, {
                     branch, voucher
                 });
             }
             catch (error) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error);
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error);
             }
         });
     }
     static update_branch(branch) {
         return __awaiter(this, void 0, void 0, function* () {
             const BR = yield DBM.getRepository(Branch_1.Branch);
-            return result_1.Result.Ok(BRANCH_UPDATED, yield BR.save(branch));
+            return result_1.SuccessResult.Ok(BRANCH_UPDATED, yield BR.save(branch));
         });
     }
     static create_branch(branch_data) {
@@ -114,7 +114,7 @@ class ParametersService {
                     let second_director = yield PR.findOne(branch_data.associate_director_id);
                     yield this.create_organization(qr, branch, location, director, second_director);
                 }
-                return result_1.Result.Ok(BRANCH_CREATED, branch);
+                return result_1.SuccessResult.Ok(BRANCH_CREATED, branch);
             }));
         });
     }

@@ -51,6 +51,12 @@ class BaseService {
             return (yield this.queryRunner).manager.save(entity);
         });
     }
+    create(entityClass, object) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let manager = (yield this.queryRunner).manager;
+            return manager.create(entityClass, object);
+        });
+    }
 }
 exports.BaseService = BaseService;
 //# sourceMappingURL=base-service.js.map

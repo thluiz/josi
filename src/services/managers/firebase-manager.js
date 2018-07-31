@@ -47,13 +47,13 @@ class FirebaseManager {
     static get_token() {
         return __awaiter(this, void 0, void 0, function* () {
             let customToken = yield admin.auth().createCustomToken(process.env.FIREBASE_UID);
-            return result_1.Result.GeneralOk(customToken);
+            return result_1.SuccessResult.GeneralOk(customToken);
         });
     }
     static emit_event(collection, event) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!db) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, new Error('DB not set- Error emitting event'));
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, new Error('DB not set- Error emitting event'));
             }
             var docRef = db.collection(collection).doc();
             event.time = event.time || (new Date()).getTime();
@@ -77,7 +77,7 @@ class FirebaseManager {
                 return value;
             });
             var r = yield docRef.set(event);
-            return result_1.Result.GeneralOk();
+            return result_1.SuccessResult.GeneralOk();
         });
     }
 }

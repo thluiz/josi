@@ -43,7 +43,13 @@ let User = User_1 = class User {
     getPersonId() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.ensurePersonLoaded();
-            return this.person.id[0];
+            return this.person.id;
+        });
+    }
+    getPerson() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.ensurePersonLoaded();
+            return this.person;
         });
     }
     ensurePersonLoaded() {
@@ -51,7 +57,12 @@ let User = User_1 = class User {
             if (this.person != null)
                 return;
             const UR = yield DBM.getRepository(User_1);
-            let user = yield UR.findOne({ id: this.id }, { relations: ["person"] });
+            let user = yield UR
+                .createQueryBuilder("u")
+                .innerJoinAndSelect("u.person", "p")
+                .where("u.id = :id", { id: this.id })
+                .cache(10000)
+                .getOne();
             this.person = user.person;
         });
     }

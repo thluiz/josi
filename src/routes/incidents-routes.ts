@@ -10,7 +10,7 @@ const IS = new IncidentsService();
 export function routes(app) {
     app.get("/api/available_ownerships/:branch/:date/:type",
     auth.ensureLoggedIn(),
-    async (req, res, next) => {
+    async (req, res) => {
         let result = await IR.getAvailableOwnerships(req.params.branch, req.params.date, req.params.type);
 
         res.send(result);
@@ -94,13 +94,15 @@ export function routes(app) {
     auth.ensureLoggedIn(),
     async (req, response) => {
         let user = await SecurityService.getUserFromRequest(req);
-        let result = await IS.close_incident({
-            id: req.body.id,
-            close_text: req.body.close_text,
-            title: req.body.title,
-            payment_method_id: req.body.payment_method_id,
-            fund_value: req.body.fund_value
-        }, await user.getPersonId());
+
+        let ir = await IR.getRepository();
+        let incident = await ir.findOne(req.body.id);
+        incident.close_text = req.body.close_text;
+        incident.title = req.body.title;
+        incident.payment_method_id = req.body.payment_method_id;
+        incident.fund_value = req.body.fund_value;
+
+        let result = await IS.close_incident(incident, await user.getPerson());
 
         response.send(result);
     });
@@ -181,5 +183,43 @@ export function routes(app) {
         );
 
         response.send(result);
+    });
+
+    /**
+     * COMMENTS
+     */
+
+    app.get("/api/incident_comments/incident/:id/:show_archived?",
+    auth.ensureLoggedIn(),
+    async (request, res) => {
+        const result = await IS.get_comments(
+            request.params.id,
+            request.params.show_archived || false)
+
+        res.send(result);
+    });
+
+    app.post("/api/incident_comments",
+    auth.ensureLoggedIn(),
+    async (request, res) => {
+        let user = await SecurityService.getUserFromRequest(request);
+
+        let result = await IS.save_comment(
+            request.body.incident_id,
+            request.body.comment,
+            await user.getPersonId()
+        );
+
+        res.send(result);
+    });
+
+    app.post("/api/incident_comments/archive",
+    auth.ensureLoggedIn(),
+    async (request, res) => {
+        let result = await IS.archive_comment(
+            request.body.id
+        );
+
+        res.send(result);
     });
 }

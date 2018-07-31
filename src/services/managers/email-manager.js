@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const result_1 = require("./../../helpers/result");
 const util_1 = require("util");
 const sgMail = require("@sendgrid/mail");
 const logger_service_1 = require("../logger-service");
-const result_1 = require("../../helpers/result");
+const result_2 = require("../../helpers/result");
 const configurations_services_1 = require("../configurations-services");
 const errors_codes_1 = require("../../helpers/errors-codes");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -19,7 +20,7 @@ class EmailManager {
             }
             sgMail.send(msg)
                 .then(r2 => {
-                resolve(result_1.Result.GeneralOk(r2));
+                resolve(result_2.SuccessResult.GeneralOk(r2));
             })
                 .catch(error => {
                 //Extract error msg
@@ -27,7 +28,7 @@ class EmailManager {
                 //Extract response msg
                 //const { headers, body } = response;
                 logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.SendingEmail, error, `ERROR EMAIL :: ${msg.subject || "NO SUBJECT"}`);
-                reject(error);
+                reject(result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.SendingEmail, error));
             });
         });
     }

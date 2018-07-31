@@ -21,12 +21,12 @@ const PersonIncident_1 = require("./../entity/PersonIncident");
 const IncidentType_1 = require("./../entity/IncidentType");
 const result_1 = require("../helpers/result");
 const errors_codes_1 = require("../helpers/errors-codes");
-const logger_service_1 = require("./logger-service");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const firebase_emitter_decorator_1 = require("../decorators/firebase-emitter-decorator");
 const Incident_1 = require("../entity/Incident");
 const ownership_closing_report_1 = require("./reports/ownership-closing-report");
 const base_service_1 = require("./base-service");
+const Person_1 = require("../entity/Person");
 const configurations_services_1 = require("./configurations-services");
 exports.EVENTS_COLLECTION = "incident-events";
 exports.INCIDENT_ADDED = "INCIDENT_ADDED";
@@ -36,15 +36,16 @@ exports.INCIDENT_TREATED = "INCIDENT_TREATED";
 exports.INCIDENT_ENDED = "INCIDENT_ENDED";
 exports.INCIDENT_CANCELLED = "INCIDENT_CANCELLED";
 exports.INCIDENT_RESCHEDULED = "INCIDENT_RESCHEDULED";
+exports.INCIDENT_COMMENT_ADDED = "INCIDENT_COMMENT_ADDED";
+exports.INCIDENT_COMMENT_ARCHIVED = "INCIDENT_COMMENT_ARCHIVED";
 var IncidentErrors;
 (function (IncidentErrors) {
     IncidentErrors[IncidentErrors["MissingResponsible"] = 0] = "MissingResponsible";
     IncidentErrors[IncidentErrors["MissingOwnership"] = 1] = "MissingOwnership";
     IncidentErrors[IncidentErrors["MissingOwnerOrSupport"] = 2] = "MissingOwnerOrSupport";
-    IncidentErrors[IncidentErrors["ToManyPeopleShouldSendOnlyOne"] = 3] = "ToManyPeopleShouldSendOnlyOne";
-    IncidentErrors[IncidentErrors["ValueNeeded"] = 4] = "ValueNeeded";
-    IncidentErrors[IncidentErrors["PaymentMethodNeeded"] = 5] = "PaymentMethodNeeded";
-    IncidentErrors[IncidentErrors["TitleNeeded"] = 6] = "TitleNeeded";
+    IncidentErrors[IncidentErrors["ValueNeeded"] = 3] = "ValueNeeded";
+    IncidentErrors[IncidentErrors["PaymentMethodNeeded"] = 4] = "PaymentMethodNeeded";
+    IncidentErrors[IncidentErrors["TitleNeeded"] = 5] = "TitleNeeded";
 })(IncidentErrors = exports.IncidentErrors || (exports.IncidentErrors = {}));
 var AddToOwnership;
 (function (AddToOwnership) {
@@ -80,28 +81,25 @@ class IncidentsService extends base_service_1.BaseService {
             return execution;
         });
     }
-    close_incident(incident, responsible_id) {
+    close_incident(incident, responsible) {
         return __awaiter(this, void 0, void 0, function* () {
             let execution = yield (yield this.databaseManager).ExecuteTypedJsonSP(exports.INCIDENT_ENDED, "CloseIncident", [{ "incident": incident.id },
                 { "close_description": incident.close_text || "" },
                 { "title": incident.title || "" },
-                { "responsible_id": responsible_id },
-                { "fund_value": incident.fund_value },
+                { "responsible_id": responsible.id },
+                { "fund_value": incident.fund_value || null },
                 { "payment_method_id": incident.payment_method_id > 0 ?
-                        incident.payment_method_id : null }]);
-            if (execution.success) {
-                try {
-                    const IR = yield (yield this.databaseManager).getRepository(Incident_1.Incident);
-                    const light_incident = yield IR.findOne(incident.id);
-                    if (light_incident.type.id == configurations_services_1.Constants.IncidentTypeOwnership) {
-                        yield ownership_closing_report_1.OwnershipClosingReport.send(light_incident.id);
-                    }
-                }
-                catch (ex) {
-                    logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.SendingEmail, ex);
-                }
-            }
+                        incident.payment_method_id : null }], yield this.dataRunner);
             return execution;
+        });
+    }
+    close_ownership_and_send_report(incident, responsible) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let closing = yield this.close_incident(incident, responsible);
+            if (closing.success && incident.type.id == configurations_services_1.Constants.IncidentTypeOwnership) {
+                yield ownership_closing_report_1.OwnershipClosingReport.send(incident);
+            }
+            return closing;
         });
     }
     remove_incident(incident, responsible_id) {
@@ -111,28 +109,45 @@ class IncidentsService extends base_service_1.BaseService {
             return execution;
         });
     }
-    register_incident2(data) {
+    create_people_incidents(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const incidents = [];
+            let ownership;
+            if (data.addToOwnership == AddToOwnership.AddToNewOwnership) {
+                let ownership_data = Object.assign({
+                    new_owner: data.new_owner,
+                    new_support: data.new_support
+                }, data);
+                let ownership_register = yield this.create_ownership(ownership_data);
+                if (!ownership_register.success) {
+                    return ownership_register;
+                }
+                let ownership_and_support = ownership_register.data;
+                ownership = ownership_and_support.ownership;
+                incidents.push(ownership);
+                incidents.push(ownership_and_support.support);
+            }
             for (let person of data.people) {
-                let incident_data = data;
-                incident_data.people = [person];
-                let incident_register = yield this.register_incident_for_person(incident_data);
+                let incident_data = Object.assign({ person }, data);
+                if (data.addToOwnership == AddToOwnership.AddToNewOwnership) {
+                    incident_data.ownership = ownership;
+                }
+                let incident_register = yield this.create_incident_for_person(incident_data);
                 if (!incident_register.success) {
                     return incident_register;
                 }
-                incidents.push(...incident_register.data);
+                incidents.push(incident_register.data);
             }
-            return result_1.Result.Ok(exports.INCIDENT_ADDED, incidents);
+            return result_1.SuccessResult.Ok(exports.INCIDENT_ADDED, incidents);
         });
     }
-    register_incident_for_person(data) {
+    create_incident_for_person(data) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!data.responsible) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.MissingResponsible]));
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.MissingResponsible]));
             }
-            if (data.people.length > 1) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.ToManyPeopleShouldSendOnlyOne]));
+            if (data.incident.type.require_ownership && !data.ownership) {
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.MissingOwnership]));
             }
             var incident = data.incident;
             if (data.start_activity) {
@@ -149,88 +164,63 @@ class IncidentsService extends base_service_1.BaseService {
             }
             if (incident.type.need_value
                 && incident.value <= 0) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.ValueNeeded]));
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.ValueNeeded]));
             }
             if (incident.type.require_title
                 && (incident.title || "").length <= 0) {
                 let error = new Error(IncidentErrors[IncidentErrors.TitleNeeded]);
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.ValidationError, error);
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ValidationError, error);
             }
             if (incident.type.require_payment_method
                 && incident.payment_method_id <= 0) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.PaymentMethodNeeded]));
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.PaymentMethodNeeded]));
             }
-            let get_ownership = yield this.get_ownership_for_incident(data);
-            if (!get_ownership.success) {
-                return get_ownership;
-            }
-            incident.ownership = get_ownership.data ? get_ownership.data[0] : null;
-            incident.people_incidents = [PersonIncident_1.PersonIncident.create(incident, data.people[0])];
+            incident.ownership = data.ownership;
+            incident.people_incidents = [PersonIncident_1.PersonIncident.create(incident, data.person)];
             yield this.save(incident);
-            return result_1.Result.Ok(exports.INCIDENT_ADDED, [incident]);
+            return result_1.SuccessResult.Ok(exports.INCIDENT_ADDED, incident);
         });
     }
-    get_ownership_for_incident(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (data.incident.type.require_ownership
-                && data.addToOwnership === AddToOwnership.DoNotAddToOwnership) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.MissingOwnership]));
-            }
-            switch (data.addToOwnership) {
-                case AddToOwnership.AddToExistingOwnership:
-                    if (!data.ownership) {
-                        return result_1.Result.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.MissingOwnership]));
-                    }
-                    return result_1.Result.GeneralOk(data.ownership[0]);
-                case AddToOwnership.AddToNewOwnership:
-                    let ownership_result = yield this.generate_ownership_for_incident(data);
-                    return ownership_result;
-                default:
-                    break;
-            }
-            return result_1.Result.GeneralOk(null);
-        });
-    }
-    generate_ownership_for_incident(data) {
+    create_ownership(data) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!data.new_owner || !data.new_support) {
-                return result_1.Result.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.MissingOwnerOrSupport]));
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ValidationError, new Error(IncidentErrors[IncidentErrors.MissingOwnerOrSupport]));
             }
-            let ownership = data.incident;
-            ownership.type = (yield (yield this.getRepository(IncidentType_1.IncidentType))
+            let ownership_data = Incident_1.Incident.duplicate(data.incident);
+            ownership_data.type = (yield (yield this.getRepository(IncidentType_1.IncidentType))
                 .findOne(configurations_services_1.Constants.IncidentTypeOwnership));
             if (data.incident.type.need_fund_value) {
-                ownership.define_fund_value = true;
+                ownership_data.define_fund_value = true;
             }
-            const ownership_result = yield this.register_incident_for_person({
-                incident: ownership,
-                people: [data.new_owner],
+            const ownership_result = yield this.create_incident_for_person({
+                incident: ownership_data,
+                person: data.new_owner,
                 register_closed: data.register_closed,
                 register_treated: data.register_treated,
                 start_activity: data.start_activity,
-                responsible: data.responsible,
-                addToOwnership: AddToOwnership.DoNotAddToOwnership
+                responsible: data.responsible
             });
             if (!ownership_result.success) {
                 return ownership_result;
             }
-            let support = data.incident;
-            support.type = (yield (yield this.getRepository(IncidentType_1.IncidentType))
+            let ownership = ownership_result.data;
+            let support_data = Incident_1.Incident.duplicate(data.incident);
+            support_data.type = (yield (yield this.getRepository(IncidentType_1.IncidentType))
                 .findOne(configurations_services_1.Constants.IncidentTypeSupport));
-            const support_result = yield this.register_incident_for_person({
-                incident: support,
-                people: [data.new_support],
+            const support_result = yield this.create_incident_for_person({
+                incident: support_data,
+                person: data.new_support,
                 register_closed: data.register_closed,
                 register_treated: data.register_treated,
                 start_activity: data.start_activity,
                 responsible: data.responsible,
-                addToOwnership: AddToOwnership.AddToExistingOwnership,
-                ownership: ownership_result.data[0]
+                ownership: ownership
             });
             if (!support_result.success) {
                 return support_result;
             }
-            return ownership_result;
+            let support = support_result.data;
+            return result_1.SuccessResult.Ok(exports.INCIDENT_ADDED, { ownership, support });
         });
     }
     register_incident(incident, responsible_id) {
@@ -264,6 +254,13 @@ class IncidentsService extends base_service_1.BaseService {
             return execution;
         });
     }
+    get_comments(incident_id, show_archived) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield (yield this.databaseManager)
+                .ExecuteJsonSP("GetIncidentComments", { incident_id }, { show_archived });
+            return result;
+        });
+    }
     reschedule_incident(incident, new_incident, contact, responsible_id) {
         return __awaiter(this, void 0, void 0, function* () {
             let execution = yield (yield this.databaseManager).ExecuteTypedJsonSP(exports.INCIDENT_RESCHEDULED, "RescheduleIncident", [{ "incident": incident.id },
@@ -277,8 +274,20 @@ class IncidentsService extends base_service_1.BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             let execution = yield (yield this.databaseManager).ExecuteTypedJsonSP(exports.INCIDENT_TREATED, "RegisterContactForIncident", [{ "incident": incident.id },
                 { "contact": contact },
-                { "responsible_id": responsible_id }]);
+                { "responsible_id": responsible_id }], (yield this.dataRunner));
             return execution;
+        });
+    }
+    save_comment(incident_id, comment, responsible_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield (yield this.databaseManager)
+                .ExecuteTypedJsonSP(exports.INCIDENT_COMMENT_ADDED, "SaveIncidentComment", [{ incident_id }, { comment }, { responsible_id }], (yield this.dataRunner));
+        });
+    }
+    archive_comment(comment_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield (yield this.databaseManager)
+                .ExecuteTypedJsonSP(exports.INCIDENT_COMMENT_ARCHIVED, "TogleIncidentCommentArchived", [{ comment_id }], (yield this.dataRunner));
         });
     }
 }
@@ -307,9 +316,16 @@ __decorate([
     trylog_decorator_1.trylog(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Incident_1.Incident, Person_1.Person]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "close_incident", null);
+__decorate([
+    trylog_decorator_1.trylog(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Incident_1.Incident, Person_1.Person]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "close_ownership_and_send_report", null);
 __decorate([
     trylog_decorator_1.trylog(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
@@ -323,7 +339,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], IncidentsService.prototype, "register_incident2", null);
+], IncidentsService.prototype, "create_people_incidents", null);
 __decorate([
     trylog_decorator_1.trylog(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
@@ -331,6 +347,12 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "register_incident", null);
+__decorate([
+    trylog_decorator_1.trylog(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Boolean]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "get_comments", null);
 __decorate([
     trylog_decorator_1.trylog(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
@@ -345,5 +367,19 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "register_contact_for_incident", null);
+__decorate([
+    trylog_decorator_1.trylog2(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "save_comment", null);
+__decorate([
+    trylog_decorator_1.trylog2(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "archive_comment", null);
 exports.IncidentsService = IncidentsService;
 //# sourceMappingURL=incidents-service.js.map

@@ -8,35 +8,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require('dotenv').load();
-require("mocha");
-const database_manager_1 = require("../services/managers/database-manager");
 const chai_1 = require("chai");
-const people_service_1 = require("../services/people-service");
-describe('People Tests', function () {
+require('dotenv').load();
+const User_1 = require("./../entity/User");
+require("mocha");
+const incidents_service_1 = require("../services/incidents-service");
+const database_manager_1 = require("../services/managers/database-manager");
+describe('Security Tests', function () {
     return __awaiter(this, void 0, void 0, function* () {
         this.timeout(15000000);
-        const dbm = new database_manager_1.DatabaseManager();
         let runner;
-        let PS;
+        let IS;
+        let UR;
+        const dbm = new database_manager_1.DatabaseManager();
         beforeEach(() => __awaiter(this, void 0, void 0, function* () {
             runner = yield dbm.CreateQueryRunner();
-            PS = new people_service_1.PeopleService(dbm, { runner, useTransaction: true, shouldCommit: false });
-            yield dbm.StartTransaction(runner);
+            IS = new incidents_service_1.IncidentsService(dbm, { runner, useTransaction: true, shouldCommit: false });
+            UR = yield runner.manager.getRepository(User_1.User);
+            yield runner.startTransaction();
         }));
         afterEach(() => __awaiter(this, void 0, void 0, function* () {
             yield dbm.RollbackTransaction(runner);
         }));
-        it('should create person', () => __awaiter(this, void 0, void 0, function* () {
-            let result = yield PS.create_person("TESTE person name", 4);
-            chai_1.expect(result.success);
-            chai_1.expect(result.data.id).to.be.greaterThan(0);
-        }));
-        it('should create interested', () => __awaiter(this, void 0, void 0, function* () {
-            let result = yield PS.create_person("TESTE person name", 4);
-            chai_1.expect(result.success);
-            chai_1.expect(result.data.is_interested).to.be.true;
+        it('should load person from user', () => __awaiter(this, void 0, void 0, function* () {
+            let user = yield UR.findOne(4);
+            let person = yield user.getPerson();
+            chai_1.expect(person.id).to.be.greaterThan(0);
         }));
     });
 });
-//# sourceMappingURL=people-tests.js.map
+//# sourceMappingURL=security-tests.js.map

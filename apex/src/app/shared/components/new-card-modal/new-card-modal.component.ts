@@ -33,19 +33,19 @@ export enum CardType {
   templateUrl: './new-card-modal.component.html',
   styleUrls: ['../../../../assets/customizations.scss'],
   providers: [ DatePickerI18n,
-    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
+    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter},
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
-export class NewCardModalComponent implements OnInit {    
+export class NewCardModalComponent implements OnInit {
   organizations = [];
-  incident_types = [];  
+  incident_types = [];
   roles = [];
-  person : any = {};  
-  card : Card;  
-  templates = []; 
+  person : any = {};
+  card : Card;
+  templates = [];
   modalRef : NgbModalRef;
   type: CardType = CardType.Task;
-  types = CardType; 
+  types = CardType;
   card_is_valid = false;
   card_validation: string[];
   operators: any[];
@@ -59,53 +59,53 @@ export class NewCardModalComponent implements OnInit {
   @ViewChild('add_card_modal') add_card_modal: ElementRef;
 
   constructor(
-    private datePickerConfig: NgbDatepickerConfig,          
+    private datePickerConfig: NgbDatepickerConfig,
     private ngbModalService: NgbModal,
-    private personService: PersonService, 
+    private personService: PersonService,
     private cardService: CardService,
     private parameterService: ParameterService,
     private modalService: ModalService,
     private utilsService: UtilsService
-  ) {   
+  ) {
       datePickerConfig.firstDayOfWeek = 7
   }
 
   ngOnInit() {
-    this.reset_card({} as Card);        
-  }  
+    this.reset_card({} as Card);
+  }
 
-  open(initial_state :any = {}) { 
-    this.saving = false;      
-    this.type = initial_state.card_type || CardType.Task;    
+  open(initial_state :any = {}) {
+    this.saving = false;
+    this.type = initial_state.card_type || CardType.Task;
 
     observableZip(
-      this.cardService.getOrganizations(true),                  
+      this.cardService.getOrganizations(true),
       this.parameterService.getCardTemplates(),
       this.cardService.getOperators(),
       this.parameterService.getGroups(),
       this.parameterService.getActiveBranches(),
       this.parameterService.getLocations(),
-      (organizations : any[], templates : any[], operators: any[], 
-        groups: Group[], branches: any[], locations: Location[]) => {        
-        this.organizations = organizations;        
+      (organizations : any[], templates : any[], operators: any[],
+        groups: Group[], branches: any[], locations: Location[]) => {
+        this.organizations = organizations;
         this.locations = locations;
         this.operators = operators;
         this.groups = groups;
         this.branches = branches;
 
-        this.templates = templates.filter(t => !t.automatically_generated 
+        this.templates = templates.filter(t => !t.automatically_generated
                                           && t.active
                                           && t.is_task == (this.type ==  CardType.Task || this.type == CardType.ProjectTask))
                                   .map((template) => {
                                     let transformed = template;
                                     transformed.name = transformed.name.replace('Projeto - ', '')
                                     return transformed;
-                                  });            
+                                  });
 
         this.reset_card(initial_state);
-        this.open_modal(this.add_card_modal, true);        
+        this.open_modal(this.add_card_modal, true);
       }
-    ).subscribe();                   
+    ).subscribe();
   }
 
   validate_new_card() {
@@ -139,7 +139,7 @@ export class NewCardModalComponent implements OnInit {
       }
     }
 
-    if(!this.card.title || this.card.title.length <= 5) {
+    if(!this.card.title || this.card.title.length <= 2) {
       this.card_is_valid = false;
       this.card_validation[this.card_validation.length] =  "Informe o título";
     }
@@ -155,8 +155,8 @@ export class NewCardModalComponent implements OnInit {
       this.person.next_incident_dt, this.person.next_incident_time
     );
 
-    this.personService.registerPerson(this.person).subscribe((data) => {      
-      this.modalRef.close(data);      
+    this.personService.registerPerson(this.person).subscribe((data) => {
+      this.modalRef.close(data);
       this.modalService.open(ModalType.PersonTreatment, data);
     });
   }
@@ -166,7 +166,7 @@ export class NewCardModalComponent implements OnInit {
     if(!this.card.template.require_target) {
       this.card.people = null;
     }
-    
+
     this.cardService.saveCard(this.card).subscribe((data) => {
       this.saving = false;
       if(this.modalRef) {
@@ -180,7 +180,7 @@ export class NewCardModalComponent implements OnInit {
   }
 
   remove_person_from_new_card(person) {
-    this.card.people = this.card.people.filter(p => p.person_id != person.person_id);            
+    this.card.people = this.card.people.filter(p => p.person_id != person.person_id);
     this.validate_new_card();
   }
 
@@ -191,8 +191,8 @@ export class NewCardModalComponent implements OnInit {
       tap(() => this.searching_people = true),
       switchMap(term =>
         this.personService.search(term).pipe(
-          map(response =>  {             
-            return <string[]>response; 
+          map(response =>  {
+            return <string[]>response;
           }),
           tap(() => this.search_failed = false),
           catchError(() => {
@@ -203,7 +203,7 @@ export class NewCardModalComponent implements OnInit {
 
   people_typeahead_formatter = (x) => x.name;
 
-  add_person_to_new_card(event) {    
+  add_person_to_new_card(event) {
     if(!event.name) {
       return;
     }
@@ -217,9 +217,9 @@ export class NewCardModalComponent implements OnInit {
     this.validate_new_card();
   }
 
-  private reset_card(initial_state :Card){   
+  private reset_card(initial_state :Card){
     this.card = initial_state;
-    
+
     if(initial_state && initial_state.parent != null && initial_state.parent.leaders && initial_state.parent.leaders.length > 0) {
       this.card.leaders = initial_state.parent.leaders[0];
     }
@@ -236,17 +236,17 @@ export class NewCardModalComponent implements OnInit {
         this.card.locations[0] = initial_state.parent.locations[0];
       }
     }
-    
+
     this.validate_new_card();
   }
 
   private open_modal(content, on_close_action = false) {
     this.modalRef = this.ngbModalService.open(content);
 
-    this.modalRef.result.then((result) => {                                  
-      
-    }, (reason) => {        
+    this.modalRef.result.then((result) => {
+
+    }, (reason) => {
         console.log(reason);
     });
-  }   
+  }
 }

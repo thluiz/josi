@@ -6,4 +6,4 @@ after(function (done) {
     let DBM = new database_manager_1.DatabaseManager();
     DBM.CloseConnection().then(done);
 });
-//# sourceMappingURL=_general-tests.js.map
+//# sourceMappingURL=initializer.js.map

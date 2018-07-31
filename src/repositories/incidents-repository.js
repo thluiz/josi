@@ -95,10 +95,12 @@ class IncidentsRepository {
                 "ownership_id": id
             });
             const data = ownership_data.data[0];
+            if (!data.incidents) {
+                data.incidents = [];
+            }
             for (var i = 0; i < data.incidents.length; i++) {
                 if (data.incidents[i].description) {
                     const d = data.incidents[i].description.replace(/\r?\n/g, "<br />");
-                    console.log(d);
                     data.incidents[i].description = converter.makeHtml(d);
                 }
                 if (data.incidents[i].close_text) {
@@ -106,7 +108,7 @@ class IncidentsRepository {
                     data.incidents[i].close_text = converter.makeHtml(d);
                 }
             }
-            return result_1.Result.GeneralOk(data);
+            return result_1.SuccessResult.GeneralOk(data);
         });
     }
 }

@@ -14,34 +14,34 @@ import { SecurityService } from 'app/services/security-service';
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './voucher-people-page.component.html',
-  styleUrls: ['../people-customizations.scss']  
+  styleUrls: ['../people-customizations.scss']
 })
 export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
-  people: any;    
+  people: any;
   all_people: any;
   current_view = 0;
   filters = "1";
-  current_branch = 0; 
+  current_branch = 0;
   current_voucher = 0;
   branches: any;
   vouchers: any;
   search_name = "";
 
-  private person_list_sub: Subscription;  
+  private person_list_sub: Subscription;
   private interested_added_subscriber: Subscription;
 
   constructor(private personService: PersonService,
-    private securityService: SecurityService, 
+    private securityService: SecurityService,
     private activatedRoute: ActivatedRoute,
-    private router: Router, 
+    private router: Router,
     private parameterService: ParameterService,
     private cardService: CardService,
-    private modalService: ModalService) {      
-  
-  }  
+    private modalService: ModalService) {
 
-  ngOnInit() {        
-    
+  }
+
+  ngOnInit() {
+
     this.search_name = this.activatedRoute.snapshot.queryParams["name"] || "";
     this.parameterService.getActiveBranches().subscribe((branches) => {
       this.branches = branches;
@@ -51,29 +51,29 @@ export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
       this.vouchers = result.data;
     });
 
-    this.securityService.getCurrentUserData().subscribe((user) => {      
+    this.securityService.getCurrentUserData().subscribe((user) => {
       this.current_branch = this.activatedRoute.snapshot.queryParams["branch"] || user.default_branch_id || 0;
-      
+
       this.load_voucher_list();
-    });     
-    
-    this.interested_added_subscriber = this.personService.personActions$.pipe(     
-    filter((p) => p.data != null && p.data.is_interested && (!this.current_branch || p.data.branch_id == this.current_branch)))   
-    .subscribe((next) => {      
+    });
+
+    this.interested_added_subscriber = this.personService.personActions$.pipe(
+    filter((p) => p.data != null && p.data.is_interested && (!this.current_branch || p.data.branch_id == this.current_branch)))
+    .subscribe((next) => {
       this.load_voucher_list();
     });
 
   }
-  
+
   ngOnDestroy() {
     if(this.person_list_sub) {
-      this.person_list_sub.unsubscribe();    
+      this.person_list_sub.unsubscribe();
     }
   }
 
-  apply_filters() {  
+  apply_filters() {
     let people = this.all_people;
-    
+
 
     if(this.current_branch > 0) {
       people = people.filter((p : any) => {
@@ -89,7 +89,7 @@ export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
     this.load_voucher_list();
   }
 
-  keyDownFunction(event) {    
+  keyDownFunction(event) {
     if(event.keyCode == 13) {
       this.filter_people();
     }
@@ -100,23 +100,22 @@ export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
   }
 
   open_card_details(card_id) {
-    this.cardService.getCardData(card_id).subscribe((card) => {      
+    this.cardService.getCardData(card_id).subscribe((card) => {
       this.modalService.open(ModalType.DetailTask, card[0]);
-    });    
+    });
   }
 
-  load_voucher_list() {    
+  load_voucher_list() {
     if(this.person_list_sub) {
       this.person_list_sub.unsubscribe();
     }
-    console.log('aqui');
 
     this.person_list_sub = this.personService.getInvitedPeopleList(this.current_branch, this.search_name, this.current_voucher).subscribe(
-      data => {                   
+      data => {
         this.all_people = data;
 
         this.apply_filters();
       }
-    );  
+    );
   }
 }

@@ -58,7 +58,7 @@ function deleteEntity(self, sid) {
                 logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.SessionControl, errDel);
                 return;
             }
-            resolve(result_1.Result.GeneralOk());
+            resolve(result_1.SuccessResult.GeneralOk());
         });
     });
 }
@@ -84,10 +84,10 @@ p.cleanup = function cleanup() {
                 console.log(`finally: deleted ${batch.operations.length} entries!`);
             }
             console.log("AzureSessionStore.end_session_cleaning");
-            resolve(result_1.Result.GeneralOk());
+            resolve(result_1.SuccessResult.GeneralOk());
         }
         catch (error) {
-            reject(result_1.Result.Fail(errors_codes_1.ErrorCode.GenericError, error));
+            reject(result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error));
         }
     }));
 };

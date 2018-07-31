@@ -1,8 +1,7 @@
-import { concat } from 'rxjs';
 import { PersonIncident } from './../entity/PersonIncident';
 import { IncidentType } from './../entity/IncidentType';
 import { DataRunner, DatabaseManager } from './managers/database-manager';
-import { Result } from '../helpers/result';
+import { Result, SuccessResult, ErrorResult } from '../helpers/result';
 import { ErrorCode } from '../helpers/errors-codes';
 import { LoggerService } from './logger-service';
 import { trylog, trylog2 } from '../decorators/trylog-decorator';
@@ -21,28 +20,54 @@ export const INCIDENT_TREATED = "INCIDENT_TREATED";
 export const INCIDENT_ENDED = "INCIDENT_ENDED";
 export const INCIDENT_CANCELLED = "INCIDENT_CANCELLED";
 export const INCIDENT_RESCHEDULED = "INCIDENT_RESCHEDULED";
+export const INCIDENT_COMMENT_ADDED = "INCIDENT_COMMENT_ADDED";
+export const INCIDENT_COMMENT_ARCHIVED = "INCIDENT_COMMENT_ARCHIVED";
 
 export interface IRegisterIncident {
     incident : Incident,
-    people: Person[],
     responsible : Person,
     start_activity: boolean,
     register_closed: boolean,
     register_treated: boolean,
+    people: Person[],
     new_owner?: Person,
     new_support?: Person,
     addToOwnership: AddToOwnership,
     ownership?: Incident
 }
 
+export interface IRegisterPersonIncident {
+    incident : Incident,
+    responsible : Person,
+    start_activity: boolean,
+    register_closed: boolean,
+    register_treated: boolean,
+    person: Person,
+    ownership?: Incident
+}
+
+export interface IRegisterOwnership {
+    incident : Incident,
+    responsible : Person,
+    start_activity: boolean,
+    register_closed: boolean,
+    register_treated: boolean,
+    new_owner: Person,
+    new_support: Person
+}
+
 export enum IncidentErrors {
     MissingResponsible,
     MissingOwnership,
     MissingOwnerOrSupport,
-    ToManyPeopleShouldSendOnlyOne,
     ValueNeeded,
     PaymentMethodNeeded,
     TitleNeeded
+}
+
+export interface IOwnershipWithSupport {
+    ownership: Incident,
+    support: Incident
 }
 
 export enum AddToOwnership {
@@ -50,7 +75,6 @@ export enum AddToOwnership {
     AddToNewOwnership,
     AddToExistingOwnership
 }
-
 
 export class IncidentsService extends BaseService {
 
@@ -101,33 +125,35 @@ export class IncidentsService extends BaseService {
 
     @trylog()
     @firebaseEmitter(EVENTS_COLLECTION)
-    async close_incident(incident, responsible_id): Promise<Result> {
-        let execution = await (await this.databaseManager).ExecuteTypedJsonSP(
+    async close_incident(incident : Incident, responsible : Person): Promise<Result<Incident>> {
+        let execution = await (await this.databaseManager).ExecuteTypedJsonSP<Incident>(
             INCIDENT_ENDED,
             "CloseIncident",
             [{ "incident": incident.id },
             { "close_description": incident.close_text || "" },
             { "title": incident.title || "" },
-            { "responsible_id": responsible_id },
-            { "fund_value": incident.fund_value },
+            { "responsible_id": responsible.id },
+            { "fund_value": incident.fund_value || null },
             { "payment_method_id": incident.payment_method_id > 0 ?
-                                    incident.payment_method_id : null }]
+                                    incident.payment_method_id : null }],
+            await this.dataRunner
         );
 
-        if (execution.success) {
-            try {
-                const IR = await (await this.databaseManager).getRepository<Incident>(Incident);
-                const light_incident = await IR.findOne(incident.id as number);
+        return execution;
+    }
 
-                if (light_incident.type.id == Constants.IncidentTypeOwnership) {
-                    await OwnershipClosingReport.send(light_incident.id);
-                }
-            } catch (ex) {
-                LoggerService.error(ErrorCode.SendingEmail, ex);
-            }
+    @trylog()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async close_ownership_and_send_report(incident : Incident, responsible : Person)
+    : Promise<Result<Incident>> {
+
+        let closing = await this.close_incident(incident, responsible);
+
+        if (closing.success && incident.type.id == Constants.IncidentTypeOwnership) {
+            await OwnershipClosingReport.send(incident);
         }
 
-        return execution;
+        return closing;
     }
 
     @trylog()
@@ -145,36 +171,59 @@ export class IncidentsService extends BaseService {
 
     @trylog2()
     @firebaseEmitter(EVENTS_COLLECTION)
-    async register_incident2(data: IRegisterIncident) : Promise<Result<Incident[]>> {
+    async create_people_incidents(data: IRegisterIncident) : Promise<Result<Incident[]>> {
         const incidents : Incident[] = [];
+        let ownership: Incident;
 
-        for(let person of data.people) {
-            let incident_data = data;
-            incident_data.people = [person];
-            let incident_register = await this.register_incident_for_person(incident_data);
-            if(!incident_register.success) {
-                return incident_register;
+        if(data.addToOwnership == AddToOwnership.AddToNewOwnership) {
+            let ownership_data = Object.assign({
+                new_owner: data.new_owner,
+                new_support: data.new_support
+            }, data) as IRegisterOwnership;
+
+            let ownership_register = await this.create_ownership(
+                ownership_data
+            );
+
+            if(!ownership_register.success) {
+                return ownership_register as ErrorResult;
             }
 
-            incidents.push(...incident_register.data);
+            let ownership_and_support = ownership_register.data as IOwnershipWithSupport;
+
+            ownership = ownership_and_support.ownership;
+            incidents.push(ownership);
+            incidents.push(ownership_and_support.support);
         }
 
-        return Result.Ok(INCIDENT_ADDED, incidents);
+        for(let person of data.people) {
+            let incident_data = Object.assign({ person }, data) as IRegisterPersonIncident;
+            if(data.addToOwnership == AddToOwnership.AddToNewOwnership) {
+                incident_data.ownership = ownership;
+            }
+            let incident_register = await this.create_incident_for_person(incident_data);
+            if(!incident_register.success) {
+                return incident_register as ErrorResult;
+            }
+
+            incidents.push(incident_register.data as Incident);
+        }
+
+        return SuccessResult.Ok(INCIDENT_ADDED, incidents);
     }
 
 
-    async register_incident_for_person(data: IRegisterIncident)
-    : Promise<Result<Incident[]>> {
+    async create_incident_for_person(data: IRegisterPersonIncident)
+    : Promise<Result<Incident>> {
         if(!data.responsible) {
-            return Result.Fail(ErrorCode.ValidationError,
+            return ErrorResult.Fail(ErrorCode.ValidationError,
                 new Error(IncidentErrors[IncidentErrors.MissingResponsible])
             );
         }
 
-        if(data.people.length > 1) {
-            return Result.Fail(ErrorCode.ValidationError,
-                new Error(IncidentErrors[IncidentErrors.ToManyPeopleShouldSendOnlyOne])
-            );
+        if(data.incident.type.require_ownership && !data.ownership) {
+            return ErrorResult.Fail(ErrorCode.ValidationError,
+                new Error(IncidentErrors[IncidentErrors.MissingOwnership]))
         }
 
         var incident = data.incident;
@@ -196,114 +245,82 @@ export class IncidentsService extends BaseService {
 
         if(incident.type.need_value
             && incident.value <= 0) {
-            return Result.Fail(ErrorCode.ValidationError,
+            return ErrorResult.Fail(ErrorCode.ValidationError,
                     new Error(IncidentErrors[IncidentErrors.ValueNeeded]))
         }
 
         if(incident.type.require_title
             && (incident.title || "").length <= 0) {
             let error = new Error(IncidentErrors[IncidentErrors.TitleNeeded]);
-            return Result.Fail(ErrorCode.ValidationError, error);
+            return ErrorResult.Fail(ErrorCode.ValidationError, error);
         }
 
         if(incident.type.require_payment_method
             && incident.payment_method_id <= 0) {
-            return Result.Fail(ErrorCode.ValidationError,
+            return ErrorResult.Fail(ErrorCode.ValidationError,
                     new Error(IncidentErrors[IncidentErrors.PaymentMethodNeeded]))
         }
 
-        let get_ownership = await this.get_ownership_for_incident(data);
-        if(!get_ownership.success) {
-            return get_ownership;
-        }
-
-        incident.ownership = get_ownership.data ? get_ownership.data[0] : null;
-
-        incident.people_incidents = [ PersonIncident.create(incident, data.people[0]) ];
+        incident.ownership = data.ownership;
+        incident.people_incidents = [ PersonIncident.create(incident, data.person) ];
 
         await this.save(incident);
 
-        return Result.Ok(INCIDENT_ADDED, [ incident ]);
+        return SuccessResult.Ok(INCIDENT_ADDED, incident);
     }
 
-    private async get_ownership_for_incident(data: IRegisterIncident) : Promise<Result<Incident[]>> {
-        if(data.incident.type.require_ownership
-            && data.addToOwnership === AddToOwnership.DoNotAddToOwnership) {
-            return Result.Fail(ErrorCode.ValidationError,
-                new Error(IncidentErrors[IncidentErrors.MissingOwnership]))
-        }
-
-        switch (data.addToOwnership) {
-            case AddToOwnership.AddToExistingOwnership:
-                if(!data.ownership) {
-                    return Result.Fail(ErrorCode.ValidationError,
-                        new Error(IncidentErrors[IncidentErrors.MissingOwnership])
-                    );
-                }
-                return Result.GeneralOk(data.ownership[0]);
-            case AddToOwnership.AddToNewOwnership:
-                let ownership_result = await this.generate_ownership_for_incident(data);
-
-                return ownership_result;
-            default:
-                break;
-        }
-
-        return Result.GeneralOk(null);
-    }
-
-    private async generate_ownership_for_incident(data: IRegisterIncident)
-    : Promise<Result<Incident[]>> {
+    async create_ownership(data: IRegisterOwnership)
+    : Promise<Result<IOwnershipWithSupport>> {
         if(!data.new_owner || !data.new_support) {
-            return Result.Fail(
+            return ErrorResult.Fail(
                 ErrorCode.ValidationError,
                 new Error(IncidentErrors[IncidentErrors.MissingOwnerOrSupport])
             );
         }
 
-        let ownership = data.incident;
-        ownership.type = (await (await this.getRepository(IncidentType))
+        let ownership_data = Incident.duplicate(data.incident);
+        ownership_data.type = (await (await this.getRepository(IncidentType))
                                 .findOne(Constants.IncidentTypeOwnership))
         if(data.incident.type.need_fund_value) {
-            ownership.define_fund_value = true;
+            ownership_data.define_fund_value = true;
         }
 
-        const ownership_result = await this.register_incident_for_person({
-                incident: ownership,
-                people: [data.new_owner],
+        const ownership_result = await this.create_incident_for_person({
+                incident: ownership_data,
+                person: data.new_owner,
                 register_closed: data.register_closed,
                 register_treated: data.register_treated,
                 start_activity: data.start_activity,
-                responsible: data.responsible,
-                addToOwnership: AddToOwnership.DoNotAddToOwnership
+                responsible: data.responsible
             }
         );
 
         if(!ownership_result.success) {
-            return ownership_result;
+            return ownership_result as ErrorResult;
         }
 
-        let support = data.incident;
-        support.type = (await (await this.getRepository(IncidentType))
+        let ownership = ownership_result.data as Incident
+        let support_data = Incident.duplicate(data.incident);
+        support_data.type = (await (await this.getRepository(IncidentType))
                                 .findOne(Constants.IncidentTypeSupport))
 
-        const support_result = await this.register_incident_for_person({
-                incident: support,
-                people: [ data.new_support ],
+        const support_result = await this.create_incident_for_person({
+                incident: support_data,
+                person: data.new_support,
                 register_closed: data.register_closed,
                 register_treated: data.register_treated,
                 start_activity: data.start_activity,
                 responsible: data.responsible,
-                addToOwnership: AddToOwnership.AddToExistingOwnership,
-                ownership: ownership_result.data[0]
+                ownership: ownership
             }
         );
 
         if(!support_result.success) {
-            return support_result;
+            return support_result as ErrorResult;
         }
+        let support = support_result.data as Incident;
 
-        return ownership_result;
+        return SuccessResult.Ok(INCIDENT_ADDED, { ownership, support });
     }
 
     @trylog()
@@ -348,6 +365,16 @@ export class IncidentsService extends BaseService {
     }
 
     @trylog()
+    async get_comments(incident_id: number, show_archived: boolean): Promise<Result> {
+        const result = await (await this.databaseManager)
+                        .ExecuteJsonSP("GetIncidentComments",
+                        { incident_id }, { show_archived }
+                    )
+
+        return result;
+    }
+
+    @trylog()
     @firebaseEmitter(EVENTS_COLLECTION)
     async reschedule_incident(incident, new_incident, contact, responsible_id): Promise<Result> {
         let execution = await (await this.databaseManager).ExecuteTypedJsonSP(
@@ -370,9 +397,32 @@ export class IncidentsService extends BaseService {
             "RegisterContactForIncident",
             [{ "incident": incident.id },
             { "contact": contact },
-            { "responsible_id": responsible_id }]
+            { "responsible_id": responsible_id }],
+            (await this.dataRunner)
         );
 
         return execution;
+    }
+
+    @trylog2()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async save_comment(incident_id, comment, responsible_id) {
+        return await (await this.databaseManager)
+        .ExecuteTypedJsonSP(
+            INCIDENT_COMMENT_ADDED,
+            "SaveIncidentComment",
+            [{incident_id}, { comment }, {responsible_id}],
+            (await this.dataRunner));
+    }
+
+    @trylog2()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async archive_comment(comment_id) {
+        return await (await this.databaseManager)
+        .ExecuteTypedJsonSP(
+            INCIDENT_COMMENT_ARCHIVED,
+            "TogleIncidentCommentArchived",
+            [{ comment_id }],
+            (await this.dataRunner));
     }
 }
