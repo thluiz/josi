@@ -102,7 +102,7 @@ export function routes(app) {
         incident.payment_method_id = req.body.payment_method_id;
         incident.fund_value = req.body.fund_value;
 
-        let result = await IS.close_incident(incident, await user.getPerson());
+        let result = await IS.close_incident_and_send_ownership_report(incident, await user.getPerson());
 
         response.send(result);
     });

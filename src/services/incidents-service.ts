@@ -144,7 +144,7 @@ export class IncidentsService extends BaseService {
 
     @trylog()
     @firebaseEmitter(EVENTS_COLLECTION)
-    async close_ownership_and_send_report(incident : Incident, responsible : Person)
+    async close_incident_and_send_ownership_report(incident : Incident, responsible : Person)
     : Promise<Result<Incident>> {
 
         let closing = await this.close_incident(incident, responsible);

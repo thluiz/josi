@@ -55,7 +55,7 @@ function routes(app) {
         incident.title = req.body.title;
         incident.payment_method_id = req.body.payment_method_id;
         incident.fund_value = req.body.fund_value;
-        let result = yield IS.close_incident(incident, yield user.getPerson());
+        let result = yield IS.close_incident_and_send_ownership_report(incident, yield user.getPerson());
         response.send(result);
     }));
     app.post("/api/incident/start", auth.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {

@@ -93,7 +93,7 @@ class IncidentsService extends base_service_1.BaseService {
             return execution;
         });
     }
-    close_ownership_and_send_report(incident, responsible) {
+    close_incident_and_send_ownership_report(incident, responsible) {
         return __awaiter(this, void 0, void 0, function* () {
             let closing = yield this.close_incident(incident, responsible);
             if (closing.success && incident.type.id == configurations_services_1.Constants.IncidentTypeOwnership) {
@@ -325,7 +325,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Incident_1.Incident, Person_1.Person]),
     __metadata("design:returntype", Promise)
-], IncidentsService.prototype, "close_ownership_and_send_report", null);
+], IncidentsService.prototype, "close_incident_and_send_ownership_report", null);
 __decorate([
     trylog_decorator_1.trylog(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
