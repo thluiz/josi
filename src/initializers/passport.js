@@ -36,11 +36,12 @@ function initialize(app) {
     passport.deserializeUser(function (token, done) {
         return __awaiter(this, void 0, void 0, function* () {
             let ru = yield DBM.getRepository(User_1.User);
-            let user = yield ru.manager.createQueryBuilder()
-                .innerJoinAndSelect("u.person", "p")
-                .where("u.token = :token", { token: token })
-                .cache(10000)
-                .getOne();
+            /* let user = await ru.manager.createQueryBuilder()
+                        .innerJoinAndSelect("u.person", "p")
+                        .where("u.token = :token", { token: token })
+                        .cache(10000)
+                        .getOne(); */
+            let user = yield ru.findOne({ token: token });
             if (user == null && done) {
                 done("USER_NOT_FOUND", false);
                 return;

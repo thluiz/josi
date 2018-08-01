@@ -40,11 +40,11 @@ export class SecurityService {
     }
 
     static async getUserFromRequest(req): Promise<User> {
-        if (process.env.LOAD_ENV === 'true') {
-            const UR = await DBM.getRepository<User>(User);
+        if (process.env.PRODUCTION === 'false') {
+            const connection = await DBM.getConnection();
 
-            const user = await UR
-            .createQueryBuilder("user")
+            const user = await connection
+            .createQueryBuilder(User, "user")
             .where("user.token = :token", { token: process.env.TOKEN_USER_DEV })
             .cache(30000)
             .getOne();

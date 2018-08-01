@@ -1,7 +1,7 @@
 import { SecurityService } from "../services/security-service";
 
 export function routes(app) {
-    app.get("/api/users/current", async (req, res, next) => {
+    app.get("/api/users/current", async (req, res) => {
         try {
             const userReq = await SecurityService.getUserFromRequest(req);
             const user = await SecurityService.serializeUser(userReq);

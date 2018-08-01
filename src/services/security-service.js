@@ -44,10 +44,10 @@ class SecurityService {
     }
     static getUserFromRequest(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (process.env.LOAD_ENV === 'true') {
-                const UR = yield DBM.getRepository(User_1.User);
-                const user = yield UR
-                    .createQueryBuilder("user")
+            if (process.env.PRODUCTION === 'false') {
+                const connection = yield DBM.getConnection();
+                const user = yield connection
+                    .createQueryBuilder(User_1.User, "user")
                     .where("user.token = :token", { token: process.env.TOKEN_USER_DEV })
                     .cache(30000)
                     .getOne();
