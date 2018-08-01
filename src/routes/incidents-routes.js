@@ -50,7 +50,7 @@ function routes(app) {
     app.post("/api/incident/close", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
         let user = yield security_service_1.SecurityService.getUserFromRequest(req);
         let ir = yield IR.getRepository();
-        let incident = yield ir.findOne(req.body.id);
+        let incident = yield ir.findOne(req.body.id, { relations: ["type"] });
         incident.close_text = req.body.close_text;
         incident.title = req.body.title;
         incident.payment_method_id = req.body.payment_method_id;

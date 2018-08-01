@@ -44,6 +44,19 @@
             "envFile":"${workspaceRoot}/.env",
             "cwd": "${workspaceRoot}",
             "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach by Process ID",
+            "processId": "${command:PickProcess}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "ng serve",
+            "url": "http://localhost:4200/#",
+            "webRoot": "${workspaceRoot}"
         }
     ]
 }

@@ -443,12 +443,14 @@
                                     [person]="person">
                                     </person-indication-list>
                                 </div>
-                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
+                                <!-- div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
                                     <person-partnership-list
                                     [person]="person">
                                     </person-partnership-list>
-                                </div>
-                                <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
+                                </div -->
+                                <div class="col-12 col-xl-12 col-md-6"
+                                *ngIf="person.is_disciple || person.is_operator"
+                                style="margin-bottom:30px;">
                                     <person-external-unit-list
                                     [person]="person">
                                     </person-external-unit-list>

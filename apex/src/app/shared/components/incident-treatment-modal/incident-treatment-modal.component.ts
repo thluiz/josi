@@ -117,10 +117,15 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
       this.incidentService.getComments(incident.id),
       this.parameterService.getPaymentMethods(),
 
-      (incident_data: any, person: any, comments: any[], payment_methods: any[]) => {
+      (incident_data: any, person: any, comments: Result<any[]>, payment_methods: any[]) => {
         this.current_incident = incident_data.data[0];
         this.person = person;
-        this.comments = comments;
+
+        this.comments = comments.data
+          && comments.data.length > 0
+          && !comments.data[0].empty ?
+          comments.data : [];
+
         this.payment_methods = payment_methods;
         this.set_dates_from_string_date(this.current_incident.date);
 
@@ -194,7 +199,7 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
     }
 
     if ((incident.require_fund_value || incident.define_fund_value)
-        && incident.fund_value <= 0) {
+      && incident.fund_value <= 0) {
       incident.valid_for_closing = false;
       return;
     }

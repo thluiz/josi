@@ -313,14 +313,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "cancel_start_incident", null);
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.trylog2(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Incident_1.Incident, Person_1.Person]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "close_incident", null);
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.trylog2(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Incident_1.Incident, Person_1.Person]),

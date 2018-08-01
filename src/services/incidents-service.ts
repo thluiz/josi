@@ -123,7 +123,7 @@ export class IncidentsService extends BaseService {
         return execution;
     }
 
-    @trylog()
+    @trylog2()
     @firebaseEmitter(EVENTS_COLLECTION)
     async close_incident(incident : Incident, responsible : Person): Promise<Result<Incident>> {
         let execution = await (await this.databaseManager).ExecuteTypedJsonSP<Incident>(
@@ -142,7 +142,7 @@ export class IncidentsService extends BaseService {
         return execution;
     }
 
-    @trylog()
+    @trylog2()
     @firebaseEmitter(EVENTS_COLLECTION)
     async close_incident_and_send_ownership_report(incident : Incident, responsible : Person)
     : Promise<Result<Incident>> {

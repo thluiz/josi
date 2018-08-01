@@ -96,7 +96,7 @@ export function routes(app) {
         let user = await SecurityService.getUserFromRequest(req);
 
         let ir = await IR.getRepository();
-        let incident = await ir.findOne(req.body.id);
+        let incident = await ir.findOne(req.body.id, {relations: [ "type" ]});
         incident.close_text = req.body.close_text;
         incident.title = req.body.title;
         incident.payment_method_id = req.body.payment_method_id;
