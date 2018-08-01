@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 require('dotenv').load();
 require("mocha");
-const database_manager_1 = require("../services/managers/database-manager");
 const chai_1 = require("chai");
-const people_service_1 = require("../services/people-service");
+const database_manager_1 = require("../../services/managers/database-manager");
+const people_service_1 = require("../../services/people-service");
 describe('People Tests', function () {
     return __awaiter(this, void 0, void 0, function* () {
         this.timeout(15000000);
@@ -39,4 +39,4 @@ describe('People Tests', function () {
         }));
     });
 });
-//# sourceMappingURL=people-tests.js.map
+//# sourceMappingURL=people-service-tests.js.map

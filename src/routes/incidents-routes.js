@@ -12,8 +12,10 @@ const incidents_repository_1 = require("../repositories/incidents-repository");
 const auth = require("../middlewares/auth");
 const security_service_1 = require("../services/security-service");
 const incidents_service_1 = require("../services/incidents-service");
+const incidents_controller_1 = require("../controllers/incidents-controller");
 const IR = incidents_repository_1.IncidentsRepository;
 const IS = new incidents_service_1.IncidentsService();
+const controller = new incidents_controller_1.IncidentsController();
 function routes(app) {
     app.get("/api/available_ownerships/:branch/:date/:type", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         let result = yield IR.getAvailableOwnerships(req.params.branch, req.params.date, req.params.type);
@@ -48,17 +50,10 @@ function routes(app) {
         res.send(result);
     }));
     app.post("/api/incident/close", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
-        let user = yield security_service_1.SecurityService.getUserFromRequest(req);
-        let ir = yield IR.getRepository();
-        let incident = yield ir.findOne(req.body.id, { relations: ["type"] });
-        incident.close_text = req.body.close_text;
-        incident.title = req.body.title;
-        incident.payment_method_id = req.body.payment_method_id;
-        incident.fund_value = req.body.fund_value;
-        let result = yield IS.close_incident_and_send_ownership_report(incident, yield user.getPerson());
+        let result = yield controller.close_incident(req.body, yield security_service_1.SecurityService.getUserFromRequest(req));
         response.send(result);
     }));
-    app.post("/api/incident/start", auth.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/api/incident/start", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
         let user = yield security_service_1.SecurityService.getUserFromRequest(req);
         let result = yield IS.start_incident({ id: req.body.id }, yield user.getPersonId());
         response.send(result);

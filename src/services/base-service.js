@@ -43,7 +43,7 @@ class BaseService {
     }
     getRepository(type) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (yield this.queryRunner).connection.getRepository(type);
+            return (yield this.queryRunner).manager.getRepository(type);
         });
     }
     save(entity) {

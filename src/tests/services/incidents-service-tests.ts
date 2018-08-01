@@ -3,16 +3,16 @@ require('dotenv').load();
 import 'mocha';
 import { QueryRunner, Repository } from 'typeorm';
 
-import { IncidentsService, AddToOwnership, IncidentErrors, IOwnershipWithSupport } from '../services/incidents-service';
-import * as IF from './factories/incident-factory';
-import * as GF from './factories/general-factory';
-import { DatabaseManager } from '../services/managers/database-manager';
+import { IncidentsService, AddToOwnership, IncidentErrors, IOwnershipWithSupport } from '../../services/incidents-service';
+import * as IF from '../factories/incident-factory';
+import * as GF from '../factories/general-factory';
+import { DatabaseManager } from '../../services/managers/database-manager';
 import { expect } from 'chai';
-import { Incident } from '../entity/Incident';
-import { IncidentType } from '../entity/IncidentType';
-import { Constants } from '../services/configurations-services';
-import { ErrorResult, SuccessResult } from '../helpers/result';
-import { IncidentsRepository } from '../repositories/incidents-repository';
+import { Incident } from '../../entity/Incident';
+import { IncidentType } from '../../entity/IncidentType';
+import { Constants } from '../../services/configurations-services';
+import { ErrorResult, SuccessResult } from '../../helpers/result';
+import { IncidentsRepository } from '../../repositories/incidents-repository';
 
 describe('Incidents Tests', async function () {
     this.timeout(15000000);

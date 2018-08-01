@@ -3,9 +3,11 @@ import { IncidentsRepository } from '../repositories/incidents-repository';
 import * as auth from '../middlewares/auth';
 import { SecurityService } from '../services/security-service';
 import { IncidentsService } from '../services/incidents-service';
+import { IncidentsController } from '../controllers/incidents-controller';
 
 const IR = IncidentsRepository;
 const IS = new IncidentsService();
+const controller = new IncidentsController();
 
 export function routes(app) {
     app.get("/api/available_ownerships/:branch/:date/:type",
@@ -93,23 +95,17 @@ export function routes(app) {
     app.post("/api/incident/close",
     auth.ensureLoggedIn(),
     async (req, response) => {
-        let user = await SecurityService.getUserFromRequest(req);
-
-        let ir = await IR.getRepository();
-        let incident = await ir.findOne(req.body.id, {relations: [ "type" ]});
-        incident.close_text = req.body.close_text;
-        incident.title = req.body.title;
-        incident.payment_method_id = req.body.payment_method_id;
-        incident.fund_value = req.body.fund_value;
-
-        let result = await IS.close_incident_and_send_ownership_report(incident, await user.getPerson());
+        let result = await controller.close_incident(
+            req.body,
+            await SecurityService.getUserFromRequest(req)
+        );
 
         response.send(result);
     });
 
     app.post("/api/incident/start",
     auth.ensureLoggedIn(),
-    async (req, response, next) => {
+    async (req, response) => {
         let user = await SecurityService.getUserFromRequest(req);
         let result = await IS.start_incident({ id: req.body.id }, await user.getPersonId());
 

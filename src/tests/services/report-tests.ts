@@ -1,20 +1,20 @@
 require('dotenv').load();
 
 import 'mocha';
+import { expect } from 'chai';
 import { QueryRunner, Repository } from 'typeorm';
 
-import { IncidentsService } from '../services/incidents-service';
+import { IncidentsService } from '../../services/incidents-service';
 
-import { OwnershipClosingReport } from './../services/reports/ownership-closing-report';
+import { OwnershipClosingReport } from '../../services/reports/ownership-closing-report';
 
-import * as IF from './factories/incident-factory';
-import * as GF from './factories/general-factory';
-import { DatabaseManager } from '../services/managers/database-manager';
-import { expect } from 'chai';
-import { Incident } from '../entity/Incident';
-import { IncidentType } from '../entity/IncidentType';
-import { Constants } from '../services/configurations-services';
-import { IncidentsRepository } from '../repositories/incidents-repository';
+import * as IF from '../factories/incident-factory';
+import * as GF from '../factories/general-factory';
+import { DatabaseManager } from '../../services/managers/database-manager';
+import { Incident } from '../../entity/Incident';
+import { IncidentType } from '../../entity/IncidentType';
+import { Constants } from '../../services/configurations-services';
+import { IncidentsRepository } from '../../repositories/incidents-repository';
 
 describe('Reporting Tests', async function () {
     this.timeout(15000000);

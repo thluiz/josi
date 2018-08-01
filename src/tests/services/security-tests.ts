@@ -1,13 +1,12 @@
-import { expect } from 'chai';
 require('dotenv').load();
 
-import { User } from './../entity/User';
-
 import 'mocha';
+import { expect } from 'chai';
 import { QueryRunner, Repository } from 'typeorm';
 
-import { IncidentsService } from '../services/incidents-service';
-import { DatabaseManager } from '../services/managers/database-manager';
+import { User } from '../../entity/User';
+import { IncidentsService } from '../../services/incidents-service';
+import { DatabaseManager } from '../../services/managers/database-manager';
 
 describe('Security Tests', async function () {
     this.timeout(15000000);

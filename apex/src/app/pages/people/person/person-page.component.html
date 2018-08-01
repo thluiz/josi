@@ -500,7 +500,8 @@
 <ng-template #new_schedule_modal let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h5 class="modal-title" style="font-weight: bold">Novo Agendamento</h5>
-        <button type="button" class="close" aria-label="Close" (click)="reset_new_schedule();d('Cross click')">
+        <button type="button" class="close" aria-label="Close"
+        (click)="reset_new_schedule();d('Cross click')">
         <span aria-hidden="true">&times;</span>
         </button>
     </div>
@@ -582,6 +583,7 @@
                     <input type="number" id="new_schedule_number_of_incidents"
                         [(ngModel)]="new_schedule.number_of_incidents"
                         class="form-control text-right"
+                        maxlength="3"
                         (ngModelChange) ="validate_new_schedule()"
                         />
                 </div>

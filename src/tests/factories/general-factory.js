@@ -8,7 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const User_1 = require("../../entity/User");
 const Person_1 = require("../../entity/Person");
+function create_user(runner) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let person = yield create_person(runner);
+        let user = new User_1.User();
+        user.person = person;
+        user.login_provider_id = 1;
+        yield runner.manager.save(user);
+        return user;
+    });
+}
+exports.create_user = create_user;
 function create_responsible(runner) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield create_person(runner);

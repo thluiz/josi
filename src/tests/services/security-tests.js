@@ -8,12 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const chai_1 = require("chai");
 require('dotenv').load();
-const User_1 = require("./../entity/User");
 require("mocha");
-const incidents_service_1 = require("../services/incidents-service");
-const database_manager_1 = require("../services/managers/database-manager");
+const chai_1 = require("chai");
+const User_1 = require("../../entity/User");
+const incidents_service_1 = require("../../services/incidents-service");
+const database_manager_1 = require("../../services/managers/database-manager");
 describe('Security Tests', function () {
     return __awaiter(this, void 0, void 0, function* () {
         this.timeout(15000000);

@@ -17,7 +17,6 @@
                 "--inspect-brk",
                 "--colors",
                 "${workspaceFolder}/src/tests/initializer.js",
-                "${workspaceFolder}/src/tests/*-tests.js",
                 "${workspaceFolder}/src/tests/**/*-tests.js"
             ],
             "envFile":"${workspaceRoot}/.env",
@@ -54,7 +53,7 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "ng serve",
+            "name": "Chrome - Port: 4200",
             "url": "http://localhost:4200/#",
             "webRoot": "${workspaceRoot}"
         }

@@ -1,8 +1,10 @@
-<div style="border:1px solid silver">
-    <div class="row" *ngIf="activities && activities.length">
+<div
+  style="border:1px solid silver"
+  *ngIf="activities && activities.length">
+    <div class="row">
         <div class="col-12">
             <h5 style="margin:10px">Atividades em Andamento</h5>
-        </div>					
+        </div>
     </div>
     <div class="row" *ngFor="let act of activities">
         <div class="col-12">
@@ -13,44 +15,44 @@
                             [incident]="act"
                             [branch]="branch"
                         ></incident-agenda-listitem>
-                    </div>            
+                    </div>
                 </div>
                 <div class="row" *ngIf="act.next_incident && act.next_incident[0]">
                     <div class="col-8 text-right">
-                        <span 
+                        <span
                         style="width:40px;display:inline-table;cursor:pointer"
                         (click)="show_incident_details(act.next_incident[0]);"
                         >{{ act.next_incident[0].abrev }}</span>
                     </div>
                     <div class="col-4">
-                        <button type="button" 
-                        class="btn btn-silver btn-sm btn-action" 										
-                        title="Iniciar Atividade"									
-                        *ngIf="!act.next_incident[0].in_treatment 
-                            && !act.next_incident[0].closed 
+                        <button type="button"
+                        class="btn btn-silver btn-sm btn-action"
+                        title="Iniciar Atividade"
+                        *ngIf="!act.next_incident[0].in_treatment
+                            && !act.next_incident[0].closed
                             && !act.next_incident[0].treated
-                            && act.next_incident[0].need_to_be_started 
+                            && act.next_incident[0].need_to_be_started
                             && !act.next_incident[0].started_on_hour"
                         (click)="start_incident(act.next_incident[0]);">
                             <i class="fas fa-play"></i>
                         </button>
-                        <button type="button" 
-                        class="btn btn-silver btn-sm btn-action" 
-                        title="Confirmar Atividade"									
-                        *ngIf="!act.next_incident[0].in_treatment 
-                            && !act.next_incident[0].closed 
+                        <button type="button"
+                        class="btn btn-silver btn-sm btn-action"
+                        title="Confirmar Atividade"
+                        *ngIf="!act.next_incident[0].in_treatment
+                            && !act.next_incident[0].closed
                             && !act.next_incident[0].treated
                             && !act.next_incident[0].need_to_be_started"
                         (click)="close_incident(act.next_incident[0]);">
                             <i class="fas fa-check"></i>
                         </button>
-                        <button type="button" 
-                        class="btn btn-silver btn-sm btn-action" 
-                        title="Finalizar Atividade"									
-                        *ngIf="!act.next_incident[0].in_treatment 
-                            && !act.next_incident[0].closed 
+                        <button type="button"
+                        class="btn btn-silver btn-sm btn-action"
+                        title="Finalizar Atividade"
+                        *ngIf="!act.next_incident[0].in_treatment
+                            && !act.next_incident[0].closed
                             && !act.next_incident[0].treated
-                            && act.next_incident[0].need_to_be_started                     
+                            && act.next_incident[0].need_to_be_started
                             && act.next_incident[0].started_on_hour"
                         (click)="close_incident(act.next_incident[0]);">
                             <i class="fas fa-stop"></i>
@@ -58,6 +60,6 @@
                     </div>
                 </div>
             </div>
-        </div>        
+        </div>
     </div>
 </div>

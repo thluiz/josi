@@ -10,14 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 require('dotenv').load();
 require("mocha");
-const incidents_service_1 = require("../services/incidents-service");
-const IF = require("./factories/incident-factory");
-const GF = require("./factories/general-factory");
-const database_manager_1 = require("../services/managers/database-manager");
+const incidents_service_1 = require("../../services/incidents-service");
+const IF = require("../factories/incident-factory");
+const GF = require("../factories/general-factory");
+const database_manager_1 = require("../../services/managers/database-manager");
 const chai_1 = require("chai");
-const IncidentType_1 = require("../entity/IncidentType");
-const configurations_services_1 = require("../services/configurations-services");
-const incidents_repository_1 = require("../repositories/incidents-repository");
+const IncidentType_1 = require("../../entity/IncidentType");
+const configurations_services_1 = require("../../services/configurations-services");
+const incidents_repository_1 = require("../../repositories/incidents-repository");
 describe('Incidents Tests', function () {
     return __awaiter(this, void 0, void 0, function* () {
         this.timeout(15000000);
@@ -294,4 +294,4 @@ describe('Incidents Tests', function () {
         });
     });
 });
-//# sourceMappingURL=incidents-tests.js.map
+//# sourceMappingURL=incidents-service-tests.js.map

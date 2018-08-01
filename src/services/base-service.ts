@@ -41,7 +41,7 @@ export class BaseService {
     }
 
     async getRepository<T>(type: string | Function | (new () => any) | EntitySchema<T>) {
-        return (await this.queryRunner).connection.getRepository(type);
+        return (await this.queryRunner).manager.getRepository(type);
     }
 
     async save<T>(entity : T) {

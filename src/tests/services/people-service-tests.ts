@@ -1,11 +1,12 @@
 require('dotenv').load();
+
 import 'mocha';
 import { QueryRunner } from 'typeorm';
-
-import { DatabaseManager } from '../services/managers/database-manager';
 import { expect } from 'chai';
-import { PeopleService } from '../services/people-service';
-import { Person } from '../entity/Person';
+
+import { DatabaseManager } from '../../services/managers/database-manager';
+import { PeopleService } from '../../services/people-service';
+import { Person } from '../../entity/Person';
 
 describe('People Tests', async function() {
     this.timeout(15000000);

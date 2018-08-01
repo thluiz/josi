@@ -329,6 +329,10 @@ export class PersonPageComponent implements OnInit, OnDestroy {
     this.new_schedule.correct = false;
     let schedule = this.new_schedule;
 
+    if(parseInt(schedule.number_of_incidents, 10) > 108) {
+      return;
+    }
+
     if(parseInt(schedule.person_id, 10) > 0
       && parseInt(schedule.branch_id, 10) > 0
       && schedule.type != null
@@ -346,6 +350,8 @@ export class PersonPageComponent implements OnInit, OnDestroy {
 
         this.new_schedule.correct = true;
       }
+
+
   }
 
 

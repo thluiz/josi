@@ -32,9 +32,14 @@ export function initialize(app) {
         done(null, user.token);
     });
 
+
     passport.deserializeUser(async function(token, done) {
         let ru = await DBM.getRepository(User);
-        let user = await ru.findOne({ token: token });
+        let user = await ru.manager.createQueryBuilder()
+                    .innerJoinAndSelect("u.person", "p")
+                    .where("u.token = :token", { token: token })
+                    .cache(10000)
+                    .getOne();
 
         if(user == null && done) {
             done("USER_NOT_FOUND", false);
