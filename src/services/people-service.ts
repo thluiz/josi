@@ -41,36 +41,6 @@ export class PeopleService extends BaseService {
         return SuccessResult.Ok(PERSON_ADDED, person);
     }
 
-    async check_people_comunication_status(): Promise<Result> {
-        return await (await this.databaseManager).ExecuteSPNoResults("CheckPeopleComunicationStatus");
-    }
-
-    async check_people_status(): Promise<Result> {
-        return await  (await this.databaseManager).ExecuteSPNoResults("CheckPeopleStatus");
-    }
-
-    async check_people_financial_status(): Promise<Result> {
-        return await  (await this.databaseManager).ExecuteSPNoResults("CheckPeopleFinancialStatus");
-    }
-
-    async check_people_scheduling_status(): Promise<Result> {
-        return await  (await this.databaseManager).ExecuteSPNoResults("CheckPeopleSchedulingStatus");
-    }
-
-    async generate_birthdate_incidents() : Promise<Result> {
-        return await  (await this.databaseManager).ExecuteSPNoResults("GenerateBirthDateIncidents");
-    }
-
-    async check_people_offering_status() : Promise<Result> {
-        return await (await this.databaseManager).ExecuteSPNoResults("GetPersonOfferingAvailable", {
-            "save_data": true
-        });
-    }
-
-    async cancel_expired_people_scheduling(): Promise<Result> {
-        return await  (await this.databaseManager).ExecuteSPNoResults("CancelExpiredPeopleScheduling");
-    }
-
     async create_person_from_voucher(data : IPersonVoucherData) {
         return await  (await this.databaseManager).ExecuteSPNoResults("CreatePersonFromVoucher",
             { "name" : data.name },

@@ -18,7 +18,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const people_service_1 = require("./people-service");
-const cards_service_1 = require("./cards-service");
 const database_manager_1 = require("./managers/database-manager");
 const result_1 = require("../helpers/result");
 const axios_1 = require("axios");
@@ -39,17 +38,6 @@ class JobsService {
             let key = uuid();
             logger_service_1.LoggerService.benchmark(key, `Starting Running Jobs :: ${start_time}`);
             let results = [];
-            results.push(yield PS.generate_birthdate_incidents());
-            results.push(yield PS.cancel_expired_people_scheduling());
-            results.push(yield PS.check_people_status());
-            results.push(yield PS.check_people_comunication_status());
-            results.push(yield PS.check_people_financial_status());
-            results.push(yield PS.check_people_scheduling_status());
-            results.push(yield PS.check_people_offering_status());
-            results.push(yield cards_service_1.CardsService.correct_card_out_of_parent_step());
-            results.push(yield cards_service_1.CardsService.check_cards_has_overdue_cards());
-            results.push(yield this.consolidate_members_sumary());
-            results.push(yield this.consolidate_activity_sumary());
             results.push(yield this.cleanup_sessions());
             let end_time = new Date().getTime();
             let err = results.find(r => !r.success);
@@ -90,16 +78,6 @@ class JobsService {
             return result_1.SuccessResult.GeneralOk();
         });
     }
-    static consolidate_members_sumary() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield DBM.ExecuteSPNoResults("ConsolidateMembersSumary");
-        });
-    }
-    static consolidate_activity_sumary() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield DBM.ExecuteSPNoResults("ConsolidateActivitySumary");
-        });
-    }
 }
 __decorate([
     trylog_decorator_1.trylog(),
@@ -119,17 +97,5 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], JobsService, "update_voucher_site", null);
-__decorate([
-    trylog_decorator_1.trylog(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], JobsService, "consolidate_members_sumary", null);
-__decorate([
-    trylog_decorator_1.trylog(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], JobsService, "consolidate_activity_sumary", null);
 exports.JobsService = JobsService;
 //# sourceMappingURL=jobs-service.js.map

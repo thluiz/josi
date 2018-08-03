@@ -24,7 +24,7 @@ export class AzureTableManager {
             PartitionKey: entGen.String(partition),
             RowKey: entGen.String(id),
             CreatedOn: entGen.Int64(Math.floor(Date.now() / 1000)),
-            Test: entGen.Boolean(process.env.LOAD_ENV === 'true'),
+            Test: entGen.Boolean(process.env.PRODUCTION === 'false'),
             Content: entGen.String(JSON.stringify(data, this.replaceErrors))
         };
     }

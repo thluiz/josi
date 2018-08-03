@@ -25,17 +25,7 @@ export class JobsService {
         LoggerService.benchmark(key, `Starting Running Jobs :: ${start_time }`);
 
         let results = [];
-        results.push(await PS.generate_birthdate_incidents());
-        results.push(await PS.cancel_expired_people_scheduling());
-        results.push(await PS.check_people_status());
-        results.push(await PS.check_people_comunication_status());
-        results.push(await PS.check_people_financial_status());
-        results.push(await PS.check_people_scheduling_status());
-        results.push(await PS.check_people_offering_status());
-        results.push(await CardsService.correct_card_out_of_parent_step());
-        results.push(await CardsService.check_cards_has_overdue_cards());
-        results.push(await this.consolidate_members_sumary());
-        results.push(await this.consolidate_activity_sumary());
+
         results.push(await this.cleanup_sessions());
 
         let end_time = new Date().getTime();
@@ -84,15 +74,5 @@ export class JobsService {
             return ErrorResult.Fail(ErrorCode.ExternalRequestError, err_invites || new Error(result_invites.statusText), null);
 
         return SuccessResult.GeneralOk();
-    }
-
-    @trylog()
-    static async consolidate_members_sumary(): Promise<Result> {
-        return await DBM.ExecuteSPNoResults("ConsolidateMembersSumary");
-    }
-
-    @trylog()
-    static async consolidate_activity_sumary(): Promise<Result> {
-        return await DBM.ExecuteSPNoResults("ConsolidateActivitySumary");
     }
 }

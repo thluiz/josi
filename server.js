@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 let appInsights = require("applicationinsights");
-if (process.env.LOAD_ENV === 'true') {
+if (process.env.PRODUCTION !== 'false') {
     require('dotenv').load();
 }
 else {

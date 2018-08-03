@@ -42,43 +42,6 @@ class PeopleService extends base_service_1.BaseService {
             return result_1.SuccessResult.Ok(exports.PERSON_ADDED, person);
         });
     }
-    check_people_comunication_status() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield (yield this.databaseManager).ExecuteSPNoResults("CheckPeopleComunicationStatus");
-        });
-    }
-    check_people_status() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield (yield this.databaseManager).ExecuteSPNoResults("CheckPeopleStatus");
-        });
-    }
-    check_people_financial_status() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield (yield this.databaseManager).ExecuteSPNoResults("CheckPeopleFinancialStatus");
-        });
-    }
-    check_people_scheduling_status() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield (yield this.databaseManager).ExecuteSPNoResults("CheckPeopleSchedulingStatus");
-        });
-    }
-    generate_birthdate_incidents() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield (yield this.databaseManager).ExecuteSPNoResults("GenerateBirthDateIncidents");
-        });
-    }
-    check_people_offering_status() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield (yield this.databaseManager).ExecuteSPNoResults("GetPersonOfferingAvailable", {
-                "save_data": true
-            });
-        });
-    }
-    cancel_expired_people_scheduling() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield (yield this.databaseManager).ExecuteSPNoResults("CancelExpiredPeopleScheduling");
-        });
-    }
     create_person_from_voucher(data) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield (yield this.databaseManager).ExecuteSPNoResults("CreatePersonFromVoucher", { "name": data.name }, { "email": data.email }, { "cpf": data.cpf }, { "phone": data.phone }, { "socialLinks": data.socialLinks }, { "branch_id": data.branch_id }, { "voucher_id": data.voucher_id }, { "additionalAnswer": data.additionalAnswer }, { "invite_key": data.invite_key }, { "branch_map_id": data.branch_map_id });

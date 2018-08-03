@@ -1,6 +1,6 @@
 let appInsights = require("applicationinsights");
 
-if (process.env.LOAD_ENV === 'true') {
+if (process.env.PRODUCTION !== 'false') {
     require('dotenv').load();
 } else {
     appInsights.setup(process.env.AZURE_APP_INSIGHTS);
