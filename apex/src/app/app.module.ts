@@ -1,4 +1,5 @@
 
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { ApplicationEventService } from 'app/services/application-event-service';
 import { FirebaseService } from './services/firebase-service';
 import { AppInsightsService, ApplicationInsightsModule } from '@markpieszak/ng-application-insights';
@@ -91,6 +92,7 @@ import { HttpService } from './services/http-service';
         AngularFireStorageModule,
         ToastrModule.forRoot(),
         PersonOfferingModalModule,
+        ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
         //BrowserModule,
         //FormsModule,
         //JsonpModule

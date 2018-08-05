@@ -1,1 +1,0 @@
-{"version":3,"file":"content-layout.routes.js","sourceRoot":"","sources":["../../../../../../apex/src/app/shared/routes/content-layout.routes.ts"],"names":[],"mappings":";;AAEA,uGAAuG;AAE1F,QAAA,cAAc,GAAW;IAClC;QACI,IAAI,EAAE,gBAAgB;QACtB,YAAY,EAAE,qEAAqE;KACtF;IACD;QACI,IAAI,EAAE,aAAa;QACnB,YAAY,EAAE,yDAAyD;KAC1E;IACD;QACI,IAAI,EAAE,eAAe;QACrB,YAAY,EAAE,+DAA+D;KAChF;CACJ,CAAC"}
