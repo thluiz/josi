@@ -13,67 +13,73 @@ import { ProductCatergoriesPageComponent } from 'app/pages/parameters/product_ca
 import { CurrenciesPageComponent } from 'app/pages/parameters/currencies/currencies-page.component';
 import { VouchersPageComponent } from 'app/pages/parameters/vouchers/vouchers-page.component';
 import { VoucherDetailPageComponent } from 'app/pages/parameters/voucher-detail/voucher-detail-page.component';
+import { LocationsPageComponent } from './locations/locations-page.component';
 
 let routes: Routes = [
   {
     path: '',
     component: OverviewPageComponent,
-    data: { },    
+    data: { },
   },
   {
     path: 'branches',
     component: BranchesPageComponent,
-    data: { },    
+    data: { },
   },
   {
     path: 'products',
     component: ProductsPageComponent,
-    data: { },    
+    data: { },
   },
   {
     path: 'acquirers',
     component: AcquirersPageComponent,
-    data: { },    
+    data: { },
   },
   {
     path: 'accounts',
     component: AccountsPageComponent,
-    data: { },    
+    data: { },
   },
   {
     path: 'domains',
     component: DomainsPageComponent,
-    data: { },    
+    data: { },
+  },
+  {
+    path: 'locations',
+    component: LocationsPageComponent,
+    data: { },
   },
   {
     path: 'product_categories',
     component: ProductCatergoriesPageComponent,
-    data: { },    
+    data: { },
   },
   {
     path: 'currencies',
     component: CurrenciesPageComponent,
-    data: { },    
+    data: { },
   },
   {
     path: 'payment-methods',
     component: PaymentMethodsPageComponent,
-    data: { },    
+    data: { },
   },
   {
     path: 'branch/:id',
     component: BranchDetailPageComponent,
-    data: { },    
+    data: { },
   },
   {
     path: 'vouchers',
     component: VouchersPageComponent,
-    data: { },    
+    data: { },
   },
   {
     path: 'vouchers/:id',
     component: VoucherDetailPageComponent,
-    data: { },    
+    data: { },
   }
 ];
 

@@ -1,3 +1,4 @@
+import { Result } from './../../models/result';
 
 import {zip as observableZip,  Observable ,  of } from 'rxjs';
 import { CardService } from './../../../services/card-service';
@@ -84,11 +85,11 @@ export class NewCardModalComponent implements OnInit {
       this.cardService.getOperators(),
       this.parameterService.getGroups(),
       this.parameterService.getActiveBranches(),
-      this.parameterService.getLocations(),
+      this.parameterService.getActiveLocations(),
       (organizations : any[], templates : any[], operators: any[],
-        groups: Group[], branches: any[], locations: Location[]) => {
+        groups: Group[], branches: any[], locations_result: Result<Location[]>) => {
         this.organizations = organizations;
-        this.locations = locations;
+        this.locations = locations_result.data;
         this.operators = operators;
         this.groups = groups;
         this.branches = branches;

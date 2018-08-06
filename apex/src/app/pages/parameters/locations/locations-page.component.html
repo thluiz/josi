@@ -1,0 +1,135 @@
+<div class="card">
+  <div class="card-body" style="padding:10px">
+    <h4>Locais</h4>
+    <table class="table table-hover table-striped" width="100%">
+      <thead>
+        <th style="width:250px;">Nome</th>
+        <th style="width:50px;text-align: center">Vínculo</th>
+        <th>Descrição</th>
+        <th style="text-align:center">Ordem</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of collection" class="cursor_pointer" (click)="edit(modal, item)">
+          <td>{{ item["name"] }}</td>
+          <td align="center">{{ item["branch"] ? item["branch"].initials : "GI" }}</td>
+          <td>
+            {{ item["active"] ? "" : "(DESATIVADO) " }}
+            {{ item["description"] }}
+          </td>
+          <td align="center">{{ item["order"] }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-silver" (click)="create(modal);">
+      <i class="fas fa-plus-circle"></i>
+      Nova
+    </button>
+  </div>
+</div>
+
+
+<ng-template #modal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title" style="font-weight: bold" *ngIf="current_item.id > 0">
+      Editar
+    </h5>
+    <h5 class="modal-title" style="font-weight: bold" *ngIf="current_item.id <= 0">
+      Novo Local
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" *ngIf="current_item">
+    <div class="row">
+      <div class="col-12">
+        <label for="item_name">Nome</label>
+        <div class="input-group">
+          <input class="form-control"
+          [(ngModel)]="current_item.name"
+          autocomplete="off" placeholder="Nome do Local" maxlength="100"
+          id="item_name" name="item_name" />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <label for="item_country">País</label>
+        <div class="input-group">
+          <select
+            [(ngModel)]="current_item.country"
+            [compareWith]="compareFn"
+            id="item_country" name="item_country"
+            class="form-control form-control-sm"
+            [ngModelOptions]="{standalone: true}">
+            <option [ngValue]="null">Remoto</option>
+            <option *ngFor="let c of countries" [ngValue]="c">{{ c.name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-6">
+        <label for="item_branch">Núcleo</label>
+        <div class="input-group">
+          <select
+            [(ngModel)]="current_item.branch"
+            [compareWith]="compareFn"
+            id="item_branch" name="item_branch"
+            class="form-control form-control-sm" [ngModelOptions]="{standalone: true}">
+            <option [ngValue]="null">Remoto</option>
+            <option *ngFor="let b of branches" [ngValue]="b">{{b.name}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <label for="item_active">Ativo</label>
+        <div class="input-group">
+          <select
+            [(ngModel)]="current_item.active"
+            name="item_active" id="item_active"
+            class="form-control form-control-sm"
+            [ngModelOptions]="{standalone: true}">
+            <option [ngValue]="true">Sim</option>
+            <option [ngValue]="false">Não</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-6">
+        <label for="item_order">Ordem</label>
+        <div class="input-group">
+          <input class="form-control text-center"
+          type="number" [(ngModel)]="current_item.order"
+          autocomplete="off" id="item_order"
+          name="item_order" />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <label for="item_description">Descrição</label>
+        <div class="input-group">
+          <textarea class="form-control"
+            id="item_description"
+            name="item_description"
+            autocomplete="off"
+            [(ngModel)]="current_item.description"
+            rows="4"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer" *ngIf="saving">
+    <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+  </div>
+  <div class="modal-footer" *ngIf="!saving">
+    <button type="button" class="btn btn-success" (click)="save(d);">
+      <i class="icon-check"></i>
+      Salvar
+    </button>
+    <button type="button" class="btn btn-silver" (click)="d('Cancelled')">
+      <i class="icon-action-undo"></i>
+      Cancelar
+    </button>
+  </div>
+</ng-template>

@@ -1,5 +1,9 @@
 export class Location {
-    public id: number;
-    public name: string;
-    public description: string;
+    id: number;
+    name: string;
+    description: string;
+    order: number;
+    branch: { id: number; name: string; abrev: string, initials: string }
+    country: { id: number; name: string; }
+    active: boolean;
 }

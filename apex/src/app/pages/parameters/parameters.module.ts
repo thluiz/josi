@@ -1,3 +1,4 @@
+import { LocationsPageComponent } from './locations/locations-page.component';
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
@@ -5,16 +6,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DragulaModule } from 'ng2-dragula';
 import { RouterModule } from '@angular/router';
 
-import { NgbModal, 
-    NgbDateStruct, 
-    NgbDatepickerI18n, 
+import { NgbModal,
+    NgbDateStruct,
+    NgbDatepickerI18n,
     NgbDatepickerModule,
-    NgbCalendar, 
-    NgbTimeStruct,      
-    ModalDismissReasons, 
+    NgbCalendar,
+    NgbTimeStruct,
+    ModalDismissReasons,
     NgbTimepickerModule,
     NgbActiveModal,
-    NgbModule     
+    NgbModule
 } from '@ng-bootstrap/ng-bootstrap';
 import { MarkdownModule } from 'ngx-markdown';
 
@@ -37,13 +38,13 @@ import { VouchersPageComponent } from 'app/pages/parameters/vouchers/vouchers-pa
     imports: [
         ParametersRoutingModule,
         CommonModule,
-        FormsModule,                                 
-        ReactiveFormsModule,                        
+        FormsModule,
+        ReactiveFormsModule,
         NgbModule,
         RouterModule,
-        NgbTimepickerModule.forRoot(),      
+        NgbTimepickerModule.forRoot(),
     ],
-    declarations: [    
+    declarations: [
         OverviewPageComponent,
         BranchesPageComponent,
         AcquirersPageComponent,
@@ -55,7 +56,8 @@ import { VouchersPageComponent } from 'app/pages/parameters/vouchers/vouchers-pa
         CurrenciesPageComponent,
         ProductCatergoriesPageComponent,
         VouchersPageComponent,
-        VoucherDetailPageComponent
+        VoucherDetailPageComponent,
+        LocationsPageComponent
     ]
 })
 export class ParametersModule { }

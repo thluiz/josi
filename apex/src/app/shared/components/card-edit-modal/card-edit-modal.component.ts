@@ -16,6 +16,7 @@ import { UtilsService } from 'app/services/utils-service';
 import { Subscription } from 'rxjs/subscription';
 
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Result } from 'app/shared/models/result';
 
 
 @Component({
@@ -23,10 +24,10 @@ import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModa
   templateUrl: './card-edit-modal.component.html',
   styleUrls: ['../../../../assets/customizations.scss'],
   providers: [ DatePickerI18n,
-    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
+    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter},
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
-export class CardEditModalComponent implements OnInit {  
+export class CardEditModalComponent implements OnInit {
   card: Card;
   original: Card;
   operators: any[];
@@ -40,30 +41,30 @@ export class CardEditModalComponent implements OnInit {
   private card_actions : Subscription;
 
 
-  constructor(private personService: PersonService, 
+  constructor(private personService: PersonService,
     private parameterService: ParameterService,
-    private utilsService: UtilsService,    
+    private utilsService: UtilsService,
     private modalService: ModalService,
     private cardService: CardService,
-    private ngbModalService: NgbModal,    
+    private ngbModalService: NgbModal,
     private datePickerConfig: NgbDatepickerConfig) {
-   
+
       datePickerConfig.firstDayOfWeek = 7
   }
-  
 
-  ngOnInit() {        
+
+  ngOnInit() {
     this.reset_form();
-  }  
+  }
 
   ngOnDestroy () {
 
   }
 
-  open(card: Card) {        
+  open(card: Card) {
     this.card = card;
     this.reset_form();
-        
+
     if(!card.leaders) {
       card.leaders = [];
     }
@@ -83,22 +84,22 @@ export class CardEditModalComponent implements OnInit {
     this.original = JSON.parse(JSON.stringify(this.card));
 
 
-    observableZip(      
+    observableZip(
       this.parameterService.getActiveBranches(),
       this.cardService.getOperators(),
-      this.parameterService.getLocations(),
-      (branches, operators: any[], locations: Location[]) => {          
-        this.operators = operators;      
-        this.locations = locations;
+      this.parameterService.getActiveLocations(),
+      (branches, operators: any[], locations_result: Result<Location[]>) => {
+        this.operators = operators;
+        this.locations = locations_result.data;
 
         this.open_modal(this.card_edit_modal, true);
 
-      }).subscribe();              
+      }).subscribe();
   }
 
   private reset_form() {
     this.show_actions = false;
-    this.saving = false;    
+    this.saving = false;
     this.begin_remove = false;
   }
 
@@ -107,18 +108,18 @@ export class CardEditModalComponent implements OnInit {
   }
 
   private open_modal(content, on_close_action = false) {
-    this.ngbModalService.open(content, { windowClass: 'custom-modal' }).result.then((result) => {                                  
-      
-    }, (reason) => {        
+    this.ngbModalService.open(content, { windowClass: 'custom-modal' }).result.then((result) => {
+
+    }, (reason) => {
         console.log(reason);
     });
-  }   
+  }
 
   open_move_modal(close_action) {
     if(close_action) {
       close_action();
     }
-    this.modalService.open(ModalType.MoveCard, this.card);    
+    this.modalService.open(ModalType.MoveCard, this.card);
   }
 
   validate_edit_card() {
@@ -140,12 +141,12 @@ export class CardEditModalComponent implements OnInit {
         this.saving = false;
         close_action();
       }
-    });    
+    });
   }
 
-  archive_card(close_action) {    
+  archive_card(close_action) {
     this.saving = true;
-    this.cardService.archiveCard(this.card).subscribe((data) => {      
+    this.cardService.archiveCard(this.card).subscribe((data) => {
       if(close_action) {
         this.saving = false;
         close_action();
@@ -153,10 +154,10 @@ export class CardEditModalComponent implements OnInit {
     });
   }
 
-  private reset_card() {    
+  private reset_card() {
     this.card.title = this.original.title;
     this.card.due_date = this.original.due_date;
     this.card.description = this.original.description;
-    this.card.leaders = this.original.leaders;    
+    this.card.leaders = this.original.leaders;
   }
 }

@@ -124,12 +124,6 @@ function configure_routes(app, connection_pool) {
         let response = result.recordset[0];
         res.send(response[0].empty ? [] : response);
     }));
-    app.get("/api/locations", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield new sql.Request(pool)
-            .query(`select * from [location] where active = 1 order by [order] for json path`);
-        let response = result.recordset[0];
-        res.send(response[0].empty ? [] : response);
-    }));
     app.get("/api/payment_methods", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const result = yield new sql.Request(pool)
             .query(`select * from payment_method where active = 1 order by [order] for json path`);

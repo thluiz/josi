@@ -122,6 +122,14 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/parameters/parameters.module#ParametersModule'
   },
   {
+    path: 'parameters/domains',
+    loadChildren: './pages/parameters/parameters.module#ParametersModule'
+  },
+  {
+    path: 'parameters/locations',
+    loadChildren: './pages/parameters/parameters.module#ParametersModule'
+  },
+  {
     path: 'parameters/accounts',
     loadChildren: './pages/parameters/parameters.module#ParametersModule'
   },
