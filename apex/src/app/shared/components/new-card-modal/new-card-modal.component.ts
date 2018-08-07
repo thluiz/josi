@@ -85,11 +85,11 @@ export class NewCardModalComponent implements OnInit {
       this.cardService.getOperators(),
       this.parameterService.getGroups(),
       this.parameterService.getActiveBranches(),
-      this.parameterService.getActiveLocations(),
+      this.parameterService.getLocations(),
       (organizations : any[], templates : any[], operators: any[],
         groups: Group[], branches: any[], locations_result: Result<Location[]>) => {
         this.organizations = organizations;
-        this.locations = locations_result.data;
+        this.locations = locations_result.data.filter(l => l.active);
         this.operators = operators;
         this.groups = groups;
         this.branches = branches;

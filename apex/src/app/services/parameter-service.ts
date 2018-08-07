@@ -97,10 +97,6 @@ export class ParameterService {
         return this.utilsService.cache_results(this.locations$, `/locations`, forceRefresh);
     }
 
-    getActiveLocations(forceRefresh?: boolean) {
-      return this.getLocations(forceRefresh).pipe(filter(l => l.active));
-    }
-
     getKungFuFamilies(forceRefresh?: boolean) {
         return this.utilsService.cache_results(this.kf_families$, `/kf_families`, forceRefresh);
     }

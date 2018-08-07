@@ -98,6 +98,12 @@ export class ExternalContactsPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  open_incident(id) {
+    if(id > 0) {
+      this.modalService.open(ModalType.IncidentTreatment, { id } as any);
+    }
+  }
+
   open_new_person_modal() {
     this.modalService.open(ModalType.AddPerson, null);
   }

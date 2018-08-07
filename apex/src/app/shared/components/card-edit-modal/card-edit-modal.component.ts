@@ -87,10 +87,10 @@ export class CardEditModalComponent implements OnInit {
     observableZip(
       this.parameterService.getActiveBranches(),
       this.cardService.getOperators(),
-      this.parameterService.getActiveLocations(),
+      this.parameterService.getLocations(),
       (branches, operators: any[], locations_result: Result<Location[]>) => {
         this.operators = operators;
-        this.locations = locations_result.data;
+        this.locations = locations_result.data.filter(l => l.active);
 
         this.open_modal(this.card_edit_modal, true);
 
