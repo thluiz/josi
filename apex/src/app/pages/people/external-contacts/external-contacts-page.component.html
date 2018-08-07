@@ -78,19 +78,20 @@
             <td>Núcleo</td>
             <td></td>
             <td>Estado</td>
-            <td>Próx. Ativ</td>
+            <td align="center">Últ. Ativ </td>
+            <td align="center">Próx. Ativ</td>
             <td>Contatos</td>
             <td>Comentários</td>
           </thead>
           <tbody>
             <tr *ngFor="let p of people">
-              <td style="cursor:pointer" [routerLink]="['/people/person', p.id]">
+              <td style="cursor:pointer;vertical-align: top" [routerLink]="['/people/person', p.id]">
                 {{ p.name }}
               </td>
-              <td>
+              <td style="vertical-align: top">
                 {{ (p.branch_abrev || "").replace("Núcleo", "") }}
               </td>
-              <td>
+              <td style="vertical-align: top">
                 <person-status-line [person]="p"></person-status-line>
               </td>
               <td>
@@ -103,15 +104,24 @@
                   </a>
                 </ng-template>
               </td>
-              <td> {{ p.last_activity_description }} </td>
-              <td>
+              <td style="text-align: center;cursor:pointer" (click)="open_incident(p.lit_id)">
+                  {{ p.last_incident_type_abrev }}
+                  <br/>
+                  {{ p.last_incident_date | date : 'dd/MM/yy' }}
+              </td>
+              <td style="text-align: center;cursor:pointer" (click)="open_incident(p.nit_id)">
+                {{ p.next_incident_type_abrev }}
+                <br/>
+                {{ p.next_incident_date | date : 'dd/MM/yy' }}
+              </td>
+              <td style="vertical-align: top">
                 <ng-template ngFor let-pc [ngForOf]="p.contacts" let-k=index let-m=first>
                   <div>
                     <contact-listitem [contact]="pc"></contact-listitem>
                   </div>
                 </ng-template>
               </td>
-              <td>
+              <td style="vertical-align: top">
                 <ng-template ngFor let-pc [ngForOf]="p.commentaries" let-k=index let-m=first>
                   <p style="margin-bottom:0">{{ pc.comment }}</p>
                 </ng-template>

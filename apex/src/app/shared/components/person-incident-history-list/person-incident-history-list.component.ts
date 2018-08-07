@@ -1,3 +1,4 @@
+import { isArray } from 'util';
 import { zip as observableZip, Subscription, Observable } from 'rxjs';
 
 import { filter } from 'rxjs/operators';
@@ -19,7 +20,7 @@ import { LightIncident } from '../../models/incident-model';
 export class PersonIncidentHistoryListComponent implements OnInit, OnDestroy {
   ActivityTypes = ActivityType;
 
-  items: any[];
+  items: any[] = [];
 
   @Input() d: any;
   @Input() person: any;
@@ -93,7 +94,8 @@ export class PersonIncidentHistoryListComponent implements OnInit, OnDestroy {
     this.personService.getAllIncidentHistory(this.person.id,
       this.start_date, this.end_date, this.activity_type
     ).subscribe((result: any) => {
-      this.items = result.data;
+      if(isArray(result.data))
+        this.items = result.data;
     });
   }
 

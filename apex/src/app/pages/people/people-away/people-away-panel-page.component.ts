@@ -9,60 +9,63 @@ import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from '
 
 import { Subscription } from 'rxjs';
 import { SecurityService } from 'app/services/security-service';
+import { ModalService, ModalType } from 'app/services/modal-service';
+
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './people-away-page.component.html',
   styleUrls: ['../people-customizations.scss'],
   providers: [DatePickerI18n,
-    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
+    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter},
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
 export class PeopleAwayPageComponent implements OnInit, OnDestroy {
-  people: any;    
+  people: any;
   all_people: any;
   current_view = 0;
   filters = "1";
-  current_branch = 0; 
+  current_branch = 0;
   branches: any;
   search_name = "";
 
-  private person_list_sub: Subscription;  
+  private person_list_sub: Subscription;
 
   constructor(
-    private personService: PersonService, 
+    private personService: PersonService,
     private securityService: SecurityService,
     private activatedRoute: ActivatedRoute,
-    private router: Router, 
-    private modalService: NgbModal,
+    private router: Router,
+    private ngbModalService: NgbModal,
+    private modalService: ModalService,
     private parameterService: ParameterService,
-    private datePickerConfig: NgbDatepickerConfig) {      
-  
-  }  
+    private datePickerConfig: NgbDatepickerConfig) {
 
-  ngOnInit() {        
+  }
+
+  ngOnInit() {
     this.current_branch = this.activatedRoute.snapshot.queryParams["branch"] || 0;
     this.search_name = this.activatedRoute.snapshot.queryParams["name"] || "";
-    
+
     this.parameterService.getActiveBranches().subscribe((branches) => {
       this.branches = branches;
     });
 
-    this.securityService.getCurrentUserData().subscribe((user) => {      
+    this.securityService.getCurrentUserData().subscribe((user) => {
       this.current_branch = this.activatedRoute.snapshot.queryParams["branch"] || user.default_branch_id || 0;
       this.load_people_away_list();
-    });     
+    });
   }
-  
+
   ngOnDestroy() {
     if(this.person_list_sub) {
-      this.person_list_sub.unsubscribe();    
+      this.person_list_sub.unsubscribe();
     }
   }
 
-  apply_filters() {  
+  apply_filters() {
     let people = this.all_people;
-    
+
 
     if(this.current_branch > 0) {
       people = people.filter((p : any) => {
@@ -78,23 +81,29 @@ export class PeopleAwayPageComponent implements OnInit, OnDestroy {
     this.load_people_away_list();
   }
 
-  keyDownFunction(event) {    
+  keyDownFunction(event) {
     if(event.keyCode == 13) {
       this.filter_people();
     }
   }
 
-  load_people_away_list() {    
+  open_incident(id) {
+    if(id > 0) {
+      this.modalService.open(ModalType.IncidentTreatment, { id } as any);
+    }
+  }
+
+  load_people_away_list() {
     if(this.person_list_sub) {
       this.person_list_sub.unsubscribe();
     }
 
     this.person_list_sub = this.personService.getPeopleAwayList(this.current_branch, this.search_name).subscribe(
-      data => {                   
+      data => {
         this.all_people = data;
 
         this.apply_filters();
       }
-    );  
+    );
   }
 }
