@@ -19,8 +19,7 @@
     <form class="form" #f="ngForm">
       <div class="row" *ngIf="person">
         <div class="col-12">
-          <person-card [person]="person"
-            [hidePinnedComments]="false">
+          <person-card [person]="person" [showContacts]="true" [showContactsAsButtons]="true" [hidePinnedComments]="false">
           </person-card>
         </div>
       </div>
@@ -115,7 +114,7 @@
       <div class="row" *ngIf="current_incident.card_id > 0" style="margin-bottom:15px;">
         <div class="col-12">
           <label>Referente à: </label>
-          <a style="color:black" (click)="d('go to projetct')" [routerLink]="['/organizations/projects', current_incident.card_parent_id]">
+          <a style="color:black" [routerLink]="['/organizations/projects', current_incident.card_parent_id]">
             {{ current_incident.card_parent }}
           </a>
           -
@@ -136,7 +135,7 @@
           <b>Reagendado para: </b>{{ current_incident.new_schedule_small_date }} {{ current_incident.new_schedule_hour }}
         </div>
       </div>
-      <div class="row" *ngIf="(current_incident.start_on_hour || current_incident.closed_on_hour) && !current_incident.treated">
+      <div class="row" *ngIf="(current_incident.started_on_hour || current_incident.closed_on_hour) && !current_incident.treated">
         <div class="col-2">
           <b>Inicio: </b>
         </div>
@@ -146,13 +145,12 @@
         <div class="col-4" *ngIf="!current_incident.closed_on_hour">
           {{ current_incident.started_on_hour }}
 
-          <i class="ft-trash-2" (click)="current_incident.cancelling_start = true" title="Cancelar inicio da atividade" *ngIf="!current_incident.closed_on_hour && !current_incident.cancelling_start"
-            style="cursor: pointer;">
+          <i class="ft-trash-2" (click)="current_incident.cancelling_start = true" title="Cancelar inicio da atividade" *ngIf="!current_incident.cancelling_start" style="cursor: pointer;">
           </i>
           <i class="ft-rotate-ccw" title="Manter inicio da atividade" *ngIf="current_incident.cancelling_start" (click)="current_incident.cancelling_start = false"
             style="cursor: pointer;">
           </i>
-          <i class="ft-trash-2" title="Confirmar cancelamento inicio da atividade" *ngIf="current_incident.cancelling_start" (click)="cancel_start_incident(current_incident, d);"
+          <i class="ft-trash-2" title="Confirmar cancelamento inicio da atividade" *ngIf="current_incident.cancelling_start" (click)="cancel_start_incident(current_incident);"
             style="cursor: pointer;color:red">
           </i>
         </div>
@@ -254,14 +252,10 @@
             <div class="col-12 pt-1">
               <fieldset class="form-group">
                 <label for="current_incident_fund_value">Valor para o Fundo</label>
-                <input type="number"
-                  id="current_incident_fund_value" name="current_incident_fund_value"
-                  [(ngModel)]="current_incident.fund_value"
-                  (ngModelChange)="validate_for_closing(current_incident)"
-                  class="form-control text-right"/>
+                <input type="number" id="current_incident_fund_value" name="current_incident_fund_value" [(ngModel)]="current_incident.fund_value"
+                  (ngModelChange)="validate_for_closing(current_incident)" class="form-control text-right" />
               </fieldset>
-              <span style="font-style: italic;color:red"
-              *ngIf="current_incident.valid_for_closing != null
+              <span style="font-style: italic;color:red" *ngIf="current_incident.valid_for_closing != null
                   && current_incident.valid_for_closing != undefined
                   && !current_incident.valid_for_closing
                   && (current_incident.define_fund_value || current_incident.need_fund_value)
@@ -297,7 +291,7 @@
           <div *ngIf="!saving">
             <button type="button" class="btn" [ngClass]="current_incident.valid_for_closing != null && current_incident.valid_for_closing != undefined
                     && !current_incident.valid_for_closing ?
-                            'btn-secondary' : 'btn-success'" (click)="close_incident(current_incident, d);">
+                            'btn-secondary' : 'btn-success'" (click)="close_incident(current_incident);">
               <i class="icon-check"></i> Sim
             </button>
             <button type="button" class="btn btn-primary" (click)="begin_treat_incident(current_incident)">
@@ -370,7 +364,7 @@
             </div>
           </div>
           <div [ngClass]="current_incident.begin_remove || current_incident.in_treatment || current_incident.reschedule ? 'col-12' : 'col-4'">
-            <button type="button" class="btn btn-success" (click)="register_contact_for_incident(current_incident, d);" *ngIf="current_incident.in_treatment && !current_incident.reschedule">
+            <button type="button" class="btn btn-success" (click)="register_contact_for_incident(current_incident);" *ngIf="current_incident.in_treatment && !current_incident.reschedule">
               <i class="far fa-envelope"></i>
               Registrar Contato
             </button>
@@ -378,7 +372,7 @@
               <i class="ft-calendar"></i>
               Reagendar
             </button>
-            <button type="button" class="btn btn-success" (click)="reschedule_incident(current_incident);d('reschedule!');" *ngIf="current_incident.in_treatment && current_incident.reschedule">
+            <button type="button" class="btn btn-success" (click)="reschedule_incident(current_incident);" *ngIf="current_incident.in_treatment && current_incident.reschedule">
               <i class="ft-calendar"></i>
               Reagendar!
             </button>

@@ -110,6 +110,18 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
   }
 
   open(incident) {
+    this.reload_incident(incident, () => {
+      this.ngbModalService.open(this.incident_treatment_modal)
+      .result.then((result) => {
+
+      }, (reason) => {
+        console.log(reason);
+        this.ngOnDestroy();
+      });
+    });
+  }
+
+  reload_incident(incident, action? : () => void) {
     this.saving = false;
     Observable.zip(
       this.incidentService.getIncidentDetails(incident.id),
@@ -129,13 +141,12 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
         this.payment_methods = payment_methods;
         this.set_dates_from_string_date(this.current_incident.date);
 
-        this.ngbModalService.open(this.incident_treatment_modal)
-          .result.then((result) => {
+        this.reset_reschedule(this.current_incident);
+        this.reset_treat_incident(this.current_incident);
 
-          }, (reason) => {
-            console.log(reason);
-            this.ngOnDestroy();
-          });
+        if(action) {
+          action();
+        }
       })
       .subscribe();
   }
@@ -207,7 +218,7 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
     incident.valid_for_closing = true;
   }
 
-  close_incident(incident, close_action) {
+  close_incident(incident) {
     this.validate_for_closing(incident);
 
     if (!incident.valid_for_closing) {
@@ -217,9 +228,7 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
     this.incidentService.close_incident(incident)
       .subscribe(data => {
         this.saving = false;
-        if (close_action) {
-          close_action();
-        }
+        this.reload_incident(this.current_incident);
       });
   }
 
@@ -228,6 +237,7 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
   }
 
   reschedule_incident(incident) {
+    this.saving = true;
     incident.treated = true;
     let new_incident = {
       "small_date": incident.new_date.day + "/" + incident.new_date.month,
@@ -245,7 +255,10 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
 
     this.incidentService.reschedule_incident(incident, new_incident, {
       contact_text: incident.contact_text
-    }).subscribe();
+    }).subscribe((data) => {
+      this.saving = false;
+      this.reload_incident(this.current_incident);
+    });
   }
 
   validade_treatment_contact_text(incident) {
@@ -260,21 +273,31 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  start_incident(incident, close_modal_action) {
+  start_incident(incident) {
+    this.saving = true;
     this.incidentService.start_incident(incident)
-      .subscribe((value) => close_modal_action());
+      .subscribe((value) => {
+        this.saving = false;
+        this.reload_incident(this.current_incident);
+      });
   }
 
-  reopen_incident(incident, close_modal_action) {
+  reopen_incident(incident) {
+    this.saving = true;
     this.incidentService.reopen_incident(incident)
-      .subscribe((value) => close_modal_action());
+      .subscribe((value) => {
+        this.saving = false;
+        this.reload_incident(this.current_incident);
+      });
   }
 
-  cancel_start_incident(incident, close_modal_action) {
+  cancel_start_incident(incident) {
+    this.saving = true;
     this.incidentService.cancel_start_incident(incident)
       .subscribe((value) => {
-        close_modal_action()
+        this.saving = false;
         incident.cancelling_start = false;
+        this.reload_incident(this.current_incident);
       });
   }
 
@@ -284,14 +307,17 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
     });
   }
 
-  register_contact_for_incident(incident, close_modal_action) {
+  register_contact_for_incident(incident) {
     if (!this.validade_treatment_contact_text(incident)) {
       return;
     }
-
+    this.saving = true;
     this.incidentService.register_contact_for_incident(incident, {
       contact_text: incident.contact_text
-    }).subscribe((data) => close_modal_action());
+    }).subscribe((data) => {
+      this.saving = false;
+      this.reload_incident(this.current_incident);
+    });
   }
 
   add_comment() {

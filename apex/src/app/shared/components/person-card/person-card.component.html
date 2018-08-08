@@ -72,10 +72,12 @@
 				<div class="row" style="margin-bottom:10px;">
 					<div class="col-12">
 						<div *ngFor="let ct of person.contacts | onlyPrincipal, let k = index"
-							[style.margin-left]="useContactButton ? '5px' : null"
-							[style.display]="useContactButton ? 'inline-block' : null">
-							<contact-listitem [contact]="ct" *ngIf="!useContactButton"></contact-listitem>
-							<contact-buttonitem [contact]="ct" *ngIf="useContactButton"></contact-buttonitem>
+							[style.margin-left]="useContactButton || showContactsAsButtons ? '5px' : null"
+							[style.display]="useContactButton || showContactsAsButtons ? 'inline-block' : null">
+              <contact-listitem [contact]="ct"
+              *ngIf="!useContactButton && !showContactsAsButtons"></contact-listitem>
+              <contact-buttonitem [contact]="ct"
+              *ngIf="useContactButton || showContactsAsButtons"></contact-buttonitem>
 							<div *ngIf="ct.show_details" style="display:inline-block">({{ ct.details }})</div>
 						</div>
 						<a *ngIf="false" (click)="show_only_principal_contacts = false">
