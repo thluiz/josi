@@ -29,6 +29,7 @@
     [payment_method_id]                  INT             NULL,
     [contact_method_id]                  INT             NULL,
     [ownership_id]                       INT             NULL,
+    [define_fund_value]                  BIT             DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [fk_incident_branch] FOREIGN KEY ([branch_id]) REFERENCES [dbo].[branch] ([id]),
     CONSTRAINT [fk_incident_card] FOREIGN KEY ([card_id]) REFERENCES [dbo].[card] ([id]),
@@ -36,6 +37,8 @@
     CONSTRAINT [fk_incident_ownership] FOREIGN KEY ([ownership_id]) REFERENCES [dbo].[incident] ([id]),
     CONSTRAINT [FK_incident_responsible] FOREIGN KEY ([responsible_id]) REFERENCES [dbo].[person] ([id])
 );
+
+
 
 
 
@@ -90,4 +93,9 @@ GO
 CREATE NONCLUSTERED INDEX [ix_current_activities]
     ON [dbo].[incident]([closed] ASC, [treated] ASC, [cancelled] ASC, [started_on] ASC)
     INCLUDE([branch_id]);
+
+
+GO
+CREATE NONCLUSTERED INDEX [nci_wi_incident_0A942E75B641F88FD2DF9320BCDB835A]
+    ON [dbo].[incident]([card_id] ASC, [cancelled] ASC, [closed] ASC, [closed_on] ASC, [started_on] ASC) WITH (FILLFACTOR = 100);
 

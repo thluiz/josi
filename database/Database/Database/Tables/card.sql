@@ -22,9 +22,12 @@
     [created_by]              INT            NULL,
     [has_overdue_card]        BIT            DEFAULT ((0)) NOT NULL,
     [automatically_generated] BIT            DEFAULT ((0)) NOT NULL,
-    PRIMARY KEY CLUSTERED ([id] ASC),
+    [parent_archived]         BIT            DEFAULT ((0)) NOT NULL,
+    PRIMARY KEY CLUSTERED ([id] ASC) WITH (FILLFACTOR = 100),
     CONSTRAINT [fk_card_parent] FOREIGN KEY ([parent_id]) REFERENCES [dbo].[card] ([id])
 );
+
+
 
 
 
@@ -42,4 +45,9 @@ GO
 CREATE NONCLUSTERED INDEX [ix_card_has_overdue_card]
     ON [dbo].[card]([has_overdue_card] ASC)
     INCLUDE([due_date]);
+
+
+GO
+CREATE NONCLUSTERED INDEX [ix_card_parent_archived]
+    ON [dbo].[card]([parent_archived] ASC) WITH (FILLFACTOR = 100);
 

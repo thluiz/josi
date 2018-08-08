@@ -12,9 +12,12 @@
     [anonymous_header_text] NVARCHAR (MAX) NULL,
     [youtube_url]           VARCHAR (300)  NULL,
     [voucher_type]          INT            DEFAULT ((1)) NOT NULL,
+    [order]                 INT            DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [fk_voucher_voucher_type] FOREIGN KEY ([voucher_type]) REFERENCES [dbo].[enum_voucher_type] ([id])
 );
+
+
 
 
 

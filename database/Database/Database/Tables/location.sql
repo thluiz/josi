@@ -5,8 +5,11 @@
     [active]      BIT            DEFAULT ((1)) NOT NULL,
     [order]       INT            DEFAULT ((0)) NOT NULL,
     [country_id]  INT            DEFAULT ((1)) NOT NULL,
+    [branch_id]   INT            NULL,
     PRIMARY KEY CLUSTERED ([id] ASC)
 );
+
+
 
 
 
