@@ -7,7 +7,7 @@
         </div>
     </div>
     <div class="row" *ngFor="let act of activities">
-        <div class="col-12">
+        <div class="col-12" *ngIf="!act.closed">
             <div style="border-top:1px solid silver;padding-bottom:5px">
                 <div class="row">
                     <div class="col-12">

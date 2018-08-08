@@ -7,7 +7,8 @@ import { ModalService, ModalType } from 'app/services/modal-service';
 import {
   IncidentService,
   INCIDENT_ADDED,
-  INCIDENT_STARTED
+  INCIDENT_STARTED,
+  INCIDENT_ENDED
 } from 'app/services/incident-service';
 
 import { Subscription } from 'rxjs';
@@ -21,10 +22,11 @@ import { Result } from 'app/shared/models/result';
   styleUrls: ['./current-activities.scss'],
 })
 export class CurrentActivitiesComponent implements OnInit, OnDestroy {
-    activities: any = [];
+    activities: LightIncident[] = [];
     @Input() branch = 0;
 
     private subscriber : Subscription;
+    private incident_ended_subscriber : Subscription;
 
     constructor(private incidentService: IncidentService,
       private modalService: ModalService,
@@ -58,11 +60,33 @@ export class CurrentActivitiesComponent implements OnInit, OnDestroy {
       .subscribe((data : Result) => {
         this.getCurrentActivities();
       });
+
+      this.incident_ended_subscriber = this.eventManager.event$
+      .pipe(
+        filter((ev:Result) => ev.data != null),
+        filter((ev:Result) =>
+            ev.type == INCIDENT_ENDED
+        ),
+        filter((ev:Result<LightIncident[]>) => isArray(ev.data) && ev.data.length > 0),
+        filter((ev:Result<LightIncident[]>) =>
+            !this.branch || (isArray(ev.data) && ev.data[0].branch_id == this.branch)
+        )
+      )
+      .subscribe((result : Result) => {
+        let idx = this.activities.findIndex(act => act.id == result.data[0].id);
+        if(idx > 0) {
+          this.activities[idx].closed = true;
+        }
+      });
     }
 
     ngOnDestroy() {
         if(this.subscriber) {
           this.subscriber.unsubscribe();
+        }
+
+        if(this.incident_ended_subscriber) {
+          this.incident_ended_subscriber.unsubscribe();
         }
     }
 
