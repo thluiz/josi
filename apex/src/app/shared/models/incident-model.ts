@@ -30,4 +30,7 @@ export class LightIncident {
     financial_status:number;
 
     activity_type: ActivityType;
+
+    started_date_in_seconds : number;
+    date_in_seconds : number;
 }

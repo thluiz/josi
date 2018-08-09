@@ -62,8 +62,8 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChildren(LateralSummaryComponent)
   lateralSummaryComponent : QueryList<LateralSummaryComponent>;
 
-  @ViewChild(CurrentActivitiesComponent)
-  private current_activities : CurrentActivitiesComponent;
+  @ViewChildren(CurrentActivitiesComponent)
+  private current_activities : QueryList<CurrentActivitiesComponent>;
 
   private incidents_subscriber : Subscription;
 
@@ -160,8 +160,11 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.current_branch = id;
     this.show_change_branch = false;
 
-    if(!on_start) {
-      this.current_activities.filter_activities(this.current_branch);
+    if(this.lateralSummaryComponent) {
+      this.current_activities.forEach(ca => {
+        ca.branch = this.current_branch;
+        ca.filter_activities(this.current_branch);
+      });
     }
 
     if(this.lateralSummaryComponent) {

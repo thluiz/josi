@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 import { SecurityService } from 'app/services/security-service';
 import { filter } from 'rxjs/operators';
 import { Result } from 'app/shared/models/result';
+import { fn } from '../../../../../node_modules/@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'current-activities',
@@ -57,8 +58,15 @@ export class CurrentActivitiesComponent implements OnInit, OnDestroy {
           ev.type != INCIDENT_ADDED //typescript does not ensure type
           || ev.data.findIndex(i => i.started_on != null) >= 0)
       )
-      .subscribe((data : Result) => {
-        this.getCurrentActivities();
+      .subscribe((result : Result<LightIncident[]>) => {
+        console.log(result);
+        this.activities = this.activities
+        .concat(result.data)
+        .sort((a, b) => {
+          if(a.started_date_in_seconds > b.started_date_in_seconds) return 1;
+          if(a.started_date_in_seconds < b.started_date_in_seconds) return -1;
+          return 0;
+        });
       });
 
       this.incident_ended_subscriber = this.eventManager.event$
