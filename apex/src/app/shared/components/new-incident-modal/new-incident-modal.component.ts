@@ -13,6 +13,7 @@ import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModa
 import { LightIncident } from '../../models/incident-model';
 import { Result } from 'app/shared/models/result';
 import { UtilsService } from '../../../services/utils-service';
+import { Location } from 'app/shared/models/location.model';
 
 
 @Component({
@@ -34,6 +35,7 @@ export class NewInicidentModalComponent implements OnInit {
   branches: any;
   incident_types: any;
   saving = false;
+  locations : Location[] = [];
 
   @ViewChild('add_incident_modal') add_incident_modal: ElementRef;
 
@@ -59,15 +61,20 @@ export class NewInicidentModalComponent implements OnInit {
     this.new_incident.children_type = null;
   }
 
+  compareFn = (item1, item2) => item1 != null && item2 != null && item1.id == item2.id;
+
   open(initial_state = {}) {
     this.saving = false;
-    this.reset_new_incident(initial_state);
     observableZip(
       this.parameterService.getActiveBranches(),
       this.parameterService.getIncidentTypes(),
-      (branches, incident_types: any[]) => {
+      this.parameterService.getActiveLocations(),
+      (branches, incident_types: any[], result_locations : Result<Location[]>) => {
         this.branches = branches;
         this.incident_types = incident_types.filter(i => !i.automatically_generated);
+        this.locations = result_locations.data;
+
+        this.reset_new_incident(initial_state);
 
         this.open_modal(this.add_incident_modal, true);
       }
@@ -257,10 +264,20 @@ export class NewInicidentModalComponent implements OnInit {
     }
 
     let date = new Date();
+    let location = null;
+    if(this.branches
+      && this.locations
+      && !initial_state.location && initial_state.branch_id > 0) {
+      let branch = this.branches.find(b => b.id == initial_state.branch_id);
+      location = this.locations.find(l => l.id == branch.location_id);
+      console.log('a');
+    }
+    console.log(location);
 
     this.new_incident = {
       branch_id: initial_state.branch_id,
       people: initial_state.people || [],
+      location: location,
       contact_text: "",
       date: {
         year: date.getFullYear(),
