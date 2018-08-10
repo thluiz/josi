@@ -12,11 +12,16 @@ export function routes(app) {
   app.get("/api/locations", auth.ensureLoggedIn(), async (req, res, next) => {
     try {
       const LR = await DBM.getRepository<Location>(Location);
-      let result = await LR.createQueryBuilder("l")
+      let query = await LR.createQueryBuilder("l")
         .innerJoinAndSelect("l.country", "c")
         .leftJoinAndSelect("l.branch", "b")
-        .orderBy("l.active desc, l.order")
-        .getMany();
+        .orderBy("l.active desc, l.order");
+
+      if(req.query.active) {
+        query = query.where("l.active = :0", req.query.active);
+      }
+
+      let result = await query.getMany();
 
       res.send(SuccessResult.GeneralOk(result));
     } catch (error) {

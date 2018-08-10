@@ -20,11 +20,14 @@ function routes(app) {
     app.get("/api/locations", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const LR = yield DBM.getRepository(Location_1.Location);
-            let result = yield LR.createQueryBuilder("l")
+            let query = yield LR.createQueryBuilder("l")
                 .innerJoinAndSelect("l.country", "c")
                 .leftJoinAndSelect("l.branch", "b")
-                .orderBy("l.active desc, l.order")
-                .getMany();
+                .orderBy("l.active desc, l.order");
+            if (req.query.active) {
+                query = query.where("l.active = :0", req.query.active);
+            }
+            let result = yield query.getMany();
             res.send(result_1.SuccessResult.GeneralOk(result));
         }
         catch (error) {

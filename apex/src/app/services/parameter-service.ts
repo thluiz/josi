@@ -31,6 +31,7 @@ export class ParameterService {
     private programs$ = new ReplaySubject(1);
     private domains$ = new ReplaySubject(1);
     private locations$ = new ReplaySubject(1);
+    private active_locations$ = new ReplaySubject(1);
     private group$ = new ReplaySubject(1);
     private countries$ = new ReplaySubject(1);
     private payment_methods$ = new ReplaySubject(1);
@@ -95,6 +96,10 @@ export class ParameterService {
 
     getLocations(forceRefresh?: boolean) {
         return this.utilsService.cache_results(this.locations$, `/locations`, forceRefresh);
+    }
+
+    getActiveLocations(forceRefresh?: boolean) {
+      return this.utilsService.cache_results(this.active_locations$, `/locations?active=1`, forceRefresh);
     }
 
     getKungFuFamilies(forceRefresh?: boolean) {
@@ -236,6 +241,7 @@ export class ParameterService {
         location
       }).pipe(tap((data : any) => {
         this.getLocations(true).subscribe();
+        this.getActiveLocations(true).subscribe();
       }));
     }
 
