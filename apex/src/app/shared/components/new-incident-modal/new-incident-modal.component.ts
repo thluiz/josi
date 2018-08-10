@@ -65,8 +65,8 @@ export class NewInicidentModalComponent implements OnInit {
     observableZip(
       this.parameterService.getActiveBranches(),
       this.parameterService.getIncidentTypes(),
-      (branches, incident_types: any[]) => {
-        this.branches = branches;
+      (branches : any[], incident_types: any[]) => {
+        this.branches = branches.filter(b => b.category_id != 3);
         this.incident_types = incident_types.filter(i => !i.automatically_generated);
 
         this.open_modal(this.add_incident_modal, true);
