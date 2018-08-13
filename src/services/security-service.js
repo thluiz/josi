@@ -1,4 +1,13 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -8,9 +17,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const User_1 = require("../entity/User");
 const users_repository_1 = require("./../repositories/users-repository");
-const database_manager_1 = require("./managers/database-manager");
-const dependency_manager_1 = require("./managers/dependency-manager");
+const trylog_decorator_1 = require("../decorators/trylog-decorator");
 var Permissions;
 (function (Permissions) {
     Permissions[Permissions["Operator"] = 0] = "Operator";
@@ -19,7 +28,6 @@ var Permissions;
 })(Permissions = exports.Permissions || (exports.Permissions = {}));
 class SecurityService {
     constructor() {
-        this.DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
         this.UR = new users_repository_1.UsersRepository();
     }
     serializeUser(user) {
@@ -104,5 +112,35 @@ class SecurityService {
         });
     }
 }
+__decorate([
+    trylog_decorator_1.trylog2(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [User_1.User]),
+    __metadata("design:returntype", Promise)
+], SecurityService.prototype, "serializeUser", null);
+__decorate([
+    trylog_decorator_1.trylog2(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SecurityService.prototype, "getUserFromRequest", null);
+__decorate([
+    trylog_decorator_1.trylog2(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [User_1.User, Number]),
+    __metadata("design:returntype", Promise)
+], SecurityService.prototype, "checkUserHasPermission", null);
+__decorate([
+    trylog_decorator_1.trylog2(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], SecurityService.prototype, "findUser", null);
+__decorate([
+    trylog_decorator_1.trylog2(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], SecurityService.prototype, "findUserByToken", null);
 exports.SecurityService = SecurityService;
 //# sourceMappingURL=security-service.js.map

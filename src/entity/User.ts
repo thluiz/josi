@@ -1,7 +1,11 @@
 // tslint:disable:variable-name
 
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+
+import { UsersRepository } from "../repositories/users-repository";
 import { Person } from "./Person";
+
+import { trylog2 } from "../decorators/trylog-decorator";
 
 @Entity()
 export class User {
@@ -54,6 +58,7 @@ export class User {
         return this.person;
     }
 
+    @trylog2()
     async loadPersonIfNeeded() {
         if (this.person != null) { return; }
         const UR = await new UsersRepository();

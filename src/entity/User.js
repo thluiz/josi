@@ -19,7 +19,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
+const users_repository_1 = require("../repositories/users-repository");
 const Person_1 = require("./Person");
+const trylog_decorator_1 = require("../decorators/trylog-decorator");
 let User = class User {
     is_director() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -56,7 +58,7 @@ let User = class User {
             if (this.person != null) {
                 return;
             }
-            const UR = yield new UsersRepository();
+            const UR = yield new users_repository_1.UsersRepository();
             const result_user = yield UR.loadAllUserData(this.id);
             this.person = result_user.data.person;
         });
@@ -87,6 +89,12 @@ __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
 ], User.prototype, "token", void 0);
+__decorate([
+    trylog_decorator_1.trylog2(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], User.prototype, "loadPersonIfNeeded", null);
 User = __decorate([
     typeorm_1.Entity()
 ], User);
