@@ -17,20 +17,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Voucher_1 = require("../entity/Voucher");
-const PersonCardPosition_1 = require("../entity/PersonCardPosition");
-const PersonCard_1 = require("../entity/PersonCard");
-const Location_1 = require("../entity/Location");
-const BranchCategory_1 = require("../entity/BranchCategory");
-const database_manager_1 = require("./managers/database-manager");
-const result_1 = require("../helpers/result");
 const Branch_1 = require("../entity/Branch");
-const trylog_decorator_1 = require("../decorators/trylog-decorator");
-const firebase_emitter_decorator_1 = require("../decorators/firebase-emitter-decorator");
-const errors_codes_1 = require("../helpers/errors-codes");
-const Country_1 = require("../entity/Country");
+const BranchCategory_1 = require("../entity/BranchCategory");
 const Card_1 = require("../entity/Card");
+const Country_1 = require("../entity/Country");
+const Location_1 = require("../entity/Location");
 const Person_1 = require("../entity/Person");
+const PersonCard_1 = require("../entity/PersonCard");
+const PersonCardPosition_1 = require("../entity/PersonCardPosition");
+const Voucher_1 = require("../entity/Voucher");
+const errors_codes_1 = require("../helpers/errors-codes");
+const result_1 = require("../helpers/result");
+const firebase_emitter_decorator_1 = require("../decorators/firebase-emitter-decorator");
+const trylog_decorator_1 = require("../decorators/trylog-decorator");
+const base_service_1 = require("./base-service");
 const PARAMETERS_COLLECTION = "parameters-events";
 const BRANCH_CREATED = "BRANCH_CREATED";
 const BRANCH_UPDATED = "BRANCH_UPDATED";
@@ -40,20 +40,20 @@ const VOUCHER_UPDATED = "VOUCHER_UPDATED";
 const BRANCHVOUCHER_CREATED = "BRANCH_VOUCHER_CREATED";
 const BRANCHVOUCHER_REMOVED = "BRANCH_VOUCHER_REMOVED";
 const NOTHING_CHANGED = "NOTHING_CHANGED";
-const DBM = new database_manager_1.DatabaseManager();
-class ParametersService {
-    static save_voucher(voucher_data) {
+class ParametersService extends base_service_1.BaseService {
+    save_voucher(voucherData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const VR = yield DBM.getRepository(Voucher_1.Voucher);
-            return result_1.SuccessResult.Ok(voucher_data.id > 0 ? VOUCHER_UPDATED : VOUCHER_CREATED, yield VR.save(voucher_data));
+            const VR = yield this.databaseManager.getRepository(Voucher_1.Voucher);
+            return result_1.SuccessResult.Ok(voucherData.id > 0 ? VOUCHER_UPDATED : VOUCHER_CREATED, yield VR.save(voucherData));
         });
     }
-    static create_branch_voucher(branch, voucher) {
+    create_branch_voucher(branch, voucher) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const VR = yield DBM.getRepository(Voucher_1.Voucher);
-                voucher = yield VR.findOne(voucher.id, { relations: ["branches"] }); //load relation
-                if (voucher.branches.find(b => b.id == branch.id) != null) {
+                const VR = yield (yield this.queryRunner).manager.getRepository(Voucher_1.Voucher);
+                // load relation
+                voucher = yield VR.findOne(voucher.id, { relations: ["branches"] });
+                if (voucher.branches.find((b) => b.id === branch.id) != null) {
                     return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.NothingChanged, null);
                 }
                 voucher.branches.push(branch);
@@ -67,16 +67,16 @@ class ParametersService {
             }
         });
     }
-    static remove_branch_voucher(branch, voucher) {
+    remove_branch_voucher(branch, voucher) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const VR = yield DBM.getRepository(Voucher_1.Voucher);
-                const voucher_branches = yield VR.findOne(voucher.id, { relations: ["branches"] });
-                if (!voucher_branches.branches.find(b => b.id == branch.id)) {
+                const VR = yield (yield this.queryRunner).manager.getRepository(Voucher_1.Voucher);
+                const voucherBranches = yield VR.findOne(voucher.id, { relations: ["branches"] });
+                if (!voucherBranches.branches.find((b) => b.id === branch.id)) {
                     return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.NothingChanged, null);
                 }
-                voucher_branches.branches = voucher_branches.branches.filter(b => b.id != branch.id);
-                yield VR.save(voucher_branches);
+                voucherBranches.branches = voucherBranches.branches.filter((b) => b.id !== branch.id);
+                yield VR.save(voucherBranches);
                 return result_1.SuccessResult.Ok(BRANCHVOUCHER_REMOVED, {
                     branch, voucher
                 });
@@ -86,44 +86,44 @@ class ParametersService {
             }
         });
     }
-    static update_branch(branch) {
+    update_branch(branch) {
         return __awaiter(this, void 0, void 0, function* () {
-            const BR = yield DBM.getRepository(Branch_1.Branch);
+            const BR = yield (yield this.queryRunner).manager.getRepository(Branch_1.Branch);
             return result_1.SuccessResult.Ok(BRANCH_UPDATED, yield BR.save(branch));
         });
     }
-    static create_branch(branch_data) {
+    create_branch(branchData) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DBM.ExecuteWithinTransaction((qr) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.databaseManager.ExecuteWithinTransaction((qr) => __awaiter(this, void 0, void 0, function* () {
                 const BR = qr.manager.getRepository(Branch_1.Branch);
                 const BCR = qr.manager.getRepository(BranchCategory_1.BranchCategory);
-                let location = yield this.create_location(qr, branch_data);
+                const location = yield this.create_location(qr, branchData);
                 let branch = new Branch_1.Branch();
-                branch.abrev = branch_data.abrev;
+                branch.abrev = branchData.abrev;
                 branch.active = true;
-                branch.category = yield BCR.findOne(branch_data.category_id);
+                branch.category = yield BCR.findOne(branchData.category_id);
                 branch.has_voucher = false;
-                branch.initials = branch_data.initials;
-                branch.name = branch_data.name;
+                branch.initials = branchData.initials;
+                branch.name = branchData.name;
                 branch.location = location;
-                branch.order = branch_data.order;
+                branch.order = branchData.order;
                 branch = yield BR.save(branch);
-                if (branch_data.category_id == BRANCH_CATEGORY_GI) {
+                if (branchData.category_id === BRANCH_CATEGORY_GI) {
                     const PR = qr.manager.getRepository(Person_1.Person);
-                    let director = yield PR.findOne(branch_data.director_id);
-                    let second_director = yield PR.findOne(branch_data.associate_director_id);
-                    yield this.create_organization(qr, branch, location, director, second_director);
+                    const director = yield PR.findOne(branchData.director_id);
+                    const dirAdj = yield PR.findOne(branchData.associate_director_id);
+                    yield this.create_organization(qr, branch, location, director, dirAdj);
                 }
                 return result_1.SuccessResult.Ok(BRANCH_CREATED, branch);
             }));
         });
     }
-    static create_organization(qr, branch, location, director, associate_director) {
+    create_organization(qr, branch, location, director, associateDirector) {
         return __awaiter(this, void 0, void 0, function* () {
             const CR = qr.manager.getRepository(Card_1.Card);
             const PCR = qr.manager.getRepository(PersonCard_1.PersonCard);
             const PCPR = qr.manager.getRepository(PersonCardPosition_1.PersonCardPosition);
-            const director_position = yield PCPR.findOne(1);
+            const directorPosition = yield PCPR.findOne(1);
             let organization = new Card_1.Card();
             organization.archived = false;
             organization.cancelled = false;
@@ -134,28 +134,28 @@ class ParametersService {
             organization.leader = director;
             organization.card_template_id = 6;
             organization = yield CR.save(organization);
-            let dir = new PersonCard_1.PersonCard();
+            const dir = new PersonCard_1.PersonCard();
             dir.person = director;
-            dir.position = director_position;
+            dir.position = directorPosition;
             dir.position_description = "Diretor";
             dir.card = organization;
             yield PCR.save(dir);
-            let dir_adj = new PersonCard_1.PersonCard();
-            dir_adj.person = associate_director;
-            dir_adj.position = director_position;
-            dir_adj.position_description = "Diretor Adjunto";
-            dir_adj.card = organization;
-            yield PCR.save(dir_adj);
+            const dirAdj = new PersonCard_1.PersonCard();
+            dirAdj.person = associateDirector;
+            dirAdj.position = directorPosition;
+            dirAdj.position_description = "Diretor Adjunto";
+            dirAdj.card = organization;
+            yield PCR.save(dirAdj);
             return organization;
         });
     }
-    static create_location(qr, branch_data) {
+    create_location(qr, branchData) {
         return __awaiter(this, void 0, void 0, function* () {
             const CR = qr.manager.getRepository(Country_1.Country);
             const LR = qr.manager.getRepository(Location_1.Location);
             let location = new Location_1.Location();
-            location.name = branch_data.name;
-            location.country = yield CR.findOne(branch_data.country_id);
+            location.name = branchData.name;
+            location.country = yield CR.findOne(branchData.country_id);
             location.active = true;
             location.order = 0;
             location = yield LR.save(location);
@@ -169,34 +169,34 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Voucher_1.Voucher]),
     __metadata("design:returntype", Promise)
-], ParametersService, "save_voucher", null);
+], ParametersService.prototype, "save_voucher", null);
 __decorate([
     trylog_decorator_1.trylog(),
     firebase_emitter_decorator_1.firebaseEmitter(PARAMETERS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Branch_1.Branch, Voucher_1.Voucher]),
     __metadata("design:returntype", Promise)
-], ParametersService, "create_branch_voucher", null);
+], ParametersService.prototype, "create_branch_voucher", null);
 __decorate([
     trylog_decorator_1.trylog(),
     firebase_emitter_decorator_1.firebaseEmitter(PARAMETERS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Branch_1.Branch, Voucher_1.Voucher]),
     __metadata("design:returntype", Promise)
-], ParametersService, "remove_branch_voucher", null);
+], ParametersService.prototype, "remove_branch_voucher", null);
 __decorate([
     trylog_decorator_1.trylog(),
     firebase_emitter_decorator_1.firebaseEmitter(PARAMETERS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Branch_1.Branch]),
     __metadata("design:returntype", Promise)
-], ParametersService, "update_branch", null);
+], ParametersService.prototype, "update_branch", null);
 __decorate([
     trylog_decorator_1.trylog(),
     firebase_emitter_decorator_1.firebaseEmitter(PARAMETERS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], ParametersService, "create_branch", null);
+], ParametersService.prototype, "create_branch", null);
 exports.ParametersService = ParametersService;
 //# sourceMappingURL=parameters-service.js.map

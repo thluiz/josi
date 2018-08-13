@@ -52,7 +52,7 @@ export class VoucherDetailPageComponent implements OnInit, OnDestroy {
 
   save() {
     this.saving = true;
-    this.parameterService.saveVoucher(this.voucher).subscribe((data) => {
+    this.parameterService.saveVoucher(this.voucher).subscribe(() => {
       this.result_form_text = "Salvo!";
 
       setTimeout(() => this.result_form_text = "", 5000);

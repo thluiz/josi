@@ -1,117 +1,142 @@
-import * as azure from 'azure-storage';
+import * as azure from "azure-storage";
+
+import { ErrorCode } from "../../helpers/errors-codes";
+import { replaceErrors } from "../../helpers/replace-errors";
+import { LoggerService } from "../logger-service";
 
 export class AzureTableManager {
-    private static config;
+  static createTableService() {
+    if (!this.config) {
+      this.config = this.loadConfig();
+    }
 
-    static createTableService() {
-        if (!this.config) {
-            this.config = this.loadConfig();
+    return azure.createTableService(this.config.name, this.config.accessKey);
+  }
+
+  static createTableIfNotExists(
+    tableService: azure.TableService,
+    table: string,
+    callback: (error, result, response) => void
+  ) {
+    tableService.createTableIfNotExists(table, callback);
+  }
+
+  static buildEntity(id, data: any = {}, partition = "principal"): any {
+    const entGen = azure.TableUtilities.entityGenerator;
+    return {
+      PartitionKey: entGen.String(partition),
+      RowKey: entGen.String(id),
+      CreatedOn: entGen.Int64(Math.floor(Date.now() / 1000)),
+      Test: entGen.Boolean(process.env.PRODUCTION === "false"),
+      Content: entGen.String(JSON.stringify(data, replaceErrors))
+    };
+  }
+
+  static insertOrMergeEntity(
+    tableService: azure.TableService,
+    table: string,
+    entity: any,
+    callback: (error, result, response) => void
+  ) {
+    this.createTableIfNotExists(tableService, table, err => {
+      if (err) {
+        LoggerService.error(ErrorCode.AzureTableStorage, err);
+      }
+    });
+
+    tableService.insertOrReplaceEntity(table, entity, callback);
+  }
+
+  static retriveEntity(
+    tableService: azure.TableService,
+    table: string,
+    id: string,
+    callback: (error, result, response) => void,
+    partition = "principal"
+  ) {
+    tableService.retrieveEntity(
+      table,
+      partition,
+      id,
+      (err, result, response) => {
+        const data = this.treatDataRetrieved(result);
+        callback(err, data, response);
+      }
+    );
+  }
+
+  static deleteEntity(
+    tableService: azure.TableService,
+    table: string,
+    id: string,
+    callback: (error, response) => void
+  ) {
+    tableService.deleteEntity(table, this.buildEntity(id), (
+      error,
+      response
+    ) => {
+      callback(error, response);
+    });
+  }
+
+  static createTableBatch() {
+    return new azure.TableBatch();
+  }
+
+  static async executeBatch(
+    tableService: azure.TableService,
+    table: string,
+    batch: azure.TableBatch
+  ) {
+    return new Promise((resolve, reject) => {
+      tableService.executeBatch(table, batch, (error, result) => {
+        if (error) {
+          reject(error);
+          return;
         }
+        resolve(result);
+      });
+    });
+  }
 
-        return azure.createTableService(
-            this.config.name,
-            this.config.accessKey
-        );
+  static retrieveEntities(
+    tableService: azure.TableService,
+    table: string,
+    query: string,
+    parameters: string[],
+    callback: (error, result) => void,
+    limit: number = 0
+  ) {
+    let azureQuery = new azure.TableQuery().where(query, parameters);
+
+    if (limit > 0) {
+      azureQuery = azureQuery.top(limit);
     }
 
-    static createTableIfNotExists(tableService: azure.TableService, table: string, callback: (error, result, response) => void) {
-        tableService.createTableIfNotExists(table, callback);
-    }
+    tableService.queryEntities(table, azureQuery, null, (
+      error,
+      result,
+      response
+    ) => {
+      if (error) {
+        callback(error, null);
+      }
+      callback(null, result);
+    });
+  }
 
-    static buildEntity(id, data: any = {}, partition = 'principal'): any {
-        const entGen = azure.TableUtilities.entityGenerator;
-        return {
-            PartitionKey: entGen.String(partition),
-            RowKey: entGen.String(id),
-            CreatedOn: entGen.Int64(Math.floor(Date.now() / 1000)),
-            Test: entGen.Boolean(process.env.PRODUCTION === 'false'),
-            Content: entGen.String(JSON.stringify(data, this.replaceErrors))
-        };
-    }
+  private static config;
 
-    static insertOrMergeEntity(tableService: azure.TableService, table: string, entity: any, callback: (error, result, response) => void) {
+  private static loadConfig() {
+    return {
+      name: process.env.AZURE_STORAGE_NAME,
+      accessKey: process.env.AZURE_STORAGE_ACCESS_KEY
+    };
+  }
 
-        this.createTableIfNotExists(tableService, table, (err) => {
-            if(err) {
-                console.log(err);
-            }
-        });
+  private static treatDataRetrieved(data: any) {
+    if (!data) { return null; }
 
-        tableService.insertOrReplaceEntity(table, entity, callback);
-    }
-
-    static retriveEntity(tableService: azure.TableService, table: string, id: string, callback: (error, result, response) => void, partition = 'principal') {
-        tableService.retrieveEntity(table, partition, id, (err, result, response) => {
-            let data = this.treatDataRetrieved(result);
-            callback(err, data, response);
-        });
-    }
-
-    static deleteEntity(tableService: azure.TableService, table: string, id: string, callback: (error, response) => void) {
-        tableService.deleteEntity(table, this.buildEntity(id), function (error, response) {
-            callback(error, response);
-        });
-    }
-
-    static createTableBatch() {
-        return new azure.TableBatch();
-    }
-
-    static async executeBatch(tableService: azure.TableService, table: string, batch: azure.TableBatch) {
-        return new Promise((resolve, reject) => {
-            tableService.executeBatch(table, batch, function (error, result) {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-                resolve(result);
-            });
-        });
-    }
-
-    static retrieveEntities(tableService: azure.TableService,
-        table: string, query: string, parameters: string[],
-        callback: (error, result) => void, limit: number = 0) {
-        var azure_query = new azure.TableQuery().where(query, parameters);
-
-        if (limit > 0) {
-            azure_query = azure_query.top(limit);
-        }
-
-        tableService.queryEntities(table, azure_query, null, function (error, result, response) {
-            if (error) {
-                callback(error, null)
-            }
-            callback(null, result);
-        });
-    }
-
-    private static loadConfig() {
-        return {
-            name: process.env.AZURE_STORAGE_NAME,
-            accessKey: process.env.AZURE_STORAGE_ACCESS_KEY
-        }
-    }
-
-    private static treatDataRetrieved(data: any) {
-        let new_data = {};
-        if (!data)
-            return null;
-
-        return JSON.parse(data.Content._);
-    }
-
-    static replaceErrors(key, value) {
-        if (value instanceof Error) {
-            var error = {};
-
-            Object.getOwnPropertyNames(value).forEach(function (key) {
-                error[key] = value[key];
-            });
-
-            return error;
-        }
-
-        return value;
-    }
+    return JSON.parse(data.Content._);
+  }
 }

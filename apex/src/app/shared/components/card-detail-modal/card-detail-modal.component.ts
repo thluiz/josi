@@ -17,6 +17,7 @@ import { UtilsService } from 'app/services/utils-service';
 import { Subscription } from 'rxjs/subscription';
 
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Result } from 'app/shared/models/result';
 
 
 @Component({
@@ -38,9 +39,7 @@ export class CardDetailModalComponent implements OnInit {
   private card_actions : Subscription;
 
 
-  constructor(private personService: PersonService,
-    private parameterService: ParameterService,
-    private utilsService: UtilsService,
+  constructor(
     private modalService: ModalService,
     private cardService: CardService,
     private ngbModalService: NgbModal,
@@ -57,7 +56,7 @@ export class CardDetailModalComponent implements OnInit {
     filter((ca: any) => ca.type == CARD_COMMENT_ADDED
       && this.card
       && ca.payload.card.id == this.card.id))
-    .subscribe((action) => {
+    .subscribe(() => {
       if(!this.card)
         return;
       this.load_commentaries();
@@ -109,8 +108,8 @@ export class CardDetailModalComponent implements OnInit {
   }
 
   private load_commentaries(action = null) {
-    this.cardService.getCardCommentaries(this.card).subscribe((commentaries: CardCommentary[]) => {
-      this.commentaries = commentaries;
+    this.cardService.getCardCommentaries(this.card).subscribe((result_commentaries: Result<CardCommentary[]>) => {
+      this.commentaries = result_commentaries.data;
 
       if(action != null) {
         action();

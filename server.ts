@@ -1,31 +1,51 @@
-let appInsights = require("applicationinsights");
+import appInsights = require("applicationinsights");
 
-if (process.env.PRODUCTION !== 'false') {
-    require('dotenv').load();
+import { DependencyManager } from "./src/services/managers/dependency-manager";
+
+import { DataRunningConfiguration } from "./src/services/managers/data-runner";
+import { DatabaseManager } from "./src/services/managers/database-manager";
+
+if (process.env.PRODUCTION !== "false") {
+    // tslint:disable-next-line:no-var-requires
+    require("dotenv").load();
 } else {
     appInsights.setup(process.env.AZURE_APP_INSIGHTS);
     appInsights.start();
 }
 
-import { LoggerService } from './src/services/logger-service';
 import "reflect-metadata";
-import { SecurityService } from './domain/services/security_services';
-import * as old_routes from './src/initializers/old-routes';
-import * as passport  from './src/initializers/passport';
-import * as routes  from './src/initializers/routes';
-import { ErrorCode } from './src/helpers/errors-codes';
+import { ErrorCode } from "./src/helpers/errors-codes";
 
-process.on('unhandledRejection', (reason, p) => {
-    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
-    let error = new Error('Unhandled Rejection');
+import * as old_routes from "./src/initializers/old-routes";
+import * as passport from "./src/initializers/passport";
+import * as routes from "./src/initializers/routes";
+
+import { LoggerService, LogOrigins } from "./src/services/logger-service";
+
+process.on("unhandledRejection", (reason, p) => {
+    const error = new Error("Unhandled Rejection");
     LoggerService.error(ErrorCode.UnhandledRejection, error, { reason, p});
 });
 
-const express = require('express');
-const helmet = require('helmet');
+import bodyParser = require("body-parser");
+import cors = require("cors");
+import express = require("express");
+import helmet = require("helmet");
+
+const container = DependencyManager.container;
+
+class ServerDataRunningConfiguration extends DataRunningConfiguration {
+    constructor() {
+        super();
+        this.shouldCommit = true;
+        this.useTransaction = true;
+    }
+}
+
+container.bind<DatabaseManager>(DatabaseManager).toSelf().inSingletonScope();
+container.bind<DataRunningConfiguration>(ServerDataRunningConfiguration).to(DataRunningConfiguration);
+
 const app = express();
-const bodyParser = require("body-parser");
-const cors = require("cors");
 const port = process.env.port || process.env.PORT || 3979;
 
 app.use(helmet());
@@ -33,21 +53,18 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-SecurityService.create_pool().then((pool) => {
-    passport.initialize(app);
+passport.initialize(app);
+old_routes.initialize(app);
 
-    old_routes.initialize(app, pool);
+routes.initialize(app, "./src/routes");
 
-    routes.initialize(app, "./src/routes");
+app.get(/^((?!\.).)*$/, (req, res) => {
+    const path = "index.html";
+    res.sendfile(path, { root: "./apex/public" });
+});
 
-    app.get(/^((?!\.).)*$/, (req, res) => {
-        var path = "index.html";
-        res.sendfile(path, { root: "./apex/public" });
-    });
+app.use(express.static("./apex/public"));
 
-    app.use(express.static("./apex/public"));
-
-    app.listen(port, () => {
-        console.log(`server listening to ${port}`);
-    });
+app.listen(port, () => {
+    LoggerService.info(LogOrigins.General, `server listening to ${port}`);
 });

@@ -1,11 +1,17 @@
+// decorator should keep execution context (this).
+// Arrow functions does not set this, so it's better keep the traditional function here.
+// tslint:disable:only-arrow-functions
+
 import { LoggerService } from "../services/logger-service";
-import { Result, ErrorResult } from "../helpers/result";
+
 import { ErrorCode } from "../helpers/errors-codes";
+import { ErrorResult } from "../helpers/result";
 
 export function trylog() {
+
     return function( target, method, descriptor ) {
-        var originalMethod = descriptor.value;
-        descriptor.value = function (...args) {
+        const originalMethod = descriptor.value;
+        descriptor.value =  function(...args) {
             try {
                 return originalMethod.apply(this, args);
             } catch (error) {
@@ -20,15 +26,15 @@ export function trylog() {
         };
 
         return descriptor;
-    }
+    };
 }
 
 export function trylog2() {
     return function( target, method, descriptor ) {
-        var originalMethod = descriptor.value;
-        descriptor.value = function (...args) {
+        const originalMethod = descriptor.value;
+        descriptor.value = async function(...args) {
             try {
-                let result = originalMethod.apply(this, args);
+                const result = await originalMethod.apply(this, args);
 
                 return result;
             } catch (error) {
@@ -43,5 +49,5 @@ export function trylog2() {
         };
 
         return descriptor;
-    }
+    };
 }

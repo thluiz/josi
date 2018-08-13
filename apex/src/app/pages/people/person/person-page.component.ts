@@ -31,6 +31,7 @@ NgbDatepickerConfig
 } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { PersonIndicationListComponent } from '../../../shared/components/person-indication-list/person-indication-list.component';
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -67,7 +68,7 @@ export class PersonPageComponent implements OnInit, OnDestroy {
   person: any;
   current_roles;
   available_roles;
-  current_scheduling;
+  current_scheduling = [];
   comments: any[];
   new_role: any;
   new_schedule: any = {};
@@ -185,25 +186,28 @@ export class PersonPageComponent implements OnInit, OnDestroy {
     observableZip(this.parameterService.getActiveBranches(),
                     this.parameterService.getIncidentTypes(),
                     this.parameterService.getRecurrenceTypes(),
-      (branches, incident_types, recurrence_types) => {
-        this.branches = branches;
-        this.manual_incident_types = incident_types.filter(f => !f.automatically_generated);
-        this.recurrence_types = recurrence_types;
+      (result_branches, result_incident_types, result_recurrence_types) => {
+        this.branches = result_branches.data;
+        this.manual_incident_types = result_incident_types.data.filter(f => !f.automatically_generated);
+        this.recurrence_types = result_recurrence_types.data;
       }).subscribe(() => {
         this.open(content);
       });
   }
 
   open_add_role(content){
-    this.parameterService.getRoles().subscribe((roles) => {
-      this.available_roles = roles.filter(r => !this.current_roles || this.current_roles.findIndex(cr => cr.id == r.id) < 0);
+    this.parameterService.getRoles().subscribe((result_roles) => {
+      this.available_roles = result_roles.data
+                            .filter(r => !this.current_roles
+                                  || this.current_roles.findIndex(cr => cr.id == r.id) < 0
+                            );
 
       this.open(content);
     });
   }
 
   private open(content){
-    this.modalService.open(content).result.then((result) => {
+    this.modalService.open(content).result.then(() => {
 
     }, (reason) => {
         console.log(reason);
@@ -212,7 +216,9 @@ export class PersonPageComponent implements OnInit, OnDestroy {
   }
 
   add_role() {
-    this.personService.addRole(this.id, this.new_role).toPromise().then(() => {
+    this.personService
+    .addRole(this.id, this.new_role)
+    .toPromise().then(() => {
       this.load_person_data();
       this.load_person_roles();
       this.cardService.getOperators(true).subscribe();
@@ -220,7 +226,9 @@ export class PersonPageComponent implements OnInit, OnDestroy {
   }
 
   remove_role(role_id) {
-    this.personService.removeRole(this.id, role_id).toPromise().then(() => {
+    this.personService
+    .removeRole(this.id, role_id)
+    .toPromise().then(() => {
       this.load_person_data();
       this.load_person_roles();
       this.cardService.getOperators(true).subscribe();
@@ -228,20 +236,26 @@ export class PersonPageComponent implements OnInit, OnDestroy {
   }
 
   load_person_scheduling() {
-    this.personService.getPersonScheduling(this.id).subscribe((scheduling) => {
-      this.current_scheduling = scheduling;
+    this.personService
+    .getPersonScheduling(this.id)
+    .subscribe((result_scheduling : Result<any>) => {
+      this.current_scheduling = result_scheduling.data;
     });
   }
 
   load_person_roles() {
-    this.personService.getPersonRoles(this.id).subscribe((roles) => {
-      this.current_roles = roles;
+    this.personService
+    .getPersonRoles(this.id)
+    .subscribe((result_roles: Result<any[]>) => {
+      this.current_roles = result_roles.data;
     });
   }
 
   load_person_data() {
-    this.personService.getData(this.id).subscribe((data) => {
-      this.person = data;
+    this.personService
+    .getData(this.id)
+    .subscribe((result_data: Result<any>) => {
+      this.person = result_data.data[0];
     });
   }
 
@@ -254,7 +268,8 @@ export class PersonPageComponent implements OnInit, OnDestroy {
   }
 
   remove_schedule(schedule) {
-    this.personService.remove_schedule(schedule)
+    this.personService
+    .remove_schedule(schedule)
     .toPromise()
     .then(() => {
       this.load_person_scheduling();
@@ -276,7 +291,8 @@ export class PersonPageComponent implements OnInit, OnDestroy {
       this.new_schedule.incident_type = this.new_schedule.type.id;
     }
 
-    this.personService.save_schedule(this.new_schedule)
+    this.personService
+    .save_schedule(this.new_schedule)
     .toPromise()
     .then(() => {
       this.load_person_scheduling();
@@ -369,8 +385,8 @@ export class PersonPageComponent implements OnInit, OnDestroy {
    * COMMENTS
    */
   load_comments_about_person() {
-    this.personService.getCommentsAboutPerson(this.id).subscribe((comments) => {
-      this.comments = comments as any;
+    this.personService.getCommentsAboutPerson(this.id).subscribe((result_comments : Result<any[]>) => {
+      this.comments = result_comments.data;
     });
   }
 
@@ -379,8 +395,8 @@ export class PersonPageComponent implements OnInit, OnDestroy {
    */
 
   load_person_address() {
-    this.personService.getAddresses(this.id).subscribe((data:any[]) => {
-      this.addresses = data;
+    this.personService.getAddresses(this.id).subscribe((result_data: Result<any[]>) => {
+      this.addresses = result_data.data;
     });
   }
 
@@ -392,8 +408,8 @@ export class PersonPageComponent implements OnInit, OnDestroy {
       person_id: this.id
     };
     observableZip(this.parameterService.getCountries(),
-      (countries, incident_types, recurrence_types) => {
-        this.countries = countries;
+      (result_countries : Result<any[]>) => {
+        this.countries = result_countries.data;
       }).subscribe(() => {
         this.open(content);
       });
@@ -423,14 +439,18 @@ export class PersonPageComponent implements OnInit, OnDestroy {
 
   save_address() {
     this.new_address.saving = true;
-    this.personService.saveAddress(this.new_address).subscribe((data) => {
+    this.personService
+    .saveAddress(this.new_address)
+    .subscribe(() => {
       this.new_address.saving = false;
       this.load_person_address();
     });
   }
 
   remove_address(ad) {
-    this.personService.archiveAddress(ad).subscribe((data) => {
+    this.personService
+    .archiveAddress(ad)
+    .subscribe(() => {
       this.load_person_address();
     });
   }

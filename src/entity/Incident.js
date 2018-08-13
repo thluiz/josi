@@ -1,4 +1,5 @@
 "use strict";
+// tslint:disable:variable-name
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9,16 +10,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const PersonIncident_1 = require("./PersonIncident");
-const Person_1 = require("./Person");
-const typeorm_1 = require("typeorm");
 const Branch_1 = require("./Branch");
 const Card_1 = require("./Card");
 const IncidentType_1 = require("./IncidentType");
+const Person_1 = require("./Person");
+const PersonIncident_1 = require("./PersonIncident");
+const typeorm_1 = require("typeorm");
 let Incident = Incident_1 = class Incident {
+    // tslint:disable-next-line:member-ordering
     static duplicate(data) {
         // Object.assign does not work as expected
-        let incident = new Incident_1();
+        const incident = new Incident_1();
         incident.branch = data.branch;
         incident.cancelled = data.cancelled;
         incident.cancelled_by = data.cancelled_by;
@@ -56,12 +58,14 @@ __decorate([
     __metadata("design:type", Number)
 ], Incident.prototype, "id", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => IncidentType_1.IncidentType),
+    typeorm_1.ManyToOne(() => IncidentType_1.IncidentType),
     typeorm_1.JoinColumn({ name: "incident_type" }),
     __metadata("design:type", IncidentType_1.IncidentType)
 ], Incident.prototype, "type", void 0);
 __decorate([
-    typeorm_1.Column({ type: 'datetime', default: () => 'getdate()' }),
+    typeorm_1.Column({ type: "datetime", default: () => "getdate()" })
+    // tslint:disable-next-line:variable-name
+    ,
     __metadata("design:type", Date)
 ], Incident.prototype, "created_on", void 0);
 __decorate([
@@ -85,17 +89,17 @@ __decorate([
     __metadata("design:type", Date)
 ], Incident.prototype, "closed_on", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Person_1.Person),
+    typeorm_1.ManyToOne(() => Person_1.Person),
     typeorm_1.JoinColumn({ name: "closed_by" }),
     __metadata("design:type", Person_1.Person)
 ], Incident.prototype, "closed_by", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Person_1.Person),
+    typeorm_1.ManyToOne(() => Person_1.Person),
     typeorm_1.JoinColumn({ name: "responsible_id" }),
     __metadata("design:type", Person_1.Person)
 ], Incident.prototype, "responsible", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Branch_1.Branch),
+    typeorm_1.ManyToOne(() => Branch_1.Branch),
     typeorm_1.JoinColumn({ name: "branch_id" }),
     __metadata("design:type", Branch_1.Branch)
 ], Incident.prototype, "branch", void 0);
@@ -132,7 +136,7 @@ __decorate([
     __metadata("design:type", Date)
 ], Incident.prototype, "cancelled_on", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Person_1.Person),
+    typeorm_1.ManyToOne(() => Person_1.Person),
     typeorm_1.JoinColumn({ name: "cancelled_by" }),
     __metadata("design:type", Person_1.Person)
 ], Incident.prototype, "cancelled_by", void 0);
@@ -148,12 +152,12 @@ __decorate([
     __metadata("design:type", Date)
 ], Incident.prototype, "updated_at", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Person_1.Person),
+    typeorm_1.ManyToOne(() => Person_1.Person),
     typeorm_1.JoinColumn({ name: "started_by" }),
     __metadata("design:type", Person_1.Person)
 ], Incident.prototype, "started_by", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Card_1.Card),
+    typeorm_1.ManyToOne(() => Card_1.Card),
     typeorm_1.JoinColumn({ name: "card_id" }),
     __metadata("design:type", Card_1.Card)
 ], Incident.prototype, "card_id", void 0);
@@ -170,12 +174,12 @@ __decorate([
     __metadata("design:type", Number)
 ], Incident.prototype, "contact_method_id", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Incident_1),
+    typeorm_1.ManyToOne(() => Incident_1),
     typeorm_1.JoinColumn({ name: "ownership_id" }),
     __metadata("design:type", Incident)
 ], Incident.prototype, "ownership", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => PersonIncident_1.PersonIncident, person_incident => person_incident.incident, { cascade: true }),
+    typeorm_1.OneToMany(() => PersonIncident_1.PersonIncident, (person_incident) => person_incident.incident, { cascade: true }),
     __metadata("design:type", Array)
 ], Incident.prototype, "people_incidents", void 0);
 __decorate([

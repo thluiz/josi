@@ -93,8 +93,8 @@ export class WeeklyPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.securityService.getCurrentUserData().subscribe((user) => {
-      this.current_branch = user.default_branch_id || 0;
+    this.securityService.getCurrentUserData().subscribe((result_user : Result<any>) => {
+      this.current_branch = result_user.data.default_branch_id || 0;
       this.getMonitorData();
     });
 

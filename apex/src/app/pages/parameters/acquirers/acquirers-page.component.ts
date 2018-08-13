@@ -5,31 +5,31 @@ import { ParameterService } from "app/services/parameter-service";
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './acquirers-page.component.html',
-  styleUrls: ['../parameters-customizations.scss']  
+  styleUrls: ['../parameters-customizations.scss']
 })
-export class AcquirersPageComponent implements OnInit {    
+export class AcquirersPageComponent implements OnInit {
   collection: any[];
   current_item: any;
   saving = false;
 
-  constructor(private parameterService: ParameterService, 
-              private ngbModalService: NgbModal) {      
+  constructor(private parameterService: ParameterService,
+              private ngbModalService: NgbModal) {
 
-  }  
+  }
 
   ngOnInit() {
-    this.load_data();    
+    this.load_data();
   }
 
   private load_data() {
-    this.parameterService.getAcquirers().subscribe((data) => {
-      this.collection = data;
+    this.parameterService.getAcquirers().subscribe((result) => {
+      this.collection = result.data;
     });
   }
 
   save(close_action) {
     this.saving = true;
-    this.parameterService.saveAcquirer(this.current_item).subscribe((data) => {
+    this.parameterService.saveAcquirer(this.current_item).subscribe(() => {
       if(close_action) {
         close_action();
       }
@@ -57,7 +57,7 @@ export class AcquirersPageComponent implements OnInit {
   }
 
   private open_modal(content: any) {
-    this.ngbModalService.open(content).result.then((result) => {
+      this.ngbModalService.open(content).result.then(() => {
     }, (reason) => {
       this.current_item = null;
       console.log(reason);

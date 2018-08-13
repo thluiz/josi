@@ -6,57 +6,59 @@ import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from '
 import { ActivatedRoute, Router } from '@angular/router';
 import { ParameterService } from 'app/services/parameter-service';
 import { SecurityService } from 'app/services/security-service';
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './members-panel-page.component.html',
   styleUrls: ['../people-customizations.scss'],
   providers: [DatePickerI18n,
-    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
+    {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter},
     {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
 export class MembersPanelPageComponent implements OnInit, OnDestroy {
-  
-  programs: any;  
+
+  programs: any;
   branches: any;
-  private person_list_sub: Subscription;  
+  private person_list_sub: Subscription;
 
   private contact_changes_subscriber: Subscription;
-  private person_changes_subscriber: Subscription;    
+  private person_changes_subscriber: Subscription;
 
   constructor(
-    private personService: PersonService, 
+    private personService: PersonService,
     private securityService: SecurityService,
     private route: ActivatedRoute,
-    private router: Router, 
+    private router: Router,
     private modalService: NgbModal,
     private parameterService: ParameterService,
-    private datePickerConfig: NgbDatepickerConfig) {      
-  
-  }  
-  
-  ngOnInit() {    
-    this.person_changes_subscriber = this.personService.personChanges$
-    .subscribe((data) => {
-      this.load_members_list();
-    });
+    private datePickerConfig: NgbDatepickerConfig) {
 
-    this.contact_changes_subscriber = this.personService.contactChanges$    
-    .subscribe((data) => {            
-      this.load_members_list();
-    });
-
-    this.parameterService.getActiveBranches().subscribe((branches) => {
-      this.branches = branches;
-    });
-
-    this.securityService.getCurrentUserData().subscribe((user) => {      
-      //this.current_branch = params['branch'] || user.default_branch_id || 0;
-    }); 
-
-    this.load_members_list(); 
   }
-  
+
+  ngOnInit() {
+    this.person_changes_subscriber = this.personService.personChanges$
+    .subscribe(() => {
+      this.load_members_list();
+    });
+
+    this.contact_changes_subscriber = this.personService.contactChanges$
+    .subscribe(() => {
+      this.load_members_list();
+    });
+
+    this.parameterService.getActiveBranches().subscribe((result_branches) => {
+      this.branches = result_branches.data;
+    });
+
+    this.securityService.getCurrentUserData()
+    .subscribe((result_user : Result<any>) => {
+      //this.current_branch = params['branch'] || user.default_branch_id || 0;
+    });
+
+    this.load_members_list();
+  }
+
   ngOnDestroy() {
     this.person_list_sub.unsubscribe();
     this.person_changes_subscriber.unsubscribe();
@@ -68,17 +70,18 @@ export class MembersPanelPageComponent implements OnInit, OnDestroy {
     } else if (view == 1) {
       this.router.navigateByUrl(`people/members`);
     }
-  }  
+  }
 
-  load_members_list() {     
+  load_members_list() {
     if(this.person_list_sub) {
       this.person_list_sub.unsubscribe();
     }
 
-    this.person_list_sub = this.personService.getMembersList().subscribe(
-      data => {           
-        const result = data;            
-        this.programs = result;
+    this.person_list_sub = this.personService
+    .getMembersList()
+    .subscribe(
+      (result_data : Result<any[]>) => {
+        this.programs = result_data.data;
       }
     );
   }

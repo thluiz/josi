@@ -4,22 +4,22 @@ import { CardService } from 'app/services/card-service';
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './organizations-overview-page.component.html',
-  styleUrls: ['../cards-customizations.scss']  
+  styleUrls: ['../cards-customizations.scss']
 })
 export class OrganizationsOverviewPageComponent implements OnInit, OnDestroy {
-  
-  organizations = [];  
-  
-  constructor(private cardService: CardService) {          
-  }  
-  
-  ngOnInit() {    
-    this.cardService.getOrganizations(true).subscribe((data : any) => {
-      this.organizations = data;
+
+  organizations = [];
+
+  constructor(private cardService: CardService) {
+  }
+
+  ngOnInit() {
+    this.cardService.getOrganizations(true).subscribe((result_data : any) => {
+      this.organizations = result_data.data;
     });
   }
-  
+
   ngOnDestroy() {
-    
-  }  
+
+  }
 }

@@ -1,5 +1,5 @@
-import * as auth from '../../middlewares/auth';
-import { FirebaseManager } from '../../services/managers/firebase-manager';
+import * as auth from "../../middlewares/auth";
+import { FirebaseManager } from "../../services/managers/firebase-manager";
 
 export function routes(app) {
     app.get("/api/firebase/token",

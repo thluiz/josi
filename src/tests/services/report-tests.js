@@ -8,50 +8,51 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require('dotenv').load();
-require("mocha");
+// tslint:disable-next-line:no-var-requires
+require("dotenv").load();
 const chai_1 = require("chai");
+require("mocha");
 const incidents_service_1 = require("../../services/incidents-service");
 const ownership_closing_report_1 = require("../../services/reports/ownership-closing-report");
-const IF = require("../factories/incident-factory");
 const GF = require("../factories/general-factory");
-const database_manager_1 = require("../../services/managers/database-manager");
+const IF = require("../factories/incident-factory");
 const IncidentType_1 = require("../../entity/IncidentType");
-const configurations_services_1 = require("../../services/configurations-services");
 const incidents_repository_1 = require("../../repositories/incidents-repository");
-describe('Reporting Tests', function () {
-    return __awaiter(this, void 0, void 0, function* () {
-        this.timeout(15000000);
-        let runner;
-        let IS;
-        let ITR;
-        const dbm = new database_manager_1.DatabaseManager();
-        beforeEach(() => __awaiter(this, void 0, void 0, function* () {
-            runner = yield dbm.CreateQueryRunner();
-            IS = new incidents_service_1.IncidentsService(dbm, { runner, useTransaction: true, shouldCommit: false });
-            ITR = yield runner.manager.getRepository(IncidentType_1.IncidentType);
-            yield runner.startTransaction();
-        }));
-        afterEach(() => __awaiter(this, void 0, void 0, function* () {
-            yield dbm.RollbackTransaction(runner);
-        }));
-        it('should send ownership report', () => __awaiter(this, void 0, void 0, function* () {
-            const incident_data = yield IF.create(runner, yield ITR.findOne(configurations_services_1.Constants.IncidentTypeOwnership));
-            const registering = yield IS.create_incident_for_person({
-                incident: incident_data,
-                person: (yield GF.create_person(runner)),
-                responsible: (yield GF.create_responsible(runner)),
-                register_closed: false,
-                register_treated: false,
-                start_activity: false
-            });
-            const closing_result = yield IS.close_incident(registering.data, yield GF.create_responsible(runner));
-            chai_1.expect(closing_result.success, closing_result.message).to.be.true;
-            let IR = yield incidents_repository_1.IncidentsRepository.getRepository(runner);
-            let incident = (yield IR.findOne(registering.data.id));
-            let result = yield ownership_closing_report_1.OwnershipClosingReport.send(incident);
-            chai_1.expect(result.success).to.be.true;
-        }));
-    });
-});
+const configurations_services_1 = require("../../services/configurations-services");
+const database_manager_1 = require("../../services/managers/database-manager");
+describe("Reporting Tests", () => __awaiter(this, void 0, void 0, function* () {
+    this.timeout(15000000);
+    let runner;
+    let IS;
+    let ITR;
+    const dbm = new database_manager_1.DatabaseManager();
+    beforeEach(() => __awaiter(this, void 0, void 0, function* () {
+        runner = yield dbm.CreateQueryRunner();
+        IS = new incidents_service_1.IncidentsService();
+        ITR = yield runner.manager.getRepository(IncidentType_1.IncidentType);
+        yield runner.startTransaction();
+    }));
+    afterEach(() => __awaiter(this, void 0, void 0, function* () {
+        yield dbm.RollbackTransaction(runner);
+    }));
+    it("should send ownership report", () => __awaiter(this, void 0, void 0, function* () {
+        const incidentData = yield IF.create(runner, yield ITR.findOne(configurations_services_1.Constants.IncidentTypeOwnership));
+        const registering = yield IS.create_incident_for_person({
+            incident: incidentData,
+            person: (yield GF.create_person(runner)),
+            responsible: (yield GF.create_responsible(runner)),
+            register_closed: false,
+            register_treated: false,
+            start_activity: false
+        });
+        const closingResult = yield IS.close_incident(registering.data, yield GF.create_responsible(runner));
+        chai_1.expect(closingResult.success, closingResult.message).
+            to.be.true("incident should be closed");
+        const IR = yield new incidents_repository_1.IncidentsRepository().getRepository();
+        const incident = (yield IR.findOne(registering.data.id));
+        const result = yield new ownership_closing_report_1.OwnershipClosingReport().send(incident);
+        chai_1.expect(result.success)
+            .to.be.true("closing report should be created");
+    }));
+}));
 //# sourceMappingURL=report-tests.js.map

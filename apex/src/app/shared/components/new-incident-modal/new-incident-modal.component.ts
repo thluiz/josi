@@ -62,12 +62,13 @@ export class NewInicidentModalComponent implements OnInit {
   open(initial_state = {}) {
     this.saving = false;
     this.reset_new_incident(initial_state);
+
     observableZip(
       this.parameterService.getActiveBranches(),
       this.parameterService.getIncidentTypes(),
-      (branches : any[], incident_types: any[]) => {
-        this.branches = branches.filter(b => b.category_id != 3);
-        this.incident_types = incident_types.filter(i => !i.automatically_generated);
+      (result_branches: Result<any[]>, result_incident_types: Result<any[]>) => {
+        this.branches = result_branches.data.filter(b => b.category_id != 3);
+        this.incident_types = result_incident_types.data.filter(i => !i.automatically_generated);
 
         this.open_modal(this.add_incident_modal, true);
       }
@@ -77,7 +78,7 @@ export class NewInicidentModalComponent implements OnInit {
   private open_modal(content, on_close_action = false) {
     this.modalRef = this.ngbModalService.open(content);
 
-    this.modalRef.result.then((result) => {
+    this.modalRef.result.then(() => {
 
     }, (reason) => {
       console.log(reason);

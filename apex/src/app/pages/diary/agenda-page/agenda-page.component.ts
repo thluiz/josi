@@ -1,9 +1,9 @@
 import { LightIncident } from 'app/shared/models/incident-model';
 import { ApplicationEventService } from 'app/services/application-event-service';
 import { SecurityService } from 'app/services/security-service';
-import { Component, Input, ViewChild, AfterViewInit, OnInit, OnDestroy, ViewChildren, QueryList } from '@angular/core';
+import { Component, AfterViewInit, OnInit, OnDestroy, ViewChildren, QueryList } from '@angular/core';
 
-import { PersonService, DailyMonitorDisplayType } from 'app/services/person-service';
+import { PersonService } from 'app/services/person-service';
 import { ParameterService } from 'app/services/parameter-service';
 import {
   IncidentService,
@@ -27,7 +27,7 @@ import { NgbModal,
   NgbDateParserFormatter
 } from '@ng-bootstrap/ng-bootstrap';
 
-import { Subscription,  Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 
 import { filter } from 'rxjs/operators';
@@ -68,7 +68,6 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
   private incidents_subscriber : Subscription;
 
   constructor(private personService: PersonService,
-              private incidentService: IncidentService,
               private parameterService: ParameterService,
               private modalService: ModalService,
               private datePickerConfig: NgbDatepickerConfig,
@@ -89,18 +88,13 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    this.parameterService.getActiveBranches().subscribe(data => {
-      const result = data;
+    this.parameterService.getActiveBranches().subscribe(result_data => {
+      const result = result_data.data;
       this.branches = result;
     }, err => console.error(err));
 
-    this.parameterService.getIncidentTypes().subscribe(data => {
-      const result = data;
-      this.manual_incident_types = result.filter(i => !i.automatically_generated);
-    }, err => console.error(err));
-
-    this.securityService.getCurrentUserData().subscribe((user) => {
-      this.current_branch = user.default_branch_id || 0;
+    this.securityService.getCurrentUserData().subscribe((result_user : Result<any>) => {
+      this.current_branch = result_user.data.default_branch_id || 0;
       this.getAgendaData();
 
       if(this.lateralSummaryComponent) {

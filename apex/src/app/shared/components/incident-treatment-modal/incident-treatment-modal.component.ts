@@ -129,16 +129,19 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
       this.incidentService.getComments(incident.id),
       this.parameterService.getPaymentMethods(),
 
-      (incident_data: any, person: any, comments: Result<any[]>, payment_methods: any[]) => {
-        this.current_incident = incident_data.data[0];
-        this.person = person;
+      (result_incident_data: Result<any>,
+        result_person: Result<any>, comments: Result<any[]>,
+        result_payment_methods: Result<any[]>) => {
+
+        this.current_incident = result_incident_data.data[0];
+        this.person = result_person.data[0];
 
         this.comments = comments.data
           && comments.data.length > 0
           && !comments.data[0].empty ?
           comments.data : [];
 
-        this.payment_methods = payment_methods;
+        this.payment_methods = result_payment_methods.data;
         this.set_dates_from_string_date(this.current_incident.date);
 
         this.reset_reschedule(this.current_incident);

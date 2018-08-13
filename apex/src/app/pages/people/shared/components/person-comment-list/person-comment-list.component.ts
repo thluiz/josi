@@ -10,6 +10,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription, Observable } from 'rxjs';
 import { ModalService, ModalType } from 'app/services/modal-service';
 import { MarkdownService } from 'ngx-markdown';
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'person-comment-list',
@@ -59,7 +60,7 @@ export class PersonCommentListComponent implements OnInit, OnDestroy {
     }
 
     this.personService.getCommentsAboutPerson(this.person.id)
-    .subscribe((data) => this.comments = data);
+    .subscribe((result_data: Result<any[]>) => this.comments = result_data.data || []);
 
     this.last_call = new Date();
   }

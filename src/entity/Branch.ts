@@ -1,8 +1,11 @@
-import { BranchCategory } from './BranchCategory';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import { Location } from './Location';
-import { Currency } from './Currency';
-import { Timezone } from './Timezone';
+// tslint:disable:variable-name
+
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+
+import { BranchCategory } from "./BranchCategory";
+import { Currency } from "./Currency";
+import { Location } from "./Location";
+import { Timezone } from "./Timezone";
 
 @Entity()
 export class Branch {
@@ -18,19 +21,19 @@ export class Branch {
     @Column()
     initials: string;
 
-    @ManyToOne(type => BranchCategory)
+    @ManyToOne(() => BranchCategory)
     @JoinColumn({ name: "category_id" })
     category: BranchCategory;
 
-    @ManyToOne(type => Location)
+    @ManyToOne(() => Location)
     @JoinColumn({ name: "location_id" })
     location: Location;
 
-    @ManyToOne(type => Currency)
+    @ManyToOne(() => Currency)
     @JoinColumn({ name: "default_currency_id" })
     default_currency: Currency;
 
-    @ManyToOne(type => Timezone)
+    @ManyToOne(() => Timezone)
     @JoinColumn({ name: "timezone_id" })
     timezone: Timezone;
 

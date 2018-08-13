@@ -12,6 +12,7 @@ import { UtilsService } from 'app/services/utils-service';
 
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParameterService } from 'app/services/parameter-service';
+import { Result } from 'app/shared/models/result';
 
 
 @Component({
@@ -90,11 +91,15 @@ export class PersonDataTreatmentModalComponent implements OnInit {
       this.personService.getPersonMissingData(this.person_id()),
       this.personService.getPersonContacts(this.person_id()),
       this.parameterService.getActiveBranches(),
-      (person_data, missing_data, contacts, branches) => {
-        this.person = person_data;
-        this.missing_data = missing_data as any;
-        this.load_contacts(contacts);
-        this.branches = branches;
+      (result_person_data: Result<any>,
+        result_missing_data: Result<any>,
+        result_contacts: Result<any>,
+        result_branches: Result<any[]>) => {
+
+        this.person = result_person_data.data;
+        this.missing_data = result_missing_data.data as any;
+        this.load_contacts(result_contacts.data);
+        this.branches = result_branches.data;
 
         if (this.contacts.length > 0 && this.principal_contacts.length == 0) {
           this.show_only_principal_contacts = false;
@@ -110,13 +115,13 @@ export class PersonDataTreatmentModalComponent implements OnInit {
   }
 
   open_new_contact(content) {
-    this.parameterService.getContactTypes().subscribe((data) => {
+    this.parameterService.getContactTypes().subscribe(() => {
       this.open_modal(content);
     });
   }
 
   private open_modal(content, on_close_action = false) {
-    this.ngbModalService.open(content, { windowClass: 'custom-modal' }).result.then((result) => {
+    this.ngbModalService.open(content, { windowClass: 'custom-modal' }).result.then(() => {
 
     }, (reason) => {
       console.log(reason);
@@ -124,17 +129,18 @@ export class PersonDataTreatmentModalComponent implements OnInit {
   }
 
   save_birth_date() {
-    this.personService.getData(this.person_id()).subscribe((data) => {
-      let person_data = data as any;
+    this.personService.getData(this.person_id()).subscribe((result_data: Result<any>) => {
+      let person_data = result_data.data as any;
       person_data.birth_date = this.utilsService.translate_date_to_server(this.person.birth_date);
-      this.personService.savePersonData(person_data).subscribe((data) => {
+      this.personService.savePersonData(person_data).subscribe(() => {
+
       });
     });
   }
 
   save_enrollment_date() {
-    this.personService.getData(this.person_id()).subscribe((data) => {
-      let person_data = data as any;
+    this.personService.getData(this.person_id()).subscribe((result_data: Result<any>) => {
+      let person_data = result_data.data as any;
       person_data.enrollment_date = this.utilsService.translate_date_to_server(this.person.enrollment_date);
       this.personService.savePersonData(person_data).subscribe((data) => {
       });
@@ -142,56 +148,61 @@ export class PersonDataTreatmentModalComponent implements OnInit {
   }
 
   save_admission_date() {
-    this.personService.getData(this.person_id()).subscribe((data) => {
-      let person_data = data as any;
+    this.personService.getData(this.person_id()).subscribe((result_data: Result<any>) => {
+      let person_data = result_data.data as any;
       person_data.admission_date = this.utilsService.translate_date_to_server(this.person.admission_date);
       this.personService.savePersonData(person_data).subscribe();
     });
   }
 
   save_kf_name() {
-    this.personService.getData(this.person_id()).subscribe((data) => {
-      let person_data = data as any;
+    this.personService.getData(this.person_id()).subscribe((result_data: Result<any>) => {
+      let person_data = result_data.data as any;
       person_data.kf_name = this.person.kf_name;
       this.personService.savePersonData(person_data).subscribe();
     });
   }
 
   save_identification2() {
-    this.personService.getData(this.person_id()).subscribe((data) => {
-      let person_data = data as any;
+    this.personService.getData(this.person_id())
+    .subscribe((result_data: Result<any>) => {
+      let person_data = result_data.data as any;
       person_data.identification2 = this.person.identification2;
       this.personService.savePersonData(person_data).subscribe();
     });
   }
 
   save_identification() {
-    this.personService.getData(this.person_id()).subscribe((data) => {
-      let person_data = data as any;
+    this.personService.getData(this.person_id())
+    .subscribe((result_data: Result<any>) => {
+      let person_data = result_data.data as any;
       person_data.identification = this.person.identification;
       this.personService.savePersonData(person_data).subscribe();
     });
   }
 
   save_occupation() {
-    this.personService.getData(this.person_id()).subscribe((data) => {
-      let person_data = data as any;
+    this.personService.getData(this.person_id())
+    .subscribe((result_data: Result<any>) => {
+      let person_data = result_data.data as any;
       person_data.occupation = this.person.occupation;
       this.personService.savePersonData(person_data).subscribe();
     });
   }
 
   save_branch() {
-    this.personService.getData(this.person_id()).subscribe((data) => {
-      let person_data = data as any;
+    this.personService.getData(this.person_id())
+    .subscribe((result_data: Result<any>) => {
+      let person_data = result_data.data as any;
       person_data.branch_id = this.person.branch_id;
       this.personService.savePersonData(person_data).subscribe();
     });
   }
 
   save_kf_name_ideograms() {
-    this.personService.getData(this.person_id()).subscribe((data) => {
-      let person_data = data as any;
+    this.personService.getData(this.person_id())
+    .subscribe((result_data: Result<any>) => {
+      let person_data = result_data.data as any;
       person_data.kf_name_ideograms = this.person.kf_name_ideograms;
       this.personService.savePersonData(person_data).subscribe();
     });

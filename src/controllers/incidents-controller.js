@@ -11,18 +11,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const incidents_service_1 = require("../services/incidents-service");
 const Incident_1 = require("../entity/Incident");
 class IncidentsController {
-    constructor(databaseManager, data_runner) {
-        this.IS = new incidents_service_1.IncidentsService(databaseManager, data_runner);
+    constructor() {
+        this.IS = new incidents_service_1.IncidentsService();
     }
-    close_incident(incident_data, user) {
+    close_incident(incidentData, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let ir = yield this.IS.getRepository(Incident_1.Incident);
-            let incident = yield ir.findOne(incident_data.id, { relations: ["type"] });
-            incident.close_text = incident_data.close_text;
-            incident.title = incident_data.title;
-            incident.payment_method_id = incident_data.payment_method_id;
-            incident.fund_value = incident_data.fund_value;
-            let result = yield this.IS.close_incident_and_send_ownership_report(incident, yield user.getPerson());
+            const ir = yield this.IS.getRepository(Incident_1.Incident);
+            const incident = yield ir.findOne(incidentData.id, { relations: ["type"] });
+            incident.close_text = incidentData.close_text;
+            incident.title = incidentData.title;
+            incident.payment_method_id = incidentData.payment_method_id;
+            incident.fund_value = incidentData.fund_value;
+            const result = yield this.IS.close_incident_and_send_ownership_report(incident, yield user.getPerson());
             return result;
         });
     }

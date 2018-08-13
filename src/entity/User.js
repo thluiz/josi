@@ -1,4 +1,5 @@
 "use strict";
+// tslint:disable:variable-name
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,48 +19,50 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-const Person_1 = require("./Person");
 const database_manager_1 = require("../services/managers/database-manager");
-let DBM = new database_manager_1.DatabaseManager();
+const Person_1 = require("./Person");
+const DBM = new database_manager_1.DatabaseManager();
 let User = User_1 = class User {
     is_director() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.ensurePersonLoaded();
+            yield this.loadPersonIfNeeded();
             return this.person.is_director;
         });
     }
     is_manager() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.ensurePersonLoaded();
+            yield this.loadPersonIfNeeded();
             return this.person.is_manager;
         });
     }
     is_operator() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.ensurePersonLoaded();
+            yield this.loadPersonIfNeeded();
             return this.person.is_operator;
         });
     }
     getPersonId() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.ensurePersonLoaded();
+            yield this.loadPersonIfNeeded();
             return this.person.id;
         });
     }
     getPerson() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.ensurePersonLoaded();
+            yield this.loadPersonIfNeeded();
             return this.person;
         });
     }
-    ensurePersonLoaded() {
+    loadPersonIfNeeded() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.person != null)
+            if (this.person != null) {
                 return;
+            }
             const UR = yield DBM.getRepository(User_1);
-            let user = yield UR
-                .createQueryBuilder("u")
+            const user = yield UR.manager
+                .createQueryBuilder(User_1, "u")
                 .innerJoinAndSelect("u.person", "p")
+                .leftJoinAndSelect("p.default_page", "dp")
                 .where("u.id = :id", { id: this.id })
                 .cache(10000)
                 .getOne();
@@ -80,7 +83,7 @@ __decorate([
     __metadata("design:type", Number)
 ], User.prototype, "login_provider_id", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Person_1.Person),
+    typeorm_1.ManyToOne(() => Person_1.Person),
     typeorm_1.JoinColumn({ name: "person_id" }),
     __metadata("design:type", Person_1.Person)
 ], User.prototype, "person", void 0);

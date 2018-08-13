@@ -9,8 +9,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Branch_1 = require("./Branch");
 const typeorm_1 = require("typeorm");
+const Branch_1 = require("./Branch");
 const Country_1 = require("./Country");
 let Location = class Location {
 };
@@ -27,12 +27,12 @@ __decorate([
     __metadata("design:type", String)
 ], Location.prototype, "description", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Country_1.Country),
+    typeorm_1.ManyToOne(() => Country_1.Country),
     typeorm_1.JoinColumn({ name: "country_id" }),
     __metadata("design:type", Country_1.Country)
 ], Location.prototype, "country", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Branch_1.Branch),
+    typeorm_1.ManyToOne(() => Branch_1.Branch),
     typeorm_1.JoinColumn({ name: "branch_id" }),
     __metadata("design:type", Branch_1.Branch)
 ], Location.prototype, "branch", void 0);

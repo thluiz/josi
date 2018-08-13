@@ -5,29 +5,30 @@ import {delay} from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParameterService } from 'app/services/parameter-service';
 import { Component, OnInit } from "@angular/core";
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './products-page.component.html',
-  styleUrls: ['../parameters-customizations.scss']  
+  styleUrls: ['../parameters-customizations.scss']
 })
-export class ProductsPageComponent implements OnInit {      
+export class ProductsPageComponent implements OnInit {
   category_group: { id: number, name: string, items : any[] }[];
   collection: any[];
   currencies: any[];
   current_item: any;
   saving = false;
 
-  constructor(private parameterService: ParameterService, 
-              private ngbModalService: NgbModal) {      
+  constructor(private parameterService: ParameterService,
+              private ngbModalService: NgbModal) {
 
-  }  
-
-  ngOnInit() {
-    this.load_data();    
   }
 
-  create(content) {    
+  ngOnInit() {
+    this.load_data();
+  }
+
+  create(content) {
     this.current_item = {
       id: 0,
       name: ""
@@ -37,16 +38,18 @@ export class ProductsPageComponent implements OnInit {
   }
 
   private load_data() {
-    observableZip(      
+    observableZip(
       this.parameterService.getProductCategories(),
       this.parameterService.getProducts(true),
       this.parameterService.getCurrencies(),
-      (product_category: any[], product : any[], currencies : any[]) => {
-        this.currencies = currencies;
-        
-        let collection = product_category;
-        product_category.forEach((pc: any) => {
-          pc.items = product.filter(p => p.category_id == pc.id);
+      (result_product_category: Result<any[]>,
+        result_product: Result<any[]>,
+        result_currencies : Result<any[]>) => {
+        this.currencies = result_currencies.data;
+
+        let collection = result_product_category.data;
+        result_product_category.data.forEach((pc: any) => {
+          pc.items = result_product.data.filter(p => p.category_id == pc.id);
         });
 
         this.collection = collection;
@@ -56,24 +59,24 @@ export class ProductsPageComponent implements OnInit {
 
   save(close_action) {
     this.saving = true;
-    this.parameterService.saveProduct(this.current_item).pipe(       
-    delay(500)) 
-    .subscribe((data) => {      
+    this.parameterService.saveProduct(this.current_item).pipe(
+    delay(500))
+    .subscribe(() => {
       if(close_action) {
         close_action();
       }
-      this.saving = false;      
-      this.load_data();      
+      this.saving = false;
+      this.load_data();
     });
   }
 
   archive_product(product) {
     this.saving = true;
-    this.parameterService.archiveProduct(product).pipe(      
-    delay(500))      
-    .subscribe((data) => {            
-      this.saving = false;      
-      this.load_data();      
+    this.parameterService.archiveProduct(product).pipe(
+    delay(500))
+    .subscribe(() => {
+      this.saving = false;
+      this.load_data();
     });
   }
 
@@ -81,9 +84,9 @@ export class ProductsPageComponent implements OnInit {
     this.current_item = item;
     this.open_modal(content);
   }
-  
+
   private open_modal(content: any) {
-    this.ngbModalService.open(content).result.then((result) => {
+    this.ngbModalService.open(content).result.then(() => {
     }, (reason) => {
       this.current_item = null;
       console.log(reason);

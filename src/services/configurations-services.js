@@ -19,11 +19,12 @@ class Constants {
 Constants.IncidentTypeOwnership = 36;
 Constants.IncidentTypeSupport = 39;
 exports.Constants = Constants;
+// tslint:disable-next-line:max-classes-per-file
 class ConfigurationsService {
     static getConfiguration(configuration) {
         return __awaiter(this, void 0, void 0, function* () {
-            let con = yield DBM.getConnection();
-            let result = yield con.query(`select [value] from configuration where id = @0`, [configuration.toFixed()]);
+            const con = yield DBM.getConnection();
+            const result = yield con.query(`select [value] from configuration where id = @0`, [configuration.toFixed()]);
             return result[0].value;
         });
     }

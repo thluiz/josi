@@ -9,21 +9,22 @@ import { SecurityService } from 'app/services/security-service';
 import { ParameterService, Configurations } from 'app/services/parameter-service';
 import { PersonService } from 'app/services/person-service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'person-external-unit-list',
   templateUrl: './person-external-unit-list.component.html',
   styleUrls: ['../../../../../../assets/customizations.scss']
 })
-export class PersonExternalUnitListComponent implements OnInit, OnDestroy { 
+export class PersonExternalUnitListComponent implements OnInit, OnDestroy {
 
-  items: any[];   
+  items: any[];
 
   @Input() d:any;
   @Input() person:any;
-  @Input() showHeader = true; 
-  saving = false;    
-  new_item = { name: "",     
+  @Input() showHeader = true;
+  saving = false;
+  new_item = { name: "",
     valid: false,
     comment: "",
     person_id: 0,
@@ -31,30 +32,30 @@ export class PersonExternalUnitListComponent implements OnInit, OnDestroy {
     operator_id: 0,
     indication_contact_type: 0
   };
-  
+
   branches: any[];
   operators: any[];
   errors :string[] = [];
-  
+
   private changes_subscriber: Subscription;
   private last_call : Date;
 
-  constructor(private modalService: NgbModal, 
-    private parameterService: ParameterService, 
-    private securityService: SecurityService,  
+  constructor(private modalService: NgbModal,
+    private parameterService: ParameterService,
+    private securityService: SecurityService,
     private cardService: CardService,
-    private personService: PersonService) {   
+    private personService: PersonService) {
 
   }
 
-  ngOnInit() {      
-    
+  ngOnInit() {
+
     this.changes_subscriber = this.personService.externalUnitChanges$.pipe(
       filter((data) => data != null && data.person_id == this.person.id))
-      .subscribe((data) => {            
-        this.load_items();      
+      .subscribe((data) => {
+        this.load_items();
       });
-    
+
     this.load_items();
   }
 
@@ -62,60 +63,62 @@ export class PersonExternalUnitListComponent implements OnInit, OnDestroy {
     this.changes_subscriber.unsubscribe();
   }
 
-  load_items() {  
+  load_items() {
     if(this.last_call != null && ((new Date()).getTime() - (this.last_call.getTime()) <= this.parameterService.getTimeReloadComponents()))  {
       return;
     }
 
     this.personService.getPersonExternalUnits(this.person.id)
-    .subscribe((data : any) => {       
-      this.items = data;
+    .subscribe((result_data : any) => {
+      this.items = result_data.data;
     });
 
     this.last_call = new Date();
   }
-       
-  open(content){  
+
+  open(content){
     this.saving = false;
 
-    this.new_item = { name: "",       
+    this.new_item = { name: "",
       valid: false,
       comment: "",
       person_id: this.person.id,
       branch_id: this.person.branch_id,
       operator_id: 0,
       indication_contact_type: 0
-    };  
+    };
 
     observableZip(
-      this.securityService.getCurrentUserData(),      
+      this.securityService.getCurrentUserData(),
       this.parameterService.getActiveBranches(),
       this.cardService.getOperators(),
-      (user, branches, operators) => {        
-        this.new_item.operator_id = user.person_id;                
-        this.branches = branches;
-        this.operators = operators; 
+      (result_user : Result<any>, result_branches, result_operators) => {
+        this.new_item.operator_id = result_user.data.person_id;
+        this.branches = result_branches.data;
+        this.operators = result_operators.data;
 
-        this.modalService.open(content).result.then((result) => {                                  
-  
+        this.modalService.open(content).result.then((result) => {
+
         }, (reason) => {
           console.log(reason);
-        }); 
-      }  
-    ).subscribe(); 
-  } 
+        });
+      }
+    ).subscribe();
+  }
 
   save_new_item(close_action) {
     this.saving = true;
 
-    this.personService.saveExternalUnit(this.new_item).subscribe((data) => {
+    this.personService
+    .saveExternalUnit(this.new_item)
+    .subscribe(() => {
       this.saving = false;
 
       if(close_action) {
         close_action();
       }
     });
-  } 
+  }
 
   validate_new_item() {
     this.errors = [];

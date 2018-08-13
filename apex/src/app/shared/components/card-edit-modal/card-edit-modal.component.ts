@@ -85,11 +85,10 @@ export class CardEditModalComponent implements OnInit {
 
 
     observableZip(
-      this.parameterService.getActiveBranches(),
       this.cardService.getOperators(),
       this.parameterService.getLocations(),
-      (branches, operators: any[], locations_result: Result<Location[]>) => {
-        this.operators = operators;
+      (result_operators: Result<any[]>, locations_result: Result<Location[]>) => {
+        this.operators = result_operators.data;
         this.locations = locations_result.data.filter(l => l.active);
 
         this.open_modal(this.card_edit_modal, true);
@@ -136,7 +135,7 @@ export class CardEditModalComponent implements OnInit {
 
   update_card(close_action) {
     this.saving = true;
-    this.cardService.updateCard(this.card).subscribe((data) => {
+    this.cardService.updateCard(this.card).subscribe(() => {
       if(close_action) {
         this.saving = false;
         close_action();
@@ -146,7 +145,7 @@ export class CardEditModalComponent implements OnInit {
 
   archive_card(close_action) {
     this.saving = true;
-    this.cardService.archiveCard(this.card).subscribe((data) => {
+    this.cardService.archiveCard(this.card).subscribe(() => {
       if(close_action) {
         this.saving = false;
         close_action();

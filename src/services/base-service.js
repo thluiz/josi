@@ -9,37 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_manager_1 = require("./managers/database-manager");
+const dependency_manager_1 = require("./managers/dependency-manager");
 class BaseService {
-    constructor(_databaseManager, _dataRunner) {
-        this._databaseManager = _databaseManager;
-        this._dataRunner = _dataRunner;
-    }
     get databaseManager() {
-        return (() => __awaiter(this, void 0, void 0, function* () {
-            if (!this._databaseManager) {
-                this._databaseManager = new database_manager_1.DatabaseManager();
-            }
-            return this._databaseManager;
-        }))();
-    }
-    get dataRunner() {
-        return (() => __awaiter(this, void 0, void 0, function* () {
-            if (this._dataRunner) {
-                return this._dataRunner;
-            }
-            let conn = yield (yield this.databaseManager).getConnection();
-            this._dataRunner = {
-                runner: yield conn.createQueryRunner(),
-                useTransaction: false,
-                shouldCommit: false
-            };
-            return this._dataRunner;
-        }))();
+        return dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
     }
     get queryRunner() {
-        return (() => __awaiter(this, void 0, void 0, function* () {
-            return (yield this.dataRunner).runner;
-        }))();
+        return new Promise((resolve) => {
+            this.databaseManager
+                .CreateQueryRunner()
+                .then((queryRunner) => {
+                resolve(queryRunner);
+            });
+        });
     }
     getRepository(type) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -53,7 +35,7 @@ class BaseService {
     }
     create(entityClass, object) {
         return __awaiter(this, void 0, void 0, function* () {
-            let manager = (yield this.queryRunner).manager;
+            const manager = (yield this.queryRunner).manager;
             return manager.create(entityClass, object);
         });
     }

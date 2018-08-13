@@ -1,32 +1,31 @@
-import { Repository, QueryRunner } from 'typeorm';
-import { DatabaseManager } from "../services/managers/database-manager";
-import { Result } from "../helpers/result";
-import { ErrorCode } from "../helpers/errors-codes";
+import { QueryRunner, Repository } from "typeorm";
 import { trylog } from "../decorators/trylog-decorator";
-import showdown = require('showdown');
-import { Person } from '../entity/Person';
+import { Person } from "../entity/Person";
+import { Result } from "../helpers/result";
+import { DatabaseManager } from "../services/managers/database-manager";
 
 const DBM = new DatabaseManager();
 
 export class PeopleRepository {
 
     @trylog()
-    static async getRepository(runner? : QueryRunner)
+    static async getRepository(runner?: QueryRunner)
         : Promise<Repository<Person>> {
-        return await DBM.getRepository<Person>(Person, runner);
+        return await DBM.getRepository<Person>(Person);
     }
 
     @trylog()
-    static async getExternalContacts(branch_id: number, voucher_id: number,
-    name: string, voucher_status: number, people_per_page: number, page: number)
+    static async getExternalContacts(branchId: number, voucherId: number,
+                                     name: string, voucherStatus: number,
+                                     peoplePerPage: number, page: number)
     : Promise<Result<any>> {
         return await DBM.ExecuteJsonSP("GetExternalContacts",
-            { "branch_id": branch_id },
-            { "voucher_id": voucher_id },
-            { "name": name },
-            { "voucher_status": voucher_status },
-            { "people_per_page": people_per_page },
-            { "page": page },
+            { branch_id: branchId },
+            { voucher_id: voucherId },
+            { name },
+            { voucher_status: voucherStatus },
+            { people_per_page: peoplePerPage },
+            { page },
         );
     }
 }

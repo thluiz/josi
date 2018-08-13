@@ -8,84 +8,85 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const incidents_repository_1 = require("../repositories/incidents-repository");
 const auth = require("../middlewares/auth");
-const security_service_1 = require("../services/security-service");
-const incidents_service_1 = require("../services/incidents-service");
+const incidents_repository_1 = require("../repositories/incidents-repository");
 const incidents_controller_1 = require("../controllers/incidents-controller");
-const IR = incidents_repository_1.IncidentsRepository;
-const IS = new incidents_service_1.IncidentsService();
-const controller = new incidents_controller_1.IncidentsController();
+const incidents_service_1 = require("../services/incidents-service");
+const security_service_1 = require("../services/security-service");
 function routes(app) {
+    const IR = new incidents_repository_1.IncidentsRepository();
+    const IS = new incidents_service_1.IncidentsService();
+    const SS = new security_service_1.SecurityService();
+    const controller = new incidents_controller_1.IncidentsController();
     app.get("/api/available_ownerships/:branch/:date/:type", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield IR.getAvailableOwnerships(req.params.branch, req.params.date, req.params.type);
+        const result = yield IR.getAvailableOwnerships(req.params.branch, req.params.date, req.params.type);
         res.send(result);
     }));
-    app.get("/api/current_activities/:branch?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield IR.getCurrentActivities(req.params.branch > 0 ? req.params.branch : null);
+    app.get("/api/current_activities/:branch?", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield IR.getCurrentActivities(req.params.branch > 0 ? req.params.branch : null);
         res.send(result);
     }));
-    app.get("/api/incidents/history/:person/:start_date/:end_date/:activity_type?", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield IR.getPersonIncidentsHistory(req.params.person, req.params.start_date, req.params.end_date, req.params.activity_type);
+    app.get("/api/incidents/history/:person/:start_date/:end_date/:activity_type?", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield IR.getPersonIncidentsHistory(req.params.person, req.params.start_date, req.params.end_date, req.params.activity_type);
         res.send(result);
     }));
     app.get("/api/incidents/:id", auth.ensureLoggedIn(), (request, response) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield IR.getIncidentDetails(request.params.id);
+        const result = yield IR.getIncidentDetails(request.params.id);
         response.send(result);
     }));
     app.get("/api/agenda/:branch?/:date?", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield IR.getAgenda(req.params.branch > 0 ? req.params.branch : null, req.params.date);
+        const result = yield IR.getAgenda(req.params.branch > 0 ? req.params.branch : null, req.params.date);
         res.send(result);
     }));
     app.get("/api/daily/:branch?/:display?/:display_modifier?", auth.ensureLoggedIn(), (request, response) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield IR.getDailyMonitor(request.params.branch > 0 ? request.params.branch : null, request.params.display || 0, request.params.display_modifier || 0);
+        const result = yield IR.getDailyMonitor(request.params.branch > 0 ? request.params.branch : null, request.params.display || 0, request.params.display_modifier || 0);
         response.send(result);
     }));
     app.get("/api/people_summary/:branch?/:week?", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield IR.getPeopleSummary(req.params.branch > 0 ? req.params.branch : null, req.params.week || 0, req.params.date);
+        const result = yield IR.getPeopleSummary(req.params.branch > 0 ? req.params.branch : null, req.params.week || 0, req.params.date);
         res.send(result);
     }));
     app.get("/api/sumary/:branch?/:month?/:week?/:date?", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield IR.getSummary(req.params.branch > 0 ? req.params.branch : null, req.params.month || 0, req.params.week || 0, req.params.date);
+        const result = yield IR.getSummary(req.params.branch > 0 ? req.params.branch : null, req.params.month || 0, req.params.week || 0, req.params.date);
         res.send(result);
     }));
     app.post("/api/incident/close", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield controller.close_incident(req.body, yield security_service_1.SecurityService.getUserFromRequest(req));
+        const result = yield controller.close_incident(req.body, yield SS.getUserFromRequest(req));
         response.send(result);
     }));
     app.post("/api/incident/start", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
-        let user = yield security_service_1.SecurityService.getUserFromRequest(req);
-        let result = yield IS.start_incident({ id: req.body.id }, yield user.getPersonId());
+        const user = yield SS.getUserFromRequest(req);
+        const result = yield IS.start_incident({ id: req.body.id }, yield user.getPersonId());
         response.send(result);
     }));
-    app.post("/api/incident/reopen", auth.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let user = yield security_service_1.SecurityService.getUserFromRequest(req);
-        let result = yield IS.reopen_incident({ id: req.body.id }, yield user.getPersonId());
+    app.post("/api/incident/reopen", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(req);
+        const result = yield IS.reopen_incident({ id: req.body.id }, yield user.getPersonId());
         response.send(result);
     }));
-    app.post("/api/incident/start/cancel", auth.ensureLoggedIn(), (req, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let user = yield security_service_1.SecurityService.getUserFromRequest(req);
-        let result = yield IS.cancel_start_incident({ id: req.body.id }, yield user.getPersonId());
+    app.post("/api/incident/start/cancel", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(req);
+        const result = yield IS.cancel_start_incident({ id: req.body.id }, yield user.getPersonId());
         response.send(result);
     }));
-    app.post("/api/incident/remove", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {
-        let user = yield security_service_1.SecurityService.getUserFromRequest(request);
-        let result = yield IS.remove_incident({ id: request.body.id }, yield user.getPersonId());
+    app.post("/api/incident/remove", auth.ensureLoggedIn(), (request, response) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(request);
+        const result = yield IS.remove_incident({ id: request.body.id }, yield user.getPersonId());
         response.send(result);
     }));
     app.post("/api/incident/reschedule", auth.ensureLoggedIn(), (request, response) => __awaiter(this, void 0, void 0, function* () {
-        let user = yield security_service_1.SecurityService.getUserFromRequest(request);
-        let result = yield IS.reschedule_incident(request.body.incident, request.body.new_incident, request.body.contact.contact_text, yield user.getPersonId());
+        const user = yield SS.getUserFromRequest(request);
+        const result = yield IS.reschedule_incident(request.body.incident, request.body.new_incident, request.body.contact.contact_text, yield user.getPersonId());
         response.send(result);
     }));
     app.post("/api/incident/register_incident", auth.ensureLoggedIn(), (request, response) => __awaiter(this, void 0, void 0, function* () {
-        let user = yield security_service_1.SecurityService.getUserFromRequest(request);
-        let result = yield IS.register_incident(request.body.incident, yield user.getPersonId());
+        const user = yield SS.getUserFromRequest(request);
+        const result = yield IS.register_incident(request.body.incident, yield user.getPersonId());
         response.send(result);
     }));
     app.post("/api/incident/register_contact", auth.ensureLoggedIn(), (request, response) => __awaiter(this, void 0, void 0, function* () {
-        let user = yield security_service_1.SecurityService.getUserFromRequest(request);
-        let result = yield IS.register_contact_for_incident(request.body.incident, request.body.contact.contact_text, yield user.getPersonId());
+        const user = yield SS.getUserFromRequest(request);
+        const result = yield IS.register_contact_for_incident(request.body.incident, request.body.contact.contact_text, yield user.getPersonId());
         response.send(result);
     }));
     /**
@@ -96,12 +97,12 @@ function routes(app) {
         res.send(result);
     }));
     app.post("/api/incident_comments", auth.ensureLoggedIn(), (request, res) => __awaiter(this, void 0, void 0, function* () {
-        let user = yield security_service_1.SecurityService.getUserFromRequest(request);
-        let result = yield IS.save_comment(request.body.incident_id, request.body.comment, yield user.getPersonId());
+        const user = yield SS.getUserFromRequest(request);
+        const result = yield IS.save_comment(request.body.incident_id, request.body.comment, yield user.getPersonId());
         res.send(result);
     }));
     app.post("/api/incident_comments/archive", auth.ensureLoggedIn(), (request, res) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield IS.archive_comment(request.body.id);
+        const result = yield IS.archive_comment(request.body.id);
         res.send(result);
     }));
 }

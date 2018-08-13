@@ -1,20 +1,25 @@
-import { PersonIncident } from './PersonIncident';
-import { Person } from './Person';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, UpdateDateColumn, OneToMany, ManyToMany, JoinTable } from "typeorm";
+// tslint:disable:variable-name
+
 import { Branch } from "./Branch";
-import { Card } from './Card';
-import { IncidentType } from './IncidentType';
+import { Card } from "./Card";
+import { IncidentType } from "./IncidentType";
+import { Person } from "./Person";
+import { PersonIncident } from "./PersonIncident";
+
+import { Column, Entity, JoinColumn,
+    ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 
 @Entity()
 export class Incident {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => IncidentType)
+    @ManyToOne(() => IncidentType)
     @JoinColumn({ name: "incident_type" })
     type: IncidentType;
 
-    @Column({ type: 'datetime', default: () => 'getdate()'})
+    @Column({ type: "datetime", default: () => "getdate()"})
+    // tslint:disable-next-line:variable-name
     created_on: Date;
 
     @Column()
@@ -32,15 +37,15 @@ export class Incident {
     @Column()
     closed_on: Date;
 
-    @ManyToOne(type => Person)
+    @ManyToOne(() => Person)
     @JoinColumn({ name: "closed_by" })
     closed_by: Person;
 
-    @ManyToOne(type => Person)
+    @ManyToOne(() => Person)
     @JoinColumn({ name: "responsible_id" })
     responsible: Person;
 
-    @ManyToOne(type => Branch)
+    @ManyToOne(() => Branch)
     @JoinColumn({ name: "branch_id" })
     branch: Branch;
 
@@ -68,7 +73,7 @@ export class Incident {
     @Column()
     cancelled_on: Date;
 
-    @ManyToOne(type => Person)
+    @ManyToOne(() => Person)
     @JoinColumn({ name: "cancelled_by" })
     cancelled_by: Person;
 
@@ -76,16 +81,16 @@ export class Incident {
     started_on: Date;
 
     @UpdateDateColumn({
-		default: () => "getdate()",
-		type: "datetime"
-	})
+        default: () => "getdate()",
+        type: "datetime"
+    })
     updated_at: Date;
 
-    @ManyToOne(type => Person)
+    @ManyToOne(() => Person)
     @JoinColumn({ name: "started_by" })
     started_by: Person;
 
-    @ManyToOne(type => Card)
+    @ManyToOne(() => Card)
     @JoinColumn({ name: "card_id" })
     card_id: Card;
 
@@ -98,19 +103,20 @@ export class Incident {
     @Column()
     contact_method_id: number;
 
-    @ManyToOne(type => Incident)
+    @ManyToOne(() => Incident)
     @JoinColumn({ name: "ownership_id" })
     ownership: Incident;
 
-    @OneToMany(type => PersonIncident, person_incident => person_incident.incident, { cascade: true })
+    @OneToMany(() => PersonIncident, (person_incident) => person_incident.incident, { cascade: true })
     people_incidents: PersonIncident[];
 
     @Column()
     define_fund_value: boolean;
 
-    static duplicate(data: Incident) : Incident {
+    // tslint:disable-next-line:member-ordering
+    static duplicate(data: Incident): Incident {
         // Object.assign does not work as expected
-        let incident = new Incident();
+        const incident = new Incident();
         incident.branch = data.branch;
         incident.cancelled = data.cancelled;
         incident.cancelled_by = data.cancelled_by;

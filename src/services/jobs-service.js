@@ -17,49 +17,42 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const people_service_1 = require("./people-service");
-const database_manager_1 = require("./managers/database-manager");
-const result_1 = require("../helpers/result");
-const axios_1 = require("axios");
-const errors_codes_1 = require("../helpers/errors-codes");
-const trylog_decorator_1 = require("../decorators/trylog-decorator");
-const logger_service_1 = require("./logger-service");
-const uuid = require("uuid/v4");
 const await_to_js_1 = require("await-to-js");
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-let DBM = new database_manager_1.DatabaseManager();
-let PS = new people_service_1.PeopleService(DBM);
+const uuid = require("uuid/v4");
+const axios_1 = require("axios");
+const trylog_decorator_1 = require("../decorators/trylog-decorator");
+const errors_codes_1 = require("../helpers/errors-codes");
+const result_1 = require("../helpers/result");
+const logger_service_1 = require("./logger-service");
 class JobsService {
-    static execute_hourly_jobs() {
+    execute_hourly_jobs() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('Start running jobs...');
-            let start_time = new Date().getTime();
-            let key = uuid();
-            logger_service_1.LoggerService.benchmark(key, `Starting Running Jobs :: ${start_time}`);
-            let results = [];
+            const startTime = new Date().getTime();
+            const key = uuid();
+            logger_service_1.LoggerService.benchmark(key, `Starting Running Jobs :: ${startTime}`);
+            const results = [];
             results.push(yield this.cleanup_sessions());
-            let end_time = new Date().getTime();
-            let err = results.find(r => !r.success);
+            const endTime = new Date().getTime();
+            const err = results.find((r) => !r.success);
             logger_service_1.LoggerService.benchmark(key, {
-                start_time,
+                startTime,
                 success: err == null,
-                end_time,
-                duration: (end_time - start_time) / 1000,
+                endTime,
+                duration: (endTime - startTime) / 1000,
                 results
             });
-            console.log("Finished running jobs!");
-            if (err)
+            if (err) {
                 return err;
+            }
             return result_1.SuccessResult.GeneralOk();
         });
     }
-    static cleanup_sessions() {
+    cleanup_sessions() {
         return __awaiter(this, void 0, void 0, function* () {
-            const AzureSessionStore = require('../middlewares/azure-session-storage');
+            const AzureSessionStore = require("../middlewares/azure-session-storage");
             const storage = new AzureSessionStore();
             try {
-                let results = yield storage.cleanup();
+                const results = yield storage.cleanup();
                 return results;
             }
             catch (error) {
@@ -67,14 +60,16 @@ class JobsService {
             }
         });
     }
-    static update_voucher_site() {
+    update_voucher_site() {
         return __awaiter(this, void 0, void 0, function* () {
-            let [err_voucher, result_voucher] = yield await_to_js_1.default(axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_URL));
-            if (err_voucher || result_voucher.status != 200)
-                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ExternalRequestError, err_voucher || new Error(result_voucher.statusText), null);
-            let [err_invites, result_invites] = yield await_to_js_1.default(axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_INVITES_URL));
-            if (err_invites || result_invites.status != 200)
-                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ExternalRequestError, err_invites || new Error(result_invites.statusText), null);
+            const [errVoucher, resultVoucher] = yield await_to_js_1.default(axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_URL));
+            if (errVoucher || resultVoucher.status !== 200) {
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ExternalRequestError, errVoucher || new Error(resultVoucher.statusText), null);
+            }
+            const [errInvites, resultInvites] = yield await_to_js_1.default(axios_1.default.get(process.env.VOUCHER_SITE_UPDATE_INVITES_URL));
+            if (errInvites || resultInvites.status !== 200) {
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.ExternalRequestError, errInvites || new Error(resultInvites.statusText), null);
+            }
             return result_1.SuccessResult.GeneralOk();
         });
     }
@@ -84,18 +79,18 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], JobsService, "execute_hourly_jobs", null);
+], JobsService.prototype, "execute_hourly_jobs", null);
 __decorate([
     trylog_decorator_1.trylog(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], JobsService, "cleanup_sessions", null);
+], JobsService.prototype, "cleanup_sessions", null);
 __decorate([
     trylog_decorator_1.trylog(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], JobsService, "update_voucher_site", null);
+], JobsService.prototype, "update_voucher_site", null);
 exports.JobsService = JobsService;
 //# sourceMappingURL=jobs-service.js.map

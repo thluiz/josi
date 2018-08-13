@@ -11,10 +11,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const auth = require("../middlewares/auth");
 const invitations_service_1 = require("../services/invitations-service");
 function routes(app) {
-    app.post("/api/invitations/change_type", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        const indication_id = req.body.id;
-        const new_type = req.body.type;
-        let result = yield invitations_service_1.InvitationsService.change_invite_type(indication_id, new_type);
+    app.post("/api/invitations/change_type", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const indicationId = req.body.id;
+        const newType = req.body.type;
+        const result = yield invitations_service_1.InvitationsService.change_invite_type(indicationId, newType);
         res.send(result);
     }));
 }

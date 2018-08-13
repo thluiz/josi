@@ -13,5 +13,6 @@ export enum ErrorCode {
     SendingEmail,
     ExternalResource,
     CardsActions,
-    PeopleActions
+    PeopleActions,
+    AzureTableStorage
 }

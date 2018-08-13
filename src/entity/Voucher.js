@@ -1,4 +1,5 @@
 "use strict";
+// tslint:disable:variable-name
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -27,7 +28,7 @@ __decorate([
     __metadata("design:type", String)
 ], Voucher.prototype, "url", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => VoucherType_1.VoucherType),
+    typeorm_1.ManyToOne(() => VoucherType_1.VoucherType),
     typeorm_1.JoinColumn({ name: "voucher_type" }),
     __metadata("design:type", VoucherType_1.VoucherType)
 ], Voucher.prototype, "voucher_type", void 0);
@@ -72,7 +73,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Voucher.prototype, "order", void 0);
 __decorate([
-    typeorm_1.ManyToMany(type => Branch_1.Branch),
+    typeorm_1.ManyToMany(() => Branch_1.Branch),
     typeorm_1.JoinTable({
         name: "branch_voucher",
         joinColumns: [{ name: "voucher_id" }],

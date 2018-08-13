@@ -22,8 +22,8 @@ export class DiaryChangeBranchComponent implements OnInit {
 
   ngOnInit() {
     this.parameterService.getActiveBranches()
-    .subscribe((data) => {
-      this.branches = data.filter(b => b.category_id != 3);
+    .subscribe((result_data) => {
+      this.branches = result_data.data.filter(b => b.category_id != 3);
     });
     if(!this.current_branch) {
       this.current_branch = 0;

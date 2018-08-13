@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 
 @Injectable()
 export class UtilsService {
-    private dataUrl = environment.api_url;    
+    private dataUrl = environment.api_url;
 
     constructor(private sanitizer: DomSanitizer, private http: HttpClient) { }
 
@@ -17,7 +17,7 @@ export class UtilsService {
         return `${date.year}-${date.month}-${date.day}`;
     }
 
-    translate_date_time_to_server(date, time) {        
+    translate_date_time_to_server(date, time) {
         if(!date || !date.year || !time)
             return null;
 
@@ -26,9 +26,9 @@ export class UtilsService {
 
     sanitize(url:string){
         return this.sanitizer.bypassSecurityTrustUrl(url);
-    }    
+    }
 
-    translate_date_to_view(date) {      
+    translate_date_to_view(date) {
         if(!date || date.year > 0 || date.split("-").length != 3) {
             return null;
         }
@@ -45,7 +45,7 @@ export class UtilsService {
         }
     }
 
-    translate_time_to_view(date) {      
+    translate_time_to_view(date) {
         if(!date || date.year > 0 || date.split("-").length != 3 || date.split("T").length != 2) {
             return null;
         }
@@ -64,11 +64,17 @@ export class UtilsService {
     }
 
     cache_results(observable : ReplaySubject<any>, endpoint:string, forceRefresh?: boolean) {
-        if (!observable.observers.length || forceRefresh) {        
+        if(observable.observers.length > 1) {
+          observable.observers = [ observable.observers[0] ];
+        }
+        if (!observable.observers.length || forceRefresh) {
             this.http.get(this.dataUrl + endpoint)
             .subscribe(
-                data => observable.next(data),
+                data => {
+                  observable.next(data);
+                },
                 error => {
+                    console.log(error);
                     observable.error(error);
                     // Recreate the Observable as after Error we cannot emit data anymore
                     observable = new ReplaySubject(1);
@@ -79,4 +85,3 @@ export class UtilsService {
         return observable;
     }
 }
-

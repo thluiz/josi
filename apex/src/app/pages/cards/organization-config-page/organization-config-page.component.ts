@@ -10,10 +10,10 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './organization-config-page.component.html',
-  styleUrls: ['../cards-customizations.scss']  
+  styleUrls: ['../cards-customizations.scss']
 })
 export class OrganizationConfigPageComponent implements OnInit, OnDestroy {
-  
+
   private id;
   private sub : Subscription;
   organization;
@@ -22,32 +22,32 @@ export class OrganizationConfigPageComponent implements OnInit, OnDestroy {
   new_operator_id;
   available_operators = [];
   modalRef : NgbModalRef;
-  
-  constructor(private cardService: CardService, 
+
+  constructor(private cardService: CardService,
               private parameterService: ParameterService,
               private route: ActivatedRoute,
               private router: Router,
               private dragulaService: DragulaService,
-              private ngbModalService: NgbModal) {       
-                                  
-  }    
+              private ngbModalService: NgbModal) {
+
+  }
 
   public dragulaOptions: any = {
     removeOnSpill: false
   }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
-      this.id = +params['id'];      
+      this.id = +params['id'];
 
-      this.parameterService.getPersonCardPositions().subscribe((data : any) => {        
-        this.card_positions = data.filter(cp => cp.hierarchical);
+      this.parameterService.getPersonCardPositions().subscribe((result_data : any) => {
+        this.card_positions = result_data.data.filter(cp => cp.hierarchical);
       });
-    });           
+    });
 
     this.load_organization_data();
   }
-  
+
   ngOnDestroy() {
      if(this.sub) {
        this.sub.unsubscribe();
@@ -55,47 +55,49 @@ export class OrganizationConfigPageComponent implements OnInit, OnDestroy {
   }
 
   load_organization_data() {
-    this.cardService.getOrganization(this.id).subscribe((data : any) => {
-      this.organization = data;        
-    });  
+    this.cardService.getOrganization(this.id).subscribe((result_data : any) => {
+      this.organization = result_data.data;
+    });
   }
 
   add_new_operator(content) {
-    let current_operators = this.organization.people;        
+    let current_operators = this.organization.people;
 
-    this.cardService.getOperators().subscribe((data : any) => {      
+    this.cardService.getOperators().subscribe((data : any) => {
       this.available_operators = data.filter(o => current_operators.find(co => co.person_id == o.id) == null);
 
       this.modalRef = this.ngbModalService.open(content);
 
-      this.modalRef.result.then((result) => {                                  
-        
-      }, (reason) => {        
+      this.modalRef.result.then(() => {
+
+      }, (reason) => {
           console.log(reason);
       });
-    });    
+    });
   }
 
   save_new_operator() {
     this.cardService.saveOperator(this.id, this.new_operator_id).subscribe(() => {
       if(this.modalRef) {
-        this.modalRef.close();        
+        this.modalRef.close();
       }
       this.load_organization_data();
       this.new_operator_id = null;
     });
   }
 
-  save_organization_chart() {   
-    this.saving_chart = true; 
-    this.cardService.saveOrganizationChart(this.id, this.organization.people).subscribe((data) => {            
-      this.saving_chart = false; 
-    });    
+  save_organization_chart() {
+    this.saving_chart = true;
+    this.cardService.saveOrganizationChart(this.id, this.organization.people)
+    .subscribe(() => {
+      this.saving_chart = false;
+    });
   }
 
   remove_person(person_card) {
-    this.cardService.removeOperator(this.id, person_card.person_id).subscribe(() => {      
-      this.load_organization_data();      
+    this.cardService.removeOperator(this.id, person_card.person_id)
+    .subscribe(() => {
+      this.load_organization_data();
     });
   }
 }

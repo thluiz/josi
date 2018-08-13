@@ -1,6 +1,6 @@
 {
-  "name": "matngular",
-  "version": "0.0.0",
+  "name": "sig",
+  "version": "0.0.5",
   "license": "MIT",
   "scripts": {
     "ng": "ng",

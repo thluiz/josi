@@ -8,9 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_manager_1 = require("./managers/database-manager");
 const User_1 = require("../entity/User");
-const DBM = new database_manager_1.DatabaseManager();
+const database_manager_1 = require("./managers/database-manager");
+const dependency_manager_1 = require("./managers/dependency-manager");
 var Permissions;
 (function (Permissions) {
     Permissions[Permissions["Operator"] = 0] = "Operator";
@@ -18,35 +18,40 @@ var Permissions;
     Permissions[Permissions["Director"] = 2] = "Director";
 })(Permissions = exports.Permissions || (exports.Permissions = {}));
 class SecurityService {
-    static serializeUser(user) {
+    constructor() {
+        this.DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
+    }
+    serializeUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (user == null)
+            if (user == null) {
                 return null;
-            if (!user.person || !user.person.default_page) {
-                const UR = yield DBM.getRepository(User_1.User);
-                user = yield UR.findOne({ id: user.id }, { relations: ["person", "person.default_page"] });
             }
-            return {
+            yield user.loadPersonIfNeeded();
+            const response = {
                 name: user.person.name,
                 is_director: user.is_director,
                 is_manager: user.is_manager,
                 is_operator: user.is_operator,
                 avatar_img: user.person.avatar_img,
-                person_id: user.person.id[0],
+                person_id: user.person.id,
                 email: user.email,
                 token: user.token,
-                default_branch_id: user.default_branch_id,
-                default_page_id: user.person.default_page.id[0],
-                default_page: user.person.default_page.name,
-                default_page_url: user.person.default_page.url
+                default_branch_id: user.default_branch_id
             };
+            if (user.person.default_page != null) {
+                response.default_page_id = user.person.default_page.id[0];
+                response.default_page = user.person.default_page.name;
+                response.default_page_url = user.person.default_page.url;
+            }
+            return response;
         });
     }
-    static getUserFromRequest(req) {
+    getUserFromRequest(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (process.env.PRODUCTION === 'false') {
+            if (process.env.PRODUCTION === "false") {
+                const DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
                 const connection = yield DBM.getConnection();
-                const user = yield connection
+                const user = yield connection.manager
                     .createQueryBuilder(User_1.User, "user")
                     .where("user.token = :token", { token: process.env.TOKEN_USER_DEV })
                     .cache(30000)
@@ -56,23 +61,59 @@ class SecurityService {
             return req.user;
         });
     }
-    static checkUserHasPermission(user, permission) {
+    checkUserHasPermission(user, permission) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (user == null || permission == null)
+            if (user == null || permission == null) {
                 return false;
-            let has_permission = false;
+            }
+            let hasPermission = false;
             switch (permission) {
                 case (Permissions.Operator):
-                    has_permission = ((yield user.is_operator()) || (yield user.is_director()) || (yield user.is_manager()));
+                    hasPermission = ((yield user.is_operator()) || (yield user.is_director()) || (yield user.is_manager()));
                     break;
                 case (Permissions.Manager):
-                    has_permission = ((yield user.is_director()) || (yield user.is_manager()));
+                    hasPermission = ((yield user.is_director()) || (yield user.is_manager()));
                     break;
                 case (Permissions.Director):
-                    has_permission = (yield user.is_director());
+                    hasPermission = (yield user.is_director());
                     break;
             }
-            return has_permission;
+            return hasPermission;
+        });
+    }
+    findUser(email, callback) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield this.DBM.getConnection();
+            const user = yield connection.manager
+                .createQueryBuilder(User_1.User, "user")
+                .where("user.email = :email", { email })
+                .cache(30000)
+                .getOne();
+            if (!user) {
+                callback(null, false);
+                return;
+            }
+            callback(null, user);
+        });
+    }
+    findUserByToken(token, callback) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield this.DBM.getConnection();
+            const user = yield connection.manager
+                .createQueryBuilder(User_1.User, "user")
+                .where("user.email = :token", { token })
+                .cache(30000)
+                .getOne();
+            if (!user) {
+                if (callback) {
+                    callback("user not fount", false);
+                }
+                return;
+            }
+            if (callback) {
+                callback(null, user);
+            }
+            return user;
         });
     }
 }

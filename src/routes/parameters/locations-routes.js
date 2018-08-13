@@ -8,15 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Country_1 = require("./../../entity/Country");
-const Branch_1 = require("./../../entity/Branch");
-const Location_1 = require("./../../entity/Location");
 const auth = require("../../middlewares/auth");
-const database_manager_1 = require("../../services/managers/database-manager");
-const result_1 = require("../../helpers/result");
+const Branch_1 = require("./../../entity/Branch");
+const Country_1 = require("./../../entity/Country");
+const Location_1 = require("./../../entity/Location");
 const errors_codes_1 = require("../../helpers/errors-codes");
-let DBM = new database_manager_1.DatabaseManager();
+const result_1 = require("../../helpers/result");
+const database_manager_1 = require("../../services/managers/database-manager");
+const dependency_manager_1 = require("../../services/managers/dependency-manager");
 function routes(app) {
+    const DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
     app.get("/api/locations", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         try {
             const LR = yield DBM.getRepository(Location_1.Location);
@@ -27,7 +28,7 @@ function routes(app) {
             if (req.query.active) {
                 query = query.where("l.active = :0", req.query.active);
             }
-            let result = yield query.getMany();
+            const result = yield query.getMany();
             res.send(result_1.SuccessResult.GeneralOk(result));
         }
         catch (error) {
@@ -37,8 +38,8 @@ function routes(app) {
     app.post("/api/locations", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         try {
             const LR = yield DBM.getRepository(Location_1.Location);
-            let loc = req.body.location;
-            let location = loc.id > 0 ? yield LR.findOne(loc.id) : new Location_1.Location();
+            const loc = req.body.location;
+            const location = loc.id > 0 ? yield LR.findOne(loc.id) : new Location_1.Location();
             if (loc.branch && loc.branch.id > 0) {
                 const BR = yield DBM.getRepository(Branch_1.Branch);
                 location.branch = yield BR.findOne(loc.branch.id);
@@ -51,7 +52,7 @@ function routes(app) {
             location.description = loc.description;
             location.name = loc.name;
             location.order = loc.order;
-            let result = yield LR.save(location);
+            const result = yield LR.save(location);
             res.send(result_1.SuccessResult.GeneralOk(result));
         }
         catch (error) {

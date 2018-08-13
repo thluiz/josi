@@ -7,6 +7,7 @@ import { SecurityService } from 'app/services/security-service';
 
 import { zip as observableZip, Observable, of } from 'rxjs';
 import { debounceTime, delay, map, distinctUntilChanged, catchError, tap, switchMap } from 'rxjs/operators';
+import { Result } from 'app/shared/models/result';
 
 @Component({
     selector: 'app-navbar',
@@ -57,8 +58,9 @@ export class NavbarComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.securityService.getCurrentUserData().subscribe((data) => {
-            this.current_user = data;
+        this.securityService.getCurrentUserData()
+        .subscribe((result_user : Result<any>) => {
+            this.current_user = result_user.data;
         });
     }
 

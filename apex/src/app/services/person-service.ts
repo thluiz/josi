@@ -243,11 +243,6 @@ export class PersonService {
         .get(this.dataUrl + `/people/${id}`);
   }
 
-  getIncidentHistory(id, type: ActivityType, page = 1) {
-    return this.http
-        .get(this.dataUrl + `/incidents/history/${id}/${type.toFixed(0)}/${page}`);
-  }
-
   getAllIncidentHistory(person_id, start_date : NgbDateStruct, end_date: NgbDateStruct, type?: ActivityType) {
     let url = this.dataUrl + `/incidents/history/${person_id}`
             + `/${start_date.year}-${start_date.month}-${start_date.day}`

@@ -1,31 +1,34 @@
-import * as auth from '../../middlewares/auth';
-import { PeopleService } from '../../services/people-service';
+import * as auth from "../../middlewares/auth";
 
-import { DatabaseManager } from '../../services/managers/database-manager';
-import { Result, SuccessResult, ErrorResult } from '../../helpers/result';
-import { ErrorCode } from '../../helpers/errors-codes';
+import { PeopleService } from "../../services/people-service";
+import { DependencyManager } from "./../../services/managers/dependency-manager";
 
-import { JobsService } from '../../services/jobs-service';
-import { ParametersService } from '../../services/parameters-service';
+import { ErrorCode } from "../../helpers/errors-codes";
+import { ErrorResult, SuccessResult } from "../../helpers/result";
+import { DatabaseManager } from "../../services/managers/database-manager";
 
-import { Branch } from '../../entity/Branch';
-import { Voucher } from '../../entity/Voucher';
-import { IPersonVoucherData } from '../../services/people-service';
-import { VoucherPersonRegisterdReport } from '../../services/reports/voucher-person-registered-report';
-import { LoggerService, LogOrigins } from '../../services/logger-service';
+import { JobsService } from "../../services/jobs-service";
+import { LoggerService, LogOrigins } from "../../services/logger-service";
+import { ParametersService } from "../../services/parameters-service";
+import { IPersonVoucherData } from "../../services/people-service";
+import { VoucherPersonRegisterdReport } from "../../services/reports/voucher-person-registered-report";
 
-const PS = new PeopleService();
-const DBM = new DatabaseManager();
+import { Branch } from "../../entity/Branch";
+import { Voucher } from "../../entity/Voucher";
 
 export function routes(app) {
+    const DBM = DependencyManager.container.resolve(DatabaseManager);
+    const PS = new PeopleService();
+    const PrS = new ParametersService();
+
     app.get("/api/vouchers/:id?",
     auth.ensureLoggedIn(),
     async (req, res, next) => {
         const VR = await DBM.getRepository<Voucher>(Voucher);
 
-        let vouchers = req.params.id > 0 ?
-                        await VR.find({ where: { id : req.params.id }, relations: ['branches', 'voucher_type']})
-                        : await VR.find({ order: { "active": "DESC" }, relations: ['voucher_type'] });
+        const vouchers = req.params.id > 0 ?
+                        await VR.find({ where: { id : req.params.id }, relations: ["branches", "voucher_type"]})
+                        : await VR.find({ order: { active: "DESC" }, relations: ["voucher_type"] });
 
         res.send(SuccessResult.GeneralOk(vouchers));
     });
@@ -36,48 +39,48 @@ export function routes(app) {
             const BR = await DBM.getRepository<Branch>(Branch);
             const VR = await DBM.getRepository<Voucher>(Voucher);
 
-            let branch = await BR.findOne(req.body.branch.id);
-            let voucher = await VR.findOne(req.body.voucher.id);
+            const branch = await BR.findOne(req.body.branch.id);
+            const voucher = await VR.findOne(req.body.voucher.id);
 
-            res.send(await ParametersService.create_branch_voucher(branch, voucher));
+            res.send(await PrS.create_branch_voucher(branch, voucher));
         }
     );
 
     app.post("/api/parameters/voucher_branch/remove",
         auth.ensureLoggedIn(),
-        async (req, res, _next) => {
+        async (req, res) => {
             const BR = await DBM.getRepository<Branch>(Branch);
             const VR = await DBM.getRepository<Voucher>(Voucher);
 
-            let branch = await BR.findOne(req.body.branch.id);
-            let voucher = await VR.findOne(req.body.voucher.id);
+            const branch = await BR.findOne(req.body.branch.id);
+            const voucher = await VR.findOne(req.body.voucher.id);
 
-            res.send(await ParametersService.remove_branch_voucher(branch, voucher));
+            res.send(await PrS.remove_branch_voucher(branch, voucher));
         }
     );
 
     app.post("/api/parameters/vouchers",
     auth.ensureLoggedIn(),
     async (req, res) => {
-        const voucher_data = req.body.voucher;
+        const voucherData = req.body.voucher;
 
-        let result = await ParametersService.save_voucher(voucher_data);
+        const result = await PrS.save_voucher(voucherData);
 
-        if(!result.success) {
+        if (!result.success) {
             res.send(result);
             return;
         }
 
         try {
-            let result_voucher = await JobsService.update_voucher_site();
+            const resultVoucher = await new JobsService().update_voucher_site();
 
-            if(!result_voucher.success) {
-                let e = result_voucher as ErrorResult;
-                e.inner_error = e;
-                e.error_code == ErrorCode.ParcialExecution;
+            if (!resultVoucher.success) {
+                const e = resultVoucher as ErrorResult;
+                e.innerError = e;
+                e.errorCode = ErrorCode.ParcialExecution;
             }
 
-            res.send(result_voucher);
+            res.send(resultVoucher);
         } catch (error) {
             res.send(ErrorResult.Fail(ErrorCode.ParcialExecution, error));
         }
@@ -88,24 +91,24 @@ export function routes(app) {
      **********************************************/
 
     app.post("/api/voucher",
-    async (req, res, _next) => {
+    async (req, res) => {
         try {
             LoggerService.info(LogOrigins.ExternalResource, req.body);
 
-            let data : IPersonVoucherData = {
+            const data: IPersonVoucherData = {
                 name: req.body.name,
                 email: req.body.email,
                 cpf: req.body.cpf,
                 phone: req.body.phone,
                 socialLinks: req.body.socialLinks,
-                branch_id: isNaN(req.body.unit) ? 1 : parseInt(req.body.unit),
+                branch_id: isNaN(req.body.unit) ? 1 : parseInt(req.body.unit, 10),
                 branch_map_id: req.body.schedule || 0,
                 voucher_id: req.body.voucher_id || 1,
-                additionalAnswer: req.body.additionalAnswer || '',
+                additionalAnswer: req.body.additionalAnswer || "",
                 invite_key: req.body.invite
             };
 
-            await VoucherPersonRegisterdReport.send(data);
+            await new VoucherPersonRegisterdReport().send(data);
 
             await PS.create_person_from_voucher(data);
         } catch (error) {
@@ -114,12 +117,12 @@ export function routes(app) {
         res.send({ sucess: true});
     });
 
-    app.get("/api/voucher/invites", async(_req, res, _next) => {
+    app.get("/api/voucher/invites", async (req, res) => {
         const result = await DBM.ExecuteJsonSP("GetInvitesForVoucher");
         res.send(result.data);
     });
 
-    app.get("/api/voucher/data", async(_req, res, _next) => {
+    app.get("/api/voucher/data", async (req, res) => {
         const result = await DBM.ExecuteJsonSP("GetDataForVoucher");
         res.send(result.data);
     });

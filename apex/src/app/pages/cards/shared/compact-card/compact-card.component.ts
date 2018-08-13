@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs/subscription'; 
+import { Subscription } from 'rxjs/subscription';
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -13,27 +13,26 @@ import { Card } from 'app/shared/models/card.model';
   templateUrl: './compact-card.component.html',
   styleUrls: ['./compact-card.scss']
 })
-export class CompactCardComponent implements OnInit, OnDestroy {  
+export class CompactCardComponent implements OnInit, OnDestroy {
 
-  @Input() card : Card;  
-  
+  @Input() card : Card;
+
   private card_actions : Subscription;
-  
-  constructor(private parameterService: ParameterService,
-              private cardService: CardService,
-              private modalService: ModalService) {
-      
-  }  
 
-  ngOnInit() {        
-    this.card_actions = this.cardService.cardChanges$      
+  constructor(private cardService: CardService,
+              private modalService: ModalService) {
+
+  }
+
+  ngOnInit() {
+    this.card_actions = this.cardService.cardChanges$
     .subscribe((action : any) => {
-      if(action.type == CARD_COMMENT_ADDED && action.payload.card.id == this.card.id) {      
+      if(action.type === CARD_COMMENT_ADDED && action.payload.card.id === this.card.id) {
         this.card = action.payload.card;
-        this.card.comment_count = action.payload.commentaries.length;
+        this.card.comment_count = action.payload.card.comment_count;
       }
 
-      if(action.type == CARD_CHANGED && action.payload.id == this.card.id) {
+      if(action.type === CARD_CHANGED && action.payload.id === this.card.id) {
         this.card = action.payload;
       }
     });
@@ -45,7 +44,7 @@ export class CompactCardComponent implements OnInit, OnDestroy {
     }
   }
 
-  open_detail_modal() {        
+  open_detail_modal() {
     this.modalService.open(ModalType.DetailTask, this.card);
   }
 
@@ -53,13 +52,13 @@ export class CompactCardComponent implements OnInit, OnDestroy {
     this.modalService.open(ModalType.EditCard, this.card);
   }
 
-  updateOrganization() {    
+  updateOrganization() {
   }
 
-  add_task(organization) {        
+  add_task(organization) {
   }
 
   add_project(organization) {
-    
+
   }
 }

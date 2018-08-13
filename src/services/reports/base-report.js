@@ -8,34 +8,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const Ejs = require("ejs");
+const path = require("path");
 const Branch_1 = require("../../entity/Branch");
 const database_manager_1 = require("../managers/database-manager");
-const logger_service_1 = require("../logger-service");
-const email_manager_1 = require("../managers/email-manager");
-const path = require("path");
-const Ejs = require("ejs");
-const result_1 = require("../../helpers/result");
-const errors_codes_1 = require("../../helpers/errors-codes");
 const configurations_services_1 = require("../configurations-services");
-const DBM = new database_manager_1.DatabaseManager();
+const logger_service_1 = require("../logger-service");
+const errors_codes_1 = require("../../helpers/errors-codes");
+const result_1 = require("../../helpers/result");
+const email_manager_1 = require("../managers/email-manager");
 class BaseReport {
-    static getIMEmail() {
+    constructor() {
+        this.DBM = new database_manager_1.DatabaseManager();
+    }
+    getIMEmail() {
         return __awaiter(this, void 0, void 0, function* () {
             return configurations_services_1.ConfigurationsService.getConfiguration(configurations_services_1.Configurations.EMAIL_IM);
         });
     }
-    static getBranchEmail(branch_id) {
+    getBranchEmail(branchId) {
         return __awaiter(this, void 0, void 0, function* () {
-            let BR = yield DBM.getRepository(Branch_1.Branch);
-            let branch = yield BR.findOne(branch_id);
+            const BR = yield this.DBM.getRepository(Branch_1.Branch);
+            const branch = yield BR.findOne(branchId);
             return branch.contact_email;
         });
     }
-    static render_template(name, data) {
-        return new Promise((resolve, _reject) => {
+    render_template(name, data) {
+        return new Promise((resolve) => {
             try {
-                var template_path = path.join(__dirname, `templates/${name}.html`);
-                Ejs.renderFile(template_path, { data: data }, (err, content) => {
+                const templatePath = path.join(__dirname, `templates/${name}.html`);
+                Ejs.renderFile(templatePath, { data }, (err, content) => {
                     if (err) {
                         logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.SendingEmail, err);
                         resolve(result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, err));
@@ -50,7 +52,7 @@ class BaseReport {
             }
         });
     }
-    static send_email(msg) {
+    send_email(msg) {
         return email_manager_1.EmailManager.send_email(msg);
     }
 }

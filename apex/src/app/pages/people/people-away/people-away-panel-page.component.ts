@@ -10,6 +10,7 @@ import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from '
 import { Subscription } from 'rxjs';
 import { SecurityService } from 'app/services/security-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
+import { Result } from 'app/shared/models/result';
 
 
 @Component({
@@ -47,12 +48,14 @@ export class PeopleAwayPageComponent implements OnInit, OnDestroy {
     this.current_branch = this.activatedRoute.snapshot.queryParams["branch"] || 0;
     this.search_name = this.activatedRoute.snapshot.queryParams["name"] || "";
 
-    this.parameterService.getActiveBranches().subscribe((branches) => {
-      this.branches = branches;
+    this.parameterService.getActiveBranches().subscribe((result_data) => {
+      this.branches = result_data.data;
     });
 
-    this.securityService.getCurrentUserData().subscribe((user) => {
-      this.current_branch = this.activatedRoute.snapshot.queryParams["branch"] || user.default_branch_id || 0;
+    this.securityService.getCurrentUserData()
+    .subscribe((result_user : Result<any>) => {
+      this.current_branch = this.activatedRoute.snapshot.queryParams["branch"]
+                            || result_user.data.default_branch_id || 0;
       this.load_people_away_list();
     });
   }
@@ -99,8 +102,8 @@ export class PeopleAwayPageComponent implements OnInit, OnDestroy {
     }
 
     this.person_list_sub = this.personService.getPeopleAwayList(this.current_branch, this.search_name).subscribe(
-      data => {
-        this.all_people = data;
+      (result : Result<any[]>) => {
+        this.all_people = result.data;
 
         this.apply_filters();
       }
