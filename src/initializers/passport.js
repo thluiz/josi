@@ -8,46 +8,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = require("../entity/User");
-const database_manager_1 = require("../services/managers/database-manager");
-const dependency_manager_1 = require("../services/managers/dependency-manager");
 const session = require("express-session");
 const passport = require("passport");
 const azure_session_storage_1 = require("../middlewares/azure-session-storage");
+const users_repository_1 = require("./../repositories/users-repository");
 // tslint:disable-next-line:no-var-requires
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 function initialize(app) {
-    const DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
+    const UR = new users_repository_1.UsersRepository();
     passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: process.env.GOOGLE_CALLBACK_URL
     }, (accessToken, refreshToken, profile, cb) => __awaiter(this, void 0, void 0, function* () {
-        const ru = yield DBM.getRepository(User_1.User);
-        const user = yield ru.findOne({ email: profile.emails[0].value });
-        if (user == null) {
+        const resultUser = yield UR.getUserByEmail(profile.emails[0].value);
+        if (resultUser == null || !resultUser.success) {
             cb(null, false);
             return;
         }
-        cb(null, user);
+        cb(null, resultUser.data);
     })));
     passport.serializeUser((user, done) => {
         done(null, user.token);
     });
     passport.deserializeUser((token, done) => __awaiter(this, void 0, void 0, function* () {
-        const ru = yield DBM.getRepository(User_1.User);
-        /* let user = await ru.manager.createQueryBuilder()
-                    .innerJoinAndSelect("u.person", "p")
-                    .where("u.token = :token", { token: token })
-                    .cache(10000)
-                    .getOne(); */
-        const user = yield ru.findOne({ token });
-        if (user == null && done) {
+        const ru = yield UR.getUserByToken(token);
+        if ((ru == null || !ru.success) && done) {
             done("USER_NOT_FOUND", false);
             return;
         }
         if (done) {
-            done(null, user);
+            done(null, ru.data);
             return;
         }
     }));
@@ -58,9 +49,9 @@ function initialize(app) {
         cookie: { secure: false },
         store: new azure_session_storage_1.AzureSessionStore({
             secret: process.env.EXPRESS_SESSION_KEY,
-            resave: false,
+            resave: true,
             maxAge: 6 * 60 * 60 * 1000,
-            saveUninitialized: true
+            saveUninitialized: false
         })
     }));
     app.use(passport.initialize());

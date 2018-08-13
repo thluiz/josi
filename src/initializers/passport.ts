@@ -1,32 +1,29 @@
-import { User } from "../entity/User";
-import { DatabaseManager } from "../services/managers/database-manager";
-import { DependencyManager } from "../services/managers/dependency-manager";
-
 import session = require("express-session");
 import passport = require("passport");
 import { AzureSessionStore } from "../middlewares/azure-session-storage";
+
+import { User } from "../entity/User";
+import { UsersRepository } from "./../repositories/users-repository";
 
 // tslint:disable-next-line:no-var-requires
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 export function initialize(app) {
-    const DBM = DependencyManager.container.resolve(DatabaseManager);
-
+    const UR = new UsersRepository();
     passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: process.env.GOOGLE_CALLBACK_URL
       },
       async (accessToken, refreshToken, profile, cb) => {
-        const ru = await DBM.getRepository(User);
-        const user = await ru.findOne({ email: profile.emails[0].value });
+        const resultUser = await UR.getUserByEmail(profile.emails[0].value);
 
-        if (user == null) {
+        if (resultUser == null || !resultUser.success) {
             cb(null, false);
             return;
         }
 
-        cb(null, user);
+        cb(null, resultUser.data);
       }
     ));
 
@@ -35,22 +32,15 @@ export function initialize(app) {
     });
 
     passport.deserializeUser(async (token, done) => {
-        const ru = await DBM.getRepository(User);
-        /* let user = await ru.manager.createQueryBuilder()
-                    .innerJoinAndSelect("u.person", "p")
-                    .where("u.token = :token", { token: token })
-                    .cache(10000)
-                    .getOne(); */
+        const ru = await UR.getUserByToken(token);
 
-        const user = await ru.findOne({ token });
-
-        if (user == null && done) {
+        if ((ru == null || !ru.success) && done) {
             done("USER_NOT_FOUND", false);
             return;
         }
 
         if (done) {
-            done(null, user);
+            done(null, ru.data);
             return;
         }
     });
@@ -62,9 +52,9 @@ export function initialize(app) {
             cookie: { secure: false },
             store: new AzureSessionStore({
                 secret: process.env.EXPRESS_SESSION_KEY,
-                resave: false,
+                resave: true,
                 maxAge: 6 * 60 * 60 * 1000, // 6 hours
-                saveUninitialized: true
+                saveUninitialized: false
             })
     }));
 
