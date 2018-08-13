@@ -44,8 +44,8 @@ function initialize(app) {
     }));
     app.use(session({
         secret: process.env.EXPRESS_SESSION_KEY,
-        resave: false,
-        saveUninitialized: true,
+        resave: true,
+        saveUninitialized: false,
         cookie: { secure: false },
         store: new azure_session_storage_1.AzureSessionStore({
             secret: process.env.EXPRESS_SESSION_KEY,
