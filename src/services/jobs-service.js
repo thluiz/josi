@@ -20,6 +20,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const await_to_js_1 = require("await-to-js");
 const uuid = require("uuid/v4");
 const axios_1 = require("axios");
+const azure_session_storage_1 = require("../middlewares/azure-session-storage");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const errors_codes_1 = require("../helpers/errors-codes");
 const result_1 = require("../helpers/result");
@@ -49,11 +50,10 @@ class JobsService {
     }
     cleanup_sessions() {
         return __awaiter(this, void 0, void 0, function* () {
-            const AzureSessionStore = require("../middlewares/azure-session-storage");
-            const storage = new AzureSessionStore();
+            const storage = new azure_session_storage_1.AzureSessionStore({});
             try {
-                const results = yield storage.cleanup();
-                return results;
+                yield storage.cleanup();
+                return result_1.SuccessResult.GeneralOk();
             }
             catch (error) {
                 return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error);

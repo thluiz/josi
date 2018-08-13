@@ -60,7 +60,7 @@ function initialize(app) {
             secret: process.env.EXPRESS_SESSION_KEY,
             resave: false,
             maxAge: 6 * 60 * 60 * 1000,
-            saveUninitialized: true
+            saveUninitialized: false
         })
     }));
     app.use(passport.initialize());

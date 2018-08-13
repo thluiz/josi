@@ -1,4 +1,5 @@
 "use strict";
+// tslint:disable:variable-name
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -17,12 +18,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const users_repository_1 = require("./../repositories/users-repository");
-// tslint:disable:variable-name
 const typeorm_1 = require("typeorm");
-const database_manager_1 = require("../services/managers/database-manager");
 const Person_1 = require("./Person");
-const DBM = new database_manager_1.DatabaseManager();
 let User = class User {
     is_director() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -59,7 +56,7 @@ let User = class User {
             if (this.person != null) {
                 return;
             }
-            const UR = yield new users_repository_1.UsersRepository();
+            const UR = yield new UsersRepository();
             const result_user = yield UR.loadAllUserData(this.id);
             this.person = result_user.data.person;
         });

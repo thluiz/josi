@@ -2,9 +2,12 @@ import to from "await-to-js";
 import * as uuid from "uuid/v4";
 
 import axios, { AxiosResponse } from "axios";
+import { AzureSessionStore } from "../middlewares/azure-session-storage";
+
 import { trylog } from "../decorators/trylog-decorator";
 import { ErrorCode } from "../helpers/errors-codes";
 import { ErrorResult, Result, SuccessResult } from "../helpers/result";
+
 import { LoggerService } from "./logger-service";
 
 export class JobsService {
@@ -37,13 +40,12 @@ export class JobsService {
 
     @trylog()
     async cleanup_sessions(): Promise<Result<any>> {
-        const AzureSessionStore = require("../middlewares/azure-session-storage");
-        const storage = new AzureSessionStore();
+        const storage = new AzureSessionStore({});
 
         try {
-            const results = await storage.cleanup();
+            await storage.cleanup();
 
-            return results;
+            return SuccessResult.GeneralOk();
         } catch (error) {
             return ErrorResult.Fail(ErrorCode.GenericError, error);
         }

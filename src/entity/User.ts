@@ -1,11 +1,7 @@
-import { UsersRepository } from './../repositories/users-repository';
 // tslint:disable:variable-name
 
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { DatabaseManager } from "../services/managers/database-manager";
 import { Person } from "./Person";
-
-const DBM = new DatabaseManager();
 
 @Entity()
 export class User {
