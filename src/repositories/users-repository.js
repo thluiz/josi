@@ -45,7 +45,7 @@ class UsersRepository extends base_repository_1.BaseRepository {
             const UR = yield this.getRepository();
             const user = yield UR.manager
                 .createQueryBuilder(User_1.User, "u")
-                .where("user.token = :token", { token })
+                .where("u.token = :token", { token })
                 .cache(10000)
                 .getOne();
             return result_1.SuccessResult.GeneralOk(user);
@@ -56,7 +56,7 @@ class UsersRepository extends base_repository_1.BaseRepository {
             const UR = yield this.getRepository();
             const user = yield UR.manager
                 .createQueryBuilder(User_1.User, "u")
-                .where("user.email = :email", { email })
+                .where("u.email = :email", { email })
                 .cache(10000)
                 .getOne();
             return result_1.SuccessResult.GeneralOk(user);

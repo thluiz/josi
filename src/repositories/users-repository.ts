@@ -35,7 +35,7 @@ export class UsersRepository extends BaseRepository<User> {
 
         const user = await UR.manager
             .createQueryBuilder(User, "u")
-            .where("user.token = :token", { token })
+            .where("u.token = :token", { token })
             .cache(10000)
             .getOne();
 
@@ -49,7 +49,7 @@ export class UsersRepository extends BaseRepository<User> {
 
         const user = await UR.manager
             .createQueryBuilder(User, "u")
-            .where("user.email = :email", { email })
+            .where("u.email = :email", { email })
             .cache(10000)
             .getOne();
 
