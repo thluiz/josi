@@ -26,7 +26,10 @@ class BaseRepository {
     }
     getRepository() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.DBM.getRepository(this.type);
+            if (!this.internalRepository) {
+                this.internalRepository = yield this.DBM.getRepository(this.type);
+            }
+            return this.internalRepository;
         });
     }
 }

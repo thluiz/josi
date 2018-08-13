@@ -1,3 +1,4 @@
+import { UsersRepository } from './../repositories/users-repository';
 import { User } from "../entity/User";
 import { DatabaseManager } from "./managers/database-manager";
 import { DependencyManager } from "./managers/dependency-manager";
@@ -10,6 +11,7 @@ export enum Permissions {
 
 export class SecurityService {
     private DBM = DependencyManager.container.resolve(DatabaseManager);
+    private UR = new UsersRepository();
 
     async serializeUser(user: User): Promise<any> {
 
@@ -42,16 +44,10 @@ export class SecurityService {
 
     async getUserFromRequest(req): Promise<User> {
         if (process.env.PRODUCTION === "false") {
-            const DBM = DependencyManager.container.resolve(DatabaseManager);
-            const connection = await DBM.getConnection();
 
-            const user = await connection.manager
-            .createQueryBuilder(User, "user")
-            .where("user.token = :token", { token: process.env.TOKEN_USER_DEV })
-            .cache(30000)
-            .getOne();
+            const loadUser = await this.UR.getUserByToken(process.env.TOKEN_USER_DEV);
 
-            return user;
+            return loadUser.data as User;
         }
 
         return req.user;
@@ -80,13 +76,8 @@ export class SecurityService {
     }
 
     async findUser(email, callback) {
-        const connection = await this.DBM.getConnection();
-
-        const user = await connection.manager
-        .createQueryBuilder(User, "user")
-        .where("user.email = :email", { email })
-        .cache(30000)
-        .getOne();
+        const loadUser = await this.UR.getUserByEmail(email);
+        const user = loadUser.data;
 
         if (!user) {
             callback(null, false);
@@ -97,13 +88,8 @@ export class SecurityService {
     }
 
     async findUserByToken(token, callback?) {
-        const connection = await this.DBM.getConnection();
-
-        const user = await connection.manager
-        .createQueryBuilder(User, "user")
-        .where("user.email = :token", { token })
-        .cache(30000)
-        .getOne();
+        const loadUser = await this.UR.getUserByToken(token);
+        const user = loadUser.data;
 
         if (!user) {
             if (callback) { callback("user not fount", false); }

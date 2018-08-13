@@ -1,3 +1,4 @@
+import { UsersRepository } from './../repositories/users-repository';
 // tslint:disable:variable-name
 
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
@@ -59,17 +60,9 @@ export class User {
 
     async loadPersonIfNeeded() {
         if (this.person != null) { return; }
+        const UR = await new UsersRepository();
+        const result_user = await UR.loadAllUserData(this.id);
 
-        const UR = await DBM.getRepository<User>(User);
-
-        const user = await UR.manager
-            .createQueryBuilder(User, "u")
-            .innerJoinAndSelect("u.person", "p")
-            .leftJoinAndSelect("p.default_page", "dp")
-            .where("u.id = :id", { id: this.id })
-            .cache(10000)
-            .getOne();
-
-        this.person = user.person;
+        this.person = (result_user.data as User).person;
     }
 }

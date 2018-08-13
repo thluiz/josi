@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = require("../entity/User");
+const users_repository_1 = require("./../repositories/users-repository");
 const database_manager_1 = require("./managers/database-manager");
 const dependency_manager_1 = require("./managers/dependency-manager");
 var Permissions;
@@ -20,6 +20,7 @@ var Permissions;
 class SecurityService {
     constructor() {
         this.DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
+        this.UR = new users_repository_1.UsersRepository();
     }
     serializeUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -49,14 +50,8 @@ class SecurityService {
     getUserFromRequest(req) {
         return __awaiter(this, void 0, void 0, function* () {
             if (process.env.PRODUCTION === "false") {
-                const DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
-                const connection = yield DBM.getConnection();
-                const user = yield connection.manager
-                    .createQueryBuilder(User_1.User, "user")
-                    .where("user.token = :token", { token: process.env.TOKEN_USER_DEV })
-                    .cache(30000)
-                    .getOne();
-                return user;
+                const loadUser = yield this.UR.getUserByToken(process.env.TOKEN_USER_DEV);
+                return loadUser.data;
             }
             return req.user;
         });
@@ -83,12 +78,8 @@ class SecurityService {
     }
     findUser(email, callback) {
         return __awaiter(this, void 0, void 0, function* () {
-            const connection = yield this.DBM.getConnection();
-            const user = yield connection.manager
-                .createQueryBuilder(User_1.User, "user")
-                .where("user.email = :email", { email })
-                .cache(30000)
-                .getOne();
+            const loadUser = yield this.UR.getUserByEmail(email);
+            const user = loadUser.data;
             if (!user) {
                 callback(null, false);
                 return;
@@ -98,12 +89,8 @@ class SecurityService {
     }
     findUserByToken(token, callback) {
         return __awaiter(this, void 0, void 0, function* () {
-            const connection = yield this.DBM.getConnection();
-            const user = yield connection.manager
-                .createQueryBuilder(User_1.User, "user")
-                .where("user.email = :token", { token })
-                .cache(30000)
-                .getOne();
+            const loadUser = yield this.UR.getUserByToken(token);
+            const user = loadUser.data;
             if (!user) {
                 if (callback) {
                     callback("user not fount", false);
