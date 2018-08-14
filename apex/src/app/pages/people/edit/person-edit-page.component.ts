@@ -142,8 +142,8 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
 
   load_person_data() {
     this.personService.getData(this.id).subscribe(
-      (result : Result<any>) => {
-        this.person = result.data;
+      (result : Result<any[]>) => {
+        this.person = result.data[0];
         this.person.birth_date = this.translate_date_to_view(this.person.birth_date);
         this.person.admission_date = this.translate_date_to_view(this.person.admission_date);
         this.person.baaisi_date = this.translate_date_to_view(this.person.baaisi_date);

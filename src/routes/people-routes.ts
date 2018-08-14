@@ -10,8 +10,9 @@ import { DependencyManager } from "../services/managers/dependency-manager";
 
 import { JobsService } from "../services/jobs-service";
 import { SecurityService } from "../services/security-service";
-import { SuccessResult } from "../helpers/result";
+
 import { isArray } from "util";
+import { SuccessResult } from "../helpers/result";
 
 const azureStorage: MulterAzureStorage = new MulterAzureStorage({
   connectionString: process.env.AZURE_AVATAR_STORAGE,
@@ -557,20 +558,21 @@ export function routes(app) {
           { occupation: indication.occupation }
         );
 
-        res.send(result);
-
-        try {
-          const voucherUpdate = await new JobsService().update_voucher_site();
-          if (!voucherUpdate.success) {
-            res.send(voucherUpdate);
+        if (result.success) {
+          try {
+            const voucherUpdate = await new JobsService().update_voucher_site();
+            if (!voucherUpdate.success) {
+              res.send(voucherUpdate);
+              return;
+            }
+          } catch (error) {
+            res.status(500).json(error);
             return;
           }
-        } catch (error) {
-          res.status(500).json(error);
-          return;
         }
 
-        res.send({ success: true });
+        res.send(result);
+
       } catch (error) {
         res.status(500).json(error);
       }

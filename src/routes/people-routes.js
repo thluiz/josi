@@ -17,8 +17,8 @@ const database_manager_1 = require("../services/managers/database-manager");
 const dependency_manager_1 = require("../services/managers/dependency-manager");
 const jobs_service_1 = require("../services/jobs-service");
 const security_service_1 = require("../services/security-service");
-const result_1 = require("../helpers/result");
 const util_1 = require("util");
+const result_1 = require("../helpers/result");
 const azureStorage = new multer_azure_blob_storage_1.MulterAzureStorage({
     connectionString: process.env.AZURE_AVATAR_STORAGE,
     containerName: "avatars",
@@ -304,19 +304,20 @@ function routes(app) {
         try {
             const indication = req.body.indication;
             const result = yield DBM.ExecuteSPNoResults("SaveNewIndication", { person_id: indication.person_id }, { contact_type1: indication.contact_type1 }, { contact_type2: indication.contact_type2 }, { contact_type3: indication.contact_type3 }, { comments: indication.comment }, { contact1: indication.contact1 }, { contact2: indication.contact2 }, { contact3: indication.contact3 }, { indication_contact_type: indication.indication_contact_type }, { branch_id: indication.branch_id }, { operator_id: indication.operator_id }, { age: indication.age > 0 ? indication.age : 0 }, { district: indication.district }, { occupation: indication.occupation });
-            res.send(result);
-            try {
-                const voucherUpdate = yield new jobs_service_1.JobsService().update_voucher_site();
-                if (!voucherUpdate.success) {
-                    res.send(voucherUpdate);
+            if (result.success) {
+                try {
+                    const voucherUpdate = yield new jobs_service_1.JobsService().update_voucher_site();
+                    if (!voucherUpdate.success) {
+                        res.send(voucherUpdate);
+                        return;
+                    }
+                }
+                catch (error) {
+                    res.status(500).json(error);
                     return;
                 }
             }
-            catch (error) {
-                res.status(500).json(error);
-                return;
-            }
-            res.send({ success: true });
+            res.send(result);
         }
         catch (error) {
             res.status(500).json(error);

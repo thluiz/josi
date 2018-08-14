@@ -60,20 +60,21 @@ export class PersonDataTreatmentModalComponent implements OnInit {
   ngOnInit() {
     this.person_changes_subscriber = this.personService.personChanges$.pipe(
       filter((data) => data != null && data.id == this.person_id()))
-      .subscribe((data) => {
-        this.personService.getPersonMissingData(this.person_id()).subscribe((missing_data) => {
-          this.missing_data = missing_data as any;
+      .subscribe((result_data) => {
+        this.personService.getPersonMissingData(this.person_id())
+        .subscribe((result_missing_data : Result<any>) => {
+          this.missing_data = result_missing_data.data as any;
         });
       });
 
     this.contact_changes_subscriber = this.personService.contactChanges$.pipe(
       filter((data) => data != null && data.person_id == this.person_id()))
       .subscribe((data) => {
-        this.personService.getPersonContacts(this.person_id()).subscribe((data) => {
-          this.load_contacts(data)
+        this.personService.getPersonContacts(this.person_id()).subscribe((result_data : Result<any>) => {
+          this.load_contacts(result_data.data)
 
-          this.personService.getPersonMissingData(this.person_id()).subscribe((missing_data) => {
-            this.missing_data = missing_data as any;
+          this.personService.getPersonMissingData(this.person_id()).subscribe((result_missing_data :  Result<any>) => {
+            this.missing_data = result_missing_data.data as any;
           });
         });
       });
@@ -91,12 +92,12 @@ export class PersonDataTreatmentModalComponent implements OnInit {
       this.personService.getPersonMissingData(this.person_id()),
       this.personService.getPersonContacts(this.person_id()),
       this.parameterService.getActiveBranches(),
-      (result_person_data: Result<any>,
-        result_missing_data: Result<any>,
+      (result_person_data: Result<any[]>,
+        result_missing_data: Result<any[]>,
         result_contacts: Result<any>,
         result_branches: Result<any[]>) => {
 
-        this.person = result_person_data.data;
+        this.person = result_person_data.data[0];
         this.missing_data = result_missing_data.data as any;
         this.load_contacts(result_contacts.data);
         this.branches = result_branches.data;
