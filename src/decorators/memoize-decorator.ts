@@ -1,16 +1,16 @@
 /// from https://gist.github.com/fracz/972ff3abdaf00b2b6dd94888df0a393b
 /// and https://github.com/darrylhodgins/typescript-memoize
 
-export function Memoize(hashFunction?: (...args: any[]) => any) {
+export function Memoize(asyncMemoize: boolean = false, timeout?: number, hashFunction?: (...args: any[]) => any) {
   return (
     target: any,
     propertyKey: string,
     descriptor: TypedPropertyDescriptor<any>
   ) => {
     if (descriptor.value != null) {
-      descriptor.value = getNewFunction(descriptor.value, hashFunction);
+      descriptor.value = getNewFunction(descriptor.value, hashFunction, asyncMemoize, timeout);
     } else if (descriptor.get != null) {
-      descriptor.get = getNewFunction(descriptor.get, hashFunction);
+      descriptor.get = getNewFunction(descriptor.get, hashFunction, asyncMemoize, timeout);
     } else {
       throw new Error("Only put a Memoize() decorator on a method or get accessor.");
     }
@@ -18,14 +18,18 @@ export function Memoize(hashFunction?: (...args: any[]) => any) {
 }
 
 let counter = 0;
+const memoizeMap: Array<Map<any, any>> = [];
+
 function getNewFunction(
   originalMethod: () => void,
-  hashFunction?: (...args: any[]) => any
+  hashFunction?: (...args: any[]) => any,
+  asyncMemoize = false,
+  timeout: number = null
 ) {
   const identifier = ++counter;
 
   // The function returned here gets called instead of originalMethod.
-  return function(...args: any[]) {
+  return async function(...args: any[]) {
     const propValName = `__memoized_value_${identifier}`;
     const propMapName = `__memoized_map_${identifier}`;
 
@@ -41,7 +45,9 @@ function getNewFunction(
           value: new Map<any, any>()
         });
       }
-      const myMap: Map<any, any> = this[propMapName];
+      if (!memoizeMap[propMapName]) {
+        memoizeMap[propMapName] = new Map();
+      }
 
       let hashKey: any;
 
@@ -51,11 +57,21 @@ function getNewFunction(
         hashKey = args[0];
       }
 
-      if (myMap.has(hashKey)) {
-        returnedValue = myMap.get(hashKey);
+      if (memoizeMap[propMapName].has(hashKey)) {
+        returnedValue = memoizeMap[propMapName].get(hashKey);
       } else {
-        returnedValue = originalMethod.apply(this, args);
-        myMap.set(hashKey, returnedValue);
+        if (asyncMemoize) {
+          returnedValue = await originalMethod.apply(this, args);
+        } else {
+          returnedValue = originalMethod.apply(this, args);
+        }
+
+        memoizeMap[propMapName].set(hashKey, returnedValue);
+        if (timeout > 0) {
+          setTimeout(() => {
+            memoizeMap[propMapName] = null;
+          }, timeout);
+        }
       }
     } else {
       if (this.hasOwnProperty(propValName)) {

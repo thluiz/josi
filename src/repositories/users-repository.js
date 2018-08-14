@@ -64,21 +64,21 @@ class UsersRepository extends base_repository_1.BaseRepository {
     }
 }
 __decorate([
-    memoize_decorator_1.Memoize(),
+    memoize_decorator_1.Memoize(true, 10000),
     trylog_decorator_1.trylog2(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersRepository.prototype, "loadAllUserData", null);
 __decorate([
-    memoize_decorator_1.Memoize(),
+    memoize_decorator_1.Memoize(true, 100000),
     trylog_decorator_1.trylog2(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersRepository.prototype, "getUserByToken", null);
 __decorate([
-    memoize_decorator_1.Memoize(),
+    memoize_decorator_1.Memoize(true, 10000),
     trylog_decorator_1.trylog2(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

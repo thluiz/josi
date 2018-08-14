@@ -77,7 +77,7 @@ export class PersonScheduleTreatmentModalComponent implements OnInit {
         result_pending_data: Result<any>,
         result_contacts: Result<any[]>,
         result_branches: Result<any[]>) => {
-        this.person = result_person_data.data;
+        this.person = result_person_data.data[0];
         this.pending = result_pending_data.data.pending[0];
         this.without_schedule = result_pending_data.data.pending[0].without_schedule;
         this.load_contacts(result_contacts.data);

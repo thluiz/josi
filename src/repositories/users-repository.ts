@@ -12,7 +12,7 @@ export class UsersRepository extends BaseRepository<User> {
         this.type = User;
     }
 
-    @Memoize()
+    @Memoize(true, 10000)
     @trylog2()
     async loadAllUserData(userId): Promise<Result<User>> {
         const UR = await this.getRepository();
@@ -28,7 +28,7 @@ export class UsersRepository extends BaseRepository<User> {
         return SuccessResult.GeneralOk(user);
     }
 
-    @Memoize()
+    @Memoize(true, 100000)
     @trylog2()
     async getUserByToken(token): Promise<Result<User>> {
         const UR = await this.getRepository();
@@ -42,7 +42,7 @@ export class UsersRepository extends BaseRepository<User> {
         return SuccessResult.GeneralOk(user);
     }
 
-    @Memoize()
+    @Memoize(true, 10000)
     @trylog2()
     async getUserByEmail(email): Promise<Result<User>> {
         const UR = await this.getRepository();

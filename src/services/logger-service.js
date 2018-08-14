@@ -38,12 +38,17 @@ class LoggerService {
         const partition = (level === LogLevel.Info || level === LogLevel.Benchmark) ?
             LogLevel[level] : errors_codes_1.ErrorCode[origin];
         const entity = azure_tables_manager_1.AzureTableManager.buildEntity(customKey || new Date().getTime().toString(), obj, partition);
-        azure_tables_manager_1.AzureTableManager.insertOrMergeEntity(this.get_table_service(), tbl, entity, (err) => {
-            if (err) {
-                console.log(err);
-                console.log("AzureSessionStore.set: " + err);
-            }
-        });
+        if (process.env.PRODUCTION !== "false") {
+            azure_tables_manager_1.AzureTableManager.insertOrMergeEntity(this.get_table_service(), tbl, entity, (err) => {
+                if (err) {
+                    console.log(err);
+                    console.log("AzureSessionStore.set: " + err);
+                }
+            });
+        }
+        else {
+            console.log(entity);
+        }
     }
     static get_table_service() {
         if (this.tableService == null) {

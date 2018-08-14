@@ -10,6 +10,7 @@ import { UtilsService } from 'app/services/utils-service';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParameterService } from 'app/services/parameter-service';
+import { Result } from 'app/shared/models/result';
 
 
 @Component({
@@ -58,9 +59,9 @@ export class PersonOfferingModalComponent implements OnInit {
     observableZip(
       this.personService.getData(this.person_id()),
       this.personService.getPersonAvailableOffering(this.person_id()),
-      (person_data, missing_data, contacts, branches) => {
-        this.person = person_data;
-        this.offers = missing_data as any;
+      (result_person: Result<any>, result_offers: Result<any>) => {
+        this.person = result_person.data[0];
+        this.offers = result_offers.data;
 
         this.open_modal(this.offering_modal, true);
 

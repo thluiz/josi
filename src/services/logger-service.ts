@@ -52,14 +52,18 @@ export class LoggerService {
             customKey || new Date().getTime().toString(),
             obj, partition);
 
-        AzureTableManager.insertOrMergeEntity(
-            this.get_table_service(), tbl,
-            entity, (err) => {
-            if (err) {
-                console.log(err);
-                console.log("AzureSessionStore.set: " + err);
-            }
-        });
+        if (process.env.PRODUCTION !== "false") {
+            AzureTableManager.insertOrMergeEntity(
+                this.get_table_service(), tbl,
+                entity, (err) => {
+                if (err) {
+                    console.log(err);
+                    console.log("AzureSessionStore.set: " + err);
+                }
+            });
+        } else {
+            console.log(entity);
+        }
     }
 
     private static tableService;
