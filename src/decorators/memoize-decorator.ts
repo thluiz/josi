@@ -69,7 +69,7 @@ function getNewFunction(
         memoizeMap[propMapName].set(hashKey, returnedValue);
         if (timeout > 0) {
           setTimeout(() => {
-            memoizeMap[propMapName] = new Map();
+            memoizeMap[propMapName].delete(hashKey);
           }, timeout);
         }
       }
