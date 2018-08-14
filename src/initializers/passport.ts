@@ -48,13 +48,13 @@ export function initialize(app) {
     app.use(session({
             secret: process.env.EXPRESS_SESSION_KEY,
             resave: true,
-            saveUninitialized: false,
+            saveUninitialized: true,
             cookie: { secure: false },
             store: new AzureSessionStore({
                 secret: process.env.EXPRESS_SESSION_KEY,
                 resave: true,
                 maxAge: 6 * 60 * 60 * 1000, // 6 hours
-                saveUninitialized: false
+                saveUninitialized: true
             })
     }));
 

@@ -45,13 +45,13 @@ function initialize(app) {
     app.use(session({
         secret: process.env.EXPRESS_SESSION_KEY,
         resave: true,
-        saveUninitialized: false,
+        saveUninitialized: true,
         cookie: { secure: false },
         store: new azure_session_storage_1.AzureSessionStore({
             secret: process.env.EXPRESS_SESSION_KEY,
             resave: true,
             maxAge: 6 * 60 * 60 * 1000,
-            saveUninitialized: false
+            saveUninitialized: true
         })
     }));
     app.use(passport.initialize());
