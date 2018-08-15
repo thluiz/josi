@@ -64,6 +64,9 @@ function getNewFunction(originalMethod, hashFunction, asyncCache = false, timeou
                     else {
                         returnedValue = originalMethod.apply(this, args);
                     }
+                    if (returnedValue.success !== undefined && !returnedValue.success) {
+                        return returnedValue; // only save cache for success calls
+                    }
                     cacheMap[propMapName].set(hashKey, returnedValue);
                     if (timeout > 0) {
                         setTimeout(() => {
