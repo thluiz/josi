@@ -10,29 +10,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-function Memoize(asyncMemoize = false, timeout, hashFunction) {
+function cache(asyncExec = false, timeout, hashFunction) {
     return (target, propertyKey, descriptor) => {
         if (descriptor.value != null) {
-            descriptor.value = getNewFunction(descriptor.value, hashFunction, asyncMemoize, timeout);
+            descriptor.value = getNewFunction(descriptor.value, hashFunction, asyncExec, timeout);
         }
         else if (descriptor.get != null) {
-            descriptor.get = getNewFunction(descriptor.get, hashFunction, asyncMemoize, timeout);
+            descriptor.get = getNewFunction(descriptor.get, hashFunction, asyncExec, timeout);
         }
         else {
             throw new Error("Only put a Memoize() decorator on a method or get accessor.");
         }
     };
 }
-exports.Memoize = Memoize;
+exports.cache = cache;
 let counter = 0;
-const memoizeMap = [];
-function getNewFunction(originalMethod, hashFunction, asyncMemoize = false, timeout = null) {
+const cacheMap = [];
+function getNewFunction(originalMethod, hashFunction, asyncCache = false, timeout = null) {
     const identifier = ++counter;
     // The function returned here gets called instead of originalMethod.
     return function (...args) {
         return __awaiter(this, void 0, void 0, function* () {
-            const propValName = `__memoized_value_${identifier}`;
-            const propMapName = `__memoized_map_${identifier}`;
+            const propValName = `__cached_value_${identifier}`;
+            const propMapName = `__cached_map_${identifier}`;
             let returnedValue;
             if (hashFunction || args.length > 0) {
                 // Get or create map
@@ -44,8 +44,8 @@ function getNewFunction(originalMethod, hashFunction, asyncMemoize = false, time
                         value: new Map()
                     });
                 }
-                if (!memoizeMap[propMapName]) {
-                    memoizeMap[propMapName] = new Map();
+                if (!cacheMap[propMapName]) {
+                    cacheMap[propMapName] = new Map();
                 }
                 let hashKey;
                 if (hashFunction) {
@@ -54,20 +54,20 @@ function getNewFunction(originalMethod, hashFunction, asyncMemoize = false, time
                 else {
                     hashKey = args[0];
                 }
-                if (memoizeMap[propMapName].has(hashKey)) {
-                    returnedValue = memoizeMap[propMapName].get(hashKey);
+                if (cacheMap[propMapName].has(hashKey)) {
+                    returnedValue = cacheMap[propMapName].get(hashKey);
                 }
                 else {
-                    if (asyncMemoize) {
+                    if (asyncCache) {
                         returnedValue = yield originalMethod.apply(this, args);
                     }
                     else {
                         returnedValue = originalMethod.apply(this, args);
                     }
-                    memoizeMap[propMapName].set(hashKey, returnedValue);
+                    cacheMap[propMapName].set(hashKey, returnedValue);
                     if (timeout > 0) {
                         setTimeout(() => {
-                            memoizeMap[propMapName].delete(hashKey);
+                            cacheMap[propMapName].delete(hashKey);
                         }, timeout);
                     }
                 }
@@ -90,4 +90,4 @@ function getNewFunction(originalMethod, hashFunction, asyncMemoize = false, time
         });
     };
 }
-//# sourceMappingURL=memoize-decorator.js.map
+//# sourceMappingURL=cache-decorator.js.map

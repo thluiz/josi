@@ -137,7 +137,7 @@ class PeopleService extends base_service_1.BaseService {
     }
 }
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.PEOPLE_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Number]),

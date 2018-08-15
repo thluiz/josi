@@ -82,13 +82,13 @@ class FirebaseManager {
     }
 }
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], FirebaseManager, "get_token", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)

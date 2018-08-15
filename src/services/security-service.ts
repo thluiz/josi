@@ -1,7 +1,7 @@
 import { User } from "../entity/User";
-import { UsersRepository } from "./../repositories/users-repository";
+import { UsersRepository } from "../repositories/users-repository";
 
-import { trylog2 } from "../decorators/trylog-decorator";
+import { tryLogAsync } from "../decorators/trylog-decorator";
 
 export enum Permissions {
     Operator,
@@ -12,7 +12,7 @@ export enum Permissions {
 export class SecurityService {
     private UR = new UsersRepository();
 
-    @trylog2()
+    @tryLogAsync()
     async serializeUser(user: User): Promise<any> {
 
         if (user == null) {
@@ -42,7 +42,7 @@ export class SecurityService {
         return response;
     }
 
-    @trylog2()
+    @tryLogAsync()
     async getUserFromRequest(req): Promise<User> {
         if (process.env.PRODUCTION === "false") {
 
@@ -54,7 +54,7 @@ export class SecurityService {
         return req.user;
     }
 
-    @trylog2()
+    @tryLogAsync()
     async checkUserHasPermission(user: User, permission: Permissions): Promise<boolean> {
         if (user == null || permission == null) {
             return false;
@@ -77,7 +77,7 @@ export class SecurityService {
         return hasPermission;
     }
 
-    @trylog2()
+    @tryLogAsync()
     async findUser(email, callback) {
         const loadUser = await this.UR.getUserByEmail(email);
         const user = loadUser.data;
@@ -90,7 +90,7 @@ export class SecurityService {
         callback(null, user);
     }
 
-    @trylog2()
+    @tryLogAsync()
     async findUserByToken(token, callback?) {
         const loadUser = await this.UR.getUserByToken(token);
         const user = loadUser.data;

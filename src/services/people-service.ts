@@ -8,7 +8,7 @@ import { Person } from "../entity/Person";
 import { Role } from "../entity/Role";
 
 import { firebaseEmitter } from "../decorators/firebase-emitter-decorator";
-import { trylog2 } from "../decorators/trylog-decorator";
+import { tryLogAsync } from "../decorators/trylog-decorator";
 
 export const PEOPLE_COLLECTION = "people-events";
 export const PERSON_ADDED = "PERSON_ADDED";
@@ -21,7 +21,7 @@ export interface IPersonVoucherData {
 }
 
 export class PeopleService extends BaseService {
-    @trylog2()
+    @tryLogAsync()
     @firebaseEmitter(PEOPLE_COLLECTION)
     async create_person(name: string, roleId: number)
         : Promise<Result<Person>> {

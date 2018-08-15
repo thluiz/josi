@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_codes_1 = require("../../helpers/errors-codes");
 const result_1 = require("../../helpers/result");
-const result_2 = require("./../../helpers/result");
+const result_2 = require("../../helpers/result");
 const sgMail = require("@sendgrid/mail");
 const util_1 = require("util");
 const configurations_services_1 = require("../configurations-services");

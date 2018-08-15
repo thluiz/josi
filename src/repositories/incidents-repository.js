@@ -28,9 +28,8 @@ const converter = new showdown.Converter();
 const DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
 class IncidentsRepository extends base_repository_1.BaseRepository {
     constructor() {
-        super();
+        super(Incident_1.Incident);
         this.summaryCache = [];
-        this.type = Incident_1.Incident;
     }
     getAgenda(branchId, date) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -115,55 +114,55 @@ class IncidentsRepository extends base_repository_1.BaseRepository {
     }
 }
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getAgenda", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getAvailableOwnerships", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getCurrentActivities", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getPeopleSummary", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getSummary", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getDailyMonitor", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getPersonIncidentsHistory", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getIncidentDetails", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)

@@ -4,14 +4,14 @@ import * as uuid from "uuid/v4";
 import axios, { AxiosResponse } from "axios";
 import { AzureSessionStore } from "../middlewares/azure-session-storage";
 
-import { trylog } from "../decorators/trylog-decorator";
+import { tryLogAsync } from "../decorators/trylog-decorator";
 import { ErrorCode } from "../helpers/errors-codes";
 import { ErrorResult, Result, SuccessResult } from "../helpers/result";
 
 import { LoggerService } from "./logger-service";
 
 export class JobsService {
-    @trylog()
+    @tryLogAsync()
     async execute_hourly_jobs(): Promise<Result<void>> {
         const startTime = new Date().getTime();
         const key = uuid();
@@ -38,7 +38,7 @@ export class JobsService {
         return SuccessResult.GeneralOk();
     }
 
-    @trylog()
+    @tryLogAsync()
     async cleanup_sessions(): Promise<Result<any>> {
         const storage = new AzureSessionStore({});
 
@@ -51,7 +51,7 @@ export class JobsService {
         }
     }
 
-    @trylog()
+    @tryLogAsync()
     async update_voucher_site(): Promise<Result<AxiosResponse>> {
         const [errVoucher, resultVoucher] = await to(axios.get(process.env.VOUCHER_SITE_UPDATE_URL));
 

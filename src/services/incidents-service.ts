@@ -1,10 +1,10 @@
 import { Incident } from "../entity/Incident";
+import { IncidentType } from "../entity/IncidentType";
 import { Person } from "../entity/Person";
-import { IncidentType } from "./../entity/IncidentType";
-import { PersonIncident } from "./../entity/PersonIncident";
+import { PersonIncident } from "../entity/PersonIncident";
 
 import { firebaseEmitter } from "../decorators/firebase-emitter-decorator";
-import { trylog2 } from "../decorators/trylog-decorator";
+import { tryLogAsync } from "../decorators/trylog-decorator";
 
 import { ErrorCode } from "../helpers/errors-codes";
 import { ErrorResult, Result, SuccessResult } from "../helpers/result";
@@ -79,7 +79,7 @@ export enum AddToOwnership {
 }
 
 export class IncidentsService extends BaseService {
-    @trylog2()
+    @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async start_incident(incident, responsibleId): Promise<Result> {
         const execution = await this.databaseManager
@@ -92,7 +92,7 @@ export class IncidentsService extends BaseService {
         return execution;
     }
 
-    @trylog2()
+    @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async reopen_incident(incident, responsibleId): Promise<Result> {
         const execution = await this.databaseManager
@@ -106,7 +106,7 @@ export class IncidentsService extends BaseService {
         return execution;
     }
 
-    @trylog2()
+    @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async cancel_start_incident(incident, responsibleId): Promise<Result> {
         const execution = await this.databaseManager
@@ -120,7 +120,7 @@ export class IncidentsService extends BaseService {
         return execution;
     }
 
-    @trylog2()
+    @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async close_incident(incident: Incident, responsible: Person): Promise<Result<Incident>> {
         const execution = await this.databaseManager.ExecuteTypedJsonSP<Incident>(
@@ -137,7 +137,7 @@ export class IncidentsService extends BaseService {
         return execution;
     }
 
-    @trylog2()
+    @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async close_incident_and_send_ownership_report(incident: Incident, responsible: Person)
     : Promise<Result<Incident>> {
@@ -151,7 +151,7 @@ export class IncidentsService extends BaseService {
         return closing;
     }
 
-    @trylog2()
+    @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async remove_incident(incident, responsibleId): Promise<Result> {
         const execution = await this.databaseManager.ExecuteTypedJsonSP(
@@ -164,7 +164,7 @@ export class IncidentsService extends BaseService {
         return execution;
     }
 
-    @trylog2()
+    @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async create_people_incidents(data: IRegisterIncident): Promise<Result<Incident[]>> {
         const incidents: Incident[] = [];
@@ -317,7 +317,7 @@ export class IncidentsService extends BaseService {
         return SuccessResult.Ok(INCIDENT_ADDED, { ownership, support });
     }
 
-    @trylog2()
+    @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async register_incident(incident, responsibleId): Promise<Result> {
         let date = incident.date;
@@ -357,7 +357,7 @@ export class IncidentsService extends BaseService {
         return execution;
     }
 
-    @trylog2()
+    @tryLogAsync()
     async get_comments(incidentId: number, showArchived: boolean): Promise<Result> {
         const result = await this.databaseManager
                     .ExecuteJsonSP(
@@ -368,7 +368,7 @@ export class IncidentsService extends BaseService {
         return result;
     }
 
-    @trylog2()
+    @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async reschedule_incident(incident, newIncident, contact, responsibleId): Promise<Result> {
         const execution = await this.databaseManager.ExecuteTypedJsonSP(
@@ -383,7 +383,7 @@ export class IncidentsService extends BaseService {
         return execution;
     }
 
-    @trylog2()
+    @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async register_contact_for_incident(incident, contact, responsibleId): Promise<Result> {
         const execution = await this.databaseManager.ExecuteTypedJsonSP(
@@ -397,7 +397,7 @@ export class IncidentsService extends BaseService {
         return execution;
     }
 
-    @trylog2()
+    @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async save_comment(incidentId, comment, responsibleId) {
         return await this.databaseManager
@@ -407,7 +407,7 @@ export class IncidentsService extends BaseService {
             [{incident_id: incidentId}, { comment }, {responsible_id: responsibleId}]);
     }
 
-    @trylog2()
+    @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async archive_comment(commentId) {
         return await this.databaseManager

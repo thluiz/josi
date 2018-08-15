@@ -10,15 +10,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const multer = require("multer");
 const multer_azure_blob_storage_1 = require("multer-azure-blob-storage");
-const auth = require("../middlewares/auth");
-const people_repository_1 = require("../repositories/people-repository");
-const people_service_1 = require("../services/people-service");
-const database_manager_1 = require("../services/managers/database-manager");
-const dependency_manager_1 = require("../services/managers/dependency-manager");
-const jobs_service_1 = require("../services/jobs-service");
-const security_service_1 = require("../services/security-service");
+const auth = require("../../middlewares/auth");
+const people_repository_1 = require("../../repositories/people-repository");
+const people_service_1 = require("../../services/people-service");
+const database_manager_1 = require("../../services/managers/database-manager");
+const dependency_manager_1 = require("../../services/managers/dependency-manager");
+const jobs_service_1 = require("../../services/jobs-service");
+const security_service_1 = require("../../services/security-service");
 const util_1 = require("util");
-const result_1 = require("../helpers/result");
+const result_1 = require("../../helpers/result");
 const azureStorage = new multer_azure_blob_storage_1.MulterAzureStorage({
     connectionString: process.env.AZURE_AVATAR_STORAGE,
     containerName: "avatars",

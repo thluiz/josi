@@ -11,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const session = require("express-session");
 const passport = require("passport");
 const azure_session_storage_1 = require("../middlewares/azure-session-storage");
-const users_repository_1 = require("./../repositories/users-repository");
+const users_repository_1 = require("../repositories/users-repository");
 // tslint:disable-next-line:no-var-requires
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 function initialize(app) {

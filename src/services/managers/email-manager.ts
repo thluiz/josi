@@ -1,6 +1,6 @@
 import { ErrorCode } from "../../helpers/errors-codes";
 import { Result, SuccessResult } from "../../helpers/result";
-import { ErrorResult } from "./../../helpers/result";
+import { ErrorResult } from "../../helpers/result";
 
 import sgMail = require("@sendgrid/mail");
 import { isArray } from "util";

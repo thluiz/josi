@@ -1,5 +1,6 @@
 import "reflect-metadata";
-import { injectable } from "../../../node_modules/inversify";
+
+import { injectable } from "inversify";
 
 @injectable()
 export class DataRunningConfiguration<T = any> {

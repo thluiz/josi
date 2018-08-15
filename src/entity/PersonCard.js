@@ -10,8 +10,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-const Person_1 = require("./Person");
 const Card_1 = require("./Card");
+const Person_1 = require("./Person");
 const PersonCardPosition_1 = require("./PersonCardPosition");
 let PersonCard = class PersonCard {
 };

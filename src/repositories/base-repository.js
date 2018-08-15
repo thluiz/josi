@@ -21,8 +21,9 @@ const database_manager_1 = require("../services/managers/database-manager");
 const dependency_manager_1 = require("../services/managers/dependency-manager");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 class BaseRepository {
-    constructor() {
+    constructor(type) {
         this.DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
+        this.type = type;
     }
     getRepository() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -32,12 +33,24 @@ class BaseRepository {
             return this.internalRepository;
         });
     }
+    createQueryBuilder() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const repo = yield this.getRepository();
+            return repo.createQueryBuilder();
+        });
+    }
 }
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], BaseRepository.prototype, "getRepository", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], BaseRepository.prototype, "createQueryBuilder", null);
 exports.BaseRepository = BaseRepository;
 //# sourceMappingURL=base-repository.js.map

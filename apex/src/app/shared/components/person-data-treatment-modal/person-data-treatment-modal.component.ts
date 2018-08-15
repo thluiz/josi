@@ -2,17 +2,17 @@
 import { zip as observableZip, Observable, of, Subscription } from 'rxjs';
 
 import { filter, debounceTime, delay, map, distinctUntilChanged, catchError, tap, switchMap } from 'rxjs/operators';
-import { ModalService, ModalType } from 'app/services/modal-service';
+import { ModalService, ModalType } from '../../../services/modal-service';
 import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 
-import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
-import { PersonService } from 'app/services/person-service';
-import { IncidentService } from 'app/services/incident-service';
-import { UtilsService } from 'app/services/utils-service';
+import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from '../../datepicker-i18n';
+import { PersonService } from '../../../services/person-service';
+import { IncidentService } from '../../../services/incident-service';
+import { UtilsService } from '../../../services/utils-service';
 
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ParameterService } from 'app/services/parameter-service';
-import { Result } from 'app/shared/models/result';
+import { ParameterService } from '../../../services/parameter-service';
+import { Result } from '../../models/result';
 
 
 @Component({

@@ -1,16 +1,16 @@
 /// from https://gist.github.com/fracz/972ff3abdaf00b2b6dd94888df0a393b
 /// and https://github.com/darrylhodgins/typescript-memoize
 
-export function Memoize(asyncMemoize: boolean = false, timeout?: number, hashFunction?: (...args: any[]) => any) {
+export function cache(asyncExec: boolean = false, timeout?: number, hashFunction?: (...args: any[]) => any) {
   return (
     target: any,
     propertyKey: string,
     descriptor: TypedPropertyDescriptor<any>
   ) => {
     if (descriptor.value != null) {
-      descriptor.value = getNewFunction(descriptor.value, hashFunction, asyncMemoize, timeout);
+      descriptor.value = getNewFunction(descriptor.value, hashFunction, asyncExec, timeout);
     } else if (descriptor.get != null) {
-      descriptor.get = getNewFunction(descriptor.get, hashFunction, asyncMemoize, timeout);
+      descriptor.get = getNewFunction(descriptor.get, hashFunction, asyncExec, timeout);
     } else {
       throw new Error("Only put a Memoize() decorator on a method or get accessor.");
     }
@@ -18,20 +18,20 @@ export function Memoize(asyncMemoize: boolean = false, timeout?: number, hashFun
 }
 
 let counter = 0;
-const memoizeMap: Array<Map<any, any>> = [];
+const cacheMap: Array<Map<any, any>> = [];
 
 function getNewFunction(
   originalMethod: () => void,
   hashFunction?: (...args: any[]) => any,
-  asyncMemoize = false,
+  asyncCache = false,
   timeout: number = null
 ) {
   const identifier = ++counter;
 
   // The function returned here gets called instead of originalMethod.
   return async function(...args: any[]) {
-    const propValName = `__memoized_value_${identifier}`;
-    const propMapName = `__memoized_map_${identifier}`;
+    const propValName = `__cached_value_${identifier}`;
+    const propMapName = `__cached_map_${identifier}`;
 
     let returnedValue: any;
 
@@ -45,8 +45,8 @@ function getNewFunction(
           value: new Map<any, any>()
         });
       }
-      if (!memoizeMap[propMapName]) {
-        memoizeMap[propMapName] = new Map();
+      if (!cacheMap[propMapName]) {
+        cacheMap[propMapName] = new Map();
       }
 
       let hashKey: any;
@@ -57,19 +57,19 @@ function getNewFunction(
         hashKey = args[0];
       }
 
-      if (memoizeMap[propMapName].has(hashKey)) {
-        returnedValue = memoizeMap[propMapName].get(hashKey);
+      if (cacheMap[propMapName].has(hashKey)) {
+        returnedValue = cacheMap[propMapName].get(hashKey);
       } else {
-        if (asyncMemoize) {
+        if (asyncCache) {
           returnedValue = await originalMethod.apply(this, args);
         } else {
           returnedValue = originalMethod.apply(this, args);
         }
 
-        memoizeMap[propMapName].set(hashKey, returnedValue);
+        cacheMap[propMapName].set(hashKey, returnedValue);
         if (timeout > 0) {
           setTimeout(() => {
-            memoizeMap[propMapName].delete(hashKey);
+            cacheMap[propMapName].delete(hashKey);
           }, timeout);
         }
       }

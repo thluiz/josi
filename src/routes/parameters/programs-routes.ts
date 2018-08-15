@@ -1,6 +1,6 @@
 import * as auth from "../../middlewares/auth";
 import { DatabaseManager } from "../../services/managers/database-manager";
-import { DependencyManager } from "./../../services/managers/dependency-manager";
+import { DependencyManager } from "../../services/managers/dependency-manager";
 
 export function routes(app) {
   const DBM = DependencyManager.container.resolve(DatabaseManager);

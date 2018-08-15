@@ -1,11 +1,11 @@
 import * as auth from "../../middlewares/auth";
 
 import { PeopleService } from "../../services/people-service";
-import { DependencyManager } from "./../../services/managers/dependency-manager";
 
 import { ErrorCode } from "../../helpers/errors-codes";
 import { ErrorResult, SuccessResult } from "../../helpers/result";
 import { DatabaseManager } from "../../services/managers/database-manager";
+import { DependencyManager } from "../../services/managers/dependency-manager";
 
 import { JobsService } from "../../services/jobs-service";
 import { LoggerService, LogOrigins } from "../../services/logger-service";

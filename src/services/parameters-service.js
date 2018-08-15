@@ -164,35 +164,35 @@ class ParametersService extends base_service_1.BaseService {
     }
 }
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(PARAMETERS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Voucher_1.Voucher]),
     __metadata("design:returntype", Promise)
 ], ParametersService.prototype, "save_voucher", null);
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(PARAMETERS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Branch_1.Branch, Voucher_1.Voucher]),
     __metadata("design:returntype", Promise)
 ], ParametersService.prototype, "create_branch_voucher", null);
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(PARAMETERS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Branch_1.Branch, Voucher_1.Voucher]),
     __metadata("design:returntype", Promise)
 ], ParametersService.prototype, "remove_branch_voucher", null);
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(PARAMETERS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Branch_1.Branch]),
     __metadata("design:returntype", Promise)
 ], ParametersService.prototype, "update_branch", null);
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(PARAMETERS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

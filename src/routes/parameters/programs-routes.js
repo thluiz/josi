@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const auth = require("../../middlewares/auth");
 const database_manager_1 = require("../../services/managers/database-manager");
-const dependency_manager_1 = require("./../../services/managers/dependency-manager");
+const dependency_manager_1 = require("../../services/managers/dependency-manager");
 function routes(app) {
     const DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
     app.get("/api/domains", auth.ensureLoggedIn(), (request, response, next) => __awaiter(this, void 0, void 0, function* () {

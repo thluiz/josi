@@ -3,7 +3,7 @@ import passport = require("passport");
 import { AzureSessionStore } from "../middlewares/azure-session-storage";
 
 import { User } from "../entity/User";
-import { UsersRepository } from "./../repositories/users-repository";
+import { UsersRepository } from "../repositories/users-repository";
 
 // tslint:disable-next-line:no-var-requires
 const GoogleStrategy = require("passport-google-oauth20").Strategy;

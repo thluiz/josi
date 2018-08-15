@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const auth = require("../../middlewares/auth");
-const Branch_1 = require("./../../entity/Branch");
-const Country_1 = require("./../../entity/Country");
-const Location_1 = require("./../../entity/Location");
+const Branch_1 = require("../../entity/Branch");
+const Country_1 = require("../../entity/Country");
+const Location_1 = require("../../entity/Location");
 const errors_codes_1 = require("../../helpers/errors-codes");
 const result_1 = require("../../helpers/result");
 const database_manager_1 = require("../../services/managers/database-manager");

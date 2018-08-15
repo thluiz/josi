@@ -1,12 +1,10 @@
-import { Location } from 'app/shared/models/location.model';
-import {tap, filter} from 'rxjs/operators';
-import { UtilsService } from 'app/services/utils-service';
+import { Location } from '../shared/models/location.model';
+import { tap } from 'rxjs/operators';
+import { UtilsService } from './utils-service';
 import {Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Observable, ReplaySubject} from 'rxjs/Rx';
-import { environment } from '../../environments/environment';
-import { Subject }    from 'rxjs';
-import { Result } from 'app/shared/models/result';
+import { ReplaySubject} from 'rxjs/Rx';
+import { environment } from 'environments/environment';
 
 export enum Configurations {
     MinimalDirectIndicationsPerActiveMember = 1,

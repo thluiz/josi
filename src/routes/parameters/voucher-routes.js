@@ -10,10 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const auth = require("../../middlewares/auth");
 const people_service_1 = require("../../services/people-service");
-const dependency_manager_1 = require("./../../services/managers/dependency-manager");
 const errors_codes_1 = require("../../helpers/errors-codes");
 const result_1 = require("../../helpers/result");
 const database_manager_1 = require("../../services/managers/database-manager");
+const dependency_manager_1 = require("../../services/managers/dependency-manager");
 const jobs_service_1 = require("../../services/jobs-service");
 const logger_service_1 = require("../../services/logger-service");
 const parameters_service_1 = require("../../services/parameters-service");

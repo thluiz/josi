@@ -5,7 +5,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
 import { UsersRepository } from "../repositories/users-repository";
 import { Person } from "./Person";
 
-import { trylog2 } from "../decorators/trylog-decorator";
+import { tryLogAsync } from "../decorators/trylog-decorator";
 
 @Entity()
 export class User {
@@ -58,7 +58,7 @@ export class User {
         return this.person;
     }
 
-    @trylog2()
+    @tryLogAsync()
     async loadPersonIfNeeded() {
         if (this.person != null) { return; }
         const UR = await new UsersRepository();

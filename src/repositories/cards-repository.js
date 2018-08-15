@@ -36,13 +36,13 @@ class CardsRepository {
     }
 }
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], CardsRepository.prototype, "getOrganizations", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)

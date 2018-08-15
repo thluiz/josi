@@ -75,19 +75,19 @@ class JobsService {
     }
 }
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], JobsService.prototype, "execute_hourly_jobs", null);
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], JobsService.prototype, "cleanup_sessions", null);
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

@@ -2,7 +2,7 @@ import showdown = require("showdown");
 import { Repository } from "typeorm";
 import { BaseRepository } from "./base-repository";
 
-import { trylog2 } from "../decorators/trylog-decorator";
+import { tryLogAsync } from "../decorators/trylog-decorator";
 import { Result, SuccessResult } from "../helpers/result";
 
 import { Incident } from "../entity/Incident";
@@ -22,11 +22,10 @@ export class IncidentsRepository extends BaseRepository<Incident> {
     }> = [];
 
     constructor() {
-        super();
-        this.type = Incident;
+        super(Incident);
     }
 
-    @trylog2()
+    @tryLogAsync()
     async getAgenda(branchId, date): Promise<Result<any>> {
         return await this.DBM.ExecuteJsonSP("GetAgenda2",
             { branch_id: branchId },
@@ -34,7 +33,7 @@ export class IncidentsRepository extends BaseRepository<Incident> {
         );
     }
 
-    @trylog2()
+    @tryLogAsync()
     async getAvailableOwnerships(branchId, date, type): Promise<Result<Incident>> {
         const result = await this.DBM.ExecuteJsonSP<Incident>("GetAvailableOwnerships",
             { branch_id: branchId },
@@ -45,7 +44,7 @@ export class IncidentsRepository extends BaseRepository<Incident> {
         return result;
     }
 
-    @trylog2()
+    @tryLogAsync()
     async getCurrentActivities(branchId): Promise<Result<any>> {
         const result = await this.DBM.ExecuteJsonSP("GetCurrentActivities",
             { branch_id: branchId }
@@ -54,7 +53,7 @@ export class IncidentsRepository extends BaseRepository<Incident> {
         return result;
     }
 
-    @trylog2()
+    @tryLogAsync()
     async getPeopleSummary(branchId, weekModifier, date): Promise<Result<any>> {
         this.summaryCache = this.summaryCache
         .filter((c) => c.lastcall < ((new Date()).getTime() - 10000)); // clear every 10 seconds
@@ -85,7 +84,7 @@ export class IncidentsRepository extends BaseRepository<Incident> {
         return result;
     }
 
-    @trylog2()
+    @tryLogAsync()
     async getSummary(branchId, monthModifier, weekModifier, date): Promise<Result<any>> {
         return await this.DBM.ExecuteJsonSP("GetPeopleSummary",
             { branch: branchId },
@@ -95,7 +94,7 @@ export class IncidentsRepository extends BaseRepository<Incident> {
         );
     }
 
-    @trylog2()
+    @tryLogAsync()
     async getDailyMonitor(branchId, display, displayModifier): Promise<Result<any>> {
         return await this.DBM.ExecuteJsonSP("GetDailyMonitor2",
             { branch: branchId },
@@ -104,7 +103,7 @@ export class IncidentsRepository extends BaseRepository<Incident> {
         );
     }
 
-    @trylog2()
+    @tryLogAsync()
     async getPersonIncidentsHistory(personId, startDate, endDate, activityType): Promise<Result<any>> {
         return await this.DBM.ExecuteJsonSP("GetPersonIncidentHistory2",
             { person_id: personId },
@@ -114,14 +113,14 @@ export class IncidentsRepository extends BaseRepository<Incident> {
         );
     }
 
-    @trylog2()
+    @tryLogAsync()
     async getIncidentDetails(incidentId): Promise<Result<any>> {
         return await this.DBM.ExecuteJsonSP("GetIncidentDetails",
             { id: incidentId }
         );
     }
 
-    @trylog2()
+    @tryLogAsync()
     async getOwnershipData(id: number): Promise<Result<any>> {
         const ownershipData = await this.DBM.ExecuteJsonSP("getOwnershipData", {
             ownership_id: id

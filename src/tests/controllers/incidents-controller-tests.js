@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv").load();
 require("mocha");
 const incidents_service_1 = require("../../services/incidents-service");
-const incidents_controller_1 = require("./../../controllers/incidents-controller");
+const incidents_controller_1 = require("../../controllers/incidents-controller");
 const chai_1 = require("chai");
 const IncidentType_1 = require("../../entity/IncidentType");
 const configurations_services_1 = require("../../services/configurations-services");

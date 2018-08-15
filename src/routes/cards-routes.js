@@ -14,8 +14,8 @@ const cards_service_1 = require("../services/cards-service");
 const logger_service_1 = require("../services/logger-service");
 const security_service_1 = require("../services/security-service");
 const cards_repository_1 = require("../repositories/cards-repository");
+const database_manager_1 = require("../services/managers/database-manager");
 const dependency_manager_1 = require("../services/managers/dependency-manager");
-const database_manager_1 = require("./../services/managers/database-manager");
 function routes(app) {
     const DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
     const CS = new cards_service_1.CardsService();

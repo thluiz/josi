@@ -2,7 +2,7 @@ import { ErrorCode } from "../../helpers/errors-codes";
 import { ErrorResult, Result, SuccessResult } from "../../helpers/result";
 
 import * as admin from "firebase-admin";
-import { trylog, trylog2 } from "../../decorators/trylog-decorator";
+import { tryLogAsync } from "../../decorators/trylog-decorator";
 import { LoggerService } from "../logger-service";
 
 let db = null;
@@ -30,14 +30,14 @@ try {
 }
 
 export class FirebaseManager {
-    @trylog()
+    @tryLogAsync()
     static async get_token(): Promise<Result<string>> {
         const customToken = await admin.auth().createCustomToken(process.env.FIREBASE_UID);
 
         return SuccessResult.GeneralOk(customToken);
     }
 
-    @trylog2()
+    @tryLogAsync()
     static async emit_event<T>(collection,
                                event: { id: string, data: Result<T> | Error, time?: number })
         : Promise<Result> {

@@ -1,18 +1,18 @@
 import * as multer from "multer";
 import { MulterAzureStorage } from "multer-azure-blob-storage";
-import * as auth from "../middlewares/auth";
+import * as auth from "../../middlewares/auth";
 
-import { PeopleRepository } from "../repositories/people-repository";
-import { PeopleService } from "../services/people-service";
+import { PeopleRepository } from "../../repositories/people-repository";
+import { PeopleService } from "../../services/people-service";
 
-import { DatabaseManager } from "../services/managers/database-manager";
-import { DependencyManager } from "../services/managers/dependency-manager";
+import { DatabaseManager } from "../../services/managers/database-manager";
+import { DependencyManager } from "../../services/managers/dependency-manager";
 
-import { JobsService } from "../services/jobs-service";
-import { SecurityService } from "../services/security-service";
+import { JobsService } from "../../services/jobs-service";
+import { SecurityService } from "../../services/security-service";
 
 import { isArray } from "util";
-import { SuccessResult } from "../helpers/result";
+import { SuccessResult } from "../../helpers/result";
 
 const azureStorage: MulterAzureStorage = new MulterAzureStorage({
   connectionString: process.env.AZURE_AVATAR_STORAGE,

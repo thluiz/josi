@@ -18,9 +18,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Incident_1 = require("../entity/Incident");
+const IncidentType_1 = require("../entity/IncidentType");
 const Person_1 = require("../entity/Person");
-const IncidentType_1 = require("./../entity/IncidentType");
-const PersonIncident_1 = require("./../entity/PersonIncident");
+const PersonIncident_1 = require("../entity/PersonIncident");
 const firebase_emitter_decorator_1 = require("../decorators/firebase-emitter-decorator");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const errors_codes_1 = require("../helpers/errors-codes");
@@ -289,90 +289,90 @@ class IncidentsService extends base_service_1.BaseService {
     }
 }
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "start_incident", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "reopen_incident", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "cancel_start_incident", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Incident_1.Incident, Person_1.Person]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "close_incident", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Incident_1.Incident, Person_1.Person]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "close_incident_and_send_ownership_report", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "remove_incident", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "create_people_incidents", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "register_incident", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Boolean]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "get_comments", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "reschedule_incident", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "register_contact_for_incident", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "save_comment", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

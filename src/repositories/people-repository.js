@@ -34,13 +34,13 @@ class PeopleRepository {
     }
 }
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], PeopleRepository, "getRepository", null);
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number, String, Number, Number, Number]),
     __metadata("design:returntype", Promise)

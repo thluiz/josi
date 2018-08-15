@@ -18,7 +18,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const User_1 = require("../entity/User");
-const users_repository_1 = require("./../repositories/users-repository");
+const users_repository_1 = require("../repositories/users-repository");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 var Permissions;
 (function (Permissions) {
@@ -113,31 +113,31 @@ class SecurityService {
     }
 }
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [User_1.User]),
     __metadata("design:returntype", Promise)
 ], SecurityService.prototype, "serializeUser", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SecurityService.prototype, "getUserFromRequest", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [User_1.User, Number]),
     __metadata("design:returntype", Promise)
 ], SecurityService.prototype, "checkUserHasPermission", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], SecurityService.prototype, "findUser", null);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)

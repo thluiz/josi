@@ -6,7 +6,7 @@ import { QueryRunner, Repository } from "typeorm";
 
 import { AddToOwnership, IncidentsService } from "../../services/incidents-service";
 
-import { IncidentsController } from "./../../controllers/incidents-controller";
+import { IncidentsController } from "../../controllers/incidents-controller";
 
 import { expect } from "chai";
 import { IncidentType } from "../../entity/IncidentType";

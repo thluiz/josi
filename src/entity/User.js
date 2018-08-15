@@ -90,7 +90,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "token", void 0);
 __decorate([
-    trylog_decorator_1.trylog2(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

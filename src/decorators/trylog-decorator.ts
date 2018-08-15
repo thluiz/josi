@@ -7,7 +7,7 @@ import { LoggerService } from "../services/logger-service";
 import { ErrorCode } from "../helpers/errors-codes";
 import { ErrorResult } from "../helpers/result";
 
-export function trylog() {
+export function tryLog() {
 
     return function( target, method, descriptor ) {
         const originalMethod = descriptor.value;
@@ -29,7 +29,7 @@ export function trylog() {
     };
 }
 
-export function trylog2() {
+export function tryLogAsync() {
     return function( target, method, descriptor ) {
         const originalMethod = descriptor.value;
         descriptor.value = async function(...args) {

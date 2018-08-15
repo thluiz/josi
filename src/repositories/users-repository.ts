@@ -1,19 +1,18 @@
 import { User } from "../entity/User";
 import { BaseRepository } from "./base-repository";
 
-import { Memoize } from "../decorators/memoize-decorator";
-import { trylog2 } from "../decorators/trylog-decorator";
+import { cache } from "../decorators/cache-decorator";
+import { tryLogAsync } from "../decorators/trylog-decorator";
 import { Result, SuccessResult } from "../helpers/result";
 
 export class UsersRepository extends BaseRepository<User> {
 
     constructor() {
-        super();
-        this.type = User;
+        super(User);
     }
 
-    @Memoize(true, 10000)
-    @trylog2()
+    @cache(true, 10000)
+    @tryLogAsync()
     async loadAllUserData(userId): Promise<Result<User>> {
         const UR = await this.getRepository();
 
@@ -28,8 +27,8 @@ export class UsersRepository extends BaseRepository<User> {
         return SuccessResult.GeneralOk(user);
     }
 
-    @Memoize(true, 100000)
-    @trylog2()
+    @cache(true, 100000)
+    @tryLogAsync()
     async getUserByToken(token): Promise<Result<User>> {
         const UR = await this.getRepository();
 
@@ -42,8 +41,8 @@ export class UsersRepository extends BaseRepository<User> {
         return SuccessResult.GeneralOk(user);
     }
 
-    @Memoize(true, 10000)
-    @trylog2()
+    @cache(true, 10000)
+    @tryLogAsync()
     async getUserByEmail(email): Promise<Result<User>> {
         const UR = await this.getRepository();
 

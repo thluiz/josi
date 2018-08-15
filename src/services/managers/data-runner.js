@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const inversify_1 = require("../../../node_modules/inversify");
+const inversify_1 = require("inversify");
 let DataRunningConfiguration = class DataRunningConfiguration {
     constructor() {
         this.useTransaction = false;

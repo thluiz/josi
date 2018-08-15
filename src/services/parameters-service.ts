@@ -14,7 +14,7 @@ import { ErrorCode } from "../helpers/errors-codes";
 import { ErrorResult, Result, SuccessResult } from "../helpers/result";
 
 import { firebaseEmitter } from "../decorators/firebase-emitter-decorator";
-import { trylog } from "../decorators/trylog-decorator";
+import { tryLogAsync } from "../decorators/trylog-decorator";
 
 import { BaseService } from "./base-service";
 
@@ -40,7 +40,7 @@ export interface IBranchData {
 }
 
 export class ParametersService extends BaseService {
-    @trylog()
+    @tryLogAsync()
     @firebaseEmitter(PARAMETERS_COLLECTION)
     async save_voucher(voucherData: Voucher ): Promise<Result<Voucher>> {
         const VR = await this.databaseManager.getRepository(Voucher);
@@ -50,7 +50,7 @@ export class ParametersService extends BaseService {
         );
     }
 
-    @trylog()
+    @tryLogAsync()
     @firebaseEmitter(PARAMETERS_COLLECTION)
     async create_branch_voucher(branch: Branch, voucher: Voucher )
     : Promise<Result<{branch: Branch, voucher: Voucher}>> {
@@ -75,7 +75,7 @@ export class ParametersService extends BaseService {
         }
     }
 
-    @trylog()
+    @tryLogAsync()
     @firebaseEmitter(PARAMETERS_COLLECTION)
     async remove_branch_voucher(branch: Branch, voucher: Voucher )
     : Promise<Result<{branch: Branch, voucher: Voucher}>> {
@@ -99,14 +99,14 @@ export class ParametersService extends BaseService {
         }
     }
 
-    @trylog()
+    @tryLogAsync()
     @firebaseEmitter(PARAMETERS_COLLECTION)
     async update_branch(branch: Branch): Promise<Result<Branch>> {
         const BR = await (await this.queryRunner).manager.getRepository<Branch>(Branch);
         return SuccessResult.Ok(BRANCH_UPDATED, await BR.save(branch));
     }
 
-    @trylog()
+    @tryLogAsync()
     @firebaseEmitter(PARAMETERS_COLLECTION)
     async create_branch(branchData: IBranchData): Promise<Result<Branch>> {
         return await this.databaseManager.ExecuteWithinTransaction(async (qr) => {

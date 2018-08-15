@@ -5,10 +5,9 @@ import { IContact } from './person-service';
 import {Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs/Rx';
-import { environment } from '../../environments/environment';
+import { environment } from 'environments/environment';
 import { Subject } from 'rxjs';
-import { Result } from 'app/shared/models/result';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date';
+import { Result } from '../shared/models/result';
 
 export enum DailyMonitorDisplayType {
     Week = 0,

@@ -6,8 +6,9 @@ import { LoggerService } from "../services/logger-service";
 import { SecurityService } from "../services/security-service";
 
 import { CardsRepository } from "../repositories/cards-repository";
+
+import { DatabaseManager } from "../services/managers/database-manager";
 import { DependencyManager } from "../services/managers/dependency-manager";
-import { DatabaseManager } from "./../services/managers/database-manager";
 
 export function routes(app) {
   const DBM = DependencyManager.container.resolve(DatabaseManager);

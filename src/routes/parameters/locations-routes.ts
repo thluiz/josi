@@ -1,8 +1,8 @@
 import * as auth from "../../middlewares/auth";
 
-import { Branch } from "./../../entity/Branch";
-import { Country } from "./../../entity/Country";
-import { Location } from "./../../entity/Location";
+import { Branch } from "../../entity/Branch";
+import { Country } from "../../entity/Country";
+import { Location } from "../../entity/Location";
 
 import { ErrorCode } from "../../helpers/errors-codes";
 import { ErrorResult, SuccessResult } from "../../helpers/result";

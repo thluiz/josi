@@ -19,13 +19,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const User_1 = require("../entity/User");
 const base_repository_1 = require("./base-repository");
-const memoize_decorator_1 = require("../decorators/memoize-decorator");
+const cache_decorator_1 = require("../decorators/cache-decorator");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const result_1 = require("../helpers/result");
 class UsersRepository extends base_repository_1.BaseRepository {
     constructor() {
-        super();
-        this.type = User_1.User;
+        super(User_1.User);
     }
     loadAllUserData(userId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -64,22 +63,22 @@ class UsersRepository extends base_repository_1.BaseRepository {
     }
 }
 __decorate([
-    memoize_decorator_1.Memoize(true, 10000),
-    trylog_decorator_1.trylog2(),
+    cache_decorator_1.cache(true, 10000),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersRepository.prototype, "loadAllUserData", null);
 __decorate([
-    memoize_decorator_1.Memoize(true, 100000),
-    trylog_decorator_1.trylog2(),
+    cache_decorator_1.cache(true, 100000),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersRepository.prototype, "getUserByToken", null);
 __decorate([
-    memoize_decorator_1.Memoize(true, 10000),
-    trylog_decorator_1.trylog2(),
+    cache_decorator_1.cache(true, 10000),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

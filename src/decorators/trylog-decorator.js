@@ -14,7 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const logger_service_1 = require("../services/logger-service");
 const errors_codes_1 = require("../helpers/errors-codes");
 const result_1 = require("../helpers/result");
-function trylog() {
+function tryLog() {
     return function (target, method, descriptor) {
         const originalMethod = descriptor.value;
         descriptor.value = function (...args) {
@@ -33,8 +33,8 @@ function trylog() {
         return descriptor;
     };
 }
-exports.trylog = trylog;
-function trylog2() {
+exports.tryLog = tryLog;
+function tryLogAsync() {
     return function (target, method, descriptor) {
         const originalMethod = descriptor.value;
         descriptor.value = function (...args) {
@@ -56,5 +56,5 @@ function trylog2() {
         return descriptor;
     };
 }
-exports.trylog2 = trylog2;
+exports.tryLogAsync = tryLogAsync;
 //# sourceMappingURL=trylog-decorator.js.map
