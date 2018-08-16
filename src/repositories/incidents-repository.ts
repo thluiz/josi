@@ -8,6 +8,7 @@ import { Result, SuccessResult } from "../helpers/result";
 import { Incident } from "../entity/Incident";
 import { DatabaseManager } from "../services/managers/database-manager";
 import { DependencyManager } from "../services/managers/dependency-manager";
+import { cache } from "../decorators/cache-decorator";
 
 const converter = new showdown.Converter();
 const DBM = DependencyManager.container.resolve(DatabaseManager);
@@ -44,6 +45,7 @@ export class IncidentsRepository extends BaseRepository<Incident> {
         return result;
     }
 
+    @cache(true, 100000, (branchId) => `getCurrentActivities_${branchId || "all"}`)
     @tryLogAsync()
     async getCurrentActivities(branchId): Promise<Result<any>> {
         const result = await this.DBM.ExecuteJsonSP("GetCurrentActivities",

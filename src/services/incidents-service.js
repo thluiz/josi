@@ -21,6 +21,7 @@ const Incident_1 = require("../entity/Incident");
 const IncidentType_1 = require("../entity/IncidentType");
 const Person_1 = require("../entity/Person");
 const PersonIncident_1 = require("../entity/PersonIncident");
+const cache_decorator_1 = require("../decorators/cache-decorator");
 const firebase_emitter_decorator_1 = require("../decorators/firebase-emitter-decorator");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const errors_codes_1 = require("../helpers/errors-codes");
@@ -59,6 +60,7 @@ class IncidentsService extends base_service_1.BaseService {
             const execution = yield this.databaseManager
                 .ExecuteTypedJsonSP(exports.INCIDENT_STARTED, "StartIncident", [{ incident: incident.id },
                 { responsible_id: responsibleId }]);
+            this.clearCurrentActivitiesCache();
             return execution;
         });
     }
@@ -67,6 +69,7 @@ class IncidentsService extends base_service_1.BaseService {
             const execution = yield this.databaseManager
                 .ExecuteTypedJsonSP(exports.INCIDENT_STARTED, "ReopenIncident", [{ incident: incident.id },
                 { responsible_id: responsibleId }]);
+            this.clearCurrentActivitiesCache();
             return execution;
         });
     }
@@ -75,6 +78,7 @@ class IncidentsService extends base_service_1.BaseService {
             const execution = yield this.databaseManager
                 .ExecuteTypedJsonSP(exports.INCIDENT_CHANGED, "CancelIncidentStart", [{ incident: incident.id },
                 { responsible_id: responsibleId }]);
+            this.clearCurrentActivitiesCache();
             return execution;
         });
     }
@@ -87,6 +91,7 @@ class IncidentsService extends base_service_1.BaseService {
                 { fund_value: incident.fund_value || null },
                 { payment_method_id: incident.payment_method_id > 0 ?
                         incident.payment_method_id : null }]);
+            this.clearCurrentActivitiesCache();
             return execution;
         });
     }
@@ -96,6 +101,7 @@ class IncidentsService extends base_service_1.BaseService {
             if (closing.success && incident.type.id === configurations_services_1.Constants.IncidentTypeOwnership) {
                 yield new ownership_closing_report_1.OwnershipClosingReport().send(incident);
             }
+            this.clearCurrentActivitiesCache();
             return closing;
         });
     }
@@ -103,6 +109,7 @@ class IncidentsService extends base_service_1.BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const execution = yield this.databaseManager.ExecuteTypedJsonSP(exports.INCIDENT_CANCELLED, "RemoveIncident", [{ incident: incident.id },
                 { responsible_id: responsibleId }]);
+            this.clearCurrentActivitiesCache();
             return execution;
         });
     }
@@ -286,6 +293,9 @@ class IncidentsService extends base_service_1.BaseService {
             return yield this.databaseManager
                 .ExecuteTypedJsonSP(exports.INCIDENT_COMMENT_ARCHIVED, "TogleIncidentCommentArchived", [{ comment_id: commentId }]);
         });
+    }
+    clearCurrentActivitiesCache() {
+        cache_decorator_1.refreshMethodCache("getCurrentActivities");
     }
 }
 __decorate([

@@ -542,6 +542,7 @@ export function routes(app) {
 
         const result = await DBM.ExecuteSPNoResults(
           "SaveNewIndication",
+          { name: indication.name },
           { person_id: indication.person_id },
           { contact_type1: indication.contact_type1 },
           { contact_type2: indication.contact_type2 },

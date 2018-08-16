@@ -303,7 +303,7 @@ function routes(app) {
     app.post("/api/person_indications", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         try {
             const indication = req.body.indication;
-            const result = yield DBM.ExecuteSPNoResults("SaveNewIndication", { person_id: indication.person_id }, { contact_type1: indication.contact_type1 }, { contact_type2: indication.contact_type2 }, { contact_type3: indication.contact_type3 }, { comments: indication.comment }, { contact1: indication.contact1 }, { contact2: indication.contact2 }, { contact3: indication.contact3 }, { indication_contact_type: indication.indication_contact_type }, { branch_id: indication.branch_id }, { operator_id: indication.operator_id }, { age: indication.age > 0 ? indication.age : 0 }, { district: indication.district }, { occupation: indication.occupation });
+            const result = yield DBM.ExecuteSPNoResults("SaveNewIndication", { name: indication.name }, { person_id: indication.person_id }, { contact_type1: indication.contact_type1 }, { contact_type2: indication.contact_type2 }, { contact_type3: indication.contact_type3 }, { comments: indication.comment }, { contact1: indication.contact1 }, { contact2: indication.contact2 }, { contact3: indication.contact3 }, { indication_contact_type: indication.indication_contact_type }, { branch_id: indication.branch_id }, { operator_id: indication.operator_id }, { age: indication.age > 0 ? indication.age : 0 }, { district: indication.district }, { occupation: indication.occupation });
             if (result.success) {
                 try {
                     const voucherUpdate = yield new jobs_service_1.JobsService().update_voucher_site();

@@ -60,7 +60,7 @@ export class PersonContactListComponent implements OnInit, OnDestroy {
   }
 
   open(content){
-    this.parameterService.getContactTypes().subscribe((data) => {
+    this.parameterService.getContactTypes().subscribe((result_data) => {
       this.modalService.open(content).result.then((result) => {
 
       }, (reason) => {

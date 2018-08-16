@@ -3,6 +3,7 @@ import { IncidentType } from "../entity/IncidentType";
 import { Person } from "../entity/Person";
 import { PersonIncident } from "../entity/PersonIncident";
 
+import { refreshMethodCache } from "../decorators/cache-decorator";
 import { firebaseEmitter } from "../decorators/firebase-emitter-decorator";
 import { tryLogAsync } from "../decorators/trylog-decorator";
 
@@ -89,6 +90,7 @@ export class IncidentsService extends BaseService {
                 { responsible_id: responsibleId }]
             );
 
+        this.clearCurrentActivitiesCache();
         return execution;
     }
 
@@ -103,6 +105,8 @@ export class IncidentsService extends BaseService {
             { responsible_id: responsibleId }]
         );
 
+
+        this.clearCurrentActivitiesCache();
         return execution;
     }
 
@@ -117,6 +121,7 @@ export class IncidentsService extends BaseService {
                     { responsible_id: responsibleId }]
             );
 
+        this.clearCurrentActivitiesCache();
         return execution;
     }
 
@@ -134,6 +139,7 @@ export class IncidentsService extends BaseService {
             { payment_method_id: incident.payment_method_id > 0 ?
                                     incident.payment_method_id : null }]);
 
+        this.clearCurrentActivitiesCache();
         return execution;
     }
 
@@ -148,6 +154,7 @@ export class IncidentsService extends BaseService {
             await new OwnershipClosingReport().send(incident);
         }
 
+        this.clearCurrentActivitiesCache();
         return closing;
     }
 
@@ -161,6 +168,7 @@ export class IncidentsService extends BaseService {
             { responsible_id: responsibleId }]
         );
 
+        this.clearCurrentActivitiesCache();
         return execution;
     }
 
@@ -415,5 +423,9 @@ export class IncidentsService extends BaseService {
             INCIDENT_COMMENT_ARCHIVED,
             "TogleIncidentCommentArchived",
             [{ comment_id: commentId }]);
+    }
+
+    private clearCurrentActivitiesCache() {
+        refreshMethodCache("getCurrentActivities");
     }
 }

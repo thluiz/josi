@@ -6,8 +6,6 @@ import { Subject }    from 'rxjs';
 import { Result } from 'app/shared/models/result';
 import { LightIncident } from 'app/shared/models/incident-model';
 
-import { UtilsService } from './utils-service';
-import { ApplicationEventService } from 'app/services/application-event-service';
 import { HttpService } from './http-service';
 
 export const INCIDENT_ACTION_PREFIX = "INCIDENT_";

@@ -24,6 +24,7 @@ const result_1 = require("../helpers/result");
 const Incident_1 = require("../entity/Incident");
 const database_manager_1 = require("../services/managers/database-manager");
 const dependency_manager_1 = require("../services/managers/dependency-manager");
+const cache_decorator_1 = require("../decorators/cache-decorator");
 const converter = new showdown.Converter();
 const DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
 class IncidentsRepository extends base_repository_1.BaseRepository {
@@ -126,6 +127,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getAvailableOwnerships", null);
 __decorate([
+    cache_decorator_1.cache(true, 100000, (branchId) => `getCurrentActivities_${branchId || "all"}`),
     trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

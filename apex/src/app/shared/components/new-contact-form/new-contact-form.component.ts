@@ -10,7 +10,7 @@ import { ParameterService } from 'app/services/parameter-service';
   styleUrls: ['../../../../assets/customizations.scss']
 })
 
-export class NewContactFormComponent implements OnInit {    
+export class NewContactFormComponent implements OnInit {
   contact_types;
   new_contact :any = { principal: 0 };
 
@@ -25,19 +25,19 @@ export class NewContactFormComponent implements OnInit {
 
   ngOnInit() {
     this.parameterService.getContactTypes().subscribe(
-    (data) => {
-      this.contact_types = data;
+    (result_data) => {
+      this.contact_types = result_data.data;
     }, (reason) => {
         console.log(reason);
     });
     this.new_contact.principal = this.defaultPrincipal ? 1 : 0;
-  } 
-  
+  }
+
   get_details_and_validate() {
     const contact_type = this.contact_types.find((ct) => ct.id == this.new_contact.contact_type);
     this.new_contact.contact_helper_text = contact_type.helper_text;
     this.new_contact.contact_placeholder = contact_type.placeholder;
-    
+
     this.validate_new_contact();
   }
 
@@ -53,19 +53,19 @@ export class NewContactFormComponent implements OnInit {
       || this.new_contact.contact.indexOf("facebook") >= 0
       || this.new_contact.contact.indexOf("instagram") >= 0
       || this.new_contact.contact.indexOf("twitter") >= 0)
-        return;     
+        return;
 
     this.new_contact.is_valid = true;
-  }           
+  }
 
   save_contact() {
-    this.personService.savePersonContact(this.person.id, 
-      this.new_contact.contact_type, this.new_contact.contact, 
+    this.personService.savePersonContact(this.person.id,
+      this.new_contact.contact_type, this.new_contact.contact,
       this.new_contact.details, this.new_contact.principal)
       .subscribe((data) => {
         if(this.afterSave) {
           this.afterSave();
         }
-      });    
+      });
   }
 }

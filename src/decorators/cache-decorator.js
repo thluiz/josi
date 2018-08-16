@@ -10,13 +10,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+let counter = 0;
+const cacheMap = [];
 function cache(asyncExec = false, timeout, hashFunction) {
     return (target, propertyKey, descriptor) => {
         if (descriptor.value != null) {
-            descriptor.value = getNewFunction(descriptor.value, hashFunction, asyncExec, timeout);
+            descriptor.value = getCacheFunction(propertyKey, descriptor.value, hashFunction, asyncExec, timeout);
         }
         else if (descriptor.get != null) {
-            descriptor.get = getNewFunction(descriptor.get, hashFunction, asyncExec, timeout);
+            descriptor.get = getCacheFunction(propertyKey, descriptor.get, hashFunction, asyncExec, timeout);
         }
         else {
             throw new Error("Only put a Memoize() decorator on a method or get accessor.");
@@ -24,38 +26,35 @@ function cache(asyncExec = false, timeout, hashFunction) {
     };
 }
 exports.cache = cache;
-let counter = 0;
-const cacheMap = [];
-function getNewFunction(originalMethod, hashFunction, asyncCache = false, timeout = null) {
-    const identifier = ++counter;
+function getMelhodCache(methodName) {
+    return cacheMap[methodName];
+}
+exports.getMelhodCache = getMelhodCache;
+function refreshMethodCache(methodName) {
+    cacheMap[methodName] = new Map();
+}
+exports.refreshMethodCache = refreshMethodCache;
+function getCacheFunction(key, originalMethod, hashFunction, asyncCache = false, timeout = null) {
     // The function returned here gets called instead of originalMethod.
     return function (...args) {
         return __awaiter(this, void 0, void 0, function* () {
-            const propValName = `__cached_value_${identifier}`;
-            const propMapName = `__cached_map_${identifier}`;
             let returnedValue;
             if (hashFunction || args.length > 0) {
-                // Get or create map
-                if (!this.hasOwnProperty(propMapName)) {
-                    Object.defineProperty(this, propMapName, {
-                        configurable: false,
-                        enumerable: false,
-                        writable: false,
-                        value: new Map()
-                    });
-                }
-                if (!cacheMap[propMapName]) {
-                    cacheMap[propMapName] = new Map();
+                if (!cacheMap[key]) {
+                    cacheMap[key] = new Map();
                 }
                 let hashKey;
                 if (hashFunction) {
                     hashKey = hashFunction.apply(this, args);
                 }
-                else {
+                else if (args.length > 0) {
                     hashKey = args[0];
                 }
-                if (cacheMap[propMapName].has(hashKey)) {
-                    returnedValue = cacheMap[propMapName].get(hashKey);
+                else {
+                    hashKey = "no_parameters";
+                }
+                if (cacheMap[key].has(hashKey)) {
+                    returnedValue = cacheMap[key].get(hashKey);
                 }
                 else {
                     if (asyncCache) {
@@ -67,21 +66,21 @@ function getNewFunction(originalMethod, hashFunction, asyncCache = false, timeou
                     if (returnedValue.success !== undefined && !returnedValue.success) {
                         return returnedValue; // only save cache for success calls
                     }
-                    cacheMap[propMapName].set(hashKey, returnedValue);
+                    cacheMap[key].set(hashKey, returnedValue);
                     if (timeout > 0) {
                         setTimeout(() => {
-                            cacheMap[propMapName].delete(hashKey);
+                            cacheMap[key].delete(hashKey);
                         }, timeout);
                     }
                 }
             }
             else {
-                if (this.hasOwnProperty(propValName)) {
-                    returnedValue = this[propValName];
+                if (this.hasOwnProperty(key)) {
+                    returnedValue = this[key];
                 }
                 else {
                     returnedValue = originalMethod.apply(this, args);
-                    Object.defineProperty(this, propValName, {
+                    Object.defineProperty(this, key, {
                         configurable: false,
                         enumerable: false,
                         writable: false,
