@@ -38,6 +38,8 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
   branches: any;
   programs:any;
   families: any;
+  shirts_sizes : any[] = [];
+  pants_sizes : any[] = [];
 
   private sub: any;
 
@@ -58,6 +60,9 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
 
       this.load_person_data();
     });
+
+    this.shirts_sizes = this.parameterService.getAvailableShirtSizes();
+    this.pants_sizes = this.parameterService.getAvailablePantsSizes();
   }
 
   ngOnDestroy() {

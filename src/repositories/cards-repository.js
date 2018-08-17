@@ -18,6 +18,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_manager_1 = require("../services/managers/database-manager");
+const cache_decorator_1 = require("../decorators/cache-decorator");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const dependency_manager_1 = require("../services/managers/dependency-manager");
 class CardsRepository {
@@ -36,12 +37,14 @@ class CardsRepository {
     }
 }
 __decorate([
+    cache_decorator_1.cache(true, 3600000),
     trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], CardsRepository.prototype, "getOrganizations", null);
 __decorate([
+    cache_decorator_1.cache(true, 3600000),
     trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),

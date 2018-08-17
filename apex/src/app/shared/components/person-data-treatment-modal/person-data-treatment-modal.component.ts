@@ -32,6 +32,9 @@ export class PersonDataTreatmentModalComponent implements OnInit {
   principal_contacts = [];
   show_only_principal_contacts = true;
   has_aditional_contacts = false;
+  shirts_sizes : any[] = [];
+  pants_sizes : any[] = [];
+  saving = false;
 
   @ViewChild('data_treatment_modal') data_treatment_modal: ElementRef;
 
@@ -78,6 +81,9 @@ export class PersonDataTreatmentModalComponent implements OnInit {
           });
         });
       });
+
+    this.shirts_sizes = this.parameterService.getAvailableShirtSizes();
+    this.pants_sizes = this.parameterService.getAvailablePantsSizes();
   }
 
   ngOnDestroy() {
@@ -86,6 +92,7 @@ export class PersonDataTreatmentModalComponent implements OnInit {
   }
 
   open(person) {
+    this.saving = false;
     this.person = person;
     observableZip(
       this.personService.getData(this.person_id()),
@@ -130,82 +137,121 @@ export class PersonDataTreatmentModalComponent implements OnInit {
   }
 
   save_birth_date() {
-    this.personService.getData(this.person_id()).subscribe((result_data: Result<any>) => {
-      let person_data = result_data.data as any;
+    this.load_person_and_execute((result_data: Result<any>) => {
+      let person_data = result_data.data[0] as any;
       person_data.birth_date = this.utilsService.translate_date_to_server(this.person.birth_date);
-      this.personService.savePersonData(person_data).subscribe(() => {
+      this.savePersonData(person_data);
+    });
+  }
 
-      });
+  private load_person_and_execute(execute: (result_data: Result<any>) => void) {
+    this.saving = true;
+    this.personService.getData(this.person_id()).subscribe((result_data: Result<any>) => {
+      execute(result_data);
+    });
+  }
+
+  private savePersonData(person_data: any) {
+    this.personService.savePersonData(person_data).subscribe(() => {
+      this.saving = false;
     });
   }
 
   save_enrollment_date() {
-    this.personService.getData(this.person_id()).subscribe((result_data: Result<any>) => {
-      let person_data = result_data.data as any;
+    this.load_person_and_execute((result_data: Result<any>) => {
+      let person_data = result_data.data[0] as any;
       person_data.enrollment_date = this.utilsService.translate_date_to_server(this.person.enrollment_date);
-      this.personService.savePersonData(person_data).subscribe((data) => {
-      });
+
+      this.savePersonData(person_data);
     });
   }
 
   save_admission_date() {
-    this.personService.getData(this.person_id()).subscribe((result_data: Result<any>) => {
-      let person_data = result_data.data as any;
+    this.load_person_and_execute((result_data: Result<any>) => {
+      let person_data = result_data.data[0] as any;
       person_data.admission_date = this.utilsService.translate_date_to_server(this.person.admission_date);
-      this.personService.savePersonData(person_data).subscribe();
+
+      this.savePersonData(person_data);
     });
   }
 
   save_kf_name() {
-    this.personService.getData(this.person_id()).subscribe((result_data: Result<any>) => {
-      let person_data = result_data.data as any;
+    this.load_person_and_execute((result_data: Result<any>) => {
+      let person_data = result_data.data[0] as any;
       person_data.kf_name = this.person.kf_name;
-      this.personService.savePersonData(person_data).subscribe();
+
+      this.savePersonData(person_data);
     });
   }
 
   save_identification2() {
-    this.personService.getData(this.person_id())
-    .subscribe((result_data: Result<any>) => {
-      let person_data = result_data.data as any;
+    this.load_person_and_execute((result_data: Result<any>) => {
+      let person_data = result_data.data[0] as any;
       person_data.identification2 = this.person.identification2;
-      this.personService.savePersonData(person_data).subscribe();
+
+      this.savePersonData(person_data);
+    });
+  }
+
+  save_gender() {
+    this.load_person_and_execute((result_data: Result<any>) => {
+      let person_data = result_data.data[0] as any;
+      person_data.gender = this.person.gender;
+      this.savePersonData(person_data);
+    });
+  }
+
+  save_shirt_size() {
+    this.load_person_and_execute((result_data: Result<any>) => {
+      let person_data = result_data.data[0] as any;
+      person_data.shirt_size = this.person.shirt_size;
+
+      this.savePersonData(person_data);
+    });
+  }
+
+  save_pants_size() {
+    this.load_person_and_execute((result_data: Result<any>) => {
+      let person_data = result_data.data[0] as any;
+      person_data.pants_size = this.person.pants_size;
+
+      this.savePersonData(person_data);
     });
   }
 
   save_identification() {
-    this.personService.getData(this.person_id())
-    .subscribe((result_data: Result<any>) => {
-      let person_data = result_data.data as any;
+    this.load_person_and_execute((result_data: Result<any>) => {
+      let person_data = result_data.data[0] as any;
       person_data.identification = this.person.identification;
-      this.personService.savePersonData(person_data).subscribe();
+
+      this.savePersonData(person_data);
     });
   }
 
   save_occupation() {
-    this.personService.getData(this.person_id())
-    .subscribe((result_data: Result<any>) => {
-      let person_data = result_data.data as any;
+    this.load_person_and_execute((result_data: Result<any>) => {
+      let person_data = result_data.data[0] as any;
       person_data.occupation = this.person.occupation;
-      this.personService.savePersonData(person_data).subscribe();
+
+      this.savePersonData(person_data);
     });
   }
 
   save_branch() {
-    this.personService.getData(this.person_id())
-    .subscribe((result_data: Result<any>) => {
-      let person_data = result_data.data as any;
+    this.load_person_and_execute((result_data: Result<any>) => {
+      let person_data = result_data.data[0] as any;
       person_data.branch_id = this.person.branch_id;
-      this.personService.savePersonData(person_data).subscribe();
+
+      this.savePersonData(person_data);
     });
   }
 
   save_kf_name_ideograms() {
-    this.personService.getData(this.person_id())
-    .subscribe((result_data: Result<any>) => {
-      let person_data = result_data.data as any;
+    this.load_person_and_execute((result_data: Result<any>) => {
+      let person_data = result_data.data[0] as any;
       person_data.kf_name_ideograms = this.person.kf_name_ideograms;
-      this.personService.savePersonData(person_data).subscribe();
+
+      this.savePersonData(person_data);
     });
   }
 

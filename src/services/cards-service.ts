@@ -1,4 +1,6 @@
+import { refreshMethodCache } from "../decorators/cache-decorator";
 import { Result } from "../helpers/result";
+
 import { DatabaseManager } from "./managers/database-manager";
 import { DependencyManager } from "./managers/dependency-manager";
 
@@ -29,7 +31,7 @@ export class CardsService {
                 {responsible_id: responsibleId });
         }
 
-        return await this.DBM.ExecuteJsonSP("SaveCard",
+        const result = await this.DBM.ExecuteJsonSP("SaveCard",
             {title: card.title},
             {parent_id: card.parent.id},
             {due_date: date},
@@ -55,38 +57,55 @@ export class CardsService {
             {branch_id: card.branch ? card.branch.id : null},
             {responsible_id: responsibleId }
         );
+
+        this.refreshCaches();
+        return result;
     }
 
     async save_person_card(personCard) {
-        return await this.DBM.ExecuteSPNoResults("SavePersonCard",
+        const result = await this.DBM.ExecuteSPNoResults("SavePersonCard",
             { card_id: personCard.card_id },
             { person_id: personCard.person_id },
             { position_id: personCard.position_id || 4 },
             { position_description: personCard.position_description },
             { order: personCard.order || -1 },
         );
+
+        this.refreshCaches();
+
+        return result;
     }
 
     async remove_person_card(personCard: { card_id: number, person_id: number}) {
-        return await this.DBM.ExecuteSPNoResults("RemovePersonCard",
+        const result = await this.DBM.ExecuteSPNoResults("RemovePersonCard",
             { card_id: personCard.card_id },
             { person_id: personCard.person_id },
         );
+
+        this.refreshCaches();
+
+        return result;
     }
 
     async toggle_card_archived(card, responsibleId) {
-        return await this.DBM.ExecuteJsonSP("ToggleCardArchived",
+        const result = await this.DBM.ExecuteJsonSP("ToggleCardArchived",
             { card_id: card.id },
             { responsible_id: responsibleId },
         );
+
+        this.refreshCaches();
+        return result;
     }
 
     async save_card_step(cardId, stepId, responsibleId) {
-        return await this.DBM.ExecuteJsonSP("SaveCardStep",
+        const result = await this.DBM.ExecuteJsonSP("SaveCardStep",
             { card_id: cardId },
             { step_id: stepId },
             { responsible_id: responsibleId },
         );
+
+        this.refreshCaches();
+        return result;
     }
 
     async save_card_order(cardId, order) {
@@ -103,5 +122,10 @@ export class CardsService {
             { commentary_type : commentaryType },
             {responsible_id: responsibleId}
         );
+    }
+
+    private refreshCaches() {
+        refreshMethodCache("getOrganizations");
+        refreshMethodCache("getProject");
     }
 }

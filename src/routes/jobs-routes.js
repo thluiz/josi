@@ -16,10 +16,6 @@ function routes(app) {
         const result = yield new jobs_service_1.JobsService().execute_hourly_jobs();
         res.send(result);
     }));
-    app.get("/api/cleanup-sessions", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield new jobs_service_1.JobsService().cleanup_sessions();
-        res.send(result);
-    }));
     app.get("/api/ownership_report", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const IR = yield new incidents_repository_1.IncidentsRepository().getRepository();
         const incident = yield IR.findOne(69836);

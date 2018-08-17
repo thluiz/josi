@@ -9,12 +9,6 @@ export function routes(app) {
         res.send(result);
     });
 
-    app.get("/api/cleanup-sessions", async (req, res, next) => {
-        const result = await new JobsService().cleanup_sessions();
-
-        res.send(result);
-    });
-
     app.get("/api/ownership_report", async (req, res, next) => {
         const IR = await new IncidentsRepository().getRepository();
         const incident = await IR.findOne(69836);

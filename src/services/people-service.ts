@@ -13,6 +13,7 @@ import { tryLogAsync } from "../decorators/trylog-decorator";
 export const PEOPLE_COLLECTION = "people-events";
 export const PERSON_ADDED = "PERSON_ADDED";
 export const PERSON_UPDATED_ACTION = "PERSON_UPDATED_ACTION";
+export const PERSON_CHANGED = "PERSON_CHANGED";
 
 export interface IPersonVoucherData {
     name: string; email: string; cpf: string; phone: string;
@@ -38,6 +39,7 @@ export class PeopleService extends BaseService {
         return SuccessResult.Ok(PERSON_ADDED, person);
     }
 
+    @tryLogAsync()
     async create_person_from_voucher(data: IPersonVoucherData) {
         return await  (await this.databaseManager).ExecuteSPNoResults("CreatePersonFromVoucher",
             { name : data.name },
@@ -53,6 +55,7 @@ export class PeopleService extends BaseService {
         );
     }
 
+    @tryLogAsync()
     async save_avatar_image(personId, blobImage): Promise<Result<Person>> {
         try {
             const PR = await  (await this.databaseManager)
@@ -71,6 +74,7 @@ export class PeopleService extends BaseService {
         }
     }
 
+    @tryLogAsync()
     async pin_comment(commentId): Promise<Result<Person>> {
         const result = await  this.databaseManager
             .ExecuteTypedJsonSP<Person>(PERSON_UPDATED_ACTION,
@@ -79,6 +83,7 @@ export class PeopleService extends BaseService {
         return result;
     }
 
+    @tryLogAsync()
     async save_address(address) {
         return await this.databaseManager.ExecuteSPNoResults(
             `SaveAddress`,
@@ -94,6 +99,7 @@ export class PeopleService extends BaseService {
         );
     }
 
+    @tryLogAsync()
     async archive_address(personAddress) {
         return await this.databaseManager.ExecuteSPNoResults(
             `ArchiveAddress`,
@@ -101,6 +107,7 @@ export class PeopleService extends BaseService {
         );
     }
 
+    @tryLogAsync()
     public async add_role(personId, roleId) {
         return await this.databaseManager.ExecuteSPNoResults(
             `AddPersonRole`,
@@ -109,6 +116,7 @@ export class PeopleService extends BaseService {
         );
     }
 
+    @tryLogAsync()
     public async remove_role(personId, roleId) {
         return await this.databaseManager.ExecuteSPNoResults(
             `RemovePersonRole`,
@@ -117,6 +125,7 @@ export class PeopleService extends BaseService {
         );
     }
 
+    @tryLogAsync()
     public async change_kf_name(personId, kfName, ideograms) {
         return await this.databaseManager.ExecuteSPNoResults(
             `AddAlias`,
@@ -126,10 +135,12 @@ export class PeopleService extends BaseService {
         );
     }
 
+    @tryLogAsync()
+    @firebaseEmitter(PEOPLE_COLLECTION)
     public async update_person_data(person) {
-        return await this.databaseManager.ExecuteSPNoResults(
+        return await this.databaseManager.ExecuteTypedJsonSP("PERSON_CHANGED",
             `UpdatePersonData`,
-            { id: person.id },
+            [ { id: person.id },
             { name: person.full_name || person.name },
             { birth_date :  person.birth_date },
             { admission_date :  person.admission_date },
@@ -142,15 +153,20 @@ export class PeopleService extends BaseService {
             { passport :  person.passport },
             { occupation :  person.occupation },
             { kf_name_ideograms :  person.kf_name_ideograms },
+            { gender :  person.gender },
+            { shirt_size :  person.shirt_size },
+            { pants_size :  person.pants_size },
             { family_id :  person.family_id > 0 ? person.family_id : null },
             { destiny_family_id :  person.destiny_family_id > 0 ? person.destiny_family_id : null },
             { branch_id :  person.branch_id > 0 ? person.branch_id : null },
             { domain_id :  person.domain_id > 0 ? person.domain_id : null },
             { program_id :  person.program_id > 0 ? person.program_id : null },
-            { alias :  person.alias }
+            { alias :  person.alias } ]
         );
     }
 
+    @tryLogAsync()
+    @firebaseEmitter(PEOPLE_COLLECTION)
     public async register_new_person(person, user) {
         return await this.databaseManager.ExecuteSPNoResults(
             `RegisterNewPerson`,
@@ -172,6 +188,7 @@ export class PeopleService extends BaseService {
         );
     }
 
+    @tryLogAsync()
     async remove_schedule(id) {
         return await this.databaseManager.ExecuteSPNoResults(
             `CancelPersonSchedule`,
@@ -179,6 +196,8 @@ export class PeopleService extends BaseService {
         );
     }
 
+    @tryLogAsync()
+    @firebaseEmitter(PEOPLE_COLLECTION)
     async save_schedule(schedule, responsibleId) {
         return await this.databaseManager.ExecuteSPNoResults(
             `SavePersonScheduleAndGenerateIncidents`,
@@ -199,6 +218,7 @@ export class PeopleService extends BaseService {
         );
     }
 
+    @tryLogAsync()
     async remove_contact(id) {
         return await this.databaseManager.ExecuteSPNoResults(
             `RemovePersonContact`,
@@ -206,6 +226,7 @@ export class PeopleService extends BaseService {
         );
     }
 
+    @tryLogAsync()
     async save_contact(contactData) {
         return await this.databaseManager.ExecuteSPNoResults(
             `SavePersonContact`,
@@ -217,6 +238,7 @@ export class PeopleService extends BaseService {
         );
     }
 
+    @tryLogAsync()
     async save_comment_about(personId, comment, responsibleId) {
         return await this.databaseManager.ExecuteSPNoResults(
             `SavePersonComment`,
@@ -226,6 +248,7 @@ export class PeopleService extends BaseService {
         );
     }
 
+    @tryLogAsync()
     async archive_comment(commentId) {
         return await this.databaseManager.ExecuteSPNoResults(
             `ToglePersonCommentArchived`,

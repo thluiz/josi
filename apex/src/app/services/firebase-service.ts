@@ -43,6 +43,26 @@ export class FirebaseService {
             }
         );
 
+        this.listener_to_collection(serverTime.milliseconds,
+          'people-events', (dt) => {
+
+            if(!isArray(dt) || dt.length <= 0) {
+              return;
+            }
+
+            console.log(dt);
+
+            let result: Result = null;
+            try {
+              result = JSON.parse(dt[0].data);
+            } catch (error) {
+              result = Result.Fail(error);
+            }
+            (result as any).origin = "FIREBASE";
+            this.eventManager.emit(result);
+          }
+      );
+
       });
     }
 

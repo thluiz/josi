@@ -61,6 +61,7 @@ export class FirebaseManager {
                         return;
                     }
                 }
+
                 // Store value in our collection
                 cache.push(value);
             }

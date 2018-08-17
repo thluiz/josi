@@ -1,12 +1,14 @@
 import { Result } from "../helpers/result";
 import { DatabaseManager } from "../services/managers/database-manager";
 
+import { cache } from "../decorators/cache-decorator";
 import { tryLogAsync } from "../decorators/trylog-decorator";
 import { DependencyManager } from "../services/managers/dependency-manager";
 
 export class CardsRepository {
     private DBM = DependencyManager.container.resolve(DatabaseManager);
 
+    @cache(true, 3600000)
     @tryLogAsync()
     async getOrganizations(id?: number, includeChildrens = false): Promise<Result<any>> {
         return await this.DBM.ExecuteJsonSP("GetOrganizations",
@@ -15,6 +17,7 @@ export class CardsRepository {
         );
     }
 
+    @cache(true, 3600000)
     @tryLogAsync()
     async getProject(id: number): Promise<Result<any>> {
         return await this.DBM.ExecuteJsonSP("GetProject",

@@ -13,42 +13,15 @@ import { LoggerService } from "./logger-service";
 export class JobsService {
     @tryLogAsync()
     async execute_hourly_jobs(): Promise<Result<void>> {
-        const startTime = new Date().getTime();
-        const key = uuid();
-        LoggerService.benchmark(key, `Starting Running Jobs :: ${startTime }`);
-
         const results = [];
 
         results.push(await this.cleanup_sessions());
 
-        const endTime = new Date().getTime();
-
         const err = results.find((r) => !r.success);
-
-        LoggerService.benchmark(key, {
-            startTime,
-            success: err == null,
-            endTime,
-            duration: (endTime - startTime) / 1000,
-            results
-        });
 
         if (err) { return err; }
 
         return SuccessResult.GeneralOk();
-    }
-
-    @tryLogAsync()
-    async cleanup_sessions(): Promise<Result<any>> {
-        const storage = new AzureSessionStore({});
-
-        try {
-            await storage.cleanup();
-
-            return SuccessResult.GeneralOk();
-        } catch (error) {
-            return ErrorResult.Fail(ErrorCode.GenericError, error);
-        }
     }
 
     @tryLogAsync()
@@ -76,5 +49,18 @@ export class JobsService {
         }
 
         return SuccessResult.GeneralOk();
+    }
+
+    @tryLogAsync()
+    private async cleanup_sessions(): Promise<Result<any>> {
+        const storage = new AzureSessionStore({});
+
+        try {
+            await storage.cleanup();
+
+            return SuccessResult.GeneralOk();
+        } catch (error) {
+            return ErrorResult.Fail(ErrorCode.GenericError, error);
+        }
     }
 }

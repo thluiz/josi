@@ -27,6 +27,7 @@ const trylog_decorator_1 = require("../decorators/trylog-decorator");
 exports.PEOPLE_COLLECTION = "people-events";
 exports.PERSON_ADDED = "PERSON_ADDED";
 exports.PERSON_UPDATED_ACTION = "PERSON_UPDATED_ACTION";
+exports.PERSON_CHANGED = "PERSON_CHANGED";
 class PeopleService extends base_service_1.BaseService {
     create_person(name, roleId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -95,7 +96,28 @@ class PeopleService extends base_service_1.BaseService {
     }
     update_person_data(person) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.databaseManager.ExecuteSPNoResults(`UpdatePersonData`, { id: person.id }, { name: person.full_name || person.name }, { birth_date: person.birth_date }, { admission_date: person.admission_date }, { enrollment_date: person.enrollment_date }, { baaisi_date: person.baaisi_date }, { passport_expiration_date: person.passport_expiration_date }, { kf_name: person.kf_name }, { identification: person.identification }, { identification2: person.identification2 }, { passport: person.passport }, { occupation: person.occupation }, { kf_name_ideograms: person.kf_name_ideograms }, { family_id: person.family_id > 0 ? person.family_id : null }, { destiny_family_id: person.destiny_family_id > 0 ? person.destiny_family_id : null }, { branch_id: person.branch_id > 0 ? person.branch_id : null }, { domain_id: person.domain_id > 0 ? person.domain_id : null }, { program_id: person.program_id > 0 ? person.program_id : null }, { alias: person.alias });
+            return yield this.databaseManager.ExecuteTypedJsonSP("PERSON_CHANGED", `UpdatePersonData`, [{ id: person.id },
+                { name: person.full_name || person.name },
+                { birth_date: person.birth_date },
+                { admission_date: person.admission_date },
+                { enrollment_date: person.enrollment_date },
+                { baaisi_date: person.baaisi_date },
+                { passport_expiration_date: person.passport_expiration_date },
+                { kf_name: person.kf_name },
+                { identification: person.identification },
+                { identification2: person.identification2 },
+                { passport: person.passport },
+                { occupation: person.occupation },
+                { kf_name_ideograms: person.kf_name_ideograms },
+                { gender: person.gender },
+                { shirt_size: person.shirt_size },
+                { pants_size: person.pants_size },
+                { family_id: person.family_id > 0 ? person.family_id : null },
+                { destiny_family_id: person.destiny_family_id > 0 ? person.destiny_family_id : null },
+                { branch_id: person.branch_id > 0 ? person.branch_id : null },
+                { domain_id: person.domain_id > 0 ? person.domain_id : null },
+                { program_id: person.program_id > 0 ? person.program_id : null },
+                { alias: person.alias }]);
         });
     }
     register_new_person(person, user) {
@@ -143,5 +165,104 @@ __decorate([
     __metadata("design:paramtypes", [String, Number]),
     __metadata("design:returntype", Promise)
 ], PeopleService.prototype, "create_person", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "create_person_from_voucher", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "save_avatar_image", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "pin_comment", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "save_address", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "archive_address", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "add_role", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "remove_role", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "change_kf_name", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.PEOPLE_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "update_person_data", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.PEOPLE_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "register_new_person", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "remove_schedule", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.PEOPLE_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "save_schedule", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "remove_contact", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "save_contact", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "save_comment_about", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PeopleService.prototype, "archive_comment", null);
 exports.PeopleService = PeopleService;
 //# sourceMappingURL=people-service.js.map
