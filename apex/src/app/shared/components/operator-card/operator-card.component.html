@@ -1,28 +1,12 @@
 <div class="row">
-	<div 
+	<div
 		style="padding-right:0"
 		class="col-3 d-none d-lg-block text-right">
-		<img alt="{{ person.name }}"
-		[routerLink]="['/people/operator', person.id || person.person_id]"
-		class="img-border" 
-		src="https://myvtmiim.blob.core.windows.net/avatars/{{ person.avatar_img }}" 											
-		style="width:100%;cursor:pointer"																												
-		[style.border-color]="person.is_leaving || person.is_inactive_member ? 'orange' : null " 
-		[style.opacity]="person.is_leaving || person.is_inactive_member ? '0.5' : null " 
-		*ngIf="person.avatar_img && person.avatar_img.length > 0" />
-		
-		<img 
-		[routerLink]="['/people/operator', person.id || person.person_id]"
-		class="img-border" 
-		src="/assets/img/portrait/avatars/avatar-08.png" 											
-		style="width:100%;cursor:pointer"																												
-		[style.border-color]="person.is_leaving || person.is_inactive_member ? 'orange' : null " 
-		[style.opacity]="person.is_leaving || person.is_inactive_member ? '0.5' : null " 
-		*ngIf="!person.avatar_img || person.avatar_img.length <= 0" /> 
-	</div>								
-	<div 
+    <person-avatar-image [person]="person" [forceSmallImage]="true"></person-avatar-image>
+	</div>
+	<div
 	class="col-12 col-lg-9">
-		<div class="row" 
+		<div class="row"
 			style="cursor:pointer;"
 			[routerLink]="['/people/operator', person.id || person.person_id]">
 			<div class="col-12 d-block d-xl-none"
@@ -31,23 +15,23 @@
 				<a
 				[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
 				[routerLink]="['/people/person', person.id || person.person_id]">
-				{{ person.name }}														
-				</a>																
-			</div>													
+				{{ person.name }}
+				</a>
+			</div>
 			<div class="col-12 d-none d-xl-block pl-1"
 			[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
 			>
 				<a
 				[style.color]="person.is_leaving || person.is_inactive_member ? 'grey' : 'black'"
 				[routerLink]="['/people/operator', person.id || person.person_id]">
-				{{ person.name }}														
-				</a>																		
-			</div>													
-		</div>												
-		<div class="row" style="font-size:12px;">	
+				{{ person.name }}
+				</a>
+			</div>
+		</div>
+		<div class="row" style="font-size:12px;">
 			<div class="col-12 pl-1">
 				{{ person.position_description }}
 			</div>
-		</div>		
-	</div>	
+		</div>
+	</div>
 </div>

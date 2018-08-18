@@ -11,35 +11,53 @@ import { Subscription } from 'rxjs';
   selector: 'person-avatar-image',
   templateUrl: './person-avatar-image.component.html'
 })
-export class PersonAvatarImageComponent implements OnInit, OnDestroy {  
+export class PersonAvatarImageComponent implements OnInit, OnDestroy {
 
-  @Input() person: { id: number, avatar_img: string, name: string };
+  @Input() person: { id: number, avatar_img: string,
+                    name: string, avatar_sm: boolean, avatar_md: boolean,
+                    is_leaving: boolean, is_inactive_member: boolean };
   @Input() editAvatarOnClick = false;
-  
+  @Input() useMediumImage = false;
+  @Input() forceSmallImage = false;
+
   private person_changes_subscriber: Subscription;
-  
+
   constructor(private personService: PersonService, private modalService: ModalService) {
-            
+
   }
 
   ngOnInit() {
     this.person_changes_subscriber = this.personService.personActions$.pipe(
-    filter((event) => 
-        event.type == PersonActions.CHANGE_AVATAR        
+    filter((event) =>
+        event.type == PersonActions.CHANGE_AVATAR
         && event.result
         && event.result.success
         && event.result.data.id == this.person.id))
-    .subscribe((event) => {      
-      console.log(event);                  
+    .subscribe((event) => {
+      console.log(event);
       this.person = event.result.data
-    });  
+    });
+  }
+
+  get avatar_url() {
+    var blob_directory = `avatars`
+
+    if(this.forceSmallImage || (!this.useMediumImage && this.person.avatar_sm)) {
+      blob_directory += "-sm";
+    }
+
+    if(this.useMediumImage && this.person.avatar_md) {
+      blob_directory += "-md";
+    }
+
+    return `https://myvtmiim.blob.core.windows.net/${ blob_directory }/${ this.person.avatar_img }`;
   }
 
   edit_avatar() {
     if(!this.editAvatarOnClick) {
       return;
     }
-    
+
     this.open_send_avatar_image();
   }
 
@@ -54,9 +72,9 @@ export class PersonAvatarImageComponent implements OnInit, OnDestroy {
           img.onload = function() {
               var width = img.naturalWidth,
                   height = img.naturalHeight;
-  
+
               window.URL.revokeObjectURL( img.src );
-  
+
               if( width != height || width < 80) {
                   resolve({
                     result: false,
@@ -66,9 +84,9 @@ export class PersonAvatarImageComponent implements OnInit, OnDestroy {
 
               resolve({ result: true });
           }
-        });                    
+        });
       },
-      upload_action: (x: File) => {          
+      upload_action: (x: File) => {
         return this.personService.save_avatar_img(this.person.id, x);
       }
     })

@@ -4,12 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { PersonalInventoryListComponent } from './personal-inventory-list.component';
+import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-image/person-avatar-image.module';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        NgbModule
+        NgbModule,
+        PersonAvatarImageModule
     ],
     declarations: [
       PersonalInventoryListComponent

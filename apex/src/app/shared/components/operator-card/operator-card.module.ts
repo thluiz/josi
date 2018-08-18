@@ -5,15 +5,17 @@ import { OperatorCardComponent } from './operator-card.component';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
+import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-image/person-avatar-image.module';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         RouterModule,
-        PersonStatusLineModule        
+        PersonStatusLineModule,
+        PersonAvatarImageModule
     ],
-    declarations: [       
+    declarations: [
         OperatorCardComponent
     ], exports: [
         OperatorCardComponent

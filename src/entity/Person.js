@@ -44,6 +44,14 @@ __decorate([
     __metadata("design:type", String)
 ], Person.prototype, "avatar_img", void 0);
 __decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Boolean)
+], Person.prototype, "avatar_sm", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Boolean)
+], Person.prototype, "avatar_md", void 0);
+__decorate([
     typeorm_1.Column({ name: "branch_id" }),
     __metadata("design:type", Number)
 ], Person.prototype, "branch_id", void 0);

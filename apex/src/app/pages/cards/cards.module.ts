@@ -4,16 +4,16 @@ import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DragulaModule } from 'ng2-dragula';
 
-import { NgbModal, 
-    NgbDateStruct, 
-    NgbDatepickerI18n, 
+import { NgbModal,
+    NgbDateStruct,
+    NgbDatepickerI18n,
     NgbDatepickerModule,
-    NgbCalendar, 
-    NgbTimeStruct,      
-    ModalDismissReasons, 
+    NgbCalendar,
+    NgbTimeStruct,
+    ModalDismissReasons,
     NgbTimepickerModule,
     NgbActiveModal,
-    NgbModule     
+    NgbModule
 } from '@ng-bootstrap/ng-bootstrap';
 import { MarkdownModule } from 'ngx-markdown';
 
@@ -27,25 +27,27 @@ import { OrganizationsOverviewPageComponent } from './organizations-overview-pag
 import { OrganizationDetailPageComponent } from 'app/pages/cards/organization-detail-page/organization-detail-page.component';
 import { OrganizationConfigPageComponent } from 'app/pages/cards/organization-config-page/organization-config-page.component';
 import { ProjectPageComponent } from 'app/pages/cards/project-page/project-page.component';
+import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-image/person-avatar-image.module';
 
 
 @NgModule({
     imports: [
         CardsRoutingModule,
         CommonModule,
-        FormsModule,                                 
-        ReactiveFormsModule,                        
+        FormsModule,
+        ReactiveFormsModule,
         NgbModule,
         NgbDatepickerModule.forRoot(),
-        NgbTimepickerModule.forRoot(),        
+        NgbTimepickerModule.forRoot(),
         MarkdownModule.forRoot(),
         DiaryHeaderModule,
         OrganizationCardModule,
         DragulaModule,
         OperatorCardModule,
-        CompactCardModule
+        CompactCardModule,
+        PersonAvatarImageModule
     ],
-    declarations: [    
+    declarations: [
         OrganizationsOverviewPageComponent,
         OrganizationDetailPageComponent,
         OrganizationConfigPageComponent,

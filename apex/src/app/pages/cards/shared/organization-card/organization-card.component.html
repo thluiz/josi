@@ -8,11 +8,11 @@
 
 		<div class="header-controls">
 			<a (click)="add_task(organization)"
-			class="white"			
+			class="white"
 			title="Adicionar Tarefa">
 			<i class="ft-plus"></i>
 			<i class="fas fa-tasks"></i>
-			</a>			
+			</a>
 
 			<a (click)="add_project(organization)"
 				class="white"
@@ -22,36 +22,36 @@
 			</a>
 
 			<a [routerLink]="['/organizations/config', organization.id]"
-				class="white"				
+				class="white"
 				title="Configurações">
 				<i class="fas fa-cog"></i>
-			</a>                            
+			</a>
 		</div>
 
-	</div>  
+	</div>
 	<div class="body">
 		<div class="row">
 			<div class="col-12">
-				<table class="table table-striped table-sm">					
+				<table class="table table-striped table-sm">
 					<colgroup>
 						<col style="width:25%;"/>
 						<col style="width:75%;border-left:1px solid silver"/>
 					</colgroup>
 					<tbody>
 						<tr *ngFor="let p of organization.people">
-							<td							
-							[style.padding-left]="((p.position - 1)*15) + 'px'">
+							<td
+              [style.padding-left]="((p.position - 1)*15) + 'px'">
 								<operator-card [person]="p"></operator-card>
 							</td>
 							<td>
 								<compact-card [card]="ch"
 								*ngFor="let ch of organization.childrens | leaderedProjects: p"
-								></compact-card>								
+								></compact-card>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
-		</div>		
-	</div>                  
+		</div>
+	</div>
 </div>

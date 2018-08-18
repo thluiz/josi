@@ -66,11 +66,8 @@
                         ops... ocorreu algum erro na busca</div>
                     </div>
                     <ng-template #person_typeahead_template let-p="result">
-                        <img alt="{{ p.name }}"
-                        class="img-border"
-                        src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}"
-                        style="min-width:50px;max-width:50px;"
-                        *ngIf="p.avatar_url && p.avatar_url.length > 0" />
+                        <person-avatar-image [person]="p">
+                        </person-avatar-image>
                         {{ p.name }}
                         <span *ngIf="!p.found" style="font-style: italic;">
                             (novo)
@@ -81,11 +78,8 @@
         </div>
         <div class="row" *ngIf="new_relationship.person2">
             <div class="col-12">
-                <img alt="{{ new_relationship.person2.name }}"
-                class="img-border"
-                src="https://myvtmiim.blob.core.windows.net/avatars/{{ new_relationship.person2.avatar_url }}"
-                style="min-width:50px;max-width:50px;"
-                *ngIf="new_relationship.person2.avatar_url && new_relationship.person2.avatar_url.length > 0" />
+                <person-avatar-image [person]="p">
+                </person-avatar-image>
                 {{ new_relationship.person2.name }}
             </div>
         </div>

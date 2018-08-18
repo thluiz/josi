@@ -1,291 +1,219 @@
 <ng-template #add_incident_modal let-c="close" let-d="dismiss">
-    <div class="modal-header">
-        <h5 class="modal-title" style="font-weight: bold">Novo Registro de Atividade</h5>
-        <button type="button" class="close" aria-label="Close" (click)="reset_new_incident();d('Cross click')">
-        <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <div class="form-body">
-            <div class="row">
-                <div class="col-12">
-                    <fieldset class="form-group">
-                        <label for="new_incident_branch"
-                            *ngIf="!current_branch || current_branch <= 0"
-                            style="font-weight: bold">
-                            Núcleo
-                        </label>
-                        <div class="form-group"
-                            *ngIf="!current_branch || current_branch <= 0">
-                            <select id="branch"
-                                [(ngModel)]="new_incident.branch_id"
-                                class="form-control"
-                                >
-                                <option></option>
-                                <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
-                            </select>
-                        </div>
-                        <label for="new_incident_tmp_type" style="font-weight: bold">Tipo de Atividade</label>
-                        <span *ngIf="new_incident.tmp_type != null">
-                            {{ new_incident.tmp_type.name }}
-                            <span *ngIf="new_incident.children_type != null">
-                                - {{ new_incident.children_type.name }}
-                            </span>
+  <div class="modal-header">
+    <h5 class="modal-title" style="font-weight: bold">Novo Registro de Atividade</h5>
+    <button type="button" class="close" aria-label="Close" (click)="reset_new_incident();d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-body">
+      <div class="row">
+        <div class="col-12">
+          <fieldset class="form-group">
+            <label for="new_incident_branch" *ngIf="!current_branch || current_branch <= 0" style="font-weight: bold">
+              Núcleo
+            </label>
+            <div class="form-group" *ngIf="!current_branch || current_branch <= 0">
+              <select id="branch" [(ngModel)]="new_incident.branch_id" class="form-control">
+                <option></option>
+                <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
+              </select>
+            </div>
+            <label for="new_incident_tmp_type" style="font-weight: bold">Tipo de Atividade</label>
+            <span *ngIf="new_incident.tmp_type != null">
+              {{ new_incident.tmp_type.name }}
+              <span *ngIf="new_incident.children_type != null">
+                - {{ new_incident.children_type.name }}
+              </span>
 
-                            <i class="ft-rotate-ccw"
-                                (click)="reset_new_incident_type();"
-                                style="cursor: pointer;">
-                            </i>
-                        </span>
-                        <select id="new_incident_tmp_type"
-                            class="form-control"
-                            [(ngModel)]="new_incident.tmp_combo_type"
-                            (ngModelChange)="change_new_incident_type($event)"
-                            *ngIf="new_incident.tmp_type == null"
-                            style="width:100%"
-                            >
-                            <option></option>
-                            <option *ngFor="let t of incident_types" [value]="t.id">{{t.name}}</option>
-                        </select>
-                        <select id="new_incident_children_type"
-                            [(ngModel)]="new_incident.children_type"
-                            class="form-control"
-                            (ngModelChange)="change_new_incident_children_type($event)"
-                            *ngIf="new_incident.tmp_type != null && new_incident.children_type == null && new_incident.tmp_type.childrens != null"
-                            style="width:100%"
-                            >
-                            <option *ngFor="let t of new_incident.tmp_type.childrens" [value]="t.id">{{t.name}}</option>
-                        </select>
-                    </fieldset>
-                </div>
+              <i class="ft-rotate-ccw" (click)="reset_new_incident_type();" style="cursor: pointer;">
+              </i>
+            </span>
+            <select id="new_incident_tmp_type" class="form-control" [(ngModel)]="new_incident.tmp_combo_type" (ngModelChange)="change_new_incident_type($event)"
+              *ngIf="new_incident.tmp_type == null" style="width:100%">
+              <option></option>
+              <option *ngFor="let t of incident_types" [value]="t.id">{{t.name}}</option>
+            </select>
+            <select id="new_incident_children_type" [(ngModel)]="new_incident.children_type" class="form-control" (ngModelChange)="change_new_incident_children_type($event)"
+              *ngIf="new_incident.tmp_type != null && new_incident.children_type == null && new_incident.tmp_type.childrens != null"
+              style="width:100%">
+              <option *ngFor="let t of new_incident.tmp_type.childrens" [value]="t.id">{{t.name}}</option>
+            </select>
+          </fieldset>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="new_incident_date" style="font-weight: bold">Data</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group">
+            <div class="input-group">
+              <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="new_incident.date" id="new_incident_date" ngbDatepicker
+                #niReschedule="ngbDatepicker" />
+              <div class="input-group-addon" (click)="niReschedule.toggle()">
+                <i class="ft-calendar" style="cursor: pointer;"></i>
+              </div>
             </div>
-            <div class="row">
-                <div class="col-6">
-                    <label for="new_incident_date" style="font-weight: bold">Data</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <input class="form-control text-center" placeholder="dd/mm/aaaa"
-                            [(ngModel)]="new_incident.date" id="new_incident_date"
-                            ngbDatepicker #niReschedule="ngbDatepicker" />
-                            <div class="input-group-addon" (click)="niReschedule.toggle()">
-                                <i class="ft-calendar" style="cursor: pointer;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <ngb-timepicker [spinners]="false"
-                    [(ngModel)]="new_incident.time">
-                    </ngb-timepicker>
-                </div>
-            </div>
-            <div class="row" *ngIf="this.new_incident.type">
-                <div class="col-6" *ngIf="this.new_incident.type.need_to_be_started">
-                    <label for="new_incident_start_activity"
-                            style="font-weight: bold">
-                        Atividade em Andamento
-                    </label>
-                    <div class="form-group">
-                        <select id="new_incident_start_activity"
-                            [(ngModel)]="new_incident.start_activity"
-                            class="form-control">
-                            <option [ngValue]="0">Não</option>
-                            <option [ngValue]="1">Sim</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <label for="new_incident_close_activity"
-                            style="font-weight: bold">
-                        Atividade já Finalizada
-                    </label>
-                    <div class="form-group">
-                        <select id="new_incident_close_activity"
-                            [(ngModel)]="new_incident.close_activity"
-                            class="form-control"
-                            >
-                            <option [ngValue]="0">Não</option>
-                            <option [ngValue]="1">Sim - Como Sucesso</option>
-                            <option [ngValue]="2">Sim - Como Tratamento</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row" *ngIf="new_incident.type != null">
-                <div class="col-12">
-                <label for="new_incident_search_people" style="font-weight: bold">
-                    Participante{{ new_incident.people == null || new_incident.people.length <= 1 ? '' : 's' }}
-                </label>
-                    <ul *ngIf="new_incident.people != null && new_incident.people.length > 0"
-                        class="list-group">
-                        <li *ngFor="let p of new_incident.people"
-                            class="list-group-item">
-                            <img alt="{{ p.name }}"
-                            class="img-border"
-                            src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}"
-                            style="min-width:50px;max-width:50px;"
-                            *ngIf="p.avatar_url && p.avatar_url.length > 0" />
-                            {{ p.name }}
-                            <div style="float:right;cursor: pointer;"
-                                title="Remover pessoa da atividade"
-                                (click)="remove_person_from_new_incident(p)">
-                                <span class="badge badge-pill">
-                                    <i class="fa fa-times"
-                                    ></i>
-                                </span>
-                            </div>
-                        </li>
-                    </ul>
-                    <div class="form-group" [class.has-danger]="search_failed">
-                    <input type="text" class="form-control"
-                        id="new_incident_search_people"
-                        [ngbTypeahead]="search_people"
-                        placeholder="Pesquise {{ new_incident.people == null || new_incident.people.length <= 0 ? 'a' : 'mais' }} participante{{ new_incident.people == null || new_incident.people.length <= 0 ? '' : 's' }}"
-                        [resultTemplate]="person_typeahead_template"
-                        [inputFormatter]="people_typeahead_formatter"
-                        [(ngModel)]="new_incident.tmp_person"
-                        (ngModelChange) ="add_person_to_new_incident($event)"
-                    />
-                    <span *ngIf="searching_people">buscando...</span>
-                    <div class="form-control-feedback" *ngIf="search_failed">
-                        ops... ocorreu algum erro na busca</div>
-                    </div>
-                    <ng-template #person_typeahead_template let-p="result">
-                        <img alt="{{ p.name }}"
-                        class="img-border"
-                        src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}"
-                        style="min-width:50px;max-width:50px;"
-                        *ngIf="p.avatar_url && p.avatar_url.length > 0" />
-                        {{ p.name }}
-                        <span *ngIf="!p.found" style="font-style: italic;">
-                            (novo)
-                        </span>
-                    </ng-template>
-                </div>
-            </div>
-            <div class="row"
-                *ngIf="new_incident.type != null
+          </div>
+        </div>
+        <div class="col-6">
+          <ngb-timepicker [spinners]="false" [(ngModel)]="new_incident.time">
+          </ngb-timepicker>
+        </div>
+      </div>
+      <div class="row" *ngIf="this.new_incident.type">
+        <div class="col-6" *ngIf="this.new_incident.type.need_to_be_started">
+          <label for="new_incident_start_activity" style="font-weight: bold">
+            Atividade em Andamento
+          </label>
+          <div class="form-group">
+            <select id="new_incident_start_activity" [(ngModel)]="new_incident.start_activity" class="form-control">
+              <option [ngValue]="0">Não</option>
+              <option [ngValue]="1">Sim</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-6">
+          <label for="new_incident_close_activity" style="font-weight: bold">
+            Atividade já Finalizada
+          </label>
+          <div class="form-group">
+            <select id="new_incident_close_activity" [(ngModel)]="new_incident.close_activity" class="form-control">
+              <option [ngValue]="0">Não</option>
+              <option [ngValue]="1">Sim - Como Sucesso</option>
+              <option [ngValue]="2">Sim - Como Tratamento</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="new_incident.type != null">
+        <div class="col-12">
+          <label for="new_incident_search_people" style="font-weight: bold">
+            Participante{{ new_incident.people == null || new_incident.people.length
+            <=1 ? '' : 's' }} </label>
+              <ul *ngIf="new_incident.people != null && new_incident.people.length > 0" class="list-group">
+                <li *ngFor="let p of new_incident.people" class="list-group-item">
+                  <person-avatar-image [person]="p"></person-avatar-image> {{ p.name }}
+                  <div style="float:right;cursor: pointer;" title="Remover pessoa da atividade" (click)="remove_person_from_new_incident(p)">
+                    <span class="badge badge-pill">
+                      <i class="fa fa-times"></i>
+                    </span>
+                  </div>
+                </li>
+              </ul>
+              <div class="form-group" [class.has-danger]="search_failed">
+                <input type="text" class="form-control" id="new_incident_search_people" [ngbTypeahead]="search_people" placeholder="Pesquise {{ new_incident.people == null || new_incident.people.length <= 0 ? 'a' : 'mais' }} participante{{ new_incident.people == null || new_incident.people.length <= 0 ? '' : 's' }}"
+                  [resultTemplate]="person_typeahead_template" [inputFormatter]="people_typeahead_formatter" [(ngModel)]="new_incident.tmp_person"
+                  (ngModelChange)="add_person_to_new_incident($event)" />
+                <span *ngIf="searching_people">buscando...</span>
+                <div class="form-control-feedback" *ngIf="search_failed">
+                  ops... ocorreu algum erro na busca</div>
+              </div>
+              <ng-template #person_typeahead_template let-p="result">
+                <person-avatar-image [person]="p"></person-avatar-image> {{ p.name }}
+                <span *ngIf="!p.found" style="font-style: italic;">
+                  (novo)
+                </span>
+              </ng-template>
+        </div>
+      </div>
+      <div class="row" *ngIf="new_incident.type != null
                     && new_incident.people
                     && new_incident.type.require_ownership">
-                <div class="col-12">
-                    <label for="new_incident_add_to_ownernership" style="font-weight: bold">
-                        Titularidade
-                    </label>
-                    <div class="form-group">
-                        <select id="new_incident_add_to_ownernership"
-                            [(ngModel)]="new_incident.add_to_ownernership"
-                            class="form-control"
-                            (ngModelChange) ="get_available_ownerships()">
-                            <option [ngValue]="1">Nova Titularidade</option>
-                            <option [ngValue]="2">Titularide Agendada/em Andamento</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row" *ngIf="new_incident.type != null
+        <div class="col-12">
+          <label for="new_incident_add_to_ownernership" style="font-weight: bold">
+            Titularidade
+          </label>
+          <div class="form-group">
+            <select id="new_incident_add_to_ownernership" [(ngModel)]="new_incident.add_to_ownernership" class="form-control" (ngModelChange)="get_available_ownerships()">
+              <option [ngValue]="1">Nova Titularidade</option>
+              <option [ngValue]="2">Titularide Agendada/em Andamento</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="new_incident.type != null
                     && new_incident.people
                     && new_incident.type.require_ownership
                     && new_incident.add_to_ownernership == 2">
-                <div class="col-12" style="color:red">
-                    <label for="new_incident_ownership_id" style="font-weight: bold">
-                        Titularidades Disponíveis
-                    </label>
-                    <div class="form-group">
-                        <select id="new_incident_ownership_id"
-                            [(ngModel)]="new_incident.ownership"
-                            class="form-control"
-                            >
-                            <option></option>
-                            <option *ngFor="let ao of available_ownerships" [ngValue]="ao">
-                                {{ ao.start_hour }} - {{ ao.title || "ND" }} - {{ ao.person }}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row" *ngIf="new_incident.type != null
+        <div class="col-12" style="color:red">
+          <label for="new_incident_ownership_id" style="font-weight: bold">
+            Titularidades Disponíveis
+          </label>
+          <div class="form-group">
+            <select id="new_incident_ownership_id" [(ngModel)]="new_incident.ownership" class="form-control">
+              <option></option>
+              <option *ngFor="let ao of available_ownerships" [ngValue]="ao">
+                {{ ao.start_hour }} - {{ ao.title || "ND" }} - {{ ao.person }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="new_incident.type != null
                     && new_incident.people
                     && new_incident.type.require_ownership
                     && new_incident.add_to_ownernership == 1">
-                <div class="col-6">
-                    <label for="new_incident_new_owner_id" style="font-weight: bold">
-                        Novo Titular
-                    </label>
-                    <div class="form-group">
-                        <select id="new_incident_new_owner_id"
-                            [(ngModel)]="new_incident.new_owner_id"
-                            class="form-control"
-                            >
-                            <option></option>
-                            <option *ngFor="let p of new_incident.people" [value]="p.person_id">
-                                {{p.name}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <label for="new_incident_new_support_id" style="font-weight: bold">
-                        Novo Suplente
-                    </label>
-                    <div class="form-group">
-                        <select id="new_incident_new_support_id"
-                            [(ngModel)]="new_incident.new_support_id"
-                            class="form-control"
-                            >
-                            <option *ngFor="let p of new_incident.people" [value]="p.person_id">
-                                {{p.name}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row" *ngIf="new_incident.type != null && new_incident.type.require_title">
-                <div class="col-12 pb-2">
-                    <label for="new_incident_title" style="font-weight: bold">Título</label>
-                    <input class="form-control"
-                    [(ngModel)]="new_incident.title" id="new_incident_title"
-                    />
-                </div>
-            </div>
-            <div class="row" *ngIf="new_incident.type != null">
-                <div class="col-12 pb-2">
-                    <label for="new_incident_description" style="font-weight: bold">Descrição</label>
-                    <textarea class="form-control"
-                    id="new_incident_description"
-                    [(ngModel)]="new_incident.description"
-                    rows="3"></textarea>
-                </div>
-            </div>
-            <div class="row" *ngIf="new_incident.type != null && new_incident.type.need_value">
-                <div class="col-12 pb-2">
-                    <label for="new_incident_value" style="font-weight: bold">Valor</label>
-                    <input type="number" id="new_incident_value"
-                        [(ngModel)]="new_incident.value"
-                        class="form-control text-right"
-                        />
-                </div>
-            </div>
+        <div class="col-6">
+          <label for="new_incident_new_owner_id" style="font-weight: bold">
+            Novo Titular
+          </label>
+          <div class="form-group">
+            <select id="new_incident_new_owner_id" [(ngModel)]="new_incident.new_owner_id" class="form-control">
+              <option></option>
+              <option *ngFor="let p of new_incident.people" [value]="p.person_id">
+                {{p.name}}
+              </option>
+            </select>
+          </div>
         </div>
+        <div class="col-6">
+          <label for="new_incident_new_support_id" style="font-weight: bold">
+            Novo Suplente
+          </label>
+          <div class="form-group">
+            <select id="new_incident_new_support_id" [(ngModel)]="new_incident.new_support_id" class="form-control">
+              <option *ngFor="let p of new_incident.people" [value]="p.person_id">
+                {{p.name}}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="new_incident.type != null && new_incident.type.require_title">
+        <div class="col-12 pb-2">
+          <label for="new_incident_title" style="font-weight: bold">Título</label>
+          <input class="form-control" [(ngModel)]="new_incident.title" id="new_incident_title" />
+        </div>
+      </div>
+      <div class="row" *ngIf="new_incident.type != null">
+        <div class="col-12 pb-2">
+          <label for="new_incident_description" style="font-weight: bold">Descrição</label>
+          <textarea class="form-control" id="new_incident_description" [(ngModel)]="new_incident.description" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="row" *ngIf="new_incident.type != null && new_incident.type.need_value">
+        <div class="col-12 pb-2">
+          <label for="new_incident_value" style="font-weight: bold">Valor</label>
+          <input type="number" id="new_incident_value" [(ngModel)]="new_incident.value" class="form-control text-right" />
+        </div>
+      </div>
     </div>
-    <div class="modal-footer" *ngIf="saving">
-        <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
-    </div>
-    <div class="modal-footer" *ngIf="!saving">
-        <button type="button"
-            class="btn btn-success"
-            (click)="register_new_incident(d);">
-            <i class="icon-check"></i>
-            Registrar
-        </button>
-        <button type="button" class="btn btn-silver"
-            (click)="reset_new_incident();d('reset new incident!');"
-            >
-            <i class="icon-action-undo"></i>
-            Cancelar
-        </button>
-    </div>
+  </div>
+  <div class="modal-footer" *ngIf="saving">
+    <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+  </div>
+  <div class="modal-footer" *ngIf="!saving">
+    <button type="button" class="btn btn-success" (click)="register_new_incident(d);">
+      <i class="icon-check"></i>
+      Registrar
+    </button>
+    <button type="button" class="btn btn-silver" (click)="reset_new_incident();d('reset new incident!');">
+      <i class="icon-action-undo"></i>
+      Cancelar
+    </button>
+  </div>
 </ng-template>

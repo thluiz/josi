@@ -32,6 +32,12 @@ export class Person {
     @Column()
     avatar_img: string;
 
+    @Column()
+    avatar_sm: boolean;
+
+    @Column()
+    avatar_md: boolean;
+
     @Column({name: "branch_id"})
     branch_id: number;
 

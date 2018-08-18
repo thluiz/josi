@@ -19,8 +19,7 @@
               ops... ocorreu algum erro na busca</div>
           </div>
           <ng-template #person_typeahead_template let-p="result">
-            <img alt="{{ p.name }}" class="img-border" src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}" style="min-width:50px;max-width:50px;"
-              *ngIf="p.avatar_url && p.avatar_url.length > 0" /> {{ p.name }}
+            <person-avatar-image [person]="p"></person-avatar-image> {{ p.name }}
             <span *ngIf="!p.found" style="font-style: italic;">
               (novo)
             </span>
@@ -43,7 +42,7 @@
           <li class="nav-item" ngbDropdown placement="bottom-right" *ngIf="current_user">
             <a class="nav-link position-relative" id="dropdownBasic3" ngbDropdownToggle>
               <div style="display:inline-block; width:40px;">
-                <img src="https://myvtmiim.blob.core.windows.net/avatars/{{ current_user.avatar_img }}" style="max-width: 40px;border-radius: 50%;top: 0;position: absolute"
+                <img src="https://myvtmiim.blob.core.windows.net/avatars-sm/{{ current_user.avatar_img }}" style="max-width: 40px;border-radius: 50%;top: 0;position: absolute"
                 />
               </div>
               <span class="text align-middle" style="position:relative;top:-3px">

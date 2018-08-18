@@ -56,16 +56,16 @@ export class PeopleService extends BaseService {
     }
 
     @tryLogAsync()
-    async save_avatar_image(personId, blobImage): Promise<Result<Person>> {
+    async save_avatar_image(personId: number, blobImage: string): Promise<Result<Person>> {
         try {
             const PR = await  (await this.databaseManager)
             .getRepository<Person>(Person);
 
             const person = await PR.findOne({id: personId});
             person.avatar_img = blobImage;
+            person.avatar_md = false;
+            person.avatar_sm = false;
             await PR.save(person);
-
-            // TODO: Validate image size
 
             return SuccessResult.GeneralOk(person);
         } catch (error) {

@@ -52,8 +52,9 @@ class PeopleService extends base_service_1.BaseService {
                     .getRepository(Person_1.Person);
                 const person = yield PR.findOne({ id: personId });
                 person.avatar_img = blobImage;
+                person.avatar_md = false;
+                person.avatar_sm = false;
                 yield PR.save(person);
-                // TODO: Validate image size
                 return result_1.SuccessResult.GeneralOk(person);
             }
             catch (error) {
@@ -174,7 +175,7 @@ __decorate([
 __decorate([
     trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Number, String]),
     __metadata("design:returntype", Promise)
 ], PeopleService.prototype, "save_avatar_image", null);
 __decorate([

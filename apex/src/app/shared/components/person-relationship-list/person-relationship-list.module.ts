@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { PersonRelationshipListComponent } from './person-relationship-list.component';
+import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-image/person-avatar-image.module';
 
 
 @NgModule({
@@ -13,9 +14,10 @@ import { PersonRelationshipListComponent } from './person-relationship-list.comp
         CommonModule,
         FormsModule,
         RouterModule,
-        NgbModule
+        NgbModule,
+        PersonAvatarImageModule
     ],
-    declarations: [       
+    declarations: [
         PersonRelationshipListComponent
     ], exports: [
         PersonRelationshipListComponent

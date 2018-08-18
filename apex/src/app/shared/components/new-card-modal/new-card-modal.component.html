@@ -1,4 +1,4 @@
-<ng-template #add_card_modal let-c="close" let-d="dismiss">    
+<ng-template #add_card_modal let-c="close" let-d="dismiss">
     <div class="modal-header">
         <h5 class="modal-title" style="font-weight: bold" *ngIf="type == types.Task || type == types.ProjectTask">Cadastrar Tarefa</h5>
         <h5 class="modal-title" style="font-weight: bold" *ngIf="type == types.Project">Cadastrar Projeto</h5>
@@ -6,133 +6,127 @@
         <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="modal-body">			
-        <div class="form-body">			
+    <div class="modal-body">
+        <div class="form-body">
             <div class="row">
-                <div class="col-12">                    
-                    <fieldset class="form-group">	                        					                        
-                        <label for="card_operator"                             
+                <div class="col-12">
+                    <fieldset class="form-group">
+                        <label for="card_operator"
                             style="font-weight: bold"
                             *ngIf="card.parent">
                             Responsável
-                        </label>		
-                        <div class="form-group">                            	
-                            <select id="card_operator" 
+                        </label>
+                        <div class="form-group">
+                            <select id="card_operator"
                                 name="card_operator"
                                 class="form-control"
-                                [(ngModel)]="card.leaders" 
+                                [(ngModel)]="card.leaders"
                                 [compareWith]="entity_compare"
-                                (ngModelChange)="validate_new_card()">			
-                                <option></option>			
+                                (ngModelChange)="validate_new_card()">
+                                <option></option>
                                 <option *ngFor="let op of operators" [ngValue]="op">{{ op.name }}</option>
-                            </select>								
+                            </select>
                         </div>
-                        <label for="card_operator"                             
+                        <label for="card_operator"
                             style="font-weight: bold">
                             Local
-                        </label>		
-                        <div class="form-group">                            	
-                            <select id="card_location" 
+                        </label>
+                        <div class="form-group">
+                            <select id="card_location"
                                 name="card_location"
                                 class="form-control"
-                                [(ngModel)]="card.locations[0]" 
+                                [(ngModel)]="card.locations[0]"
                                 [compareWith]="entity_compare"
-                                (ngModelChange)="validate_new_card()">			                                		
+                                (ngModelChange)="validate_new_card()">
                                 <option *ngFor="let l of locations" [ngValue]="l">{{ l.name }}</option>
-                            </select>								                                    
+                            </select>
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <label for="card_template">Tipo</label>                                                									
-                                <div class="input-group">							
-                                        <select id="card_template" 
+                                <label for="card_template">Tipo</label>
+                                <div class="input-group">
+                                        <select id="card_template"
                                         name="card_template"
-                                        [(ngModel)]="card.template"                                 																	
+                                        [(ngModel)]="card.template"
                                         class="form-control"
-                                        [compareWith]="entity_compare"	
-                                        (ngModelChange)="validate_new_card()"							
-                                        >			                                        			
+                                        [compareWith]="entity_compare"
+                                        (ngModelChange)="validate_new_card()"
+                                        >
                                         <option *ngFor="let tpl of templates" [ngValue]="tpl">{{ tpl.name }}</option>
-                                    </select>                                    
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="row" *ngIf="card.template && card.template.require_target_group">
                             <div class="col-12">
-                                <label for="card_group">Grupo</label>                                                									
-                                <div class="input-group">							
-                                        <select id="card_group" 
+                                <label for="card_group">Grupo</label>
+                                <div class="input-group">
+                                        <select id="card_group"
                                         name="card_group"
-                                        [(ngModel)]="card.group"                                 																	
+                                        [(ngModel)]="card.group"
                                         class="form-control"
-                                        [compareWith]="entity_compare"	
-                                        (ngModelChange)="validate_new_card()"							
-                                        >			                                        			
+                                        [compareWith]="entity_compare"
+                                        (ngModelChange)="validate_new_card()"
+                                        >
                                         <option *ngFor="let tpl of groups" [ngValue]="tpl">{{ tpl.name }}</option>
-                                    </select>                                    
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="row" *ngIf="card.group && card.group.need_branch">
                             <div class="col-12">
-                                <label for="card_branch">Subgrupo</label>                                                									
-                                <div class="input-group">							
-                                        <select id="card_branch" 
+                                <label for="card_branch">Subgrupo</label>
+                                <div class="input-group">
+                                        <select id="card_branch"
                                         name="card_branch"
-                                        [(ngModel)]="card.branch"                                 																	
+                                        [(ngModel)]="card.branch"
                                         class="form-control"
                                         [compareWith]="entity_compare"
-                                        (ngModelChange)="validate_new_card()"								
-                                        >	
-                                        <option *ngIf="card.group.allow_no_branch">Pessoas sem núcleo definido</option>		                                        			
+                                        (ngModelChange)="validate_new_card()"
+                                        >
+                                        <option *ngIf="card.group.allow_no_branch">Pessoas sem núcleo definido</option>
                                         <option *ngFor="let tpl of branches" [ngValue]="tpl">{{ tpl.name }}</option>
-                                    </select>                                    
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="row" *ngIf="card.template && card.template.require_target">
                             <div class="col-12">
-                                <label for="card_people">Quem</label>                                                									
+                                <label for="card_people">Quem</label>
                                 <ul *ngIf="card.people != null && card.people.length > 0"
                                     class="list-group">
                                     <li *ngFor="let p of card.people"
                                         class="list-group-item">
-                                        <img alt="{{ p.name }}" 
-                                        class="img-border" 
-                                        src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}" 											
-                                        style="min-width:50px;max-width:50px;" 
-                                        *ngIf="p.avatar_url && p.avatar_url.length > 0" />							
+                                        <person-avatar-image [person]="p">
+                                        </person-avatar-image>
                                         {{ p.name }}
-                                        <div style="float:right;cursor: pointer;" 
+                                        <div style="float:right;cursor: pointer;"
                                             title="Remover pessoa da atividade"
                                             (click)="remove_person_from_new_card(p)">
                                             <span class="badge badge-pill">
-                                                <i class="fa fa-times"                                                                         
+                                                <i class="fa fa-times"
                                                 ></i>
                                             </span>
                                         </div>
-                                    </li>						
-                                </ul>												
+                                    </li>
+                                </ul>
                                 <div class="form-group" [class.has-danger]="search_failed">
-                                <input type="text" class="form-control" 
+                                <input type="text" class="form-control"
                                     id="new_incident_search_people"
-                                    [ngbTypeahead]="search_people" 
+                                    [ngbTypeahead]="search_people"
                                     placeholder="Pesquise {{ card.people == null || card.people.length <= 0 ? 'o' : 'mais' }} participante{{ card.people == null || card.people.length <= 0 ? '' : 's' }}"
                                     [resultTemplate]="person_typeahead_template"
                                     [inputFormatter]="people_typeahead_formatter"
-                                    [(ngModel)]="card.tmp_person" 
-                                    (ngModelChange) ="add_person_to_new_card($event)" 
+                                    [(ngModel)]="card.tmp_person"
+                                    (ngModelChange) ="add_person_to_new_card($event)"
                                 />
                                 <span *ngIf="searching_people">buscando...</span>
                                 <div class="form-control-feedback" *ngIf="search_failed">
                                     ops... ocorreu algum erro na busca</div>
                                 </div>
                                 <ng-template #person_typeahead_template let-p="result">
-                                    <img alt="{{ p.name }}" 
-                                    class="img-border" 
-                                    src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}" 											
-                                    style="min-width:50px;max-width:50px;" 
-                                    *ngIf="p.avatar_url && p.avatar_url.length > 0" />						
+                                    <person-avatar-image [person]="p">
+                                    </person-avatar-image>
                                     {{ p.name }}
                                     <span *ngIf="!p.found" style="font-style: italic;">
                                         (novo)
@@ -142,28 +136,28 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <label for="card_title">Título</label>                                                									
-                                <div class="input-group">							
+                                <label for="card_title">Título</label>
+                                <div class="input-group">
                                     <input class="form-control"
                                     [(ngModel)]="card.title"
                                     (ngModelChange)="validate_new_card()"
                                     autocomplete="off"
                                     id="card_title"
-                                    name="card_title"/>                                    
+                                    name="card_title"/>
                                 </div>
                             </div>
                         </div>
-                                                
+
                         <div class="row">
                             <div class="col-12 col-md-6">
-                                <label for="card_due_date">Previsão</label>                                                									
+                                <label for="card_due_date">Previsão</label>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 col-md-6">                                
-                                <div class="input-group">							
-                                    <input class="form-control text-center" placeholder="dd/mm/aaaa" 
-                                    [(ngModel)]="card.due_date" 
+                            <div class="col-12 col-md-6">
+                                <div class="input-group">
+                                    <input class="form-control text-center" placeholder="dd/mm/aaaa"
+                                    [(ngModel)]="card.due_date"
                                     id="card_due_date"
                                     name="card_due_date"
                                     autocomplete="off"
@@ -172,53 +166,53 @@
                                         <i class="ft-calendar" style="cursor: pointer;"></i>
                                     </div>
                                 </div>
-                            </div>  
-                            <div class="col-12 col-md-6">                                                                                									
-                                <div class="input-group">							
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="input-group">
                                     <ngb-timepicker [spinners]="false" [(ngModel)]="card.due_time"></ngb-timepicker>
                                 </div>
-                            </div>                          
-                        </div>                                           
+                            </div>
+                        </div>
 
-                        <label for="card_description"                             
+                        <label for="card_description"
                             style="font-weight: bold">
                             Descrição
-                        </label>		
+                        </label>
                         <div class="form-group">
                             <textarea class="form-control"
                             id="card_description"
                             autocomplete="off"
-                            [(ngModel)]="card.description" 		
-                            rows="3"></textarea>								
-                        </div>                                                            				
-                    </fieldset>                                
+                            [(ngModel)]="card.description"
+                            rows="3"></textarea>
+                        </div>
+                    </fieldset>
                 </div>
-            </div>                        
+            </div>
             <div class="row" *ngIf="!card_is_valid">
                 <div class="col-12 text-danger">
                     <ul>
                         <li style="line-height:1.2em" *ngFor="let error of card_validation">{{ error }}</li>
-                    </ul>                    
+                    </ul>
                 </div>
             </div>
-        </div>			
+        </div>
     </div>
-    <div class="modal-footer" *ngIf="saving">        
+    <div class="modal-footer" *ngIf="saving">
         <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
     </div>
     <div class="modal-footer" *ngIf="!saving">
-        <button type="button" 
-            class="btn btn-success" 
+        <button type="button"
+            class="btn btn-success"
             (click)="register_new_card();"
-            *ngIf="card_is_valid">            
+            *ngIf="card_is_valid">
             <i class="icon-check"></i>
-            Cadastrar            
-        </button>															
-        <button type="button" class="btn btn-silver" 
+            Cadastrar
+        </button>
+        <button type="button" class="btn btn-silver"
             (click)="d('close new person!');"
             >
             <i class="icon-action-undo"></i>
             Cancelar
-        </button>	
+        </button>
     </div>
 </ng-template>
