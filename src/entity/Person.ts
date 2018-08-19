@@ -1,7 +1,13 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable} from "typeorm";
-import { Url } from "./Url";
-import { Role } from "./Role";
+// tslint:disable:variable-name
+
+import {Column, Entity, JoinColumn,
+        ManyToMany, ManyToOne,
+        PrimaryGeneratedColumn
+} from "typeorm";
+
 import { Incident } from "./Incident";
+import { Role } from "./Role";
+import { Url } from "./Url";
 
 @Entity()
 export class Person {
@@ -9,31 +15,40 @@ export class Person {
     id: number;
 
     @Column()
-    name: string
+    name: string;
 
     @Column()
-    is_interested: boolean
+    is_interested: boolean;
 
     @Column()
-    is_operator: boolean
+    is_operator: boolean;
 
     @Column()
-    is_director: boolean
+    is_director: boolean;
 
     @Column()
-    is_manager: boolean
+    is_manager: boolean;
 
     @Column()
-    avatar_img: string
+    avatar_img: string;
+
+    @Column()
+    avatar_sm: boolean;
+
+    @Column()
+    avatar_md: boolean;
+
+    @Column()
+    avatar_esm: boolean;
 
     @Column({name: "branch_id"})
-    branch_id: number
+    branch_id: number;
 
-    @ManyToOne(type => Url)
+    @ManyToOne(() => Url)
     @JoinColumn({ name: "default_page_id" })
     default_page: Url;
 
-    @ManyToMany(type => Role, role => role.people)
+    @ManyToMany(() => Role, (role) => role.people)
     roles: Role[];
 
     incidents: Incident[];

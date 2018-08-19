@@ -1,4 +1,8 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, JoinColumn, ManyToOne } from "typeorm";
+// tslint:disable:variable-name
+
+import {Column, Entity, JoinColumn, JoinTable,
+    ManyToMany, ManyToOne, PrimaryGeneratedColumn
+} from "typeorm";
 import { Branch } from "./Branch";
 import { VoucherType } from "./VoucherType";
 
@@ -13,7 +17,7 @@ export class Voucher {
     @Column()
     url: string;
 
-    @ManyToOne(type => VoucherType)
+    @ManyToOne(() => VoucherType)
     @JoinColumn({ name: "voucher_type" })
     voucher_type: VoucherType;
 
@@ -47,7 +51,7 @@ export class Voucher {
     @Column()
     order: number;
 
-    @ManyToMany(type => Branch)
+    @ManyToMany(() => Branch)
     @JoinTable({
         name: "branch_voucher",
         joinColumns : [ {name: "voucher_id" }],

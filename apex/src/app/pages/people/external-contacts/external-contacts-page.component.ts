@@ -45,8 +45,8 @@ export class ExternalContactsPageComponent implements OnInit, OnDestroy {
     this.voucher_status = this.activatedRoute.snapshot.queryParams["voucher_status"] || 0;
     this.current_voucher = this.activatedRoute.snapshot.queryParams["voucher"] || 0;
 
-    this.parameterService.getActiveBranches().subscribe((branches) => {
-      this.branches = branches;
+    this.parameterService.getActiveBranches().subscribe((result_data) => {
+      this.branches = result_data.data;
     });
 
     this.parameterService.getVouchers().subscribe((result : Result<any[]>) => {
@@ -57,8 +57,11 @@ export class ExternalContactsPageComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.securityService.getCurrentUserData().subscribe((user) => {
-      this.current_branch = this.activatedRoute.snapshot.queryParams["branch"] || user.default_branch_id || 0;
+    this.securityService.getCurrentUserData()
+    .subscribe((result_user : Result<any>) => {
+      const user = result_user.data;
+      this.current_branch = this.activatedRoute.snapshot.queryParams["branch"]
+                            || user.default_branch_id || 0;
     });
 
     this.interested_added_subscriber = this.personService.personActions$.pipe(

@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column } from "typeorm";
-import { Person } from "./Person";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+
 import { Card } from "./Card";
+import { Person } from "./Person";
 import { PersonCardPosition } from "./PersonCardPosition";
 
 @Entity({ name: "person_card"} )

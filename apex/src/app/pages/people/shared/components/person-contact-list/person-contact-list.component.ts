@@ -1,3 +1,4 @@
+import { Result } from 'app/shared/models/result';
 
 import {filter} from 'rxjs/operators';
 
@@ -14,9 +15,9 @@ import { Subscription, Observable } from 'rxjs';
   templateUrl: './person-contact-list.component.html',
   styleUrls: ['../../../../../../assets/customizations.scss']
 })
-export class PersonContactListComponent implements OnInit, OnDestroy { 
+export class PersonContactListComponent implements OnInit, OnDestroy {
 
-  contacts: any;   
+  contacts: any;
 
   @Input() d:any;
   @Input() person:any;
@@ -27,19 +28,19 @@ export class PersonContactListComponent implements OnInit, OnDestroy {
   private contact_changes_subscriber: Subscription;
   private last_call : Date;
 
-  constructor(private modalService: NgbModal, 
+  constructor(private modalService: NgbModal,
     private parameterService: ParameterService,
-    private personService: PersonService) {   
+    private personService: PersonService) {
 
   }
 
   ngOnInit() {
     this.contact_changes_subscriber = this.personService.contactChanges$.pipe(
       filter((data) => data != null && data.person_id == this.person.id))
-      .subscribe((data) => {            
-        this.load_contacts();      
+      .subscribe((data) => {
+        this.load_contacts();
       });
-    
+
     this.load_contacts();
   }
 
@@ -53,22 +54,22 @@ export class PersonContactListComponent implements OnInit, OnDestroy {
     }
 
     this.personService.getPersonContacts(this.person.id, this.showOnlyPrincipal)
-    .subscribe((data : any) => this.contacts = data);
+    .subscribe((result_data : Result<any>) => this.contacts = result_data.data);
 
     this.last_call = new Date();
   }
-       
-  open(content){        
-    this.parameterService.getContactTypes().subscribe((data) => {  
-      this.modalService.open(content).result.then((result) => {                                  
-      
+
+  open(content){
+    this.parameterService.getContactTypes().subscribe((result_data) => {
+      this.modalService.open(content).result.then((result) => {
+
       }, (reason) => {
           console.log(reason);
-      });            
+      });
     });
-  } 
+  }
 
-  remove_contact(contact) {    
+  remove_contact(contact) {
     this.personService.removePersonContact(this.person.id, contact.id).subscribe();
   }
 }

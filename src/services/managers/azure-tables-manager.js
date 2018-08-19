@@ -9,6 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const azure = require("azure-storage");
+const errors_codes_1 = require("../../helpers/errors-codes");
+const replace_errors_1 = require("../../helpers/replace-errors");
+const logger_service_1 = require("../logger-service");
 class AzureTableManager {
     static createTableService() {
         if (!this.config) {
@@ -19,32 +22,32 @@ class AzureTableManager {
     static createTableIfNotExists(tableService, table, callback) {
         tableService.createTableIfNotExists(table, callback);
     }
-    static buildEntity(id, data = {}, partition = 'principal') {
+    static buildEntity(id, data = {}, partition = "principal") {
         const entGen = azure.TableUtilities.entityGenerator;
         return {
             PartitionKey: entGen.String(partition),
             RowKey: entGen.String(id),
             CreatedOn: entGen.Int64(Math.floor(Date.now() / 1000)),
-            Test: entGen.Boolean(process.env.PRODUCTION === 'false'),
-            Content: entGen.String(JSON.stringify(data, this.replaceErrors))
+            Test: entGen.Boolean(process.env.PRODUCTION === "false"),
+            Content: entGen.String(JSON.stringify(data, replace_errors_1.replaceErrors))
         };
     }
     static insertOrMergeEntity(tableService, table, entity, callback) {
-        this.createTableIfNotExists(tableService, table, (err) => {
+        this.createTableIfNotExists(tableService, table, err => {
             if (err) {
-                console.log(err);
+                logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.AzureTableStorage, err);
             }
         });
         tableService.insertOrReplaceEntity(table, entity, callback);
     }
-    static retriveEntity(tableService, table, id, callback, partition = 'principal') {
+    static retriveEntity(tableService, table, id, callback, partition = "principal") {
         tableService.retrieveEntity(table, partition, id, (err, result, response) => {
-            let data = this.treatDataRetrieved(result);
+            const data = this.treatDataRetrieved(result);
             callback(err, data, response);
         });
     }
     static deleteEntity(tableService, table, id, callback) {
-        tableService.deleteEntity(table, this.buildEntity(id), function (error, response) {
+        tableService.deleteEntity(table, this.buildEntity(id), (error, response) => {
             callback(error, response);
         });
     }
@@ -54,7 +57,7 @@ class AzureTableManager {
     static executeBatch(tableService, table, batch) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                tableService.executeBatch(table, batch, function (error, result) {
+                tableService.executeBatch(table, batch, (error, result) => {
                     if (error) {
                         reject(error);
                         return;
@@ -65,11 +68,11 @@ class AzureTableManager {
         });
     }
     static retrieveEntities(tableService, table, query, parameters, callback, limit = 0) {
-        var azure_query = new azure.TableQuery().where(query, parameters);
+        let azureQuery = new azure.TableQuery().where(query, parameters);
         if (limit > 0) {
-            azure_query = azure_query.top(limit);
+            azureQuery = azureQuery.top(limit);
         }
-        tableService.queryEntities(table, azure_query, null, function (error, result, response) {
+        tableService.queryEntities(table, azureQuery, null, (error, result, response) => {
             if (error) {
                 callback(error, null);
             }
@@ -83,20 +86,10 @@ class AzureTableManager {
         };
     }
     static treatDataRetrieved(data) {
-        let new_data = {};
-        if (!data)
+        if (!data) {
             return null;
-        return JSON.parse(data.Content._);
-    }
-    static replaceErrors(key, value) {
-        if (value instanceof Error) {
-            var error = {};
-            Object.getOwnPropertyNames(value).forEach(function (key) {
-                error[key] = value[key];
-            });
-            return error;
         }
-        return value;
+        return JSON.parse(data.Content._);
     }
 }
 exports.AzureTableManager = AzureTableManager;

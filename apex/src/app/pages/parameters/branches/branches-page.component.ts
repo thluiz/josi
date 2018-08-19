@@ -2,6 +2,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParameterService } from 'app/services/parameter-service';
 import { Component, OnInit } from "@angular/core";
 import { Observable } from '../../../../../node_modules/rxjs';
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -24,14 +25,14 @@ export class BranchesPageComponent implements OnInit {
   }
 
   private load_data() {
-    this.parameterService.getBranches().subscribe((data) => {
-      this.collection = data;
+    this.parameterService.getBranches().subscribe((result: Result<any>) => {
+      this.collection = result.data;
     });
   }
 
   save(close_action) {
     this.saving = true;
-    this.parameterService.saveBranch(this.current_item).subscribe((data) => {
+    this.parameterService.saveBranch(this.current_item).subscribe(() => {
       if (close_action) {
         close_action();
       }
@@ -56,9 +57,9 @@ export class BranchesPageComponent implements OnInit {
   private open_form_modal(content) {
     Observable.zip(
       this.parameterService.getCurrencies(),
-      (currencies) => {
-        this.currencies = currencies;
-        this.ngbModalService.open(content).result.then((result) => {
+      (result_currencies : Result<any[]>) => {
+        this.currencies = result_currencies.data;
+        this.ngbModalService.open(content).result.then(() => {
 
         }, (reason) => {
           this.current_item = null;

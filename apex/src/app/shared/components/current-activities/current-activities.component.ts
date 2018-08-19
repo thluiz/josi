@@ -15,7 +15,6 @@ import { Subscription } from 'rxjs';
 import { SecurityService } from 'app/services/security-service';
 import { filter } from 'rxjs/operators';
 import { Result } from 'app/shared/models/result';
-import { fn } from '../../../../../node_modules/@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'current-activities',
@@ -37,8 +36,9 @@ export class CurrentActivitiesComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-      this.securityService.getCurrentUserData().subscribe((user) => {
-        this.branch = user.default_branch_id || 0;
+      this.securityService.getCurrentUserData()
+      .subscribe((result_user : Result<any>) => {
+        this.branch = result_user.data.default_branch_id || 0;
         this.getCurrentActivities();
       });
 
@@ -59,7 +59,11 @@ export class CurrentActivitiesComponent implements OnInit, OnDestroy {
           || ev.data.findIndex(i => i.started_on != null) >= 0)
       )
       .subscribe((result : Result<LightIncident[]>) => {
-        console.log(result);
+
+        if(!isArray(this.activities)) {
+          this.activities = [];
+        }
+
         this.activities = this.activities
         .concat(result.data)
         .sort((a, b) => {

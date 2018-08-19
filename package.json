@@ -47,10 +47,13 @@
       "firebase-admin": "^5.12.1",
       "helmet": "^3.12.0",
       "image-size": "^0.6.2",
+      "inversify": "^4.13.0",
+      "jwt-simple": "^0.5.1",
       "mssql": "^4.1.0",
       "multer-azure-blob-storage": "^1.0.2",
       "passport": "^0.4.0",
       "passport-google-oauth20": "^1.0.0",
+      "passport-jwt": "^4.0.0",
       "reflect-metadata": "^0.1.12",
       "rxjs": "^6.0.0",
       "showdown": "^1.8.6",
@@ -64,13 +67,21 @@
    },
    "devDependencies": {
       "@types/chai": "^4.1.4",
+      "@types/cors": "^2.8.4",
+      "@types/express-session": "^1.15.10",
+      "@types/helmet": "0.0.38",
       "@types/mocha": "^5.2.5",
+      "@types/mssql": "^4.0.9",
       "@types/node": "^8.0.29",
+      "@types/passport": "^0.4.6",
+      "@types/showdown": "^1.7.5",
+      "@types/uuid": "^3.4.3",
       "chai": "^4.1.2",
       "gulp": "^3.9.1",
       "gulp-rename": "^1.2.2",
       "mocha": "^5.2.0",
       "ncp": "^2.0.0",
-      "ts-node": "^6.2.0"
+      "ts-node": "^6.2.0",
+      "tslint": "^5.11.0"
    }
 }

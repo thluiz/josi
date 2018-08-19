@@ -10,13 +10,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-const typeorm_2 = require("typeorm");
-const typeorm_3 = require("typeorm");
-const Person_1 = require("./Person");
 const Incident_1 = require("./Incident");
+const Person_1 = require("./Person");
 let PersonIncident = PersonIncident_1 = class PersonIncident {
     static create(incident, person) {
-        let result = new PersonIncident_1();
+        const result = new PersonIncident_1();
         result.closed = false;
         result.participation_type = 1;
         result.incident = incident;
@@ -25,17 +23,17 @@ let PersonIncident = PersonIncident_1 = class PersonIncident {
     }
 };
 __decorate([
-    typeorm_3.PrimaryGeneratedColumn(),
+    typeorm_1.PrimaryGeneratedColumn(),
     __metadata("design:type", Number)
 ], PersonIncident.prototype, "id", void 0);
 __decorate([
-    typeorm_2.ManyToOne(type => Person_1.Person),
-    typeorm_2.JoinColumn({ name: "person_id" }),
+    typeorm_1.ManyToOne(type => Person_1.Person),
+    typeorm_1.JoinColumn({ name: "person_id" }),
     __metadata("design:type", Person_1.Person)
 ], PersonIncident.prototype, "person", void 0);
 __decorate([
-    typeorm_2.ManyToOne(type => Incident_1.Incident, incident => incident.people_incidents),
-    typeorm_2.JoinColumn({ name: "incident_id" }),
+    typeorm_1.ManyToOne(type => Incident_1.Incident, incident => incident.people_incidents),
+    typeorm_1.JoinColumn({ name: "incident_id" }),
     __metadata("design:type", Incident_1.Incident)
 ], PersonIncident.prototype, "incident", void 0);
 __decorate([
@@ -47,7 +45,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], PersonIncident.prototype, "closed", void 0);
 PersonIncident = PersonIncident_1 = __decorate([
-    typeorm_2.Entity()
+    typeorm_1.Entity()
 ], PersonIncident);
 exports.PersonIncident = PersonIncident;
 var PersonIncident_1;

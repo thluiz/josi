@@ -1,20 +1,22 @@
-require('dotenv').load();
+// tslint:disable-next-line:no-var-requires
+require("dotenv").load();
 
-import 'mocha';
-import { QueryRunner, Repository } from 'typeorm';
+import "mocha";
+import { QueryRunner, Repository } from "typeorm";
 
-import { IncidentsService, AddToOwnership, IncidentErrors, IOwnershipWithSupport } from '../../services/incidents-service';
+import { AddToOwnership, IncidentsService } from "../../services/incidents-service";
 
-import { IncidentsController } from './../../controllers/incidents-controller';
+import { IncidentsController } from "../../controllers/incidents-controller";
 
-import * as IF from '../factories/incident-factory';
-import * as GF from '../factories/general-factory';
-import { DatabaseManager } from '../../services/managers/database-manager';
-import { expect } from 'chai';
-import { IncidentType } from '../../entity/IncidentType';
-import { Constants } from '../../services/configurations-services';
+import { expect } from "chai";
+import { IncidentType } from "../../entity/IncidentType";
+import { Constants } from "../../services/configurations-services";
+import { DatabaseManager } from "../../services/managers/database-manager";
 
-describe('Incidents Tests', async function () {
+import * as GF from "../factories/general-factory";
+import * as IF from "../factories/incident-factory";
+
+describe("Incidents Tests", async () => {
     this.timeout(15000000);
     const dbm = new DatabaseManager();
     let runner: QueryRunner;
@@ -24,20 +26,19 @@ describe('Incidents Tests', async function () {
 
     beforeEach(async () => {
         runner = await dbm.CreateQueryRunner();
-        const data_runner = { runner, useTransaction: true, shouldCommit: false };
-        IS = new IncidentsService(dbm, data_runner);
+        IS = new IncidentsService();
         ITR = await runner.manager.getRepository<IncidentType>(IncidentType);
-        controller = new IncidentsController(dbm, data_runner);
+        controller = new IncidentsController();
         await runner.startTransaction();
-    })
+    });
 
     afterEach(async () => {
         await dbm.RollbackTransaction(runner);
     });
 
-    describe('Incidents Controller Tests', async function () {
+    describe("Incidents Controller Tests", async () => {
 
-        it('should close incident', async () => {
+        it("should close incident", async () => {
             const incident = await IF.create(runner, await ITR.findOne(Constants.IncidentTypeOwnership));
             const registering = await IS.create_people_incidents({
                 incident,
@@ -50,15 +51,16 @@ describe('Incidents Tests', async function () {
             });
 
             expect(registering.success, registering.data ?
-                (registering.data as Error).message : "").to.be.true;
+                (registering.data as Error).message : ""
+            ).to.be.true("Incident should be registered");
 
             const closing = await controller.close_incident(
                 registering.data[0],
                 (await GF.create_user(runner))
             );
 
-            expect(closing.success, closing.message).to.be.true;
+            expect(closing.success, closing.message)
+            .to.be.true("Incident should be closed");
         });
-
-    })
+    });
 });

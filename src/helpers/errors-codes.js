@@ -17,5 +17,6 @@ var ErrorCode;
     ErrorCode[ErrorCode["ExternalResource"] = 12] = "ExternalResource";
     ErrorCode[ErrorCode["CardsActions"] = 13] = "CardsActions";
     ErrorCode[ErrorCode["PeopleActions"] = 14] = "PeopleActions";
+    ErrorCode[ErrorCode["AzureTableStorage"] = 15] = "AzureTableStorage";
 })(ErrorCode = exports.ErrorCode || (exports.ErrorCode = {}));
 //# sourceMappingURL=errors-codes.js.map

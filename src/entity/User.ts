@@ -1,8 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import { Person } from "./Person";
-import { DatabaseManager } from "../services/managers/database-manager";
+// tslint:disable:variable-name
 
-let DBM = new DatabaseManager();
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+
+import { UsersRepository } from "../repositories/users-repository";
+import { Person } from "./Person";
+
+import { tryLogAsync } from "../decorators/trylog-decorator";
 
 @Entity()
 export class User {
@@ -16,7 +19,7 @@ export class User {
     @Column()
     login_provider_id: number;
 
-    @ManyToOne(type => Person)
+    @ManyToOne(() => Person)
     @JoinColumn({ name: "person_id" })
     person: Person;
 
@@ -27,47 +30,40 @@ export class User {
     token: string;
 
     async is_director() {
-        await this.ensurePersonLoaded();
+        await this.loadPersonIfNeeded();
         return this.person.is_director;
     }
 
     async is_manager() {
-        await this.ensurePersonLoaded();
+        await this.loadPersonIfNeeded();
 
         return this.person.is_manager;
     }
 
     async is_operator() {
-        await this.ensurePersonLoaded();
+        await this.loadPersonIfNeeded();
 
         return this.person.is_operator;
     }
 
     async getPersonId(): Promise<number> {
-        await this.ensurePersonLoaded();
+        await this.loadPersonIfNeeded();
 
         return this.person.id;
     }
 
     async getPerson(): Promise<Person> {
-        await this.ensurePersonLoaded();
+        await this.loadPersonIfNeeded();
 
         return this.person;
     }
 
-    private async ensurePersonLoaded() {
-        if (this.person != null)
-            return;
+    @tryLogAsync()
+    async loadPersonIfNeeded() {
+        if (this.person != null) { return; }
+        const UR = await new UsersRepository();
+        const result_user = await UR.loadAllUserData(this.id);
 
-        const UR = await DBM.getRepository<User>(User);
-
-        let user = await UR
-            .createQueryBuilder("u")
-            .innerJoinAndSelect("u.person", "p")
-            .where("u.id = :id", { id: this.id })
-            .cache(10000)
-            .getOne();
-
-        this.person = user.person;
+        this.person = (result_user.data as User).person;
     }
 }

@@ -8,17 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require('dotenv').load();
-const Branch_1 = require("./../../entity/Branch");
+// tslint:disable-next-line:no-var-requires
+require("dotenv").load();
+const Branch_1 = require("../../entity/Branch");
 const Incident_1 = require("../../entity/Incident");
-function create(runner, type, title = "Test", branch_id = 1) {
+function create(runner, type, title = "Test", branchId = 1) {
     return __awaiter(this, void 0, void 0, function* () {
-        let BR = yield runner.manager.getRepository(Branch_1.Branch);
-        let incident = new Incident_1.Incident();
+        const BR = yield runner.manager.getRepository(Branch_1.Branch);
+        const incident = new Incident_1.Incident();
         incident.type = type;
         incident.title = title;
         incident.date = new Date();
-        incident.branch = (yield BR.findOne(branch_id));
+        incident.branch = (yield BR.findOne(branchId));
         return incident;
     });
 }

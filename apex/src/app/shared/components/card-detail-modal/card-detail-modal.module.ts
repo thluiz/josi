@@ -1,3 +1,4 @@
+import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-image/person-avatar-image.module';
 
 import { MarkdownModule } from 'ngx-markdown';
 import { CardDetailModalComponent } from './card-detail-modal.component';
@@ -24,9 +25,10 @@ import { NgbDatepickerModule, NgbTimepickerModule, NgbModule } from '@ng-bootstr
         ContactListitemModule,
         NewContactFormModule,
         PersonCardModule,
-        MarkdownModule.forRoot()
+        MarkdownModule.forRoot(),
+        PersonAvatarImageModule
     ],
-    declarations: [       
+    declarations: [
         CardDetailModalComponent
     ], exports: [
         CardDetailModalComponent

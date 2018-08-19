@@ -13,12 +13,13 @@ const PersonRelationship_1 = require("../entity/PersonRelationship");
 const database_manager_1 = require("./managers/database-manager");
 const result_1 = require("../helpers/result");
 class InvitationsService {
-    static change_invite_type(invite_id, new_type) {
+    static change_invite_type(inviteId, newType) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.DBF.ExecuteWithinTransaction((qr) => __awaiter(this, void 0, void 0, function* () {
-                const invite = yield qr.manager.findOne(PersonRelationship_1.PersonRelationship, { id: invite_id });
-                let relationship_type = new_type == 0 ? 13 : new_type == 1 ? 10 : 14;
-                invite.relationship_type = yield qr.manager.findOne(EnumRelationshipType_1.EnumRelationshipType, { id: relationship_type });
+                const invite = yield qr.manager.findOne(PersonRelationship_1.PersonRelationship, { id: inviteId });
+                const relationshipType = newType === 0 ? 13 : newType === 1 ? 10 : 14;
+                invite.relationship_type = yield qr.manager
+                    .findOne(EnumRelationshipType_1.EnumRelationshipType, { id: relationshipType });
                 yield qr.manager.save(invite);
                 return result_1.SuccessResult.GeneralOk();
             }));

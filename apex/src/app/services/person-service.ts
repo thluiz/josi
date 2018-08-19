@@ -1,14 +1,20 @@
+import { Subscription } from 'rxjs';
+import { ApplicationEventService } from './application-event-service';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
-import {tap} from 'rxjs/operators';
-import { IContact } from './person-service';
-import {Injectable} from '@angular/core';
+import {tap, filter} from 'rxjs/operators';
+import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs/Rx';
-import { environment } from '../../environments/environment';
+import { environment } from 'environments/environment';
 import { Subject } from 'rxjs';
-import { Result } from 'app/shared/models/result';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date';
+import { Result } from '../shared/models/result';
+import { Person } from 'app/shared/models/person';
+
+export const PERSON_ACTION_PREFIX = "PERSON_";
+export const PERSON_ADDED = "PERSON_ADDED";
+export const PERSON_UPDATED_ACTION = "PERSON_UPDATED_ACTION";
+export const PERSON_CHANGED = "PERSON_CHANGED";
 
 export enum DailyMonitorDisplayType {
     Week = 0,
@@ -51,13 +57,13 @@ export enum ActivityType {
 }
 
 @Injectable()
-export class PersonService {
+export class PersonService implements OnDestroy {
   private dataUrl = environment.api_url;
 
   private contact_changes = new Subject<IContact>();
   contactChanges$ = this.contact_changes.asObservable();
 
-  private person_changes = new Subject<any>();
+  private person_changes = new Subject<Person>();
   personChanges$  = this.person_changes.asObservable();
 
   private comment_changes = new Subject<any>();
@@ -75,7 +81,21 @@ export class PersonService {
   private external_unit_actions = new Subject<IIndication>();
   externalUnitChanges$  = this.external_unit_actions.asObservable();
 
-  constructor(private http:HttpClient) { }
+  private person_events_subscriber: Subscription;
+
+  constructor(private http:HttpClient, private eventService: ApplicationEventService) {
+    this.person_events_subscriber = this.eventService.event$
+    .pipe(
+      filter((result: Result<any[]>) =>
+        result != null
+        && result.type != null
+        && result.type === PERSON_CHANGED
+        && result.success )
+    )
+    .subscribe((event) => {
+      this.person_changes.next(event.data[0]);
+    })
+  }
 
   getDailyAgenda(branch, date: any) {
     return this.http.get(this.dataUrl + `/agenda/${branch || 0}/${date.year}-${date.month}-${date.day}`);
@@ -212,8 +232,9 @@ export class PersonService {
     return this.http
         .post(this.dataUrl + `/people`, {
           person
-        }).pipe(tap((data) => {
-          this.person_changes.next(data);
+        }).pipe(tap((result : Result<any[]>) => {
+          console.log(result);
+          this.person_changes.next(result.data[0]);
         }));
   }
 
@@ -241,11 +262,6 @@ export class PersonService {
   getData(id) {
     return this.http
         .get(this.dataUrl + `/people/${id}`);
-  }
-
-  getIncidentHistory(id, type: ActivityType, page = 1) {
-    return this.http
-        .get(this.dataUrl + `/incidents/history/${id}/${type.toFixed(0)}/${page}`);
   }
 
   getAllIncidentHistory(person_id, start_date : NgbDateStruct, end_date: NgbDateStruct, type?: ActivityType) {
@@ -387,5 +403,11 @@ export class PersonService {
         }).pipe(tap((data) => {
           this.comment_changes.next({ person });
         }));
+  }
+
+  ngOnDestroy(): void {
+    if(this.person_events_subscriber) {
+      this.person_events_subscriber.unsubscribe()
+    }
   }
 }

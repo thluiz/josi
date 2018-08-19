@@ -1,7 +1,7 @@
-import { DatabaseManager } from './managers/database-manager';
-import { User } from '../entity/User';
+import { User } from "../entity/User";
+import { UsersRepository } from "../repositories/users-repository";
 
-const DBM = new DatabaseManager();
+import { tryLogAsync } from "../decorators/trylog-decorator";
 
 export enum Permissions {
     Operator,
@@ -10,69 +10,98 @@ export enum Permissions {
 }
 
 export class SecurityService {
+    private UR = new UsersRepository();
 
-    static async serializeUser(user: User) : Promise<any> {
-        if(user == null)
+    @tryLogAsync()
+    async serializeUser(user: User): Promise<any> {
+
+        if (user == null) {
             return null;
-
-        if(!user.person || !user.person.default_page) {
-            const UR = await DBM.getRepository<User>(User);
-            user = await UR.findOne(
-                { id: user.id },
-                { relations: [ "person", "person.default_page" ] }
-            );
         }
 
-        return {
+        await user.loadPersonIfNeeded();
+
+        const response: any = {
             name: user.person.name,
             is_director: user.is_director,
             is_manager: user.is_manager,
             is_operator: user.is_operator,
             avatar_img: user.person.avatar_img,
-            person_id: user.person.id[0],
+            person_id: user.person.id,
             email: user.email,
             token: user.token,
-            default_branch_id: user.default_branch_id,
-            default_page_id: user.person.default_page.id[0],
-            default_page: user.person.default_page.name,
-            default_page_url: user.person.default_page.url
+            default_branch_id: user.default_branch_id
         };
+
+        if (user.person.default_page != null) {
+            response.default_page_id = user.person.default_page.id[0];
+            response.default_page = user.person.default_page.name;
+            response.default_page_url = user.person.default_page.url;
+        }
+
+        return response;
     }
 
-    static async getUserFromRequest(req): Promise<User> {
-        if (process.env.PRODUCTION === 'false') {
-            const connection = await DBM.getConnection();
+    @tryLogAsync()
+    async getUserFromRequest(req): Promise<User> {
+        if (process.env.PRODUCTION === "false") {
 
-            const user = await connection
-            .createQueryBuilder(User, "user")
-            .where("user.token = :token", { token: process.env.TOKEN_USER_DEV })
-            .cache(30000)
-            .getOne();
+            const loadUser = await this.UR.getUserByToken(process.env.TOKEN_USER_DEV);
 
-            return user;
+            return loadUser.data as User;
         }
 
         return req.user;
     }
 
-    static async checkUserHasPermission(user: User, permission: Permissions): Promise<boolean> {
-        if(user == null || permission == null)
+    @tryLogAsync()
+    async checkUserHasPermission(user: User, permission: Permissions): Promise<boolean> {
+        if (user == null || permission == null) {
             return false;
+        }
 
-        let has_permission = false;
+        let hasPermission = false;
 
         switch (permission) {
             case (Permissions.Operator):
-                has_permission = (await user.is_operator() || await user.is_director() || await user.is_manager());
+                hasPermission = (await user.is_operator() || await user.is_director() || await user.is_manager());
                 break;
             case (Permissions.Manager):
-                has_permission = (await user.is_director() || await user.is_manager());
+                hasPermission = (await user.is_director() || await user.is_manager());
                 break;
             case (Permissions.Director):
-                has_permission = (await user.is_director());
+                hasPermission = (await user.is_director());
                 break;
         }
 
-        return has_permission;
+        return hasPermission;
+    }
+
+    @tryLogAsync()
+    async findUser(email, callback) {
+        const loadUser = await this.UR.getUserByEmail(email);
+        const user = loadUser.data;
+
+        if (!user) {
+            callback(null, false);
+            return;
+        }
+
+        callback(null, user);
+    }
+
+    @tryLogAsync()
+    async findUserByToken(token, callback?) {
+        const loadUser = await this.UR.getUserByToken(token);
+        const user = loadUser.data;
+
+        if (!user) {
+            if (callback) { callback("user not fount", false); }
+            return;
+        }
+
+        if (callback) { callback(null, user); }
+
+        return user;
     }
 }

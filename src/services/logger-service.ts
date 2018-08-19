@@ -1,5 +1,7 @@
-import { AzureTableManager } from './managers/azure-tables-manager';
-import { ErrorCode } from '../helpers/errors-codes';
+// tslint:disable:no-console
+
+import { ErrorCode } from "../helpers/errors-codes";
+import { AzureTableManager } from "./managers/azure-tables-manager";
 
 const LOG_TABLE = "ServerLogs";
 const ERROR_TABLE = "Errors";
@@ -17,51 +19,58 @@ export enum LogOrigins {
 }
 
 export class LoggerService {
-    private static tableService;
 
-    static error(origin : ErrorCode, error: Error, details? :any) {
-        let obj = error as any;
+    static error(origin: ErrorCode, error: Error, details?: any) {
+        const obj = error as any;
 
-        if(details) {
+        if (details) {
             obj.details = details;
         }
 
         this.log(obj, origin, LogLevel.Error);
     }
 
-    static info(origin : LogOrigins, details? :any) {
+    static info(origin: LogOrigins, details?: any) {
+        console.log(origin, details);
         this.log(details, origin, LogLevel.Info);
     }
 
-    static benchmark(operation_key : string, details? :any) {
-        this.log(details, LogOrigins.General, LogLevel.Benchmark, operation_key);
+    static benchmark(operationKey: string, details?: any) {
+        this.log(details, LogOrigins.General, LogLevel.Benchmark, operationKey);
     }
 
-    static log(obj, origin: ErrorCode | LogOrigins, level : LogLevel | string = LogLevel.Info,
-        customKey? : number | string) {
+    static log(obj, origin: ErrorCode | LogOrigins,
+               level: LogLevel | string = LogLevel.Info,
+               customKey?: number | string) {
 
-        let tbl = (level == LogLevel.Info || level == LogLevel.Benchmark) ?
+        const tbl = (level === LogLevel.Info || level === LogLevel.Benchmark) ?
                         LOG_TABLE : ERROR_TABLE;
-        let partition = (level == LogLevel.Info || level == LogLevel.Benchmark) ?
+        const partition = (level === LogLevel.Info || level === LogLevel.Benchmark) ?
                         LogLevel[level] : ErrorCode[origin];
 
-        let entity = AzureTableManager.buildEntity(
+        const entity = AzureTableManager.buildEntity(
             customKey || new Date().getTime().toString(),
             obj, partition);
 
-        AzureTableManager.insertOrMergeEntity(
-            this.get_table_service(), tbl,
-            entity, (err, _results) => {
-            if (err) {
-                console.log(err);
-                console.log("AzureSessionStore.set: " + err);
-            }
-        });
+        if (process.env.PRODUCTION !== "false") {
+            AzureTableManager.insertOrMergeEntity(
+                this.get_table_service(), tbl,
+                entity, (err) => {
+                if (err) {
+                    console.log(err);
+                    console.log("AzureSessionStore.set: " + err);
+                }
+            });
+        } else {
+            console.log(entity);
+        }
     }
+
+    private static tableService;
 
     private static get_table_service() {
         if (this.tableService == null) {
-            let tableSvc = AzureTableManager.createTableService();
+            const tableSvc = AzureTableManager.createTableService();
 
             this.tableService = tableSvc;
         }

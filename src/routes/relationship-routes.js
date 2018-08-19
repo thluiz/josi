@@ -11,8 +11,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const auth = require("../middlewares/auth");
 const relationship_service_1 = require("../services/relationship-service");
 function routes(app) {
-    app.get("/api/relationships/person/:id", auth.ensureLoggedIn(), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-        let result = yield relationship_service_1.RelationshipService.load_person_relationship(req.params.id);
+    app.get("/api/relationships/person/:id", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield relationship_service_1.RelationshipService.load_person_relationship(req.params.id);
         res.send(result);
     }));
 }

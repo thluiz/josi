@@ -10,22 +10,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const PersonRelationship_1 = require("../entity/PersonRelationship");
 const database_manager_1 = require("./managers/database-manager");
-const result_1 = require("../helpers/result");
 const errors_codes_1 = require("../helpers/errors-codes");
+const result_1 = require("../helpers/result");
 const DBM = new database_manager_1.DatabaseManager();
 class RelationshipService {
-    static load_person_relationship(person_id, include_indications = false) {
+    static load_person_relationship(personId, includeIndications = false) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const PR = yield DBM.getRepository(PersonRelationship_1.PersonRelationship);
-                const exclude_indications = include_indications ? ""
+                const excludeIndications = includeIndications ? ""
                     : "and (person2_id = :id or (person_id != :id and relationship_type not in (10,13,14)))";
-                let entities = yield PR
+                const entities = yield PR
                     .createQueryBuilder("pr")
                     .innerJoinAndSelect("pr.relationship_type", "rt")
                     .innerJoinAndSelect("pr.parent_person", "parent_person")
                     .innerJoinAndSelect("pr.target_person", "target_person")
-                    .where(`(pr.person_id = :id or pr.person2_id = :id) ${exclude_indications}`, { id: person_id })
+                    .where(`(pr.person_id = :id or pr.person2_id = :id) ${excludeIndications}`, { id: personId })
                     .getMany();
                 return result_1.SuccessResult.GeneralOk(entities);
             }

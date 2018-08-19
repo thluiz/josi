@@ -69,9 +69,11 @@ export class NewInicidentModalComponent implements OnInit {
       this.parameterService.getActiveBranches(),
       this.parameterService.getIncidentTypes(),
       this.parameterService.getActiveLocations(),
-      (branches, incident_types: any[], result_locations : Result<Location[]>) => {
-        this.branches = branches;
-        this.incident_types = incident_types.filter(i => !i.automatically_generated);
+      (result_branches: Result<any[]>,
+        result_incident_types: Result<any[]>,
+        result_locations : Result<Location[]>) => {
+        this.branches = result_branches.data.filter(b => b.category_id != 3);
+        this.incident_types = result_incident_types.data.filter(i => !i.automatically_generated);
         this.locations = result_locations.data;
 
         this.reset_new_incident(initial_state);
@@ -84,7 +86,7 @@ export class NewInicidentModalComponent implements OnInit {
   private open_modal(content, on_close_action = false) {
     this.modalRef = this.ngbModalService.open(content);
 
-    this.modalRef.result.then((result) => {
+    this.modalRef.result.then(() => {
 
     }, (reason) => {
       console.log(reason);

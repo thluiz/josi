@@ -1,14 +1,16 @@
-import { Country } from "./../../entity/Country";
-import { Branch } from "./../../entity/Branch";
-import { Location } from "./../../entity/Location";
 import * as auth from "../../middlewares/auth";
-import { DatabaseManager } from "../../services/managers/database-manager";
-import { Result, ErrorResult, SuccessResult } from "../../helpers/result";
-import { ErrorCode } from "../../helpers/errors-codes";
 
-let DBM = new DatabaseManager();
+import { Branch } from "../../entity/Branch";
+import { Country } from "../../entity/Country";
+import { Location } from "../../entity/Location";
+
+import { ErrorCode } from "../../helpers/errors-codes";
+import { ErrorResult, SuccessResult } from "../../helpers/result";
+import { DatabaseManager } from "../../services/managers/database-manager";
+import { DependencyManager } from "../../services/managers/dependency-manager";
 
 export function routes(app) {
+  const DBM = DependencyManager.container.resolve(DatabaseManager);
   app.get("/api/locations", auth.ensureLoggedIn(), async (req, res, next) => {
     try {
       const LR = await DBM.getRepository<Location>(Location);
@@ -17,11 +19,11 @@ export function routes(app) {
         .leftJoinAndSelect("l.branch", "b")
         .orderBy("l.active desc, l.order");
 
-      if(req.query.active) {
+      if (req.query.active) {
         query = query.where("l.active = :0", req.query.active);
       }
 
-      let result = await query.getMany();
+      const result = await query.getMany();
 
       res.send(SuccessResult.GeneralOk(result));
     } catch (error) {
@@ -32,8 +34,8 @@ export function routes(app) {
   app.post("/api/locations", auth.ensureLoggedIn(), async (req, res) => {
     try {
       const LR = await DBM.getRepository<Location>(Location);
-      let loc = req.body.location;
-      let location = loc.id > 0 ? await LR.findOne(loc.id) : new Location();
+      const loc = req.body.location;
+      const location = loc.id > 0 ? await LR.findOne(loc.id) : new Location();
 
       if (loc.branch && loc.branch.id > 0) {
         const BR = await DBM.getRepository<Branch>(Branch);
@@ -50,7 +52,7 @@ export function routes(app) {
       location.name = loc.name;
       location.order = loc.order;
 
-      let result = await LR.save(location);
+      const result = await LR.save(location);
 
       res.send(SuccessResult.GeneralOk(result));
     } catch (error) {

@@ -1,23 +1,21 @@
 import { LightIncident } from 'app/shared/models/incident-model';
 
-import { zip as observableZip, Observable, of } from 'rxjs';
+import { zip as observableZip } from 'rxjs';
 import { UtilsService } from 'app/services/utils-service';
 import { ModalType } from './../../../services/modal-service';
 import { ModalService } from 'app/services/modal-service';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
-import { Component, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 
 import { ParameterService } from 'app/services/parameter-service';
 import { PersonService } from 'app/services/person-service';
-import { IncidentService } from 'app/services/incident-service';
 
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { debounceTime, delay, map, distinctUntilChanged, catchError, tap, switchMap } from 'rxjs/operators';
-
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'new-person-modal',
@@ -42,7 +40,6 @@ export class NewPersonModalComponent implements OnInit {
     private datePickerConfig: NgbDatepickerConfig,
     private ngbModalService: NgbModal,
     private personService: PersonService,
-    private incidentService: IncidentService,
     private parameterService: ParameterService,
     private modalService: ModalService,
     private utilsService: UtilsService
@@ -61,10 +58,13 @@ export class NewPersonModalComponent implements OnInit {
       this.parameterService.getActiveBranches(),
       this.parameterService.getRoles(),
       this.parameterService.getIncidentTypes(),
-      (branches, roles, incident_types: any[]) => {
-        this.branches = branches;
-        this.roles = roles.filter(r => r.allowed_for_new_person);
-        this.incident_types = incident_types.filter(i => i.allowed_for_new_person);
+      (result_branches: Result<any[]>,
+        result_roles: Result<any[]>,
+        result_incident_types: Result<any[]>) => {
+
+        this.branches = result_branches.data;
+        this.roles = result_roles.data.filter(r => r.allowed_for_new_person);
+        this.incident_types = result_incident_types.data.filter(i => i.allowed_for_new_person);
 
         this.open_modal(this.add_person_modal, true);
       }

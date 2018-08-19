@@ -1,34 +1,34 @@
-<div class="card" *ngIf="project">        
+<div class="card" *ngIf="project">
     <div class="card-body">
         <div class="row">
-            <div class="col-10">                                
+            <div class="col-10">
                 <h3>
-                    <a 
+                    <a
                     style="color:grey"
                     [routerLink]="['/organizations']">
                         Todos >
                     </a>
-                    <a 
+                    <a
                     style="color:grey"
-                    [routerLink]="['/organizations/detail', project.high_level_id]" 
+                    [routerLink]="['/organizations/detail', project.high_level_id]"
                     *ngIf="project.high_level_id">
                         {{ project.high_level_title }} >
-                    </a>                    
-                    <a 
+                    </a>
+                    <a
                     style="color:grey;"
                     [routerLink]="['/organizations/projects', project.parent_id]" *ngIf="project.parent_id && project.high_level_id">
                         {{ project.parent_title }} >
-                    </a>      
-                    <a 
+                    </a>
+                    <a
                     style="color:grey;"
                     [routerLink]="['/organizations/detail', project.parent_id]" *ngIf="project.parent_id && !project.high_level_id">
                         {{ project.parent_title }} >
-                    </a>              
-                    {{ project.title }}                    
+                    </a>
+                    {{ project.title }}
                 </h3>
-            </div>            
+            </div>
             <div class="col-2">
-                <button type="button" class="btn btn-silver btn-lg" 
+                <button type="button" class="btn btn-silver btn-lg"
                     style="margin:5px;padding:2px;line-height:10px"
                     title="Adicionar Tarefa"
                     (click)="add_task();">
@@ -36,7 +36,7 @@
                     <i class="ft-plus"></i>
 			        <i class="fas fa-tasks"></i>
                 </button>
-                <button type="button" class="btn btn-silver btn-lg" 
+                <button type="button" class="btn btn-silver btn-lg"
                     style="margin:5px;padding:2px;line-height:10px"
                     title="Adicionar Projeto"
                     *ngIf="!project.is_subproject"
@@ -44,139 +44,130 @@
 
                     <i class="ft-plus"></i>
 			        <i class="fas fa-columns"></i>
-                </button>  
-                <button type="button" class="btn btn-silver btn-lg" 
+                </button>
+                <button type="button" class="btn btn-silver btn-lg"
                     style="margin:0;padding:2px;line-height:10px"
                     (click)="open_new_person_modal();">
-                    <i class="ft-plus"></i>                                        
+                    <i class="ft-plus"></i>
                     <i class="fas fa-user"></i>
-                </button>   
+                </button>
             </div>
-        </div>   
-        <div class="row">                        
+        </div>
+        <div class="row">
             <div class="col-10 col-sm-8 col-xl-10" style="height:88vh;max-height:88vh;width:100%;overflow-x:auto;overflow-y:auto;">
                 <table class="table" cellpadding='5' cellspacing='5' style="background-color:white;width:unset">
                     <tr>
                         <td
-                        class="project step"                                                                                   
+                        class="project step"
                         *ngIf="project.childrens && project.childrens.length > 0"
-                        >   
+                        >
                             <h5 class="ignore-item">Caixa de Entrada ({{project.childrens.length}})</h5>
                             <div class="container"
                             [dragula]='"childrens"'
                             id="inbox"
                             [attr.data-parent]="'inbox'"
-                            >                                
+                            >
                                 <compact-card [card]="ch"
-                                    [attr.data-id]="ch.id"                        
+                                    [attr.data-id]="ch.id"
                                     *ngFor="let ch of project.childrens"
                                     ></compact-card>
 
                             </div>
                         </td>
                         <td
-                            class="project step"                                                                   
-                            *ngFor="let step of project.steps, let k=index">                        
+                            class="project step"
+                            *ngFor="let step of project.steps, let k=index">
                             <h5 class="ignore-item">
                                 {{ step.name }}
-                                
+
                                 <ng-template [ngIf]="step.childrens.length > 0">
                                     ({{ step.childrens.length }})
                                 </ng-template>
                             </h5>
                             <div class="container"
-                            [dragula]='"childrens"'  
+                            [dragula]='"childrens"'
                             [id]="'bag_' + k"
                             [attr.data-parent]="step.id"
                             *ngIf="!step.automatically_move"
-                            >                                        
+                            >
                                 <compact-card [card]="ch"
                                     [attr.data-id]="ch.id"
                                     *ngFor="let ch of step.childrens"
-                                    ></compact-card>                                                        
+                                    ></compact-card>
                             </div>
                             <div class="container" *ngIf="step.automatically_move"
-                            >                                        
+                            >
                                 <compact-card [card]="ch"
                                     [attr.data-id]="ch.id"
                                     *ngFor="let ch of step.childrens"
-                                    ></compact-card>                                                        
+                                    ></compact-card>
                             </div>
                         </td>
                     </tr>
-                </table>                
+                </table>
             </div>
             <div class="col-4 col-sm-4 col-xl-2">
                 <div class="row">
                     <div class="col-9"
-                    style="border-bottom: 1px solid black;">        
-                        <h6 style="font-weight:bold;margin-bottom:0"> 
-                            <i class="far fa-sticky-note"></i> Comentários </h6>        
+                    style="border-bottom: 1px solid black;">
+                        <h6 style="font-weight:bold;margin-bottom:0">
+                            <i class="far fa-sticky-note"></i> Comentários </h6>
                     </div>
                     <div class="col-2 text-right"
                     style="border-bottom: 1px solid black;" >
-                        <button type="button" class="btn btn-silver btn-sm" 
+                        <button type="button" class="btn btn-silver btn-sm"
                             style="margin:0;padding:2px;line-height:10px"
                             (click)="add_comment();">
-                            <i class="ft-plus"></i>                                        
+                            <i class="ft-plus"></i>
                             <i class="far fa-sticky-note"></i>
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="row" *ngIf="!commentaries || commentaries.length == 0">
                     <div class="col-12 text-center">
                         Nenhum comentário encontrado
                     </div>
                 </div>
-                <div *ngFor="let cm of commentaries">                        
+                <div *ngFor="let cm of commentaries">
                     <div class="col-12 pl-3">
                         <div class="row">
                             <div class="col-2 text-right pr-0">
-                                    <img alt="{{ cm.responsible }}"                                    
-                                    class="img-border" 
-                                    src="https://myvtmiim.blob.core.windows.net/avatars/{{ cm.avatar_img }}" 											
-                                    style="width:100%;"																												                                    
-                                    *ngIf="cm.avatar_img && cm.avatar_img.length > 0" />
-                                    
-                                    <img                                     
-                                    class="img-border" 
-                                    src="/assets/img/portrait/avatars/avatar-08.png" 											
-                                    style="width:100%;"																												                                    
-                                    *ngIf="!cm.avatar_img || cm.avatar_img.length <= 0" /> 
+                                <person-avatar-image [person]="cm">
+                                </person-avatar-image>
                             </div>
-                            <div class="col-8" style="color:black;">     
+                            <div class="col-8" style="color:black;">
                                 <div class="row">
                                     <div class="col-12">
                                         <b> {{ cm.responsible }} </b> <i style="font-size:10px">({{ cm.created_date_br }} {{ cm.created_hour_br  }})</i>
-                                        <markdown [data]="cm.commentary" style="margin-bottom:0 !important"></markdown>			
+                                        <markdown [data]="cm.commentary" style="margin-bottom:0 !important"></markdown>
                                     </div>
-                                </div>                          
+                                </div>
                             </div>
                             <div class="col-2 text-right pl-0" style="display:none">
-                                <button type="button" class="btn btn-silver btn-sm" 
-                                    style="margin: 0; padding:2px; line-height:10px"			                                        
+                                <button type="button" class="btn btn-silver btn-sm"
+                                    style="margin: 0; padding:2px; line-height:10px"
                                     *ngIf="!cm.archive"
                                     (click)="cm.archive = true">
-                                    <i class="fas fa-archive"></i>                                        
-                                </button>                                    
-                                <button type="button" class="btn btn-danger btn-sm" 
-                                    *ngIf="cm.archive"
-                                    style="margin:0;padding:2px;line-height:10px"			                                        
-                                    (click)="archive_comment(cm)">
-                                    <i class="fas fa-archive"></i>                                        
+                                    <i class="fas fa-archive"></i>
                                 </button>
-                                <button type="button" class="btn btn-secondary btn-sm" 
+                                <button type="button" class="btn btn-danger btn-sm"
                                     *ngIf="cm.archive"
-                                    style="margin:0;padding:2px;line-height:10px"			                                        
+                                    style="margin:0;padding:2px;line-height:10px"
+                                    (click)="archive_comment(cm)">
+                                    <i class="fas fa-archive"></i>
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm"
+                                    *ngIf="cm.archive"
+                                    style="margin:0;padding:2px;line-height:10px"
                                     (click)="cm.archive = false">
-                                    <i class="icon-action-undo"></i>                                        
-                                </button>                                    
+                                    <i class="icon-action-undo"></i>
+                                </button>
                             </div>
-                        </div>        
-                    </div> 
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>         
+        </div>
     </div>
 </div>

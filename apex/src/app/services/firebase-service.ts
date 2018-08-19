@@ -1,15 +1,15 @@
 import { isArray } from 'util';
-import { ApplicationEventService } from 'app/services/application-event-service';
+import { ApplicationEventService } from './application-event-service';
 import { Observable } from 'rxjs/Rx';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
 
 import { HttpClient } from '@angular/common/http';
-import { ParameterService } from 'app/services/parameter-service';
+import { ParameterService } from './parameter-service';
 import { Injectable } from '@angular/core';
 
-import { environment } from '../../environments/environment';
-import { Result } from 'app/shared/models/result';
+import { environment } from 'environments/environment';
+import { Result } from '../shared/models/result';
 
 @Injectable()
 export class FirebaseService {
@@ -42,6 +42,26 @@ export class FirebaseService {
               this.eventManager.emit(result);
             }
         );
+
+        this.listener_to_collection(serverTime.milliseconds,
+          'people-events', (dt) => {
+
+            if(!isArray(dt) || dt.length <= 0) {
+              return;
+            }
+
+            console.log(dt);
+
+            let result: Result = null;
+            try {
+              result = JSON.parse(dt[0].data);
+            } catch (error) {
+              result = Result.Fail(error);
+            }
+            (result as any).origin = "FIREBASE";
+            this.eventManager.emit(result);
+          }
+      );
 
       });
     }

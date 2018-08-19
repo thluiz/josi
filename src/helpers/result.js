@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const uuid = require("uuid/v4");
+const replace_errors_1 = require("./replace-errors");
 class SuccessResult {
-    constructor(type, data, message) {
+    constructor(type, data, message, details) {
         this.type = type;
         this.data = data;
         this.message = message;
+        this.details = details;
         this.success = true;
         this.id = uuid();
     }
@@ -17,17 +19,19 @@ class SuccessResult {
     }
 }
 exports.SuccessResult = SuccessResult;
+// tslint:disable-next-line:max-classes-per-file
 class ErrorResult {
-    constructor(data, error_code, inner_error) {
-        this.data = data;
-        this.error_code = error_code;
-        this.inner_error = inner_error;
+    constructor(error, errorCode, innerError) {
+        this.errorCode = errorCode;
+        this.innerError = innerError;
         this.success = false;
         this.id = uuid();
-        this.message = data.message;
+        this.data = error;
+        this.message = error.message;
+        this.details = JSON.stringify(error, replace_errors_1.replaceErrors);
     }
-    static Fail(code, error, inner_error) {
-        return new ErrorResult(error, code, inner_error);
+    static Fail(code, error, innerError) {
+        return new ErrorResult(error, code, innerError);
     }
 }
 exports.ErrorResult = ErrorResult;

@@ -37,8 +37,9 @@ export class LateralSummaryComponent implements OnInit, OnDestroy {
       if(this.branch) {
         this.getPeopleSummaryData();
       } else {
-        this.securityService.getCurrentUserData().subscribe((user) => {
-          this.branch = user.default_branch_id;
+        this.securityService.getCurrentUserData()
+        .subscribe((result_user : Result<any>) => {
+          this.branch = result_user.data.default_branch_id;
           this.getPeopleSummaryData();
         });
       }

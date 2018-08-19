@@ -7,21 +7,21 @@ import { Result } from 'app/shared/models/result';
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './vouchers-page.component.html',
-  styleUrls: ['../parameters-customizations.scss']  
+  styleUrls: ['../parameters-customizations.scss']
 })
-export class VouchersPageComponent implements OnInit {    
+export class VouchersPageComponent implements OnInit {
   collection: any[];
   current_item: any;
   saving = false;
 
-  constructor(private parameterService: ParameterService, 
-              private ngbModalService: NgbModal, 
-              private router : Router) {      
+  constructor(private parameterService: ParameterService,
+              private ngbModalService: NgbModal,
+              private router : Router) {
 
-  }  
+  }
 
   ngOnInit() {
-    this.load_data();    
+    this.load_data();
   }
 
   private load_data() {
@@ -32,7 +32,7 @@ export class VouchersPageComponent implements OnInit {
 
   save(close_action) {
     this.saving = true;
-    this.parameterService.saveVoucher(this.current_item).subscribe((data) => {
+    this.parameterService.saveVoucher(this.current_item).subscribe(() => {
       if(close_action) {
         close_action();
       }
@@ -41,9 +41,9 @@ export class VouchersPageComponent implements OnInit {
     });
   }
 
-  create(content) {        
+  create(content) {
     this.current_item = {
-      id: 0      
+      id: 0
     }
 
     this.open_modal(content);
@@ -55,8 +55,8 @@ export class VouchersPageComponent implements OnInit {
 
   private open_modal(content: any) {
     this.saving = false;
-    
-    this.ngbModalService.open(content).result.then((result) => {
+
+    this.ngbModalService.open(content).result.then(() => {
     }, (reason) => {
       this.current_item = null;
       console.log(reason);

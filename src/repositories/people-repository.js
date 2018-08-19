@@ -17,30 +17,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_manager_1 = require("../services/managers/database-manager");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const Person_1 = require("../entity/Person");
+const database_manager_1 = require("../services/managers/database-manager");
 const DBM = new database_manager_1.DatabaseManager();
 class PeopleRepository {
     static getRepository(runner) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DBM.getRepository(Person_1.Person, runner);
+            return yield DBM.getRepository(Person_1.Person);
         });
     }
-    static getExternalContacts(branch_id, voucher_id, name, voucher_status, people_per_page, page) {
+    static getExternalContacts(branchId, voucherId, name, voucherStatus, peoplePerPage, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DBM.ExecuteJsonSP("GetExternalContacts", { "branch_id": branch_id }, { "voucher_id": voucher_id }, { "name": name }, { "voucher_status": voucher_status }, { "people_per_page": people_per_page }, { "page": page });
+            return yield DBM.ExecuteJsonSP("GetExternalContacts", { branch_id: branchId }, { voucher_id: voucherId }, { name }, { voucher_status: voucherStatus }, { people_per_page: peoplePerPage }, { page });
         });
     }
 }
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], PeopleRepository, "getRepository", null);
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number, String, Number, Number, Number]),
     __metadata("design:returntype", Promise)

@@ -17,161 +17,157 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_manager_1 = require("../services/managers/database-manager");
-const result_1 = require("../helpers/result");
-const trylog_decorator_1 = require("../decorators/trylog-decorator");
 const showdown = require("showdown");
+const base_repository_1 = require("./base-repository");
+const trylog_decorator_1 = require("../decorators/trylog-decorator");
+const result_1 = require("../helpers/result");
 const Incident_1 = require("../entity/Incident");
+const database_manager_1 = require("../services/managers/database-manager");
+const dependency_manager_1 = require("../services/managers/dependency-manager");
+const cache_decorator_1 = require("../decorators/cache-decorator");
 const converter = new showdown.Converter();
-const DBM = new database_manager_1.DatabaseManager();
-class IncidentsRepository {
-    static getRepository(runner) {
+const DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
+class IncidentsRepository extends base_repository_1.BaseRepository {
+    constructor() {
+        super(Incident_1.Incident);
+        this.summaryCache = [];
+    }
+    getAgenda(branchId, date) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DBM.getRepository(Incident_1.Incident, runner);
+            return yield this.DBM.ExecuteJsonSP("GetAgenda2", { branch_id: branchId }, { date });
         });
     }
-    static getAvailableOwnerships(branch_id, date, type) {
+    getAvailableOwnerships(branchId, date, type) {
         return __awaiter(this, void 0, void 0, function* () {
-            let result = yield DBM.ExecuteJsonSP("GetAvailableOwnerships", { "branch_id": branch_id }, { "date": date }, { "type": type });
+            const result = yield this.DBM.ExecuteJsonSP("GetAvailableOwnerships", { branch_id: branchId }, { date }, { type });
             return result;
         });
     }
-    static getCurrentActivities(branch_id) {
+    getCurrentActivities(branchId) {
         return __awaiter(this, void 0, void 0, function* () {
-            let result = yield DBM.ExecuteJsonSP("GetCurrentActivities", { "branch_id": branch_id });
+            const result = yield this.DBM.ExecuteJsonSP("GetCurrentActivities", { branch_id: branchId });
             return result;
         });
     }
-    static getPeopleSummary(branch_id, week_modifier, date) {
+    getPeopleSummary(branchId, weekModifier, date) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.summary_cache = this.summary_cache
-                .filter(c => c.lastcall < ((new Date()).getTime() - 10000)); // clear every 10 seconds
-            let cached = this.summary_cache = this.summary_cache
-                .filter(c => c.branch == branch_id
-                && c.week_modifier == week_modifier
-                && c.date == date);
+            this.summaryCache = this.summaryCache
+                .filter((c) => c.lastcall < ((new Date()).getTime() - 10000)); // clear every 10 seconds
+            const cached = this.summaryCache = this.summaryCache
+                .filter((c) => c.branch === branchId
+                && c.week_modifier === weekModifier
+                && c.date === date);
             if (cached.length > 0) {
                 return cached[0].result;
             }
-            let result = yield DBM.ExecuteJsonSP("GetPeopleSummary", { "branch": branch_id }, { "week_modifier": week_modifier }, { "date": date });
-            this.summary_cache.push({
-                branch: branch_id,
-                week_modifier: week_modifier,
-                date: date,
+            const result = yield this.DBM.ExecuteJsonSP("GetPeopleSummary", { branch: branchId }, { week_modifier: weekModifier }, { date });
+            this.summaryCache.push({
+                branch: branchId,
+                week_modifier: weekModifier,
+                date,
                 lastcall: (new Date()).getTime(),
                 result
             });
             return result;
         });
     }
-    static getSummary(branch_id, month_modifier, week_modifier, date) {
+    getSummary(branchId, monthModifier, weekModifier, date) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DBM.ExecuteJsonSP("GetPeopleSummary", { "branch": branch_id }, { "month_modifier": month_modifier }, { "week_modifier": week_modifier }, { "date": date });
+            return yield this.DBM.ExecuteJsonSP("GetPeopleSummary", { branch: branchId }, { month_modifier: monthModifier }, { week_modifier: weekModifier }, { date });
         });
     }
-    static getDailyMonitor(branch_id, display, display_modifier) {
+    getDailyMonitor(branchId, display, displayModifier) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DBM.ExecuteJsonSP("GetDailyMonitor2", { "branch": branch_id }, { "display_modifier": display_modifier }, { "display": display });
+            return yield this.DBM.ExecuteJsonSP("GetDailyMonitor2", { branch: branchId }, { display_modifier: displayModifier }, { display });
         });
     }
-    static getPersonIncidentsHistory(person_id, start_date, end_date, activity_type) {
+    getPersonIncidentsHistory(personId, startDate, endDate, activityType) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DBM.ExecuteJsonSP("GetPersonIncidentHistory2", { "person_id": person_id }, { "start_date": start_date }, { "end_date": end_date }, { "activity_type": activity_type });
+            return yield this.DBM.ExecuteJsonSP("GetPersonIncidentHistory2", { person_id: personId }, { start_date: startDate }, { end_date: endDate }, { activity_type: activityType });
         });
     }
-    static getIncidentDetails(incident_id) {
+    getIncidentDetails(incidentId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DBM.ExecuteJsonSP("GetIncidentDetails", { "id": incident_id });
+            return yield this.DBM.ExecuteJsonSP("GetIncidentDetails", { id: incidentId });
         });
     }
-    static getAgenda(branch_id, date) {
+    getOwnershipData(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield DBM.ExecuteJsonSP("GetAgenda2", { "branch_id": branch_id }, { "date": date });
-        });
-    }
-    static getOwnershipData(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const ownership_data = yield DBM.ExecuteJsonSP("getOwnershipData", {
-                "ownership_id": id
+            const ownershipData = yield this.DBM.ExecuteJsonSP("getOwnershipData", {
+                ownership_id: id
             });
-            const data = ownership_data.data[0];
+            const data = ownershipData.data[0];
             if (!data.incidents) {
                 data.incidents = [];
             }
-            for (var i = 0; i < data.incidents.length; i++) {
-                if (data.incidents[i].description) {
-                    const d = data.incidents[i].description.replace(/\r?\n/g, "<br />");
-                    data.incidents[i].description = converter.makeHtml(d);
+            for (const incident of data.incidents) {
+                if (incident.description) {
+                    const d = incident.description.replace(/\r?\n/g, "<br />");
+                    incident.description = converter.makeHtml(d);
                 }
-                if (data.incidents[i].close_text) {
-                    const d = data.incidents[i].close_text.replace(/\r?\n/g, "<br />");
-                    data.incidents[i].close_text = converter.makeHtml(d);
+                if (incident.close_text) {
+                    const d = incident.close_text.replace(/\r?\n/g, "<br />");
+                    incident.close_text = converter.makeHtml(d);
                 }
             }
             return result_1.SuccessResult.GeneralOk(data);
         });
     }
 }
-IncidentsRepository.summary_cache = [];
 __decorate([
-    trylog_decorator_1.trylog(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], IncidentsRepository, "getRepository", null);
-__decorate([
-    trylog_decorator_1.trylog(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, Object]),
-    __metadata("design:returntype", Promise)
-], IncidentsRepository, "getAvailableOwnerships", null);
-__decorate([
-    trylog_decorator_1.trylog(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], IncidentsRepository, "getCurrentActivities", null);
-__decorate([
-    trylog_decorator_1.trylog(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, Object]),
-    __metadata("design:returntype", Promise)
-], IncidentsRepository, "getPeopleSummary", null);
-__decorate([
-    trylog_decorator_1.trylog(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, Object, Object]),
-    __metadata("design:returntype", Promise)
-], IncidentsRepository, "getSummary", null);
-__decorate([
-    trylog_decorator_1.trylog(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, Object]),
-    __metadata("design:returntype", Promise)
-], IncidentsRepository, "getDailyMonitor", null);
-__decorate([
-    trylog_decorator_1.trylog(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, Object, Object]),
-    __metadata("design:returntype", Promise)
-], IncidentsRepository, "getPersonIncidentsHistory", null);
-__decorate([
-    trylog_decorator_1.trylog(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], IncidentsRepository, "getIncidentDetails", null);
-__decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], IncidentsRepository, "getAgenda", null);
+], IncidentsRepository.prototype, "getAgenda", null);
 __decorate([
-    trylog_decorator_1.trylog(),
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getAvailableOwnerships", null);
+__decorate([
+    cache_decorator_1.cache(true, 100000, (branchId) => `getCurrentActivities_${branchId || "all"}`),
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getCurrentActivities", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getPeopleSummary", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getSummary", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getDailyMonitor", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getPersonIncidentsHistory", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getIncidentDetails", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
-], IncidentsRepository, "getOwnershipData", null);
+], IncidentsRepository.prototype, "getOwnershipData", null);
 exports.IncidentsRepository = IncidentsRepository;
 //# sourceMappingURL=incidents-repository.js.map

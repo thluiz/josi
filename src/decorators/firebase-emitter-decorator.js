@@ -10,12 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const firebase_manager_1 = require("../services/managers/firebase-manager");
 function firebaseEmitter(collection) {
-    return function (target, method, descriptor) {
-        var originalMethod = descriptor.value;
+    return (target, method, descriptor) => {
+        const originalMethod = descriptor.value;
         descriptor.value = function (...args) {
             return __awaiter(this, void 0, void 0, function* () {
-                let result = yield originalMethod.apply(this, args);
-                if (result.success && process.env.FIREBASE_EMIT_EVENTS !== "false") {
+                const result = yield originalMethod.apply(this, args);
+                if (result.success && process.env.FIREBASE_EMIT_EVENTS !== "false" || true) {
                     yield firebase_manager_1.FirebaseManager.emit_event(collection, {
                         id: result.id,
                         data: result

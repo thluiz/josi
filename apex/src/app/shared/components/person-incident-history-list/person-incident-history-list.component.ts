@@ -31,12 +31,7 @@ export class PersonIncidentHistoryListComponent implements OnInit, OnDestroy {
 
   show_full_history = false;
 
-  private last_call: Date;
-
   constructor(private modalService: ModalService,
-    private parameterService: ParameterService,
-    private securityService: SecurityService,
-    private cardService: CardService,
     private personService: PersonService) {
 
     this.set_dates_from_date(new Date());
@@ -94,8 +89,9 @@ export class PersonIncidentHistoryListComponent implements OnInit, OnDestroy {
     this.personService.getAllIncidentHistory(this.person.id,
       this.start_date, this.end_date, this.activity_type
     ).subscribe((result: any) => {
-      if(isArray(result.data))
+      if(isArray(result.data)) {
         this.items = result.data;
+      }
     });
   }
 

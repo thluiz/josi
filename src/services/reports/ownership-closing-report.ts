@@ -1,50 +1,53 @@
-import { IMessage } from '../managers/email-manager';
-import { BaseReport } from "./base-report";
 import { Result, SuccessResult } from "../../helpers/result";
+import { IMessage } from "../managers/email-manager";
+import { BaseReport } from "./base-report";
 
+import { Incident } from "../../entity/Incident";
 import { IncidentsRepository } from "../../repositories/incidents-repository";
-import { ConfigurationsService } from '../configurations-services';
-import { Incident } from '../../entity/Incident';
-
-let IR = IncidentsRepository;
+import { ConfigurationsService } from "../configurations-services";
 
 export class OwnershipClosingReport extends BaseReport {
-    static template_name = "ownership_closing_report";
+    private IR = new IncidentsRepository();
 
-    private static async buildRecipients(branch_id) : Promise<string[]> {
-        let result = [ ConfigurationsService.EMAIL_DEV ];
-
-        const branch_email = await this.getBranchEmail(branch_id);
-        if(branch_email && branch_email.length > 0) {
-            result.push(branch_email);
-        }
-
-        const im_email = await this.getIMEmail();
-        if(im_email && im_email.length > 0) {
-            result.push(im_email);
-        }
-
-        return result;
+    constructor() {
+        super();
+        this.templateName = "ownership_closing_report";
     }
 
-    static async send(ownership: Incident): Promise<Result> {
-        let ow_data_request = await IR.getOwnershipData(ownership.id);
-        let data = ow_data_request.data;
+    async send(ownership: Incident): Promise<Result> {
+        const owDataRequest = await this.IR.getOwnershipData(ownership.id);
+        const data = owDataRequest.data;
 
-        const generated_content = await this.render_template(this.template_name, data);
-        if(!generated_content.success) {
-            return generated_content;
+        const generatedContent = await this.render_template(this.templateName, data);
+        if (!generatedContent.success) {
+            return generatedContent;
         }
 
-        const msg : IMessage = {
+        const msg: IMessage = {
             to: (await this.buildRecipients(data.branch_id)),
-            from: 'contato@myvtmi.im',
+            from: "contato@myvtmi.im",
             subject: `Fechamento de titularidade - ${data.branch_name} `,
-            html: generated_content.data,
+            html: generatedContent.data,
         };
 
         await this.send_email(msg);
 
-        return SuccessResult.GeneralOk({ content: generated_content.data, data });
+        return SuccessResult.GeneralOk({ content: generatedContent.data, data });
+    }
+
+    private async buildRecipients(branchId): Promise<string[]> {
+        const result = [ ConfigurationsService.EMAIL_DEV ];
+
+        const branchEmail = await this.getBranchEmail(branchId);
+        if (branchEmail && branchEmail.length > 0) {
+            result.push(branchEmail);
+        }
+
+        const imEmail = await this.getIMEmail();
+        if (imEmail && imEmail.length > 0) {
+            result.push(imEmail);
+        }
+
+        return result;
     }
 }

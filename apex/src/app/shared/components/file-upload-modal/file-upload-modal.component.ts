@@ -9,10 +9,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'file-upload-modal',
   templateUrl: './file-upload-modal.component.html',
-  styleUrls: ['../../../../assets/customizations.scss'],  
+  styleUrls: ['../../../../assets/customizations.scss'],
 })
-export class FileUploadModalComponent implements OnInit {  
-  person;   
+export class FileUploadModalComponent implements OnInit {
+  person;
   title = "Enviar arquivo";
   saving = false;
   selected_file : File;
@@ -34,8 +34,8 @@ export class FileUploadModalComponent implements OnInit {
     this.validated = false;
     this.validation_message = "";
     this.validation(this.selected_file).then(validation => {
-      this.validated = validation.result;      
-      this.validation_message = validation.message;      
+      this.validated = validation.result;
+      this.validation_message = validation.message;
     });
   }
 
@@ -43,15 +43,15 @@ export class FileUploadModalComponent implements OnInit {
 
   }
 
-  ngOnInit() {    
+  ngOnInit() {
 
-  }  
-
-  ngOnDestroy () {
-    
   }
 
-  open(parameters : { title : string, 
+  ngOnDestroy () {
+
+  }
+
+  open(parameters : { title : string,
     validation : (data: File) => Promise<{ result: boolean, message: string}>,
     upload_action: (data: File) => Observable<any>}) {
 
@@ -63,28 +63,31 @@ export class FileUploadModalComponent implements OnInit {
       console.log("no upload action!");
       return;
     }
+    this.saving = false;
     this.selected_file = null;
     this.validation_message = "";
-    this.upload_action = parameters.upload_action; 
-    this.validation = parameters.validation;   
+    this.upload_action = parameters.upload_action;
+    this.validation = parameters.validation;
 
-    this.open_modal(this.file_upload_modal, true);        
+    this.open_modal(this.file_upload_modal, true);
   }
 
-  send_file(close_action) {    
+  send_file(close_action) {
+    this.saving = true;
     this.upload_action(this.selected_file).subscribe((result) => {
+      this.saving = false;
       close_action(`file sended: ${this.title} `);
-    });    
+    });
   }
 
   private open_modal(content, on_close_action = false) {
     this.saving = false;
-    this.ngbModalService.open(content).result.then((result) => {                                  
-      
-    }, (reason) => {        
+    this.ngbModalService.open(content).result.then((result) => {
+
+    }, (reason) => {
         console.log(reason);
     });
-  }   
+  }
 
-  
+
 }

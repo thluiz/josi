@@ -1,15 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const security_service_1 = require("../services/security-service");
 const logger_service_1 = require("../services/logger-service");
+const security_service_1 = require("../services/security-service");
 function ensureLoggedIn() {
-    return function (req, res, next) {
-        if (process.env.PRODUCTION === 'false') {
+    return (req, res, next) => {
+        if (process.env.PRODUCTION === "false") {
             if (!req.isAuthenticated || !req.isAuthenticated()) {
-                security_service_1.SecurityService.getUserFromRequest(req).then(user => {
-                    req.login(user, function (err) {
-                        if (err)
+                new security_service_1.SecurityService().getUserFromRequest(req)
+                    .then((user) => {
+                    req.login(user, (err) => {
+                        if (err) {
                             return next(err);
+                        }
                         next();
                     });
                 });
@@ -22,7 +24,7 @@ function ensureLoggedIn() {
         if (!req.isAuthenticated || !req.isAuthenticated()) {
             res.status(401).json({
                 success: false,
-                message: 'You need to be authenticated to access this page!'
+                message: "You need to be authenticated to access this page!"
             });
         }
         else {
@@ -32,15 +34,15 @@ function ensureLoggedIn() {
 }
 exports.ensureLoggedIn = ensureLoggedIn;
 function ensureHasPermission(permission) {
-    return function (req, res, next) {
-        security_service_1.SecurityService.getUserFromRequest(req)
-            .then(user => {
-            security_service_1.SecurityService.checkUserHasPermission(user, permission)
-                .then(has_permission => {
-                if (!has_permission) {
+    return (req, res, next) => {
+        new security_service_1.SecurityService().getUserFromRequest(req)
+            .then((user) => {
+            new security_service_1.SecurityService().checkUserHasPermission(user, permission)
+                .then((hasPermission) => {
+                if (!hasPermission) {
                     res.status(403).json({
                         success: false,
-                        message: 'You don´t have the necessary permitions for this action!'
+                        message: "You don´t have the necessary permitions for this action!"
                     });
                     return;
                 }
@@ -48,10 +50,10 @@ function ensureHasPermission(permission) {
             });
         })
             .catch((error) => {
-            logger_service_1.LoggerService.log('ensureHasPermission - error', error);
+            logger_service_1.LoggerService.log("ensureHasPermission - error", error);
             res.status(503).json({
                 success: false,
-                message: 'sorry! something went wrong...'
+                message: "sorry! something went wrong..."
             });
             return;
         });

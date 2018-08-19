@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+// tslint:disable:variable-name
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Url {
@@ -6,11 +7,11 @@ export class Url {
     id: number;
 
     @Column()
-    name: string
+    name: string;
 
     @Column()
-    url: string
+    url: string;
 
     @Column()
-    require_parameter: boolean
+    require_parameter: boolean;
 }

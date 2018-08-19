@@ -47,9 +47,9 @@ export class LocationsPageComponent implements OnInit, OnDestroy {
     Observable.zip(
       this.parameterService.getBranches(),
       this.parameterService.getCountries(),
-      (branches, countries) => {
-        this.branches = branches;
-        this.countries = countries;
+      (result_branches: Result<any[]>, result_countries: Result<any[]>) => {
+        this.branches = result_branches.data;
+        this.countries = result_countries.data;
         this.open_modal(content);
       }).subscribe();
   }
@@ -67,7 +67,7 @@ export class LocationsPageComponent implements OnInit, OnDestroy {
   }
 
   private open_modal(content: any) {
-    this.ngbModalService.open(content).result.then((result) => {
+    this.ngbModalService.open(content).result.then(() => {
     }, (reason) => {
       this.current_item = null;
       console.log(reason);

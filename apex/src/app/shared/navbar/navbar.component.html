@@ -12,15 +12,19 @@
         <div class="position-relative has-icon-right">
           <div class="form-group" [class.has-danger]="search_failed">
             <input type="text" class="form-control round" id="new_incident_search_people" [ngbTypeahead]="search_people" placeholder="Pesquisar"
-              [resultTemplate]="person_typeahead_template" [inputFormatter]="people_typeahead_formatter" [(ngModel)]="current_person"
+              [resultTemplate]="person_typeahead_template"
+              [inputFormatter]="people_typeahead_formatter"
+              [(ngModel)]="current_person"
               name="search_person_input" (ngModelChange)="navegate_to($event)" />
             <span *ngIf="searching_people">buscando...</span>
             <div class="form-control-feedback" *ngIf="search_failed">
               ops... ocorreu algum erro na busca</div>
           </div>
-          <ng-template #person_typeahead_template let-p="result">
-            <img alt="{{ p.name }}" class="img-border" src="https://myvtmiim.blob.core.windows.net/avatars/{{ p.avatar_url }}" style="min-width:50px;max-width:50px;"
-              *ngIf="p.avatar_url && p.avatar_url.length > 0" /> {{ p.name }}
+          <ng-template #person_typeahead_template let-p="result" style="width:100%">
+            <div style="float:left;width:40px">
+              <person-avatar-image [person]="p"></person-avatar-image>
+            </div>
+            {{ p.name }}
             <span *ngIf="!p.found" style="font-style: italic;">
               (novo)
             </span>
@@ -43,8 +47,9 @@
           <li class="nav-item" ngbDropdown placement="bottom-right" *ngIf="current_user">
             <a class="nav-link position-relative" id="dropdownBasic3" ngbDropdownToggle>
               <div style="display:inline-block; width:40px;">
-                <img src="https://myvtmiim.blob.core.windows.net/avatars/{{ current_user.avatar_img }}" style="max-width: 40px;border-radius: 50%;top: 0;position: absolute"
-                />
+                <person-avatar-image
+                [person]="current_user">
+                </person-avatar-image>
               </div>
               <span class="text align-middle" style="position:relative;top:-3px">
                 {{ current_user.name }}

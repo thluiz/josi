@@ -2,13 +2,14 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Component, OnInit } from "@angular/core";
 import { ParameterService } from "app/services/parameter-service";
 import { FinancialService } from 'app/services/financial-service';
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './accounts-page.component.html',
-  styleUrls: ['../parameters-customizations.scss']  
+  styleUrls: ['../parameters-customizations.scss']
 })
-export class AccountsPageComponent implements OnInit {    
+export class AccountsPageComponent implements OnInit {
 
   collection: any[];
   branches: any[];
@@ -17,17 +18,17 @@ export class AccountsPageComponent implements OnInit {
 
   constructor(private parameterService: ParameterService,
               private finacialService: FinancialService,
-              private ngbModalService: NgbModal) {      
+              private ngbModalService: NgbModal) {
 
-  }  
+  }
 
   ngOnInit() {
-    this.load_data();    
+    this.load_data();
   }
 
   private load_data() {
-    this.finacialService.getAccounts().subscribe((data: any[]) => {
-      this.collection = data;
+    this.finacialService.getAccounts().subscribe((result_data: Result<any[]>) => {
+      this.collection = result_data.data;
     });
   }
 
@@ -53,10 +54,10 @@ export class AccountsPageComponent implements OnInit {
       order: suggested_order
     }
 
-    this.parameterService.getActiveBranches().subscribe((data) => {
-      this.branches = data;
+    this.parameterService.getActiveBranches().subscribe((result_data) => {
+      this.branches = result_data.data;
       this.open_modal(content);
-    });    
+    });
   }
 
   edit(content, item) {
@@ -65,7 +66,7 @@ export class AccountsPageComponent implements OnInit {
   }
 
   private open_modal(content: any) {
-    this.ngbModalService.open(content).result.then((result) => {
+    this.ngbModalService.open(content).result.then(() => {
     }, (reason) => {
       this.current_item = null;
       console.log(reason);

@@ -11,6 +11,7 @@ import { CardService, CARD_CHANGED, CARD_ADDED, CARD_ARCHIVED, CARD_COMMENT_ADDE
 import { ActivatedRoute, Router } from '@angular/router';
 import { FinancialService } from 'app/services/financial-service';
 import { SecurityService } from 'app/services/security-service';
+import { Result } from 'app/shared/models/result';
 
 const PROJECT_BAG_NAME = 'childrens';
 
@@ -40,9 +41,9 @@ export class OverviewPageComponent implements OnInit, OnDestroy {
       this.parameterService.getActiveBranches(),
       this.securityService.getCurrentUserData(),
       this.route.params,
-      (branches, user, params) => {
-        this.branches = branches;
-        this.branch_id = user.default_branch_id || +params['branch_id'];
+      (result_branches, result_user : Result<any>, params) => {
+        this.branches = result_branches.data;
+        this.branch_id = result_user.data.default_branch_id || +params['branch_id'];
         this.load_data();
       }
     ).subscribe();
@@ -62,22 +63,27 @@ export class OverviewPageComponent implements OnInit, OnDestroy {
   }
 
   private load_data() {
-    this.financialService.getBranchAccounts(this.branch_id).subscribe((data : any[]) => {
-      data.forEach((account : any) => {
-        var account_id = account.id;
+    this.financialService.getBranchAccounts(this.branch_id).subscribe((result : Result<any[]>) => {
+      const data = result.data;
+
+      data.forEach((account) => {
+        var account_id = parseInt(account.id, 10);
 
         let account_data = {data: account, account_status: null, expected_payments: null, missing_payments: null };
 
-        this.financialService.getAccountStatus(account_id).subscribe((data : any[]) => {
-          account_data.account_status = data;
+        this.financialService.getAccountStatus(account_id)
+        .subscribe((account_result : Result<any[]>) => {
+          account_data.account_status = account_result.data;
         });
 
-        this.financialService.getExpectedPayments(account_id).subscribe((data : any[]) => {
-          account_data.expected_payments = data;
+        this.financialService.getExpectedPayments(account_id)
+        .subscribe((expected_result : Result<any[]>) => {
+          account_data.expected_payments = expected_result.data;
         });
 
-        this.financialService.getMissingPayments(account_id).subscribe((data : any[]) => {
-          account_data.missing_payments = data;
+        this.financialService.getMissingPayments(account_id)
+        .subscribe((missing_result : Result<any[]>) => {
+          account_data.missing_payments = missing_result.data;
         });
 
         this.account_data[this.account_data.length] = account_data;

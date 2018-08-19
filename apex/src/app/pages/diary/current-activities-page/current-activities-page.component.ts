@@ -10,29 +10,29 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './current-activities-page.component.html',
   styleUrls: ['../diary.component.scss']
 })
-export class CurrentActivitiesPageComponent implements OnInit, OnDestroy {  
-  show_change_branch;  
-  current_branch = 0;  
+export class CurrentActivitiesPageComponent implements OnInit, OnDestroy {
+  show_change_branch;
+  current_branch = 0;
   current_branch_name = "Todos os Núcleos";
-  branches;  
+  branches;
   current_incident;
 
 
   constructor(private parameterService : ParameterService, private modalService: NgbModal) {
-    
-  }  
- 
+
+  }
+
   ngOnInit() {
-    this.parameterService.getActiveBranches().subscribe((data) => {
-      this.branches = data;
+    this.parameterService.getActiveBranches().subscribe((result_data) => {
+      this.branches = result_data.data;
     });
   }
 
-  ngOnDestroy() {    
-           
+  ngOnDestroy() {
+
   }
 
-  branchSelected(id) {        
+  branchSelected(id) {
     this.show_change_branch = false;
 
     if(this.current_branch == 0) {
@@ -41,13 +41,13 @@ export class CurrentActivitiesPageComponent implements OnInit, OnDestroy {
     }
 
     const current = this.branches.find((b) => b.id == this.current_branch);
-    this.current_branch_name = current.name;    
-  }    
-  
+    this.current_branch_name = current.name;
+  }
+
   open(content, incident) {
-    this.current_incident = incident;            
-    this.modalService.open(content).result.then((result) => {          
-        this.current_incident = null;                              
+    this.current_incident = incident;
+    this.modalService.open(content).result.then(() => {
+        this.current_incident = null;
     }, (reason) => {
         console.log(reason);
     });

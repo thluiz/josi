@@ -55,6 +55,7 @@ export class PersonStatusLineComponent implements OnInit {
     this.person_changes_subscriber = this.personService.personChanges$.pipe(
       filter((p) => p.id == this.person.id))
       .subscribe((person) => {
+        console.log(person);
         this.person = person;
       });
   }

@@ -1,3 +1,4 @@
+import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-image/person-avatar-image.module';
 import { NgModule } from '@angular/core';
  import { CommonModule } from "@angular/common";
  import { RouterModule } from "@angular/router";
@@ -26,7 +27,8 @@ import { FormsModule } from '@angular/forms';
         RouterModule,
         CommonModule,
         FormsModule,
-        NgbModule
+        NgbModule,
+        PersonAvatarImageModule
     ],
     declarations: [
         FooterComponent,

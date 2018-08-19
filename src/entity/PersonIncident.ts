@@ -1,11 +1,20 @@
-import { Column } from 'typeorm';
-import { Entity, ManyToOne, JoinColumn } from 'typeorm';
-import { PrimaryGeneratedColumn } from 'typeorm';
-import { Person } from './Person';
-import { Incident } from './Incident';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+
+import { Incident } from "./Incident";
+import { Person } from "./Person";
 
 @Entity()
 export class PersonIncident {
+
+    static create(incident: Incident, person: Person): PersonIncident {
+        const result = new PersonIncident();
+        result.closed = false;
+        result.participation_type = 1;
+        result.incident = incident;
+        result.person = person;
+        return result;
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -23,12 +32,4 @@ export class PersonIncident {
     @Column()
     closed: boolean;
 
-    static create(incident: Incident, person: Person) : PersonIncident {
-        let result = new PersonIncident();
-        result.closed = false;
-        result.participation_type = 1;
-        result.incident = incident;
-        result.person = person;
-        return result;
-    }
 }

@@ -1,22 +1,25 @@
-require('dotenv').load();
+// tslint:disable-next-line:no-var-requires
+require("dotenv").load();
 
-import 'mocha';
-import { expect } from 'chai';
-import { QueryRunner, Repository } from 'typeorm';
+import { expect } from "chai";
+import "mocha";
+import { QueryRunner, Repository } from "typeorm";
 
-import { IncidentsService } from '../../services/incidents-service';
+import { IncidentsService } from "../../services/incidents-service";
 
-import { OwnershipClosingReport } from '../../services/reports/ownership-closing-report';
+import { OwnershipClosingReport } from "../../services/reports/ownership-closing-report";
 
-import * as IF from '../factories/incident-factory';
-import * as GF from '../factories/general-factory';
-import { DatabaseManager } from '../../services/managers/database-manager';
-import { Incident } from '../../entity/Incident';
-import { IncidentType } from '../../entity/IncidentType';
-import { Constants } from '../../services/configurations-services';
-import { IncidentsRepository } from '../../repositories/incidents-repository';
+import * as GF from "../factories/general-factory";
+import * as IF from "../factories/incident-factory";
 
-describe('Reporting Tests', async function () {
+import { Incident } from "../../entity/Incident";
+import { IncidentType } from "../../entity/IncidentType";
+
+import { IncidentsRepository } from "../../repositories/incidents-repository";
+import { Constants } from "../../services/configurations-services";
+import { DatabaseManager } from "../../services/managers/database-manager";
+
+describe("Reporting Tests", async () => {
     this.timeout(15000000);
     let runner: QueryRunner;
     let IS: IncidentsService;
@@ -25,23 +28,23 @@ describe('Reporting Tests', async function () {
 
     beforeEach(async () => {
         runner = await dbm.CreateQueryRunner();
-        IS = new IncidentsService(dbm, { runner, useTransaction: true, shouldCommit: false });
+        IS = new IncidentsService();
         ITR = await runner.manager.getRepository<IncidentType>(IncidentType);
 
         await runner.startTransaction();
-    })
+    });
 
     afterEach(async () => {
         await dbm.RollbackTransaction(runner);
     });
 
-    it('should send ownership report', async () => {
-        const incident_data = await IF.create(runner,
+    it("should send ownership report", async () => {
+        const incidentData = await IF.create(runner,
             await ITR.findOne(Constants.IncidentTypeOwnership)
         );
 
         const registering = await IS.create_incident_for_person({
-            incident: incident_data,
+            incident: incidentData,
             person: (await GF.create_person(runner)),
             responsible: (await GF.create_responsible(runner)),
             register_closed: false,
@@ -49,17 +52,19 @@ describe('Reporting Tests', async function () {
             start_activity: false
         });
 
-        const closing_result = await IS.close_incident(
+        const closingResult = await IS.close_incident(
             registering.data as Incident,
             await GF.create_responsible(runner)
         );
 
-        expect(closing_result.success, closing_result.message).to.be.true;
+        expect(closingResult.success, closingResult.message).
+        to.be.true("incident should be closed");
 
-        let IR = await IncidentsRepository.getRepository(runner);
-        let incident = (await IR.findOne((registering.data as Incident).id));
+        const IR = await new IncidentsRepository().getRepository();
+        const incident = (await IR.findOne((registering.data as Incident).id));
 
-        let result = await OwnershipClosingReport.send(incident);
-        expect(result.success).to.be.true;
+        const result = await new OwnershipClosingReport().send(incident);
+        expect(result.success)
+        .to.be.true("closing report should be created");
     });
-})
+});

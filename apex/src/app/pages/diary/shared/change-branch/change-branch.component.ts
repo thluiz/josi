@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { ParameterService } from 'app/services/parameter-service';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
@@ -9,19 +10,20 @@ import { DailyMonitorDisplayType } from 'app/services/person-service';
   selector: 'diary-change-branch',
   templateUrl: './change-branch.component.html'
 })
-export class DiaryChangeBranchComponent implements OnInit {  
+export class DiaryChangeBranchComponent implements OnInit {
 
   @Input("branch") current_branch = 0;
   @Output("onChangeBranch") change_branch = new EventEmitter();
-  branches = [];   
+  branches = [];
 
   constructor(private parameterService: ParameterService) {
-      
+
   }
 
-  ngOnInit() {    
-    this.parameterService.getActiveBranches().subscribe((data) => { 
-      this.branches = data;
+  ngOnInit() {
+    this.parameterService.getActiveBranches()
+    .subscribe((result_data) => {
+      this.branches = result_data.data.filter(b => b.category_id != 3);
     });
     if(!this.current_branch) {
       this.current_branch = 0;

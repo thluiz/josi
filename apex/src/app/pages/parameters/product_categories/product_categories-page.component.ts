@@ -1,35 +1,36 @@
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Component, OnInit } from "@angular/core";
 import { ParameterService } from "app/services/parameter-service";
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './product_categories-page.component.html',
-  styleUrls: ['../parameters-customizations.scss']  
+  styleUrls: ['../parameters-customizations.scss']
 })
-export class ProductCatergoriesPageComponent implements OnInit {    
+export class ProductCatergoriesPageComponent implements OnInit {
   collection: any[];
   current_item: any;
   saving = false;
 
-  constructor(private parameterService: ParameterService, 
-              private ngbModalService: NgbModal) {      
+  constructor(private parameterService: ParameterService,
+              private ngbModalService: NgbModal) {
 
-  }  
+  }
 
   ngOnInit() {
-    this.load_data();    
+    this.load_data();
   }
 
   private load_data() {
-    this.parameterService.getProductCategories().subscribe((data) => {
-      this.collection = data;
+    this.parameterService.getProductCategories().subscribe((result: Result<any[]>) => {
+      this.collection = result.data;
     });
   }
 
   save(close_action) {
     this.saving = true;
-    this.parameterService.saveProductCategory(this.current_item).subscribe((data) => {
+    this.parameterService.saveProductCategory(this.current_item).subscribe(() => {
       if(close_action) {
         close_action();
       }
@@ -57,7 +58,7 @@ export class ProductCatergoriesPageComponent implements OnInit {
   }
 
   private open_modal(content: any) {
-    this.ngbModalService.open(content).result.then((result) => {
+    this.ngbModalService.open(content).result.then(() => {
     }, (reason) => {
       this.current_item = null;
       console.log(reason);

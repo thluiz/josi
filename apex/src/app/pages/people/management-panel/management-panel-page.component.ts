@@ -6,6 +6,7 @@ import { NgbDateParserFormatter, NgbDatepickerI18n, NgbModal, NgbDatepickerConfi
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SecurityService } from 'app/services/security-service';
+import { Result } from '../../../shared/models/result';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -46,18 +47,19 @@ export class ManagementPanelPageComponent implements OnInit, OnDestroy {
       this.domain = params['domain'] || 0;
       this.filters = params['filter'] || 1;
 
-      this.parameterService.getActiveBranches().subscribe((branches) => {
-        this.branches = branches.filter(b => b.category_id == 1);
+      this.parameterService.getActiveBranches().subscribe((result_branches) => {
+        this.branches = result_branches.data.filter(b => b.category_id == 1);
       });
 
       if(this.program > 0) {
-        this.parameterService.getDomains().subscribe((domains) => {
-          this.domains = domains.filter(b => b.program_id == this.program);
+        this.parameterService.getDomains().subscribe((result_domains) => {
+          this.domains = result_domains.data.filter(b => b.program_id == this.program);
         });
       }
 
-      this.securityService.getCurrentUserData().subscribe((user) => {
-        this.current_branch = params['branch'] || user.default_branch_id || 0;
+      this.securityService.getCurrentUserData()
+      .subscribe((result_user : Result<any>) => {
+        this.current_branch = params['branch'] || result_user.data.default_branch_id || 0;
         this.load_members_list();
       });
     });
@@ -142,9 +144,9 @@ export class ManagementPanelPageComponent implements OnInit, OnDestroy {
     }
 
     this.person_list_sub = this.personService.getPeopleList().subscribe(
-      data => {
+      (data : Result<any[]>) => {
         const result = data;
-        this.all_people = result;
+        this.all_people = result.data;
 
         this.apply_filters();
       }

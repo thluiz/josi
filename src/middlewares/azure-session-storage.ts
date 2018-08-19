@@ -1,160 +1,174 @@
-import { LoggerService } from '../services/logger-service';
-
 /* AzureSessionStore
     License: MIT
     Description: An express session store using Azure Storage Tables.
     Based on https://github.com/asilvas/express-session-azure
 */
 
-import { AzureTableManager } from '../services/managers/azure-tables-manager';
-import { Result, SuccessResult, ErrorResult } from '../helpers/result';
-import { ErrorCode } from '../helpers/errors-codes';
+// tslint:disable:no-console
 
-const util = require('util'),
-    Session = require('express-session'),
-    tableName = 'AzureSessionStore';
+import { ErrorCode } from "../helpers/errors-codes";
+import { ErrorResult, SuccessResult } from "../helpers/result";
+import { AzureTableManager } from "../services/managers/azure-tables-manager";
 
-module.exports = AzureSessionStore;
+import Session = require("express-session");
 
-function AzureSessionStore(options) {
+const tableName = "AzureSessionStore";
+
+export class AzureSessionStore extends Session.Store {
+  private tableSvc;
+
+  constructor(options) {
+    super();
     Session.Store.call(this, options);
 
     this.tableSvc = AzureTableManager.createTableService();
     AzureTableManager.createTableIfNotExists(this.tableSvc, tableName, (err) => {
-
+      if (err) {
+        console.log(err);
+      }
     });
-}
+  }
 
-util.inherits(AzureSessionStore, Session.Store);
+  get = (sid, cb) => {
+    AzureTableManager.retriveEntity(
+      this.tableSvc,
+      tableName,
+      sid,
+      (err, result) => {
+        if (err) {
+          if (err.code === "ResourceNotFound") {
+            cb();
+          } else {
+            cb(err);
+          }
+        } else {
+          cb(null, result);
+        }
+      }
+    );
+  }
 
-var p = AzureSessionStore.prototype;
+  set = (sid, session, cb) => {
+    const entity = AzureTableManager.buildEntity(sid, session);
 
-function _retriveEntites(self, query, parameters) {
-    return new Promise((resolve, reject) => {
-        AzureTableManager.retrieveEntities(self.tableSvc, tableName,
-            query, parameters,
-            (err, result) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
+    AzureTableManager.insertOrMergeEntity(
+      this.tableSvc,
+      tableName,
+      entity,
+      (err, results) => {
+        if (err) {
+          console.log("AzureSessionStore.set: " + err);
+          cb(err.toString(), null);
+        } else {
+          cb(null, entity);
+        }
+      }
+    );
+  }
 
-                resolve(result.entries);
-            }
-        );
-    });
-}
+  destroy = (sid, cb) => {
+    this.deleteEntity(this, sid).then((result) => cb(null, result));
+  }
 
-async function retriveOldEntites(self) {
-    var current_date = Math.floor(Date.now() / 1000);
-    var expiration = current_date - (parseFloat(process.env.SESSION_DURATION_MINUTES)
-                                    || (3600 * 6 /*default 6 hours*/))
+  on(cmd) {
+    console.log("AzureSessionStore.on." + cmd);
+    return this;
+  }
 
-    return await _retriveEntites(self, "CreatedOn le ?", expiration);
-}
+  reap(ms) {
+    const thresh = Number(new Date(Number(new Date()) - ms));
+    console.log("AzureSessionStore.reap: " + thresh.toString());
+  }
 
-async function retriveTestEntites(self) {
-    return await _retriveEntites(self, "Test eq ?", true);
-}
-
-function deleteEntity(self, sid) {
-    return new Promise((resolve, reject) => {
-        AzureTableManager.deleteEntity(
-            self.tableSvc, tableName, sid,
-
-            (errDel, result) => {
-                if (errDel) {
-                    LoggerService.error(
-                        ErrorCode.SessionControl, errDel
-                    );
-                    return;
-                }
-
-                resolve(SuccessResult.GeneralOk());
-            }
-        );
-    });
-}
-
-p.cleanup = function cleanup() {
-    let self = this;
+  cleanup() {
+    const self = this;
 
     return new Promise(async (resolve, reject) => {
-        console.log('AzureSessionStore.start_cleaning...');
+      console.log("AzureSessionStore.start_cleaning...");
 
-        try {
-            const old_entries = await retriveOldEntites(self) as any[];
-            const test_entries = await retriveTestEntites(self) as any[];
+      try {
+        const oldEntries = (await this.retriveOldEntites(self)) as any[];
+        const testEntries = (await this.retriveTestEntites(self)) as any[];
 
-            let entries = old_entries.concat(test_entries);
+        const entries = oldEntries.concat(testEntries);
 
-            let batch = AzureTableManager.createTableBatch();
-            for (let i = 0; i < entries.length; i++) {
-                batch.deleteEntity(entries[i]);
+        let batch = AzureTableManager.createTableBatch();
+        for (let i = 0; i < entries.length; i++) {
+          batch.deleteEntity(entries[i]);
 
-                if (i > 0 && i % 99 == 0) {
-                    let result = await AzureTableManager.executeBatch(self.tableSvc, tableName, batch);
-                    console.log(`deleted ${batch.operations.length} entries!`);
-                    batch = AzureTableManager.createTableBatch();
-                }
-            }
-
-            if (batch.operations.length > 0) {
-                await AzureTableManager.executeBatch(self.tableSvc, tableName, batch);
-                console.log(`finally: deleted ${batch.operations.length} entries!`);
-            }
-
-            console.log("AzureSessionStore.end_session_cleaning");
-            resolve(SuccessResult.GeneralOk());
-
-        } catch (error) {
-            reject(ErrorResult.Fail(ErrorCode.GenericError, error));
+          if (i > 0 && i % 99 === 0) {
+            const result = await AzureTableManager.executeBatch(
+              self.tableSvc,
+              tableName,
+              batch
+            );
+            console.log(`deleted ${batch.operations.length} entries!`);
+            batch = AzureTableManager.createTableBatch();
+          }
         }
-    });
-};
 
-p.reap = function (ms) {
-    var thresh = Number(new Date(Number(new Date) - ms));
-    console.log("AzureSessionStore.reap: " + thresh.toString());
-};
-
-p.get = function (sid, cb) {
-    var me = this;
-    AzureTableManager.retriveEntity(this.tableSvc, tableName, sid, function (err, result) {
-        if (err) {
-            if (err.code == "ResourceNotFound") {
-                cb();
-            } else {
-                cb(err);
-            }
-        } else {
-            cb(null, result);
+        if (batch.operations.length > 0) {
+          await AzureTableManager.executeBatch(self.tableSvc, tableName, batch);
+          console.log(`finally: deleted ${batch.operations.length} entries!`);
         }
+
+        console.log("AzureSessionStore.end_session_cleaning");
+        resolve(SuccessResult.GeneralOk());
+      } catch (error) {
+        reject(ErrorResult.Fail(ErrorCode.GenericError, error));
+      }
     });
-}
+  }
 
-p.set = function (sid, session, cb) {
-    const me = this;
+  private deleteEntity(self, sid) {
+    return new Promise((resolve, reject) => {
+      AzureTableManager.deleteEntity(
+        self.tableSvc,
+        tableName,
+        sid,
 
-    let entity = AzureTableManager.buildEntity(sid, session);
+        (errDel, result) => {
+          if (errDel) {
+            console.log(errDel);
+            return;
+          }
 
-    AzureTableManager.insertOrMergeEntity(this.tableSvc, tableName, entity, (err, results) => {
-        if (err) {
-            console.log("AzureSessionStore.set: " + err);
-            cb(err.toString(), null);
-        } else {
-
-            cb(null, entity);
-
+          resolve(SuccessResult.GeneralOk());
         }
+      );
     });
-}
+  }
 
-p.destroy = function (sid, cb) {
-    deleteEntity(this, sid)
-        .then(result => cb(null, result));
-}
+  private async retriveTestEntites(self) {
+    return await this._retriveEntites(self, "Test eq ?", true);
+  }
 
-p.on = function (cmd) {
-    console.log("AzureSessionStore.on." + cmd);
+  private async retriveOldEntites(self) {
+    const currentDate = Math.floor(Date.now() / 1000);
+    const expiration =
+      currentDate -
+      (parseFloat(process.env.SESSION_DURATION_MINUTES) ||
+        3600 * 6 /*default 6 hours*/);
+
+    return await this._retriveEntites(self, "CreatedOn le ?", expiration);
+  }
+
+  private _retriveEntites(self, query, parameters) {
+    return new Promise((resolve, reject) => {
+      AzureTableManager.retrieveEntities(
+        self.tableSvc,
+        tableName,
+        query,
+        parameters,
+        (err, result) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+
+          resolve(result.entries);
+        }
+      );
+    });
+  }
 }

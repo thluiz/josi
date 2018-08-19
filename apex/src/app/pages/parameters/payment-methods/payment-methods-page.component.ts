@@ -1,36 +1,37 @@
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Component, OnInit } from "@angular/core";
 import { ParameterService } from "app/services/parameter-service";
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './payment-methods-page.component.html',
-  styleUrls: ['../parameters-customizations.scss']  
+  styleUrls: ['../parameters-customizations.scss']
 })
-export class PaymentMethodsPageComponent implements OnInit {    
+export class PaymentMethodsPageComponent implements OnInit {
 
   collection: any[];
   current_item: any;
   saving = false;
 
-  constructor(private parameterService: ParameterService, 
-              private ngbModalService: NgbModal) {      
+  constructor(private parameterService: ParameterService,
+              private ngbModalService: NgbModal) {
 
-  }  
+  }
 
   ngOnInit() {
-    this.load_data();    
+    this.load_data();
   }
 
   private load_data() {
-    this.parameterService.getPaymentMethods().subscribe((data) => {
-      this.collection = data;
+    this.parameterService.getPaymentMethods().subscribe((result: Result<any[]>) => {
+      this.collection = result.data;
     });
   }
 
   save(close_action) {
     this.saving = true;
-    this.parameterService.savePaymentMethod(this.current_item).subscribe((data) => {
+    this.parameterService.savePaymentMethod(this.current_item).subscribe(() => {
       if(close_action) {
         close_action();
       }

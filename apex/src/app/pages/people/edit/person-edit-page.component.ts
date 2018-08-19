@@ -10,69 +10,75 @@ import { OnInit, OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import { FormControl, FormsModule, ReactiveFormsModule,
   FormGroup, Validators, NgForm } from '@angular/forms';
 
-import { NgbModal, 
-ModalDismissReasons, 
+import { NgbModal,
+ModalDismissReasons,
 NgbActiveModal,
 NgbDateParserFormatter,
 NgbDatepickerI18n,
 NgbDatepickerConfig,
 NgbDateStruct
 } from '@ng-bootstrap/ng-bootstrap';
-import { DatePickerI18n, NgbDatePTParserFormatter, 
+import { DatePickerI18n, NgbDatePTParserFormatter,
       PortugueseDatepicker} from 'app/shared/datepicker-i18n';
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'app-full-layout-page',
   templateUrl: './person-edit-page.component.html',
-  styleUrls: ['./person-edit-page.component.scss'],  
+  styleUrls: ['./person-edit-page.component.scss'],
   providers: [DatePickerI18n,
-      {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter}, 
+      {provide: NgbDateParserFormatter, useClass: NgbDatePTParserFormatter},
       {provide: NgbDatepickerI18n, useClass: PortugueseDatepicker}]
 })
 export class PersonEditPageComponent implements OnInit, OnDestroy  {
   id: number;
-  person: any;    
+  person: any;
   new_role: any;
   domains: any;
   branches: any;
   programs:any;
   families: any;
+  shirts_sizes : any[] = [];
+  pants_sizes : any[] = [];
 
   private sub: any;
 
   constructor(private personService: PersonService,
-              private parameterService: ParameterService, 
+              private parameterService: ParameterService,
               private utilsService: UtilsService,
               private route: ActivatedRoute,
-              private router: Router, 
+              private router: Router,
               private modalService: NgbModal,
-              private datePickerConfig: NgbDatepickerConfig) {      
-    
+              private datePickerConfig: NgbDatepickerConfig) {
+
     datePickerConfig.firstDayOfWeek = 7
-  }  
+  }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
-      this.id = +params['id'];      
-      
-      this.load_person_data();      
+      this.id = +params['id'];
+
+      this.load_person_data();
     });
+
+    this.shirts_sizes = this.parameterService.getAvailableShirtSizes();
+    this.pants_sizes = this.parameterService.getAvailablePantsSizes();
   }
-  
+
   ngOnDestroy() {
     this.sub.unsubscribe();
   }
-  
-  open(content, incident){        
-    this.modalService.open(content).result.then((result) => {                                  
-        
+
+  open(content, incident){
+    this.modalService.open(content).result.then(() => {
+
     }, (reason) => {
         console.log(reason);
     });
 
-  }  
+  }
 
-  change_program(program) {   
+  change_program(program) {
     if(!program || !this.programs) {
       return;
     }
@@ -86,12 +92,12 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
     }
 
     let p = this.person;
-    p.birth_date = this.translate_date_to_server(this.person.birth_date);        
-    p.admission_date = this.translate_date_to_server(this.person.admission_date);        
-    p.baaisi_date = this.translate_date_to_server(this.person.baaisi_date);  
+    p.birth_date = this.translate_date_to_server(this.person.birth_date);
+    p.admission_date = this.translate_date_to_server(this.person.admission_date);
+    p.baaisi_date = this.translate_date_to_server(this.person.baaisi_date);
     p.enrollment_date = this.translate_date_to_server(this.person.enrollment_date);
     p.passport_expiration_date = this.translate_date_to_server(this.person.passport_expiration_date);
-              
+
     this.personService.savePersonData(p).toPromise().then(
       () => {
         this.router.navigateByUrl(`/people/person/${this.id}`);
@@ -99,74 +105,76 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
     )
   }
 
-  validate_person() {    
+  validate_person() {
     this.person.errors = this.person.errors || [];
 
     this.person.is_valid = true;
-    
-    if(!this.person.is_active_member) {        
-        this.person.errors = [];      
-        return true;        
+
+    if(!this.person.is_active_member) {
+        this.person.errors = [];
+        return true;
     }
 
     if(this.person.branch_id > 0 && (!this.person.program_id || this.person.program_id <= 0)) {
-      this.person.errors['need_program'] = true;      
+      this.person.errors['need_program'] = true;
       this.person.is_valid = false;
     } else {
-      this.person.errors['need_program'] = false;      
+      this.person.errors['need_program'] = false;
     }
 
-    if(this.person.program_id > 0 && (!this.person.domain_id || this.person.domain_id <= 0)) {      
+    if(this.person.program_id > 0 && (!this.person.domain_id || this.person.domain_id <= 0)) {
       this.person.errors['need_domain'] = true;
       this.person.is_valid = false;
     } else {
-      this.person.errors['need_domain'] = false;      
+      this.person.errors['need_domain'] = false;
     }
 
     if(this.person.is_valid) {
-      this.person.errors = [];      
+      this.person.errors = [];
       return true;
     }
-    
+
     return false;
   }
 
-  private translate_date_to_view(date) {        
+  private translate_date_to_view(date) {
     return this.utilsService.translate_date_to_view(date);
   }
 
-  private translate_date_to_server(date) {    
+  private translate_date_to_server(date) {
     return this.utilsService.translate_date_to_server(date);
   }
 
-  load_person_data() {    
+  load_person_data() {
     this.personService.getData(this.id).subscribe(
-      data => {           
-        const result = data;    
-        this.person = result;  
-        this.person.birth_date = this.translate_date_to_view(this.person.birth_date);        
-        this.person.admission_date = this.translate_date_to_view(this.person.admission_date);        
-        this.person.baaisi_date = this.translate_date_to_view(this.person.baaisi_date);          
-        this.person.enrollment_date = this.translate_date_to_view(this.person.enrollment_date);          
-        this.person.passport_expiration_date = this.translate_date_to_view(this.person.passport_expiration_date);          
-        
-        if(!(this.person.is_active_member 
-          || this.person.is_disciple 
-          || this.person.is_leaving 
+      (result : Result<any[]>) => {
+        this.person = result.data[0];
+        this.person.birth_date = this.translate_date_to_view(this.person.birth_date);
+        this.person.admission_date = this.translate_date_to_view(this.person.admission_date);
+        this.person.baaisi_date = this.translate_date_to_view(this.person.baaisi_date);
+        this.person.enrollment_date = this.translate_date_to_view(this.person.enrollment_date);
+        this.person.passport_expiration_date = this.translate_date_to_view(this.person.passport_expiration_date);
+
+        if(!(this.person.is_active_member
+          || this.person.is_disciple
+          || this.person.is_leaving
           || this.person.is_inactive_member
           || this.person.is_interested))
           return;
 
-        this.parameterService.getActiveBranches().subscribe((data) => this.branches = data);
+        this.parameterService.getActiveBranches()
+        .subscribe((result_data) => this.branches = result_data.data);
 
-        this.parameterService.getKungFuFamilies().subscribe((data) => this.families = data);
-        
-        this.parameterService.getPrograms().subscribe((data) => { 
-            this.programs = data;
+        this.parameterService.getKungFuFamilies()
+        .subscribe((result_data) => this.families = result_data.data);
+
+        this.parameterService.getPrograms()
+        .subscribe((result_data) => {
+            this.programs = result_data.data;
 
             if(this.person.program_id)
               this.domains = this.programs.filter(p => p.id == this.person.program_id)[0].domains;
-        });        
+        });
       }
     );
   }

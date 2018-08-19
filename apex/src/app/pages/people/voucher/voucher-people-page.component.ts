@@ -43,23 +43,28 @@ export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     this.search_name = this.activatedRoute.snapshot.queryParams["name"] || "";
-    this.parameterService.getActiveBranches().subscribe((branches) => {
-      this.branches = branches;
+    this.parameterService.getActiveBranches()
+    .subscribe((result : Result<any[]>) => {
+      this.branches = result.data;
     });
 
-    this.parameterService.getVouchers().subscribe((result : Result<any[]>) => {
+    this.parameterService.getVouchers()
+    .subscribe((result : Result<any[]>) => {
       this.vouchers = result.data;
     });
 
-    this.securityService.getCurrentUserData().subscribe((user) => {
-      this.current_branch = this.activatedRoute.snapshot.queryParams["branch"] || user.default_branch_id || 0;
+    this.securityService.getCurrentUserData()
+    .subscribe((result_user : Result<any>) => {
+      this.current_branch = this.activatedRoute.snapshot.queryParams["branch"]
+                              || result_user.data.default_branch_id || 0;
 
       this.load_voucher_list();
     });
 
-    this.interested_added_subscriber = this.personService.personActions$.pipe(
+    this.interested_added_subscriber = this.personService
+    .personActions$.pipe(
     filter((p) => p.data != null && p.data.is_interested && (!this.current_branch || p.data.branch_id == this.current_branch)))
-    .subscribe((next) => {
+    .subscribe(() => {
       this.load_voucher_list();
     });
 
@@ -73,7 +78,6 @@ export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
 
   apply_filters() {
     let people = this.all_people;
-
 
     if(this.current_branch > 0) {
       people = people.filter((p : any) => {
@@ -110,9 +114,11 @@ export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
       this.person_list_sub.unsubscribe();
     }
 
-    this.person_list_sub = this.personService.getInvitedPeopleList(this.current_branch, this.search_name, this.current_voucher).subscribe(
-      data => {
-        this.all_people = data;
+    this.person_list_sub = this.personService
+    .getInvitedPeopleList(this.current_branch, this.search_name, this.current_voucher)
+    .subscribe(
+      (result : Result<any[]>) => {
+        this.all_people = result.data;
 
         this.apply_filters();
       }

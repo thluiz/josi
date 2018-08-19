@@ -1,10 +1,8 @@
-import { Result } from './../../models/result';
-
 import {zip as observableZip,  Observable ,  of } from 'rxjs';
-import { CardService } from './../../../services/card-service';
-import { UtilsService } from 'app/services/utils-service';
-import { ModalType } from './../../../services/modal-service';
-import { ModalService } from 'app/services/modal-service';
+import { debounceTime ,  delay ,  map ,
+  distinctUntilChanged ,  catchError ,  tap ,  switchMap } from 'rxjs/operators';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
+
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Component, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 
@@ -12,13 +10,15 @@ import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from '
 
 import { ParameterService } from 'app/services/parameter-service';
 import { PersonService } from 'app/services/person-service';
-import { IncidentService } from 'app/services/incident-service';
+import { CardService } from 'app/services/card-service';
+import { UtilsService } from 'app/services/utils-service';
+import { ModalType } from 'app/services/modal-service';
+import { ModalService } from 'app/services/modal-service';
 
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { debounceTime ,  delay ,  map ,  distinctUntilChanged ,  catchError ,  tap ,  switchMap } from 'rxjs/operators';
-import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
 
+import { Result } from 'app/shared/models/result';
 import { Card } from 'app/shared/models/card.model';
 import { Group } from 'app/shared/models/group.model';
 import { Location } from 'app/shared/models/location.model';
@@ -79,22 +79,31 @@ export class NewCardModalComponent implements OnInit {
     this.saving = false;
     this.type = initial_state.card_type || CardType.Task;
 
+    this.parameterService.getActiveBranches().subscribe((data) => {
+      console.log(data);
+    });
+
     observableZip(
-      this.cardService.getOrganizations(true),
+      this.cardService.getCachedOrganizations(true),
       this.parameterService.getCardTemplates(),
       this.cardService.getOperators(),
       this.parameterService.getGroups(),
       this.parameterService.getActiveBranches(),
       this.parameterService.getLocations(),
-      (organizations : any[], templates : any[], operators: any[],
-        groups: Group[], branches: any[], locations_result: Result<Location[]>) => {
-        this.organizations = organizations;
-        this.locations = locations_result.data.filter(l => l.active);
-        this.operators = operators;
-        this.groups = groups;
-        this.branches = branches;
+      (result_organizations : Result<any[]>,
+        result_templates : Result<any[]>,
+        result_operators: Result<any[]>,
+        result_groups: Result<Group[]>,
+        result_branches: Result<any[]>,
+        locations_result: Result<Location[]>) => {
 
-        this.templates = templates.filter(t => !t.automatically_generated
+        this.organizations = result_organizations.data;
+        this.locations = locations_result.data.filter(l => l.active);
+        this.operators = result_operators.data;
+        this.groups = result_groups.data;
+        this.branches = result_branches.data;
+
+        this.templates = result_templates.data.filter(t => !t.automatically_generated
                                           && t.active
                                           && t.is_task == (this.type ==  CardType.Task || this.type == CardType.ProjectTask))
                                   .map((template) => {
@@ -244,7 +253,7 @@ export class NewCardModalComponent implements OnInit {
   private open_modal(content, on_close_action = false) {
     this.modalRef = this.ngbModalService.open(content);
 
-    this.modalRef.result.then((result) => {
+    this.modalRef.result.then(() => {
 
     }, (reason) => {
         console.log(reason);

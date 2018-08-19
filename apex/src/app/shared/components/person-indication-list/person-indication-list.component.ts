@@ -1,5 +1,6 @@
+import { Result } from 'app/shared/models/result';
 
-import { zip as observableZip, Subscription, Observable } from 'rxjs';
+import { zip as observableZip, Subscription } from 'rxjs';
 
 import { filter } from 'rxjs/operators';
 import { CardService } from 'app/services/card-service';
@@ -76,7 +77,7 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
 
     this.indication_changes_subscriber = this.personService.indicationChanges$.pipe(
       filter((data) => data != null && data.person_id == this.person.id))
-      .subscribe((data) => {
+      .subscribe(() => {
         this.load_indications();
       });
 
@@ -102,26 +103,26 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
     }
 
     this.personService.getPersonIndications(this.person.id)
-      .subscribe((data: any[]) => {
+      .subscribe((result_data: Result<any[]>) => {
 
-        this.parameterService.getConfigurations().subscribe((configs: any[]) => {
-          var minimal_direct = configs.find(d => d.id == Configurations.MinimalDirectIndicationsPerActiveMember.toFixed());
-          var minimal_indirect = configs.find(d => d.id == Configurations.MinimalIndirectIndicationsPerActiveMember.toFixed());
+        this.parameterService.getConfigurations().subscribe((result_configs: Result<any[]>) => {
+          var minimal_direct = result_configs.data.find(d => d.id == Configurations.MinimalDirectIndicationsPerActiveMember.toFixed());
+          var minimal_indirect = result_configs.data.find(d => d.id == Configurations.MinimalIndirectIndicationsPerActiveMember.toFixed());
 
           if (minimal_direct.value > 0) {
-            this.needed_direct_indications = minimal_direct.value - (data.filter(d => d.relationship_type == 10).length);
+            this.needed_direct_indications = minimal_direct.value - (result_data.data.filter(d => d.relationship_type == 10).length);
           }
 
           if (minimal_indirect.value > 0) {
             this.needed_indirect_indications = minimal_indirect.value
-              - (data.filter(d => d.relationship_type == 13).length)
-              - (data.filter(d => d.relationship_type == 14).length);
+              - (result_data.data.filter(d => d.relationship_type == 13).length)
+              - (result_data.data.filter(d => d.relationship_type == 14).length);
           }
         });
 
-        this.indications = data;
-        this.indirect_indications = data.filter(d => d.relationship_type == 13 || d.relationship_type == 14);
-        this.invites = data.filter(d => d.relationship_type == 10);
+        this.indications = result_data.data;
+        this.indirect_indications = result_data.data.filter(d => d.relationship_type == 13 || d.relationship_type == 14);
+        this.invites = result_data.data.filter(d => d.relationship_type == 10);
       });
 
     this.last_call = new Date();
@@ -129,16 +130,15 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
   }
 
   open_card(card_id) {
-    this.cardService.getCardData(card_id).subscribe(card => {
-      console.log(card);
-      this.modalService.open(ModalType.DetailTask, card[0]);
+    this.cardService.getCardData(card_id).subscribe((result_card: Result<any>) => {
+      this.modalService.open(ModalType.DetailTask, result_card.data[0]);
     });
   }
 
   openChangeIndicationType(indication, content) {
     this.new_indication_type = -1;
     this.current_indication = indication;
-    this.ngbModal.open(content).result.then((result) => {
+    this.ngbModal.open(content).result.then(() => {
 
     }, (reason) => {
       console.log(reason);
@@ -150,7 +150,7 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
 
     this.personService
       .changeIndicationType(this.current_indication, this.new_indication_type)
-      .subscribe((data) => {
+      .subscribe(() => {
         this.saving = false;
 
         if (close_action) {
@@ -187,13 +187,15 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
       this.parameterService.getContactTypes(),
       this.parameterService.getActiveBranches(),
       this.cardService.getOperators(),
-      (user, contact_types, branches, operators) => {
-        this.new_indication.operator_id = user.person_id;
-        this.contact_types = contact_types;
-        this.branches = branches;
-        this.operators = operators;
+      (result_user : Result<any>,
+        result_contact_types, result_branches, result_operators) => {
 
-        this.ngbModal.open(content).result.then((result) => {
+        this.new_indication.operator_id = result_user.data.person_id;
+        this.contact_types = result_contact_types.data;
+        this.branches = result_branches.data;
+        this.operators = result_operators.data;
+
+        this.ngbModal.open(content).result.then(() => {
 
         }, (reason) => {
           console.log(reason);
@@ -205,7 +207,8 @@ export class PersonIndicationListComponent implements OnInit, OnDestroy {
   save_new_indication(close_action) {
     this.saving = true;
 
-    this.personService.saveIndication(this.new_indication).subscribe((data) => {
+    this.personService.saveIndication(this.new_indication)
+    .subscribe(() => {
       this.saving = false;
 
       if (close_action) {

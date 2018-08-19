@@ -1,146 +1,147 @@
-import { filter } from 'rxjs/operators';
-import { Repository, QueryRunner } from 'typeorm';
-import { DatabaseManager } from "../services/managers/database-manager";
+import showdown = require("showdown");
+import { Repository } from "typeorm";
+import { BaseRepository } from "./base-repository";
+
+import { tryLogAsync } from "../decorators/trylog-decorator";
 import { Result, SuccessResult } from "../helpers/result";
-import { ErrorCode } from "../helpers/errors-codes";
-import { trylog } from "../decorators/trylog-decorator";
-import showdown = require('showdown');
+
 import { Incident } from "../entity/Incident";
-import { cache } from '../../node_modules/@types/ejs';
+import { DatabaseManager } from "../services/managers/database-manager";
+import { DependencyManager } from "../services/managers/dependency-manager";
+import { cache } from "../decorators/cache-decorator";
 
 const converter = new showdown.Converter();
-const DBM = new DatabaseManager();
+const DBM = DependencyManager.container.resolve(DatabaseManager);
 
-export class IncidentsRepository {
+export class IncidentsRepository extends BaseRepository<Incident> {
 
+    private summaryCache: Array<{ branch: number;
+        date: any;
+        week_modifier: number;
+        lastcall: number;
+        result: Result<any>;
+    }> = [];
 
-    @trylog()
-    static async getRepository(runner? : QueryRunner): Promise<Repository<Incident>> {
-        return await DBM.getRepository<Incident>(Incident, runner);
+    constructor() {
+        super(Incident);
     }
 
-    @trylog()
-    static async getAvailableOwnerships(branch_id, date, type): Promise<Result<Incident>> {
-        let result = await DBM.ExecuteJsonSP<Incident>("GetAvailableOwnerships",
-            { "branch_id": branch_id },
-            { "date": date },
-            { "type": type }
+    @tryLogAsync()
+    async getAgenda(branchId, date): Promise<Result<any>> {
+        return await this.DBM.ExecuteJsonSP("GetAgenda2",
+            { branch_id: branchId },
+            { date }
+        );
+    }
+
+    @tryLogAsync()
+    async getAvailableOwnerships(branchId, date, type): Promise<Result<Incident>> {
+        const result = await this.DBM.ExecuteJsonSP<Incident>("GetAvailableOwnerships",
+            { branch_id: branchId },
+            { date },
+            { type }
         );
 
         return result;
     }
 
-    @trylog()
-    static async getCurrentActivities(branch_id): Promise<Result<any>> {
-        let result = await DBM.ExecuteJsonSP("GetCurrentActivities",
-            { "branch_id": branch_id }
+    @cache(true, 100000, (branchId) => `getCurrentActivities_${branchId || "all"}`)
+    @tryLogAsync()
+    async getCurrentActivities(branchId): Promise<Result<any>> {
+        const result = await this.DBM.ExecuteJsonSP("GetCurrentActivities",
+            { branch_id: branchId }
         );
 
         return result;
     }
 
-    private static summary_cache : { branch: number,
-        date: any,
-        week_modifier: number,
-        lastcall: number,
-        result: Result<any>
-    }[] = [];
+    @tryLogAsync()
+    async getPeopleSummary(branchId, weekModifier, date): Promise<Result<any>> {
+        this.summaryCache = this.summaryCache
+        .filter((c) => c.lastcall < ((new Date()).getTime() - 10000)); // clear every 10 seconds
 
-    @trylog()
-    static async getPeopleSummary(branch_id, week_modifier, date): Promise<Result<any>> {
-        this.summary_cache = this.summary_cache
-        .filter(c => c.lastcall < ((new Date()).getTime() - 10000)); // clear every 10 seconds
+        const cached = this.summaryCache = this.summaryCache
+        .filter((c) => c.branch === branchId
+                    && c.week_modifier === weekModifier
+                    && c.date === date);
 
-        let cached = this.summary_cache = this.summary_cache
-        .filter(c => c.branch == branch_id
-                    && c.week_modifier == week_modifier
-                    && c.date == date);
-
-        if(cached.length > 0) {
+        if (cached.length > 0) {
             return cached[0].result;
         }
 
-        let result = await DBM.ExecuteJsonSP("GetPeopleSummary",
-            { "branch": branch_id },
-            { "week_modifier": week_modifier },
-            { "date": date }
+        const result = await this.DBM.ExecuteJsonSP("GetPeopleSummary",
+            { branch: branchId },
+            { week_modifier: weekModifier },
+            { date }
         );
 
-        this.summary_cache.push({
-            branch: branch_id,
-            week_modifier: week_modifier,
-            date: date,
+        this.summaryCache.push({
+            branch: branchId,
+            week_modifier: weekModifier,
+            date,
             lastcall: (new Date()).getTime(),
             result
-        })
+        });
 
         return result;
     }
 
-    @trylog()
-    static async getSummary(branch_id, month_modifier, week_modifier, date): Promise<Result<any>> {
-        return await DBM.ExecuteJsonSP("GetPeopleSummary",
-            { "branch": branch_id },
-            { "month_modifier": month_modifier },
-            { "week_modifier": week_modifier },
-            { "date": date }
+    @tryLogAsync()
+    async getSummary(branchId, monthModifier, weekModifier, date): Promise<Result<any>> {
+        return await this.DBM.ExecuteJsonSP("GetPeopleSummary",
+            { branch: branchId },
+            { month_modifier: monthModifier },
+            { week_modifier: weekModifier },
+            { date }
         );
     }
 
-    @trylog()
-    static async getDailyMonitor(branch_id, display, display_modifier): Promise<Result<any>> {
-        return await DBM.ExecuteJsonSP("GetDailyMonitor2",
-            { "branch": branch_id },
-            { "display_modifier": display_modifier },
-            { "display": display }
+    @tryLogAsync()
+    async getDailyMonitor(branchId, display, displayModifier): Promise<Result<any>> {
+        return await this.DBM.ExecuteJsonSP("GetDailyMonitor2",
+            { branch: branchId },
+            { display_modifier: displayModifier },
+            { display }
         );
     }
 
-    @trylog()
-    static async getPersonIncidentsHistory(person_id, start_date, end_date, activity_type): Promise<Result<any>> {
-        return await DBM.ExecuteJsonSP("GetPersonIncidentHistory2",
-            { "person_id": person_id },
-            { "start_date": start_date },
-            { "end_date": end_date },
-            { "activity_type": activity_type }
+    @tryLogAsync()
+    async getPersonIncidentsHistory(personId, startDate, endDate, activityType): Promise<Result<any>> {
+        return await this.DBM.ExecuteJsonSP("GetPersonIncidentHistory2",
+            { person_id: personId },
+            { start_date: startDate },
+            { end_date: endDate },
+            { activity_type: activityType }
         );
     }
 
-    @trylog()
-    static async getIncidentDetails(incident_id): Promise<Result<any>> {
-        return await DBM.ExecuteJsonSP("GetIncidentDetails",
-            { "id": incident_id }
+    @tryLogAsync()
+    async getIncidentDetails(incidentId): Promise<Result<any>> {
+        return await this.DBM.ExecuteJsonSP("GetIncidentDetails",
+            { id: incidentId }
         );
     }
 
-    @trylog()
-    static async getAgenda(branch_id, date): Promise<Result<any>> {
-        return await DBM.ExecuteJsonSP("GetAgenda2",
-            { "branch_id": branch_id },
-            { "date": date }
-        );
-    }
-
-    @trylog()
-    static async getOwnershipData(id: number): Promise<Result<any>> {
-        const ownership_data = await DBM.ExecuteJsonSP("getOwnershipData", {
-            "ownership_id": id
+    @tryLogAsync()
+    async getOwnershipData(id: number): Promise<Result<any>> {
+        const ownershipData = await this.DBM.ExecuteJsonSP("getOwnershipData", {
+            ownership_id: id
         });
 
-        const data = ownership_data.data[0];
+        const data = ownershipData.data[0];
 
-        if(!data.incidents) {
+        if (!data.incidents) {
             data.incidents = [];
         }
 
-        for (var i = 0; i < data.incidents.length; i++) {
-            if (data.incidents[i].description) {
-                const d = data.incidents[i].description.replace(/\r?\n/g, "<br />");
-                data.incidents[i].description = converter.makeHtml(d);
+        for (const incident of data.incidents) {
+            if (incident.description) {
+                const d = incident.description.replace(/\r?\n/g, "<br />");
+                incident.description = converter.makeHtml(d);
             }
-            if (data.incidents[i].close_text) {
-                const d = data.incidents[i].close_text.replace(/\r?\n/g, "<br />");
-                data.incidents[i].close_text = converter.makeHtml(d);
+            if (incident.close_text) {
+                const d = incident.close_text.replace(/\r?\n/g, "<br />");
+                incident.close_text = converter.makeHtml(d);
             }
         }
 
