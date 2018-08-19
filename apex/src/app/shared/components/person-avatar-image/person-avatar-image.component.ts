@@ -13,12 +13,15 @@ import { Subscription } from 'rxjs';
 })
 export class PersonAvatarImageComponent implements OnInit, OnDestroy {
 
-  @Input() person: { id: number, avatar_img: string,
-                    name: string, avatar_sm: boolean, avatar_md: boolean,
-                    is_leaving: boolean, is_inactive_member: boolean };
+  @Input() person: { id: number, name: string,
+                    avatar_img: string,
+                    avatar_esm: boolean,
+                    avatar_sm: boolean,
+                    avatar_md: boolean,
+                    is_leaving: boolean,
+                    is_inactive_member: boolean };
   @Input() editAvatarOnClick = false;
   @Input() useMediumImage = false;
-  @Input() forceSmallImage = false;
 
   private person_changes_subscriber: Subscription;
 
@@ -40,17 +43,27 @@ export class PersonAvatarImageComponent implements OnInit, OnDestroy {
   }
 
   get avatar_url() {
-    var blob_directory = `avatars`
-
-    if(this.forceSmallImage || (!this.useMediumImage && this.person.avatar_sm)) {
-      blob_directory += "-sm";
-    }
-
-    if(this.useMediumImage && this.person.avatar_md) {
-      blob_directory += "-md";
-    }
+    var blob_directory = this.getAvatarDirectory();
 
     return `https://myvtmiim.blob.core.windows.net/${ blob_directory }/${ this.person.avatar_img }`;
+  }
+
+  private getAvatarDirectory() {
+    var blob_directory = `avatars`;
+
+    if (this.useMediumImage && this.person.avatar_md) {
+      return blob_directory + "-md";
+    }
+
+    if (this.person.avatar_esm) {
+      return blob_directory + "-esm";
+    }
+
+    if (this.person.avatar_sm) {
+      return blob_directory + "-sm";
+    }
+
+    return blob_directory;
   }
 
   edit_avatar() {

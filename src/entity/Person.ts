@@ -38,6 +38,9 @@ export class Person {
     @Column()
     avatar_md: boolean;
 
+    @Column()
+    avatar_esm: boolean;
+
     @Column({name: "branch_id"})
     branch_id: number;
 

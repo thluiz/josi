@@ -54,6 +54,7 @@ class PeopleService extends base_service_1.BaseService {
                 person.avatar_img = blobImage;
                 person.avatar_md = false;
                 person.avatar_sm = false;
+                person.avatar_esm = false;
                 yield PR.save(person);
                 return result_1.SuccessResult.GeneralOk(person);
             }

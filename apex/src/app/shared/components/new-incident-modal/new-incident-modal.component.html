@@ -113,7 +113,10 @@
                   ops... ocorreu algum erro na busca</div>
               </div>
               <ng-template #person_typeahead_template let-p="result">
-                <person-avatar-image [person]="p"></person-avatar-image> {{ p.name }}
+                <div style="float:left;width:40px">
+                  <person-avatar-image [person]="p"></person-avatar-image>
+                </div>
+                {{ p.name }}
                 <span *ngIf="!p.found" style="font-style: italic;">
                   (novo)
                 </span>

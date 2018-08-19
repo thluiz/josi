@@ -65,6 +65,7 @@ export class PeopleService extends BaseService {
             person.avatar_img = blobImage;
             person.avatar_md = false;
             person.avatar_sm = false;
+            person.avatar_esm = false;
             await PR.save(person);
 
             return SuccessResult.GeneralOk(person);
