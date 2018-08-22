@@ -56,7 +56,7 @@ export class OrganizationConfigPageComponent implements OnInit, OnDestroy {
 
   load_organization_data() {
     this.cardService.getOrganization(this.id).subscribe((result_data : any) => {
-      this.organization = result_data.data;
+      this.organization = result_data.data[0];
     });
   }
 
