@@ -40,7 +40,8 @@ export class OrganizationConfigPageComponent implements OnInit, OnDestroy {
     this.sub = this.route.params.subscribe(params => {
       this.id = +params['id'];
 
-      this.parameterService.getPersonCardPositions().subscribe((result_data : any) => {
+      this.parameterService.getPersonCardPositions()
+      .subscribe((result_data : any) => {
         this.card_positions = result_data.data.filter(cp => cp.hierarchical);
       });
     });
@@ -55,7 +56,8 @@ export class OrganizationConfigPageComponent implements OnInit, OnDestroy {
   }
 
   load_organization_data() {
-    this.cardService.getOrganization(this.id).subscribe((result_data : any) => {
+    this.cardService.getOrganization(this.id)
+    .subscribe((result_data : any) => {
       this.organization = result_data.data[0];
     });
   }
@@ -77,7 +79,8 @@ export class OrganizationConfigPageComponent implements OnInit, OnDestroy {
   }
 
   save_new_operator() {
-    this.cardService.saveOperator(this.id, this.new_operator_id).subscribe(() => {
+    this.cardService.saveOperator(this.id, this.new_operator_id)
+    .subscribe(() => {
       if(this.modalRef) {
         this.modalRef.close();
       }
