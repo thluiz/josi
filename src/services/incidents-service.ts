@@ -26,6 +26,8 @@ export const INCIDENT_RESCHEDULED = "INCIDENT_RESCHEDULED";
 export const INCIDENT_COMMENT_ADDED = "INCIDENT_COMMENT_ADDED";
 export const INCIDENT_COMMENT_ARCHIVED = "INCIDENT_COMMENT_ARCHIVED";
 
+export const OWNERSHIP_MIGRATED = "OWNERSHIP_MIGRATED";
+
 export interface IRegisterIncident {
     incident: Incident;
     responsible: Person;
@@ -80,6 +82,20 @@ export enum AddToOwnership {
 }
 
 export class IncidentsService extends BaseService {
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async migrateOwnership(ownership: Incident) {
+        const execution = await this.databaseManager
+            .ExecuteTypedJsonSP(OWNERSHIP_MIGRATED,
+                "MigrateOwnership",
+                [{ ownership_id: ownership.id },
+                { end_date: ownership.end_date }]
+            );
+
+        return execution;
+    }
+
     @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async start_incident(incident, responsibleId): Promise<Result> {

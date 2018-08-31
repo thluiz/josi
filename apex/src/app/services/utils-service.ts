@@ -10,6 +10,10 @@ export class UtilsService {
 
     constructor(private sanitizer: DomSanitizer, private http: HttpClient) { }
 
+    current_date_in_seconds() {
+      return new Date().getTime()/1000;
+    }
+
     translate_date_to_server(date) {
         if(!date || !date.year)
             return null;
@@ -43,6 +47,20 @@ export class UtilsService {
             month: parseInt(splitted_date[1], 10),
             day: parseInt(splitted_date[2], 10)
         }
+    }
+
+    groupBy(list, keyGetter) {
+      const map = new Map();
+      list.forEach((item) => {
+          const key = keyGetter(item);
+          const collection = map.get(key);
+          if (!collection) {
+              map.set(key, [item]);
+          } else {
+              collection.push(item);
+          }
+      });
+      return map;
     }
 
     translate_time_to_view(date) {

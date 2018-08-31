@@ -2,16 +2,18 @@ import { PersonStatusLineModule } from './../person-status-line/person-status-li
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { IncidentAgendaListitemComponent } from './incident-agenda-listitem.component';
+import { MarkdownModule } from 'ngx-markdown';
 
 @NgModule({
     imports: [
         CommonModule,
-        PersonStatusLineModule
+        PersonStatusLineModule,
+        MarkdownModule.forRoot()
     ],
-    declarations: [       
+    declarations: [
         IncidentAgendaListitemComponent
     ], exports: [
         IncidentAgendaListitemComponent
-    ] 
+    ]
 })
 export class IncidentAgendaListitemModule { }

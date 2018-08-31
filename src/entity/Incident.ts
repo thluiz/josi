@@ -19,8 +19,10 @@ export class Incident {
     type: IncidentType;
 
     @Column({ type: "datetime", default: () => "getdate()"})
-    // tslint:disable-next-line:variable-name
     created_on: Date;
+
+    @Column({ type: "datetime" })
+    end_date: Date;
 
     @Column()
     treated: boolean;

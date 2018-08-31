@@ -34,7 +34,7 @@ class IncidentsRepository extends base_repository_1.BaseRepository {
     }
     getAgenda(branchId, date) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.DBM.ExecuteJsonSP("GetAgenda2", { branch_id: branchId }, { date });
+            return yield this.DBM.ExecuteJsonSP("GetAgenda3", { branch_id: branchId }, { date });
         });
     }
     getAvailableOwnerships(branchId, date, type) {

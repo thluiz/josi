@@ -7,6 +7,7 @@ import { Result } from 'app/shared/models/result';
 import { LightIncident } from 'app/shared/models/incident-model';
 
 import { HttpService } from './http-service';
+import { Ownership } from '../shared/models/ownership';
 
 export const INCIDENT_ACTION_PREFIX = "INCIDENT_";
 export const INCIDENT_ADDED = INCIDENT_ACTION_PREFIX + "ADDED";
@@ -16,11 +17,22 @@ export const INCIDENT_TREATED = INCIDENT_ACTION_PREFIX + "TREATED";
 export const INCIDENT_ENDED = INCIDENT_ACTION_PREFIX + "ENDED";
 export const INCIDENT_CANCELLED = INCIDENT_ACTION_PREFIX + "CANCELLED";
 export const INCIDENT_RESCHEDULED = INCIDENT_ACTION_PREFIX + "RESCHEDULED";
+export const INCIDENT_COMMENT_ADDED = INCIDENT_ACTION_PREFIX + "COMMENT_ADDED";
+export const INCIDENT_COMMENT_ARCHIVED = INCIDENT_ACTION_PREFIX + "COMMENT_ARCHIVED";
+
+export const OWNERSHIP_MIGRATED = "OWNERSHIP_MIGRATED";
 
 @Injectable()
 export class IncidentService {
   constructor(private http: HttpService) {
 
+  }
+
+  migrateOwnership(ownership: Ownership) {
+    return this.http
+    .post_and_emit('/ownerships/migrate', {
+      ownership
+    });
   }
 
   getSumary(branch, month, week, date) {

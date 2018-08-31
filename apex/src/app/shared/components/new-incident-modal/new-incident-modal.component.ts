@@ -69,7 +69,6 @@ export class NewInicidentModalComponent implements OnInit {
       (result_branches: Result<any[]>, result_incident_types: Result<any[]>) => {
         this.branches = result_branches.data.filter(b => b.category_id != 3);
         this.incident_types = result_incident_types.data.filter(i => !i.automatically_generated);
-
         this.open_modal(this.add_incident_modal, true);
       }
     ).subscribe();
@@ -230,6 +229,13 @@ export class NewInicidentModalComponent implements OnInit {
       this.new_incident.branch_id, date, this.new_incident.type.id)
       .subscribe((result : Result<LightIncident[]>) => {
           this.available_ownerships = result.data;
+
+          if(result.data
+            && result.data.length == 1
+            && this.new_incident
+            && this.new_incident.add_to_ownernership == 2) {
+            this.new_incident.ownership = result.data[0];
+          }
       });
   }
 
@@ -273,6 +279,14 @@ export class NewInicidentModalComponent implements OnInit {
         minute: date.getMinutes()
       }
     };
+
+    if(initial_state.ownership) {
+      this.new_incident.add_to_ownernership = 2;
+      this.available_ownerships = [ initial_state.ownership ];
+      this.new_incident.ownership = initial_state.ownership;
+
+      console.log(initial_state.ownership);
+    }
   }
 
 }

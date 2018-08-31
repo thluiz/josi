@@ -28,7 +28,7 @@ export class IncidentsRepository extends BaseRepository<Incident> {
 
     @tryLogAsync()
     async getAgenda(branchId, date): Promise<Result<any>> {
-        return await this.DBM.ExecuteJsonSP("GetAgenda2",
+        return await this.DBM.ExecuteJsonSP("GetAgenda3",
             { branch_id: branchId },
             { date }
         );

@@ -17,7 +17,10 @@ function routes(app) {
     const IvR = new inventories_repository_1.InventoriesRepository();
     const SS = new security_service_1.SecurityService();
     app.get("/api/inventory_items", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
-        res.send(IvR.getAll());
+        res.send(yield IvR.getAll());
+    }));
+    app.get("/api/people/personal_inventories", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        res.send(yield IvR.getAll());
     }));
 }
 exports.routes = routes;

@@ -1,3 +1,4 @@
+import { PersonalInventoryListModule } from './shared/components/personal-inventory-list/personal-inventory-list.module';
 import { IncidentAgendaListitemModule } from 'app/shared/components/incident-agenda-listitem/incident-agenda-listitem.module';
 import { IncidentFinancialListitemModule } from './../../shared/components/incident-financial-listitem/incident-financial-listitem.module';
 import { PersonRelationshipListModule } from './../../shared/components/person-relationship-list/person-relationship-list.module';
@@ -74,7 +75,8 @@ import { PersonIncidentHistoryListModule } from 'app/shared/components/person-in
         IncidentFinancialListitemModule,
         IncidentAgendaListitemModule,
         PersonAvatarImageModule,
-        PersonIncidentHistoryListModule
+        PersonIncidentHistoryListModule,
+        PersonalInventoryListModule
     ],
     declarations: [
         MembersPanelPageComponent,

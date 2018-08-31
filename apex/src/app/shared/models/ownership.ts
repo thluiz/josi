@@ -1,3 +1,5 @@
+import { IncidentComment } from "app/shared/models/IncidentComment";
+
 export class Ownership {
     id: number;
     branch_id: number;
@@ -6,9 +8,10 @@ export class Ownership {
     title: string;
     description: string;
 
-    date: Date;
-    end_date: Date;
-    started_on: Date;
+    date: string;
+    end_date: string;
+    started_on: string;
+    closed_on: string;
 
     cancelled: boolean;
     closed:boolean;
@@ -17,5 +20,10 @@ export class Ownership {
     branch_initials: string;
 
     person_id: number;
-    person: string;
+    person_name: string;
+
+    started_date_in_seconds : number;
+    date_in_seconds : number;
+
+    comments: IncidentComment[];
 }

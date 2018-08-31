@@ -51,7 +51,10 @@
         <div class="col-6">
           <div class="form-group">
             <div class="input-group">
-              <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="new_incident.date" id="new_incident_date" ngbDatepicker
+              <input class="form-control text-center" placeholder="dd/mm/aaaa"
+                [(ngModel)]="new_incident.date" id="new_incident_date"
+                (ngModelChange)="get_available_ownerships()"
+                ngbDatepicker
                 #niReschedule="ngbDatepicker" />
               <div class="input-group-addon" (click)="niReschedule.toggle()">
                 <i class="ft-calendar" style="cursor: pointer;"></i>
@@ -60,7 +63,8 @@
           </div>
         </div>
         <div class="col-6">
-          <ngb-timepicker [spinners]="false" [(ngModel)]="new_incident.time">
+          <ngb-timepicker [spinners]="false" [(ngModel)]="new_incident.time"
+          (ngModelChange)="get_available_ownerships()">
           </ngb-timepicker>
         </div>
       </div>
@@ -151,9 +155,10 @@
           </label>
           <div class="form-group">
             <select id="new_incident_ownership_id" [(ngModel)]="new_incident.ownership" class="form-control">
-              <option></option>
+              <option *ngIf="available_ownerships && available_ownerships.length > 1"></option>
               <option *ngFor="let ao of available_ownerships" [ngValue]="ao">
-                {{ ao.start_hour }} - {{ ao.title || "ND" }} - {{ ao.person }}
+                {{ ao.start_hour  || (ao.date | date: "HH:mm") }}
+                <span *ngIf="ao.title"> - {{ ao.title }} </span> - {{ ao.person || ao['person_name'] }}
               </option>
             </select>
           </div>

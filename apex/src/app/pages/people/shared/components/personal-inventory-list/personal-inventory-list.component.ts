@@ -5,6 +5,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParameterService } from 'app/services/parameter-service';
 import { PersonService } from 'app/services/person-service';
+import { Result } from 'app/shared/models/result';
 
 @Component({
   selector: 'personal-inventory-list',
@@ -20,7 +21,7 @@ export class PersonalInventoryListComponent implements OnInit, OnDestroy {
 
   saving = false;
   current_item: any;
-  relationship_types  = [];
+  inventory_items  = [];
 
   errors :string[] = [];
   private last_call : Date;
@@ -30,7 +31,7 @@ export class PersonalInventoryListComponent implements OnInit, OnDestroy {
   constructor(private modalService: NgbModal,
     private parameterService: ParameterService,
     private personService: PersonService) {
-    this.setup_new_relationship();
+    this.setup_new_item();
   }
 
   ngOnInit() {
@@ -59,7 +60,7 @@ export class PersonalInventoryListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.personService.getPersonRelationships(this.person.id)
+    this.personService.getPersonalInventory(this.person.id)
     .subscribe((result : any) => {
       this.items = result.data;
     });
@@ -69,10 +70,10 @@ export class PersonalInventoryListComponent implements OnInit, OnDestroy {
 
   open(content){
     this.saving = false;
-    this.setup_new_relationship();
-    this.parameterService.getRelationshipTypes().subscribe(result => {
+    this.setup_new_item();
+    this.personService.getInventoryItems().subscribe((result_items : Result<any>) => {
 
-      this.relationship_types = result;
+      this.inventory_items = result_items.data;
 
       this.modalService.open(content).result.then((result2) => {
 
@@ -83,23 +84,21 @@ export class PersonalInventoryListComponent implements OnInit, OnDestroy {
 
   }
 
-  save_new_indication(close_action) {
+  save_current_item(close_action) {
     this.saving = true;
   }
 
-  remove_relationship(indication) {
+  remove_item(indication) {
 
   }
 
-  validate_item() {
-
-  }
-
-  private setup_new_relationship() {
+  private setup_new_item() {
     this.current_item = {
-      valid: true,
-      person2: null,
-      person: this.person
+      person: this.person,
+      id: 0,
+      title: null,
+      inventory_item_id: null,
+      description: null
     }
   }
 }

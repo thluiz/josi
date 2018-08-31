@@ -2,105 +2,146 @@
 
 <style>
   .action_container {
-    position:relative;
-    float:right;
+    position: relative;
+    float: right;
   }
+
   .action_button {
-    color:silver !important;
+    color: silver !important;
     font-size: 0.6em;
   }
+
   .action_button:hover {
-    color:black !important;
+    color: black !important;
   }
+
 </style>
 
 <div class="row">
   <div class="col-12">
-    <div class="card">
-      <div class="card-header" style="background-color:white;width:100%;padding:10px">
-        <diary-header panel="members"></diary-header>
-        <div class="row">
-          <div class="col-12">
-            <div class="row">
-              <div class="col-12 col-xl-6 col-lg-6 col-md-12">
-                <diary-change-branch [branch]="current_branch" (onChangeBranch)="branchSelected($event)"></diary-change-branch>
-              </div>
-              <div class="col-12 col-xl-2 col-lg-2 col-md-4 col-sm-12">
-                <diary-change-view initial_display="agenda"></diary-change-view>
-              </div>
-              <div class="col-9 col-xl-3 col-lg-3 col-md-6">
-                <div class="form-group">
-                  <div class="input-group">
-                    <input class="form-control text-center" placeholder="dd/mm/aaaa" name="current_date" [(ngModel)]="current_date" (ngModelChange)="change_current_date($event)"
-                      ngbDatepicker #dpCurrentDate="ngbDatepicker" />
-                    <div class="input-group-addon" (click)="dpCurrentDate.toggle()">
-                      <i class="ft-calendar" style="cursor: pointer;"></i>
-                    </div>
+    <div class="card-header" style="background-color:white;width:100%;padding:10px">
+      <diary-header panel="members"></diary-header>
+      <div class="row">
+        <div class="col-12">
+          <div class="row">
+            <div class="col-12 col-xl-6 col-lg-6 col-md-12">
+              <diary-change-branch [branch]="current_branch" (onChangeBranch)="branchSelected($event)"></diary-change-branch>
+            </div>
+            <div class="col-12 col-xl-2 col-lg-2 col-md-4 col-sm-12">
+              <diary-change-view initial_display="agenda"></diary-change-view>
+            </div>
+            <div class="col-9 col-xl-3 col-lg-3 col-md-6">
+              <div class="form-group">
+                <div class="input-group">
+                  <input class="form-control text-center" placeholder="dd/mm/aaaa" name="current_date" [(ngModel)]="current_date"
+                    (ngModelChange)="change_current_date($event)" ngbDatepicker #dpCurrentDate="ngbDatepicker" />
+                  <div class="input-group-addon" (click)="dpCurrentDate.toggle()">
+                    <i class="ft-calendar" style="cursor: pointer;"></i>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="row d-block d-lg-none">
-          <div class="col-12">
-            <lateral-summary [branch]="current_branch" [week]="current_week">
-            </lateral-summary>
-          </div>
-        </div>
-        <div class="row d-block d-lg-none">
-          <div class="col-12">
-			<current-activities
-			[branch]="current_branch">
-			</current-activities>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12 col-sm-12 col-lg-7">
-            <div class="row" *ngFor="let schedule of agenda">
-			  <div class="col-12"
-			  style="border:1px solid silver;margin-bottom:10px;border-bottom:0;"
-			  *ngIf="schedule.incidents && schedule.incidents.length > 0">
-
-                <h4 *ngIf="schedule.schedule_group <= 0"></h4>
-                <h4 *ngIf="schedule.schedule_group > 0" style="margin-top:12px">
-                  {{ ('00' + schedule.schedule_group).slice(-2) }}:00
-                  <div class="action_container">
-                    <a class="action_button" (click)="open_new_activity_modal();">
-                      <i class="ft-plus"></i>
-                      <i class="far fa-calendar mr-2"></i>
-                    </a>
-                    <a class="action_button" (click)="open_new_person_modal();">
-                      <i class="ft-plus"></i>
-                      <i class="fas fa-user mr-2"></i>
-                    </a>
-                  </div>
-                </h4>
-                <div class="row" *ngFor="let incident of schedule.incidents, let k = index">
-                  <div class="col-12" style="line-height:2em;border:1px solid silver;border-left:0;border-right:0" *ngIf="current_branch <= 0 || incident.branch_id == current_branch"
-                    [style.border-top]="k != 0 ? '0' : '1px solid silver'">
-                    <incident-agenda-listitem
-                    [branch]="current_branch"
-                    [incident]="incident">
-                    </incident-agenda-listitem>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-5 col-lg-5 d-none d-lg-block">
-			<lateral-summary
-				[branch]="current_branch"
-				[week]="current_week">
-			</lateral-summary>
-			<current-activities
-			[branch]="current_branch">
-            </current-activities>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<div class="row">
+  <div class="col-12 col-xl-8">
+    <div class="card card-block" *ngFor="let ownership of not_migrated_ownerships">
+      <h6 class="card-title" style="cursor:pointer" (click)="open_migrate_ownership(ownership, migrate_ownership_modal)">
+        <i class="fas fa-forward" style="color:red"></i>
+        {{ ownership.date | date: 'HH' }} - {{ ownership.person_name }}
+      </h6>
+      <div class="card-text" *ngIf="!ownership['show_content']">
+        Sem data de fim definida
+      </div>
+    </div>
+
+    <ownership-agenda-view *ngFor="let ownership of ownerships"
+      [ownership]="ownership"
+      [incidents]="incidents | filterBy: ['ownership_id'] : ownership.id">
+    </ownership-agenda-view>
+
+    <div class="card">
+      <div class="card-header">
+        <h4>Atividades sem titularidade</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12" style="border:1px solid silver;margin-bottom:10px;border-bottom:0;">
+            <div class="row" *ngFor="let incident of incidents | filterBy: ['ownership_id'] : -1, let k = index">
+              <div class="col-12" style="line-height:2em;border:1px solid silver;border-left:0;border-right:0" *ngIf="current_branch <= 0 || incident.branch_id == current_branch"
+                [style.border-top]="k != 0 ? '0' : '1px solid silver'">
+                <incident-agenda-listitem [branch]="current_branch" [incident]="incident">
+                </incident-agenda-listitem>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-xl-4">
+    <div class="card">
+      <div class="card-text">
+        <lateral-summary [branch]="current_branch" [week]="current_week">
+        </lateral-summary>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-text">
+        <current-activities [branch]="current_branch">
+        </current-activities>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #migrate_ownership_modal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title" style="font-weight: bold">Migrar Titularidade</h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <label for="ownership_end_date">Defina a data de fim</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <div class="input-group">
+          <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="migrating_ownership['tmp_end_date']"
+            id="ownership_end_date" name="ownership_end_date" autocomplete="off" ngbDatepicker #niDueDateDate="ngbDatepicker" />
+          <div class="input-group-addon" (click)="niDueDateDate.toggle()">
+            <i class="ft-calendar" style="cursor: pointer;"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="input-group">
+          <ngb-timepicker [spinners]="false" [(ngModel)]="migrating_ownership['tmp_end_time']"></ngb-timepicker>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer" *ngIf="saving">
+    <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+  </div>
+  <div class="modal-footer" *ngIf="!saving">
+    <button type="button" class="btn btn-success" (click)="migrate_ownership(d);">
+      <i class="icon-check"></i>
+      Migrar
+    </button>
+    <button type="button" class="btn btn-silver" (click)="d('cancel ownersihip migration!');">
+      <i class="icon-action-undo"></i>
+      Cancelar
+    </button>
+  </div>
+</ng-template>

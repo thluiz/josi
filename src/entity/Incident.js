@@ -63,11 +63,13 @@ __decorate([
     __metadata("design:type", IncidentType_1.IncidentType)
 ], Incident.prototype, "type", void 0);
 __decorate([
-    typeorm_1.Column({ type: "datetime", default: () => "getdate()" })
-    // tslint:disable-next-line:variable-name
-    ,
+    typeorm_1.Column({ type: "datetime", default: () => "getdate()" }),
     __metadata("design:type", Date)
 ], Incident.prototype, "created_on", void 0);
+__decorate([
+    typeorm_1.Column({ type: "datetime" }),
+    __metadata("design:type", Date)
+], Incident.prototype, "end_date", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Boolean)

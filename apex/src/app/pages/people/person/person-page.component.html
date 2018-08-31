@@ -315,6 +315,13 @@
                                     [person]="person">
                                     </person-relationship-list>
                                 </div>
+                                <div class="col-12 col-xl-12 col-md-6"
+                                *ngIf="person.is_active_member"
+                                style="margin-bottom:30px;">
+                                    <personal-inventory-list
+                                    [person]="person">
+                                    </personal-inventory-list>
+                                </div>
                                 <div class="col-12 col-xl-12 col-md-6" style="margin-bottom:30px;">
                                     <person-contact-list
                                     [person]="person">
