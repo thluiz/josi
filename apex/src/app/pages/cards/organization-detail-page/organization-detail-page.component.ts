@@ -23,7 +23,7 @@ export class OrganizationDetailPageComponent implements OnInit, OnDestroy {
       this.id = +params['id'];
 
       this.cardService.getOrganization(this.id, true).subscribe((result_data : any) => {
-        this.organization = result_data.data;
+        this.organization = result_data.data[0];
       });
     });
   }

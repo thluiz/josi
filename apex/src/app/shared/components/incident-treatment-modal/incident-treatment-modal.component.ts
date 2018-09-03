@@ -123,18 +123,22 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
 
   reload_incident(incident, action? : () => void) {
     this.saving = false;
+
     Observable.zip(
       this.incidentService.getIncidentDetails(incident.id),
-      this.personService.getData(incident.person_id),
       this.incidentService.getComments(incident.id),
       this.parameterService.getPaymentMethods(),
 
       (result_incident_data: Result<any>,
-        result_person: Result<any>, comments: Result<any[]>,
+        comments: Result<any[]>,
         result_payment_methods: Result<any[]>) => {
 
         this.current_incident = result_incident_data.data[0];
-        this.person = result_person.data[0];
+
+        this.personService.getData(this.current_incident.person_id)
+        .subscribe((result_person: Result<any>) => {
+          this.person = result_person.data[0];
+        });
 
         this.comments = comments.data
           && comments.data.length > 0
