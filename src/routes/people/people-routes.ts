@@ -88,11 +88,15 @@ export function routes(app) {
     "/api/people/:id",
     auth.ensureLoggedIn(),
     async (request, response) => {
-      const result = await DBM.ExecuteJsonSP("GetPersonData", {
-        id: request.params.id
-      });
+      if (request.params.id > 0) {
+        const result = await DBM.ExecuteJsonSP("GetPersonData", {
+          id: request.params.id
+        });
 
-      response.send(result);
+        response.send(result);
+      } else {
+        response.status(404).json();
+      }
     }
   );
 

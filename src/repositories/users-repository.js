@@ -63,21 +63,21 @@ class UsersRepository extends base_repository_1.BaseRepository {
     }
 }
 __decorate([
-    cache_decorator_1.cache(true, 10000),
+    cache_decorator_1.cache(true),
     trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersRepository.prototype, "loadAllUserData", null);
 __decorate([
-    cache_decorator_1.cache(true, 100000),
+    cache_decorator_1.cache(true),
     trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersRepository.prototype, "getUserByToken", null);
 __decorate([
-    cache_decorator_1.cache(true, 10000),
+    cache_decorator_1.cache(true),
     trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

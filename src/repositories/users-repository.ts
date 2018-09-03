@@ -11,7 +11,7 @@ export class UsersRepository extends BaseRepository<User> {
         super(User);
     }
 
-    @cache(true, 10000)
+    @cache(true)
     @tryLogAsync()
     async loadAllUserData(userId): Promise<Result<User>> {
         const UR = await this.getRepository();
@@ -27,7 +27,7 @@ export class UsersRepository extends BaseRepository<User> {
         return SuccessResult.GeneralOk(user);
     }
 
-    @cache(true, 100000)
+    @cache(true)
     @tryLogAsync()
     async getUserByToken(token): Promise<Result<User>> {
         const UR = await this.getRepository();
@@ -41,7 +41,7 @@ export class UsersRepository extends BaseRepository<User> {
         return SuccessResult.GeneralOk(user);
     }
 
-    @cache(true, 10000)
+    @cache(true)
     @tryLogAsync()
     async getUserByEmail(email): Promise<Result<User>> {
         const UR = await this.getRepository();

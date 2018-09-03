@@ -1,3 +1,4 @@
+import { UsersRepository } from './src/repositories/users-repository';
 import appInsights = require("applicationinsights");
 
 import { DependencyManager } from "./src/services/managers/dependency-manager";
@@ -65,6 +66,22 @@ app.get(/^((?!\.).)*$/, (req, res) => {
 
 app.use(express.static("./apex/public"));
 
-app.listen(port, () => {
+app.listen(port, async () => {
+    if (process.env.PRODUCTION !== "false") {
+        await WarmUserCaches();
+    }
+
     LoggerService.info(LogOrigins.General, `server listening to ${port}`);
 });
+
+// Warm user caches for preventing timeouts
+async function WarmUserCaches() {
+    const UR = new UsersRepository();
+    const users = await (await UR.getRepository()).find();
+
+    for (const user of users) {
+        await UR.getUserByEmail(user.email);
+        await UR.getUserByToken(user.token);
+        await UR.loadAllUserData(user.id);
+    }
+}
