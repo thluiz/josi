@@ -58,7 +58,7 @@
             <h5 style="margin:0">
               {{ type.split("|")[0] }}
             </h5>
-            <div class="row" *ngFor="let incident of incidents | filterBy : ['incident_type'] : type.split('|')[1], let k = index, let j = last">
+            <div class="row" *ngFor="let incident of incidents | filterBy : ['incident_type'] : type.split('|')[1] : ['strict'], let k = index, let j = last">
               <div class="col-12 pl-3" [style.border-bottom]="j ? null : '1px solid #efefef'" style="margin:5px">
                 <incident-agenda-listitem [showIncidentType]="false" [branch]="current_branch" [incident]="incident">
                 </incident-agenda-listitem>
