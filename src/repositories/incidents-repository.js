@@ -32,6 +32,11 @@ class IncidentsRepository extends base_repository_1.BaseRepository {
         super(Incident_1.Incident);
         this.summaryCache = [];
     }
+    getIncidentsWithOutOwnership(branchId, locationId, startDate, endDate) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.DBM.ExecuteJsonSP("GetIncidentsWithOutOwnership", { branch_id: branchId > 0 ? branchId : null }, { location_id: locationId > 0 ? locationId : null }, { start_date: startDate }, { end_date: endDate });
+        });
+    }
     getAgenda(branchId, date) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.DBM.ExecuteJsonSP("GetAgenda3", { branch_id: branchId }, { date });
@@ -114,6 +119,12 @@ class IncidentsRepository extends base_repository_1.BaseRepository {
         });
     }
 }
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getIncidentsWithOutOwnership", null);
 __decorate([
     trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),

@@ -57,6 +57,17 @@ export function routes(app) {
         res.send(result);
     });
 
+    app.get("/api/incidents-without-ownership/:branch_id/:location_id/:start_date/:end_date",
+    auth.ensureLoggedIn(),
+    async (req, res) => {
+        const result = await IR.getIncidentsWithOutOwnership(
+            req.params.branch_id, req.params.location_id,
+            req.params.start_date, req.params.end_date
+        );
+
+        res.send(result);
+    });
+
     app.get("/api/daily/:branch?/:display?/:display_modifier?",
     auth.ensureLoggedIn(),
     async (request, response) => {

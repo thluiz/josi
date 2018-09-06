@@ -81,16 +81,23 @@ export enum AddToOwnership {
     AddToExistingOwnership
 }
 
+export interface IMigrateOwnershipData { id: number; end_date: string; location_id: number; }
+
 export class IncidentsService extends BaseService {
 
     @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
-    async migrateOwnership(ownership: Incident) {
+    async migrateOwnership(ownership: Incident | IMigrateOwnershipData,
+                           incidents: Array<{ id: number }>) {
+
         const execution = await this.databaseManager
             .ExecuteTypedJsonSP(OWNERSHIP_MIGRATED,
                 "MigrateOwnership",
                 [{ ownership_id: ownership.id },
-                { end_date: ownership.end_date }]
+                { location_id:  (ownership as IMigrateOwnershipData).location_id
+                                || (ownership as Incident).location.id },
+                { end_date: ownership.end_date },
+                { incidents_list: incidents.map(i => i.id).join(",")} ]
             );
 
         return execution;

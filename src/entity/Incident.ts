@@ -3,6 +3,7 @@
 import { Branch } from "./Branch";
 import { Card } from "./Card";
 import { IncidentType } from "./IncidentType";
+import { Location } from "./Location";
 import { Person } from "./Person";
 import { PersonIncident } from "./PersonIncident";
 
@@ -50,6 +51,10 @@ export class Incident {
     @ManyToOne(() => Branch)
     @JoinColumn({ name: "branch_id" })
     branch: Branch;
+
+    @ManyToOne(() => Location)
+    @JoinColumn({ name: "location_id" })
+    location: Location;
 
     @Column()
     title: string;

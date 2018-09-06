@@ -13,7 +13,7 @@ const incidents_service_1 = require("../services/incidents-service");
 function routes(app) {
     const IS = new incidents_service_1.IncidentsService();
     app.post("/api/ownerships/migrate", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield IS.migrateOwnership(req.body.ownership);
+        const result = yield IS.migrateOwnership(req.body.ownership, req.body.incidents);
         response.send(result);
     }));
 }

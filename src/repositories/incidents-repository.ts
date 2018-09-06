@@ -27,6 +27,17 @@ export class IncidentsRepository extends BaseRepository<Incident> {
     }
 
     @tryLogAsync()
+    async getIncidentsWithOutOwnership(branchId, locationId, startDate, endDate)
+    : Promise<Result<Incident[]>> {
+        return await this.DBM.ExecuteJsonSP<Incident[]>("GetIncidentsWithOutOwnership",
+            { branch_id: branchId > 0 ? branchId : null },
+            { location_id: locationId > 0 ? locationId : null },
+            { start_date: startDate },
+            { end_date: endDate }
+        );
+    }
+
+    @tryLogAsync()
     async getAgenda(branchId, date): Promise<Result<any>> {
         return await this.DBM.ExecuteJsonSP("GetAgenda3",
             { branch_id: branchId },
@@ -35,8 +46,8 @@ export class IncidentsRepository extends BaseRepository<Incident> {
     }
 
     @tryLogAsync()
-    async getAvailableOwnerships(branchId, date, type): Promise<Result<Incident>> {
-        const result = await this.DBM.ExecuteJsonSP<Incident>("GetAvailableOwnerships",
+    async getAvailableOwnerships(branchId, date, type): Promise<Result<Incident[]>> {
+        const result = await this.DBM.ExecuteJsonSP<Incident[]>("GetAvailableOwnerships",
             { branch_id: branchId },
             { date },
             { type }
