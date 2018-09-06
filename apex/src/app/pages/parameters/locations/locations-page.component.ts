@@ -37,13 +37,17 @@ export class LocationsPageComponent implements OnInit, OnDestroy {
   create(content) {
     this.saving = false;
     this.current_item = new Location();
-    this.open_modal(content);
+    this.loadDataAndOpenModal(content);
   }
 
   edit(content, item) {
     this.saving = false;
     this.current_item = item;
 
+    this.loadDataAndOpenModal(content);
+  }
+
+  private loadDataAndOpenModal(content) {
     Observable.zip(
       this.parameterService.getBranches(),
       this.parameterService.getCountries(),

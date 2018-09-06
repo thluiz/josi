@@ -157,7 +157,7 @@
       <div class="col-12 col-md-6">
         <div class="input-group">
           <ngb-timepicker [spinners]="false"
-            (ngModelChange)="loadIncidentsWithoutOwnership()"
+            (ngModelChange)="loadIncidentsWithoutOwnership($event)"
             [(ngModel)]="migrating_ownership['tmp_end_time']
           "></ngb-timepicker>
         </div>

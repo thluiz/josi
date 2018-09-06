@@ -209,7 +209,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
           this.branch_locations = result_locations.data.filter(l => l.branch != null);
         }
 
-        this.loadIncidentsWithoutOwnership(() => {
+        this.loadIncidentsWithoutOwnership(null, () => {
           this.saving = false;
           this.open_modal(migrate_ownership_modal);
         });
@@ -217,14 +217,14 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     ).subscribe();
   }
 
-  loadIncidentsWithoutOwnership(on_load? : () => void) {
+  loadIncidentsWithoutOwnership(time_event, on_load? : () => void) {
     this.incidentService.getIncidentsWithoutOwnership(
       this.migrating_ownership.branch_id,
       this.migrating_ownership.location_id,
       this.migrating_ownership.date,
       this.utilsService.translate_date_time_to_server(
         this.migrating_ownership["tmp_end_date"],
-        this.migrating_ownership["tmp_end_time"]
+        time_event || this.migrating_ownership["tmp_end_time"]
       ),
     ).subscribe((incidents_without_ownership : Result<LightIncident[]>) => {
       if(!incidents_without_ownership.success) {
