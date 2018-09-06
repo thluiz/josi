@@ -37,6 +37,7 @@
             <select id="new_incident_children_type" [(ngModel)]="new_incident.children_type" class="form-control" (ngModelChange)="change_new_incident_children_type($event)"
               *ngIf="new_incident.tmp_type != null && new_incident.children_type == null && new_incident.tmp_type.childrens != null"
               style="width:100%">
+              <option></option>
               <option *ngFor="let t of new_incident.tmp_type.childrens" [value]="t.id">{{t.name}}</option>
             </select>
           </fieldset>
