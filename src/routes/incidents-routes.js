@@ -38,6 +38,10 @@ function routes(app) {
         const result = yield IR.getAgenda(req.params.branch > 0 ? req.params.branch : null, req.params.date);
         res.send(result);
     }));
+    app.get("/api/incidents-without-ownership/:branch_id/:location_id/:start_date/:end_date", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield IR.getIncidentsWithOutOwnership(req.params.branch_id, req.params.location_id, req.params.start_date, req.params.end_date);
+        res.send(result);
+    }));
     app.get("/api/daily/:branch?/:display?/:display_modifier?", auth.ensureLoggedIn(), (request, response) => __awaiter(this, void 0, void 0, function* () {
         const result = yield IR.getDailyMonitor(request.params.branch > 0 ? request.params.branch : null, request.params.display || 0, request.params.display_modifier || 0);
         response.send(result);

@@ -7,7 +7,7 @@ export function routes(app) {
     app.post("/api/ownerships/migrate",
     auth.ensureLoggedIn(),
     async (req, response) => {
-        const result = await IS.migrateOwnership(req.body.ownership);
+        const result = await IS.migrateOwnership(req.body.ownership, req.body.incidents);
 
         response.send(result);
     });

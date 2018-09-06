@@ -45,7 +45,7 @@ import {
   NgbDateParserFormatter
 } from "@ng-bootstrap/ng-bootstrap";
 
-import { Subscription } from "rxjs";
+import { Subscription, Observable } from "rxjs";
 import {
   DatePickerI18n,
   NgbDatePTParserFormatter,
@@ -59,6 +59,7 @@ import { isArray } from "util";
 import { LateralSummaryComponent } from "app/shared/components/lateral-summary/lateral-summary.component";
 import { ModalType, ModalService } from "app/services/modal-service";
 import { Ownership } from "app/shared/models/ownership";
+import { Location } from "app/shared/models/location.model";
 import { GroupByPipe } from "ngx-pipes";
 
 @Component({
@@ -87,6 +88,11 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
   current_date;
   manual_incident_types;
   saving = false;
+
+  im_locations: Location[] = [];
+  branch_locations: Location[] = [];
+  incidents_without_ownership : LightIncident[] = [];
+
 
   migrating_ownership: Ownership;
 
@@ -195,10 +201,83 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.migrating_ownership["tmp_end_date"] = end_date;
     this.migrating_ownership["tmp_end_time"] = end_time;
 
-    this.open_modal(migrate_ownership_modal);
+    Observable.zip(
+      this.parameterService.getActiveLocations(),
+      (result_locations : Result<Location[]>) => {
+        if(result_locations.success) {
+          this.im_locations = result_locations.data.filter(l => l.branch == null);
+          this.branch_locations = result_locations.data.filter(l => l.branch != null);
+        }
+
+        this.loadIncidentsWithoutOwnership(() => {
+          this.saving = false;
+          this.open_modal(migrate_ownership_modal);
+        });
+      }
+    ).subscribe();
+  }
+
+  loadIncidentsWithoutOwnership(on_load? : () => void) {
+    this.incidentService.getIncidentsWithoutOwnership(
+      this.migrating_ownership.branch_id,
+      this.migrating_ownership.location_id,
+      this.migrating_ownership.date,
+      this.utilsService.translate_date_time_to_server(
+        this.migrating_ownership["tmp_end_date"],
+        this.migrating_ownership["tmp_end_time"]
+      ),
+    ).subscribe((incidents_without_ownership : Result<LightIncident[]>) => {
+      if(!incidents_without_ownership.success) {
+        this.toastrService.error(incidents_without_ownership.message);
+        return;
+      }
+      this.incidents_without_ownership = incidents_without_ownership.data.map(iwo => {
+        iwo['should_migrate'] = true;
+        return iwo;
+      });
+
+      if(on_load) {
+        on_load();
+      }
+    })
+  }
+
+  change_migrating_ownership_branch() {
+    this.migrating_ownership.location_id = null;
+    if(this.migrating_ownership.branch_id) {
+      const locations = this.branch_locations
+      .filter(l => l.branch.id == this.migrating_ownership.branch_id);
+
+      if(locations.length == 1) {
+        this.migrating_ownership.location_id = locations[0].id;
+      }
+
+      return;
+    }
+
+    if(this.im_locations.length == 1) {
+      this.migrating_ownership.location_id = this.im_locations[0].id;
+    }
+  }
+
+  compareFn(a, b) {
+    if(!a || !b || !a.id || !b.id)
+      return false;
+
+    return a.id == b.id;
   }
 
   migrate_ownership(close_action) {
+    if(!this.migrating_ownership.location_id) {
+      this.toastrService.error("Informe o local da titularidade");
+      return;
+    }
+
+    if(!this.migrating_ownership['tmp_end_time']) {
+      this.toastrService.error("Informe o horário de fim da titularidade");
+      return;
+    }
+
     this.saving = true;
 
     this.migrating_ownership.end_date = this.utilsService.translate_date_time_to_server(
@@ -207,7 +286,10 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
     );
 
     this.incidentService
-      .migrateOwnership(this.migrating_ownership)
+      .migrateOwnership(
+        this.migrating_ownership,
+        this.incidents_without_ownership.filter(iwo => iwo['should_migrate'])
+      )
       .subscribe((result_data: Result<any>) => {
         this.saving = false;
 

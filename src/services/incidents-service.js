@@ -56,11 +56,14 @@ var AddToOwnership;
     AddToOwnership[AddToOwnership["AddToExistingOwnership"] = 2] = "AddToExistingOwnership";
 })(AddToOwnership = exports.AddToOwnership || (exports.AddToOwnership = {}));
 class IncidentsService extends base_service_1.BaseService {
-    migrateOwnership(ownership) {
+    migrateOwnership(ownership, incidents) {
         return __awaiter(this, void 0, void 0, function* () {
             const execution = yield this.databaseManager
                 .ExecuteTypedJsonSP(exports.OWNERSHIP_MIGRATED, "MigrateOwnership", [{ ownership_id: ownership.id },
-                { end_date: ownership.end_date }]);
+                { location_id: ownership.location_id
+                        || ownership.location.id },
+                { end_date: ownership.end_date },
+                { incidents_list: incidents.map(i => i.id).join(",") }]);
             return execution;
         });
     }
@@ -311,7 +314,7 @@ __decorate([
     trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Incident_1.Incident]),
+    __metadata("design:paramtypes", [Object, Array]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "migrateOwnership", null);
 __decorate([

@@ -28,10 +28,12 @@ export class IncidentService {
 
   }
 
-  migrateOwnership(ownership: Ownership) {
+  migrateOwnership(ownership: Ownership, incidents_to_migrate: LightIncident[]) {
+    console.log(incidents_to_migrate);
     return this.http
     .post_and_emit('/ownerships/migrate', {
-      ownership
+      ownership,
+      incidents: incidents_to_migrate.map(i => { return { id: i.id } })
     });
   }
 
@@ -52,10 +54,15 @@ export class IncidentService {
   }
 
   getCurrentActivities(branch) {
-    let date = new Date();
-
     return this.http
     .get(`/current_activities/${branch}`);
+  }
+
+  getIncidentsWithoutOwnership(branch_id :number,
+    location_id : number, start_date : string, end_date : string) {
+
+    return this.http
+      .get(`/incidents-without-ownership/${branch_id > 0 ? branch_id : 0}/${location_id > 0 ? location_id : 0}/${start_date}/${end_date}`);
   }
 
   close_incident(incident) {

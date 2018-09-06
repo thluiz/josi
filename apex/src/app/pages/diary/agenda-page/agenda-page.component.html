@@ -56,13 +56,11 @@
         {{ ownership.date | date: 'HH' }} - {{ ownership.person_name }}
       </h6>
       <div class="card-text" *ngIf="!ownership['show_content']">
-        Sem data de fim definida
+        Sem local definido
       </div>
     </div>
 
-    <ownership-agenda-view *ngFor="let ownership of ownerships"
-      [ownership]="ownership"
-      [incidents]="incidents | filterBy: ['ownership_id'] : ownership.id">
+    <ownership-agenda-view *ngFor="let ownership of ownerships" [ownership]="ownership" [incidents]="incidents | filterBy: ['ownership_id'] : ownership.id">
     </ownership-agenda-view>
 
     <div class="card">
@@ -111,14 +109,46 @@
   <div class="modal-body">
     <div class="row">
       <div class="col-12 col-md-6">
-        <label for="ownership_end_date">Defina a data de fim</label>
+        <label for="ownership_branch">Organização</label>
+      </div>
+    </div>
+    <div class="form-group">
+      <select id="ownership_branch" [(ngModel)]="migrating_ownership.branch_id" (ngModelChange)="change_migrating_ownership_branch()"
+        class="form-control">
+        <option [ngValue]="null">Gestão Integrada</option>
+        <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
+      </select>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <label for="ownership_location">Local</label>
+      </div>
+    </div>
+    <div class="form-group">
+      <select id="ownership_location" *ngIf="migrating_ownership.branch_id > 0" [(ngModel)]="migrating_ownership.location_id"
+        [compareWith]="compareFn" class="form-control">
+        <option [ngValue]="null"></option>
+        <option *ngFor="let l of branch_locations | filterBy: ['branch.id'] : migrating_ownership.branch_id : 'strinct'"
+          [value]="l.id">{{l.name}}</option>
+      </select>
+
+      <select id="ownership_location" *ngIf="!migrating_ownership.branch_id" [(ngModel)]="migrating_ownership.location_id"
+        [compareWith]="compareFn" class="form-control">
+        <option [ngValue]="null"></option>
+        <option *ngFor="let l of im_locations" [value]="l.id">{{l.name}}</option>
+      </select>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <label for="ownership_end_date">Data de fim</label>
       </div>
     </div>
     <div class="row">
       <div class="col-12 col-md-6">
         <div class="input-group">
           <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="migrating_ownership['tmp_end_date']"
-            id="ownership_end_date" name="ownership_end_date" autocomplete="off" ngbDatepicker #niDueDateDate="ngbDatepicker" />
+            id="ownership_end_date" name="ownership_end_date" autocomplete="off" ngbDatepicker #niDueDateDate="ngbDatepicker"
+            (ngModelChange)="loadIncidentsWithoutOwnership()" />
           <div class="input-group-addon" (click)="niDueDateDate.toggle()">
             <i class="ft-calendar" style="cursor: pointer;"></i>
           </div>
@@ -126,7 +156,25 @@
       </div>
       <div class="col-12 col-md-6">
         <div class="input-group">
-          <ngb-timepicker [spinners]="false" [(ngModel)]="migrating_ownership['tmp_end_time']"></ngb-timepicker>
+          <ngb-timepicker [spinners]="false"
+            (ngModelChange)="loadIncidentsWithoutOwnership()"
+            [(ngModel)]="migrating_ownership['tmp_end_time']
+          "></ngb-timepicker>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 pl-3 ">
+          <div *ngFor="let iwo of incidents_without_ownership">
+            <div class="row">
+              <div class="col-12 pl-3">
+                <label class="option_container">
+                  {{ iwo.abrev }} <span *ngIf="iwo.title">- {{ iwo.title }}</span> - {{ iwo.person }}
+                  <input type="checkbox" [checked]="iwo['should_migrate']" (change)="iwo['should_migrate'] = !iwo['should_migrate']" />
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
