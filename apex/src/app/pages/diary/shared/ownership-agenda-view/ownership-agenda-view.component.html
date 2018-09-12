@@ -1,10 +1,8 @@
-<div class="card card-block">
+<div class="card card-block" [style.border]="ownership.started_on && !ownership.closed ? '1px solid gray' : null">
   <div class="card-title">
     <div class="row">
       <div class="col-12 col-md-8">
-          <h4
-          (click)="show_incident_details(ownership)"
-          style="cursor:pointer" *ngIf="ownership.end_date">
+        <h4 (click)="show_incident_details(ownership)" style="cursor:pointer" *ngIf="ownership.end_date">
           <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
           <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
           <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
@@ -12,37 +10,26 @@
         </h4>
       </div>
       <div class="col-12 col-md-4 text-right">
-          <button type="button"
-          class="btn btn-silver btn-sm btn-action"
-          title="Iniciar Titularidade"
-          *ngIf="!ownership.closed && !ownership.started_on"
+        <button type="button" class="btn btn-silver btn-sm btn-action" title="Iniciar Titularidade" *ngIf="!ownership.closed && !ownership.started_on"
           (click)="start_incident(ownership);">
-              <i class="fas fa-play"></i>
-          </button>
+          <i class="fas fa-play"></i>
+        </button>
       </div>
     </div>
   </div>
   <div class="card-text" *ngIf="true">
     <div class="row">
-      <div class="col-12 col-md-6">
-        <div class="row" style="border-bottom: 1px solid black;">
-          <div class="col-10">
-            <h6 style="font-weight:bold;margin-bottom:0"> Ações </h6>
-          </div>
-          <div class="col-2 text-right">
-            <button type="button" class="btn btn-silver btn-sm" style="margin:0;padding:2px;line-height:10px">
-              <i class="ft-plus"></i>
-            </button>
-          </div>
-        </div>
+      <div class="col-12 col-md-12 col-lg-6">
         <div class="row">
-          <div class="col-12 text-center">
-            Nenhuma ação adicionada
+          <div class="col-12 col-md-6 col-lg-12">
+            <incident-actions-list></incident-actions-list>
+          </div>
+          <div class="col-12 col-md-6 col-lg-12">
+            <incident-comment-list [incident]="ownership"></incident-comment-list>
           </div>
         </div>
-        <incident-comment-list [incident]="ownership"></incident-comment-list>
       </div>
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-12 col-lg-6">
         <div class="row" style="border-bottom: 1px solid black;">
           <div class="col-10">
             <h6 style="font-weight:bold;margin-bottom:0"> Atividades </h6>

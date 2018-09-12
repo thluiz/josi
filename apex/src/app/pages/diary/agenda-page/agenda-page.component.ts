@@ -218,6 +218,8 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadIncidentsWithoutOwnership(time_event, on_load? : () => void) {
+    this.saving = true;
+
     this.incidentService.getIncidentsWithoutOwnership(
       this.migrating_ownership.branch_id,
       this.migrating_ownership.location_id,
@@ -227,6 +229,8 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
         time_event || this.migrating_ownership["tmp_end_time"]
       ),
     ).subscribe((incidents_without_ownership : Result<LightIncident[]>) => {
+      this.saving = false;
+
       if(!incidents_without_ownership.success) {
         this.toastrService.error(incidents_without_ownership.message);
         return;

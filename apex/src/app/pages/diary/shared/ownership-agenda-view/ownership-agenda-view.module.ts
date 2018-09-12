@@ -6,6 +6,7 @@ import { IncidentAgendaListitemModule } from 'app/shared/components/incident-age
 import { MarkdownModule } from 'ngx-markdown';
 import { IncidentCommentListModule } from 'app/shared/components/incident-comment-list/incident-comment-list.module';
 import { NgPipesModule } from 'ngx-pipes';
+import { IncidentActionsListModule } from 'app/shared/components/incident-actions-list/incident-actions-list.module';
 
 @NgModule({
     imports: [
@@ -14,6 +15,7 @@ import { NgPipesModule } from 'ngx-pipes';
         IncidentAgendaListitemModule,
         MarkdownModule.forRoot(),
         IncidentCommentListModule,
+        IncidentActionsListModule,
         NgPipesModule
     ],
     declarations: [
