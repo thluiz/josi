@@ -19,8 +19,6 @@ export class dateFormatFromServerTimezonePipe implements PipeTransform {
                 + (Math.abs(server_timezone) < 10 ? '0' : '')
                 + Math.abs(server_timezone).toString() + ':00';  //ex: -03:00
 
-    console.log(server_timezone);
-
     const utc_date = new Date(value + stz);
 
     return format(utc_date, date_format);
