@@ -7,6 +7,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { IncidentCommentListModule } from 'app/shared/components/incident-comment-list/incident-comment-list.module';
 import { NgPipesModule } from 'ngx-pipes';
 import { IncidentActionsListModule } from 'app/shared/components/incident-actions-list/incident-actions-list.module';
+import { ApplicationPipesModule } from 'app/app-pipes.module';
 
 @NgModule({
     imports: [
@@ -16,7 +17,8 @@ import { IncidentActionsListModule } from 'app/shared/components/incident-action
         MarkdownModule.forRoot(),
         IncidentCommentListModule,
         IncidentActionsListModule,
-        NgPipesModule
+        NgPipesModule,
+        ApplicationPipesModule
     ],
     declarations: [
         OwnershipAgendaViewComponent

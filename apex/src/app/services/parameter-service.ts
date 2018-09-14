@@ -40,8 +40,17 @@ export class ParameterService {
 
   private personCardPositions$ = new ReplaySubject(1);
   private cardTemplates$ = new ReplaySubject(1);
+  private branchesTimezones$ = new ReplaySubject(1);
 
   constructor(private http: HttpClient, private utilsService: UtilsService) {}
+
+  getBranchesTimezones(forceRefresh?: boolean) {
+    return this.utilsService.cache_results(
+      this.branchesTimezones$,
+      `/branches_timezones`,
+      forceRefresh
+    );
+  }
 
   getTimeReloadComponents() {
     return 200;

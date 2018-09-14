@@ -1,15 +1,30 @@
-<div class="card card-block" [style.border]="ownership.started_on && !ownership.closed ? '1px solid gray' : null">
+<div class="card card-block"
+  [style.border]="ownership.started_on && !ownership.closed ? '1px solid gray' : null"
+  [style.opacity]="ownership.closed && from_today && lower_if_closed_today ? '0.4' : '1'">
   <div class="card-title">
     <div class="row">
       <div class="col-12 col-md-8">
-        <h4 (click)="show_incident_details(ownership)" style="cursor:pointer" *ngIf="ownership.end_date">
+        <h4 (click)="show_incident_details(ownership)" class="ownership_title">
           <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
           <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
           <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
-          {{ ownership.date | date: 'HH:mm' }} - {{ ownership.end_date | date: 'HH:mm' }}: {{ ownership.person_name }}
+          <span *ngIf="ownership.started_on; else elseStartDate">
+            {{ ownership.started_on | dateFormatFromServer : timezone_variation }}
+          </span>
+          <ng-template #elseStartDate>
+              {{ ownership.date | date: 'HH:mm' }}
+          </ng-template>
+          - {{
+            (ownership.closed_on || ownership.end_date) | date: 'HH:mm' }} - {{
+              ownership.location_name
+            }}: {{ ownership.person_name }}
         </h4>
       </div>
       <div class="col-12 col-md-4 text-right">
+        <button type="button" class="btn btn-silver btn-sm btn-action" title="Visualizar Titularidade" *ngIf="ownership.closed && from_today"
+          (click)="lower_if_closed_today = !lower_if_closed_today">
+          <i class="far fa-eye"></i>
+        </button>
         <button type="button" class="btn btn-silver btn-sm btn-action" title="Iniciar Titularidade" *ngIf="!ownership.closed && !ownership.started_on"
           (click)="start_incident(ownership);">
           <i class="fas fa-play"></i>

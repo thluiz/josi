@@ -53,7 +53,7 @@
     <div class="card card-block" *ngFor="let ownership of not_migrated_ownerships">
       <h6 class="card-title" style="cursor:pointer" (click)="open_migrate_ownership(ownership, migrate_ownership_modal)">
         <i class="fas fa-forward" style="color:red"></i>
-        {{ ownership.date | date: 'HH' }} - {{ ownership.person_name }}
+        {{ ownership.date | date: 'HH:mm' }} - {{ ownership.person_name }}
       </h6>
       <div class="card-text" *ngIf="!ownership['show_content']">
         Sem local definido
@@ -101,7 +101,7 @@
 
 <ng-template #migrate_ownership_modal let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h5 class="modal-title" style="font-weight: bold">Migrar Titularidade</h5>
+    <h5 class="modal-title" style="font-weight: bold">Migrar Titularidade <i class="fas fa-circle-notch fa-spin" *ngIf="saving"></i></h5>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -125,7 +125,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-11 pl-1">
+      <div class="col-12">
         <div class="form-group">
           <select id="ownership_location" *ngIf="migrating_ownership.branch_id > 0" [(ngModel)]="migrating_ownership.location_id"
             [compareWith]="compareFn" class="form-control">
@@ -142,11 +142,36 @@
 
         </div>
       </div>
-      <div class="col-1 p-0">
-        <i class="fas fa-circle-notch fa-spin" *ngIf="saving"></i>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <label for="ownership_description">Descrição</label>
+        <textarea class="form-control" id="ownership_description" [(ngModel)]="migrating_ownership.description" rows="3"></textarea>
       </div>
     </div>
-
+    <div class="row">
+      <div class="col-12 pt-2">
+        <label for="ownership_date">Início</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <div class="input-group">
+          <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="migrating_ownership['tmp_date']"
+            id="ownership_end_date" name="ownership_date" autocomplete="off" ngbDatepicker #niDueDateDate="ngbDatepicker"
+            (ngModelChange)="loadIncidentsWithoutOwnership()" />
+          <div class="input-group-addon" (click)="niDueDateDate.toggle()">
+            <i class="ft-calendar" style="cursor: pointer;"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="input-group">
+          <ngb-timepicker [spinners]="false" (ngModelChange)="loadIncidentsWithoutOwnership($event)" [(ngModel)]="migrating_ownership['tmp_time']
+          "></ngb-timepicker>
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="col-12">
         <label for="ownership_end_date">Data de fim</label>

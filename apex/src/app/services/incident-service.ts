@@ -61,8 +61,6 @@ export class IncidentService {
   getIncidentsWithoutOwnership(branch_id :number,
     location_id : number, start_date : string, end_date : string) {
 
-      console.log(start_date, end_date);
-
     return this.http
       .get(`/incidents-without-ownership/${branch_id > 0 ? branch_id : 0}/${location_id > 0 ? location_id : 0}/${start_date}/${end_date}`);
   }

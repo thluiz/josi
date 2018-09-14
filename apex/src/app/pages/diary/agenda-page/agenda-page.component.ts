@@ -192,12 +192,20 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
       day: dt.getUTCDate()
     };
 
+    const start_time: NgbTimeStruct = {
+      hour: dt.getHours(),
+      minute: dt.getUTCMinutes(),
+      second: 0
+    };
+
     const end_time: NgbTimeStruct = {
       hour: dt.getHours() + 1,
       minute: dt.getUTCMinutes(),
       second: 0
     };
 
+    this.migrating_ownership["tmp_date"] = end_date;
+    this.migrating_ownership["tmp_time"] = start_time;
     this.migrating_ownership["tmp_end_date"] = end_date;
     this.migrating_ownership["tmp_end_time"] = end_time;
 
@@ -277,12 +285,22 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
+    if(!this.migrating_ownership['tmp_time']) {
+      this.toastrService.error("Informe o horário de início da titularidade");
+      return;
+    }
+
     if(!this.migrating_ownership['tmp_end_time']) {
       this.toastrService.error("Informe o horário de fim da titularidade");
       return;
     }
 
     this.saving = true;
+
+    this.migrating_ownership.date = this.utilsService.translate_date_time_to_server(
+      this.migrating_ownership["tmp_date"],
+      this.migrating_ownership["tmp_time"]
+    );
 
     this.migrating_ownership.end_date = this.utilsService.translate_date_time_to_server(
       this.migrating_ownership["tmp_end_date"],

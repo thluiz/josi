@@ -1,4 +1,4 @@
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
 import { OnInit, OnDestroy } from "@angular/core/src/metadata/lifecycle_hooks";
 import { Component, Input } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -8,7 +8,7 @@ import {
   IncidentService,
   INCIDENT_RESCHEDULED,
   INCIDENT_ACTION_PREFIX,
-  INCIDENT_ADDED,
+  INCIDENT_ADDED
 } from "app/services/incident-service";
 
 import { Subscription } from "rxjs";
@@ -16,14 +16,14 @@ import { ApplicationEventService } from "app/services/application-event-service"
 import { Result } from "app/shared/models/result";
 import { LightIncident } from "app/shared/models/incident-model";
 import { filter } from "rxjs/operators";
+import { ParameterService } from "app/services/parameter-service";
 
 @Component({
   selector: "ownership-agenda-view",
   templateUrl: "./ownership-agenda-view.component.html",
-  styleUrls: ['./ownership-agenda-view.component.scss'],
+  styleUrls: ["./ownership-agenda-view.component.scss"]
 })
 export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
-
   @Input()
   ownership: Ownership;
 
@@ -31,64 +31,97 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
   current_branch;
 
   @Input()
-  incidents : LightIncident[] = [];
+  incidents: LightIncident[] = [];
 
   saving = false;
-  today: NgbDateStruct;
+  from_today: boolean;
 
-  private ownership_events_subscriber : Subscription;
-  private incidents_events_subscriber : Subscription;
+  lower_if_closed_today =  true;
+
+  private ownership_events_subscriber: Subscription;
+  private incidents_events_subscriber: Subscription;
+  timezone_variation : number = -3;
 
   constructor(
     private modalService: ModalService,
     private incidentService: IncidentService,
-    private eventManager: ApplicationEventService
+    private eventManager: ApplicationEventService,
+    private parameterService: ParameterService
   ) {
-    const today = new Date();
-    this.today = {
-      year: today.getUTCFullYear(),
-      month: today.getUTCMonth() + 1,
-      day: today.getUTCDate()
-    }
+
+
   }
 
   ngOnDestroy(): void {
-    if(this.ownership_events_subscriber) {
-      this.ownership_events_subscriber.unsubscribe()
+    if (this.ownership_events_subscriber) {
+      this.ownership_events_subscriber.unsubscribe();
     }
 
-    if(this.incidents_events_subscriber) {
-      this.incidents_events_subscriber.unsubscribe()
+    if (this.incidents_events_subscriber) {
+      this.incidents_events_subscriber.unsubscribe();
     }
   }
 
   ngOnInit(): void {
-    this.ownership_events_subscriber = this.eventManager
-    .event$
-    .pipe(
-      filter((result : Result<LightIncident[]>) =>
-      result.data && result.data.length > 0
-      && result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1
-      && result.data.map(d => d.id).includes(this.ownership.id))
-    ).subscribe((result) => {
-      this.ownership = result.data[0] as any;
-      this.saving = false;
-    });
+    this.ownership_events_subscriber = this.eventManager.event$
+      .pipe(
+        filter(
+          (result: Result<LightIncident[]>) =>
+            result.data &&
+            result.data.length > 0 &&
+            result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1 &&
+            result.data.map(d => d.id).includes(this.ownership.id)
+        )
+      )
+      .subscribe(result => {
+        this.ownership = result.data[0] as any;
+        this.saving = false;
+      });
 
-    this.incidents_events_subscriber = this.eventManager
-    .event$
-    .pipe(
-      filter((result : Result<LightIncident[]>) =>
-      result.data && result.data.length > 0
-      && result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1
-      && result.data.map(d => d.ownership_id).includes(this.ownership.id))
-    ).subscribe((result : Result<LightIncident[]>) => {
-      if(result.type == INCIDENT_ADDED) {
-        this.incidents = this.incidents.concat(
-          result.data.filter(i => i.ownership_id == this.ownership.id)
-        );
-      }
-    });
+    this.incidents_events_subscriber = this.eventManager.event$
+      .pipe(
+        filter(
+          (result: Result<LightIncident[]>) =>
+            result.data &&
+            result.data.length > 0 &&
+            result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1 &&
+            result.data.map(d => d.ownership_id).includes(this.ownership.id)
+        )
+      )
+      .subscribe((result: Result<LightIncident[]>) => {
+        if (result.type == INCIDENT_ADDED) {
+          this.incidents = this.incidents.concat(
+            result.data.filter(i => i.ownership_id == this.ownership.id)
+          );
+        }
+      });
+
+      this.parameterService.getBranchesTimezones().subscribe(result => {
+        let branch_timezone = result.data.find(bt => bt.branch_id == this.ownership.branch_id);
+        if(branch_timezone) {
+          this.timezone_variation = branch_timezone.gmt_variation;
+        }
+      });
+
+      this.checkOwnershipFromToday();
+  }
+
+  private checkOwnershipFromToday() {
+    this.from_today = false;
+    if(!this.ownership) {
+      return;
+    }
+
+    const today = new Date();
+    const ownership_date = new Date(this.ownership.date);
+
+    if(!ownership_date) {
+      return;
+    }
+
+    this.from_today = today.getUTCFullYear() == ownership_date.getUTCFullYear() &&
+                      today.getUTCMonth() == ownership_date.getUTCMonth() &&
+                      today.getUTCDate() == ownership_date.getUTCDate();
   }
 
   show_incident_details(incident) {
@@ -97,8 +130,7 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
 
   start_incident(incident) {
     this.saving = true;
-    this.incidentService.start_incident(incident)
-    .subscribe((result) => {
+    this.incidentService.start_incident(incident).subscribe(result => {
       this.saving = false;
     });
   }

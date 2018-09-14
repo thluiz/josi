@@ -26,4 +26,6 @@ export class Ownership {
     date_in_seconds : number;
 
     comments: IncidentComment[];
+
+    location_name: string;
 }

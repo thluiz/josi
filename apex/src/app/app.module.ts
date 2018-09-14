@@ -56,6 +56,7 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { HttpService } from './services/http-service';
+import { ApplicationPipesModule } from 'app/app-pipes.module';
 
 @NgModule({
     declarations: [
@@ -92,7 +93,8 @@ import { HttpService } from './services/http-service';
         AngularFireStorageModule,
         ToastrModule.forRoot(),
         PersonOfferingModalModule,
-        ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
+        ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
+        ApplicationPipesModule
         //BrowserModule,
         //FormsModule,
         //JsonpModule
