@@ -1,14 +1,17 @@
-import { dateFormatFromServerPipe } from "./shared/pipes/date-format.pipe";
+import { dateFormatFromResponsibleTimezonePipe } from './shared/pipes/date-format-time-from-responsible-timezone.pipe';
+import { dateFormatFromServerTimezonePipe } from "./shared/pipes/date-format-time-from-server-timezone.pipe";
 import { NgModule } from "@angular/core";
 
 @NgModule({
   imports: [
   ],
   declarations: [
-    dateFormatFromServerPipe
+    dateFormatFromServerTimezonePipe,
+    dateFormatFromResponsibleTimezonePipe
   ],
   exports: [
-    dateFormatFromServerPipe
+    dateFormatFromServerTimezonePipe,
+    dateFormatFromResponsibleTimezonePipe
   ]
 })
 export class ApplicationPipesModule {}

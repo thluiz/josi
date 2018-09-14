@@ -11,7 +11,7 @@ import {
   INCIDENT_ADDED
 } from "app/services/incident-service";
 
-import { Subscription } from "rxjs";
+import { Subscription, Observable } from "rxjs";
 import { ApplicationEventService } from "app/services/application-event-service";
 import { Result } from "app/shared/models/result";
 import { LightIncident } from "app/shared/models/incident-model";
@@ -40,7 +40,6 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
 
   private ownership_events_subscriber: Subscription;
   private incidents_events_subscriber: Subscription;
-  timezone_variation : number = -3;
 
   constructor(
     private modalService: ModalService,
@@ -93,13 +92,6 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
           this.incidents = this.incidents.concat(
             result.data.filter(i => i.ownership_id == this.ownership.id)
           );
-        }
-      });
-
-      this.parameterService.getBranchesTimezones().subscribe(result => {
-        let branch_timezone = result.data.find(bt => bt.branch_id == this.ownership.branch_id);
-        if(branch_timezone) {
-          this.timezone_variation = branch_timezone.gmt_variation;
         }
       });
 

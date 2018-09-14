@@ -13,6 +13,10 @@ const database_manager_1 = require("../../services/managers/database-manager");
 const dependency_manager_1 = require("../../services/managers/dependency-manager");
 function routes(app) {
     const DBM = dependency_manager_1.DependencyManager.container.resolve(database_manager_1.DatabaseManager);
+    app.get("/api/server_timezone", (request, res) => __awaiter(this, void 0, void 0, function* () {
+        const date = new Date();
+        res.send({ timezone: -date.getTimezoneOffset() / 60 });
+    }));
     app.get("/api/countries", auth.ensureLoggedIn(), (request, res) => __awaiter(this, void 0, void 0, function* () {
         const result = yield DBM.ExecuteJsonListSQL(`select * from [country] order by [order] for json path`);
         res.send(result);

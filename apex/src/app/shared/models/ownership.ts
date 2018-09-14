@@ -4,6 +4,8 @@ export class Ownership {
     id: number;
     branch_id: number;
     location_id: number;
+    timezone_id: number;
+    gmt:number;
 
     title: string;
     description: string;

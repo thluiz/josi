@@ -9,15 +9,19 @@
           <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
           <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
           <span *ngIf="ownership.started_on; else elseStartDate">
-            {{ ownership.started_on | dateFormatFromServer : timezone_variation }}
+            {{ ownership.started_on | formatFromServerTz }}
           </span>
           <ng-template #elseStartDate>
-              {{ ownership.date | date: 'HH:mm' }}
+              {{ ownership.date | formatFromResponsibleTz : ownership.gmt }}
           </ng-template>
-          - {{
-            (ownership.closed_on || ownership.end_date) | date: 'HH:mm' }} - {{
-              ownership.location_name
-            }}: {{ ownership.person_name }}
+          -
+          <span *ngIf="ownership.closed_on; else elseEndDate">
+            {{ ownership.closed_on | formatFromServerTz }}
+          </span>
+          <ng-template #elseEndDate>
+              {{ ownership.end_date | formatFromResponsibleTz : ownership.gmt }}
+          </ng-template>
+          : {{ ownership.person_name }}
         </h4>
       </div>
       <div class="col-12 col-md-4 text-right">

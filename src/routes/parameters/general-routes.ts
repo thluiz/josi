@@ -7,6 +7,12 @@ import { DependencyManager } from "../../services/managers/dependency-manager";
 export function routes(app) {
   const DBM = DependencyManager.container.resolve(DatabaseManager);
 
+  app.get("/api/server_timezone", async (request, res) => {
+    const date = new Date();
+
+    res.send({ timezone: - date.getTimezoneOffset() / 60 });
+  });
+
   app.get("/api/countries", auth.ensureLoggedIn(), async (request, res) => {
     const result = await DBM.ExecuteJsonListSQL(
       `select * from [country] order by [order] for json path`
