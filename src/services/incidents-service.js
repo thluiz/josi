@@ -62,7 +62,9 @@ class IncidentsService extends base_service_1.BaseService {
                 .ExecuteTypedJsonSP(exports.OWNERSHIP_MIGRATED, "MigrateOwnership", [{ ownership_id: ownership.id },
                 { location_id: ownership.location_id
                         || ownership.location.id },
+                { date: ownership.date },
                 { end_date: ownership.end_date },
+                { description: ownership.description },
                 { incidents_list: incidents.map(i => i.id).join(",") }]);
             return execution;
         });

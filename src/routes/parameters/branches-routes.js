@@ -29,6 +29,15 @@ function routes(app) {
             res.status(500).json({ error });
         }
     }));
+    app.get("/api/branches_timezones", (req, res) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = yield DBM.ExecuteJsonSP(`GetBranchesTimezones`);
+            res.send(result);
+        }
+        catch (error) {
+            res.status(500).json({ error });
+        }
+    }));
     app.get("/api/all_branches/:id?", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = !req.params.id

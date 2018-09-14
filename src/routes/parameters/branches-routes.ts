@@ -27,6 +27,16 @@ export function routes(app) {
     }
   });
 
+  app.get("/api/branches_timezones", async (req, res) => {
+    try {
+      const result = await DBM.ExecuteJsonSP(`GetBranchesTimezones`);
+
+      res.send(result);
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  });
+
   app.get(
     "/api/all_branches/:id?",
     auth.ensureLoggedIn(),

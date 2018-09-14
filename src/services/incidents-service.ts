@@ -81,7 +81,12 @@ export enum AddToOwnership {
     AddToExistingOwnership
 }
 
-export interface IMigrateOwnershipData { id: number; end_date: string; location_id: number; }
+export interface IMigrateOwnershipData {
+    id: number; date: string;
+    end_date: string;
+    location_id: number;
+    description: string;
+}
 
 export class IncidentsService extends BaseService {
 
@@ -96,7 +101,9 @@ export class IncidentsService extends BaseService {
                 [{ ownership_id: ownership.id },
                 { location_id:  (ownership as IMigrateOwnershipData).location_id
                                 || (ownership as Incident).location.id },
+                { date: ownership.date },
                 { end_date: ownership.end_date },
+                { description: ownership.description },
                 { incidents_list: incidents.map(i => i.id).join(",")} ]
             );
 
