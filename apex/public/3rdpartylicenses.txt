@@ -139,13 +139,6 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-date-fns@1.29.0
-MIT
-# License
-
-date-fns is licensed under the [MIT license](http://kossnocorp.mit-license.org).
-Read more about MIT at [TLDRLegal](https://tldrlegal.com/license/mit-license).
-
 ngx-toastr@8.7.3
 MIT
 The MIT License (MIT)
@@ -950,6 +943,13 @@ This software is provided by the copyright holders and contributors “as is” 
 applicationinsights-js@1.0.17
 MIT
 Please follow the [link](http://go.microsoft.com/fwlink/?LinkID=510709)
+
+date-fns@1.29.0
+MIT
+# License
+
+date-fns is licensed under the [MIT license](http://kossnocorp.mit-license.org).
+Read more about MIT at [TLDRLegal](https://tldrlegal.com/license/mit-license).
 
 screenfull@3.3.2
 MIT

@@ -2,7 +2,7 @@
     [id]                      INT            IDENTITY (1, 1) NOT NULL,
     [title]                   NVARCHAR (250) NULL,
     [due_date]                DATETIME       NULL,
-    [created_on]              DATETIME       DEFAULT (getdate()) NOT NULL,
+    [created_on]              DATETIME       DEFAULT (getUTCdate()) NOT NULL,
     [feature_area_id]         INT            NULL,
     [description]             NVARCHAR (MAX) NULL,
     [leader_id]               INT            NULL,

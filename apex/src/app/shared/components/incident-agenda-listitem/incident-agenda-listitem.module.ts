@@ -1,3 +1,4 @@
+import { ApplicationPipesModule } from './../../../app-pipes.module';
 import { PersonStatusLineModule } from './../person-status-line/person-status-line.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
@@ -8,6 +9,7 @@ import { MarkdownModule } from 'ngx-markdown';
     imports: [
         CommonModule,
         PersonStatusLineModule,
+        ApplicationPipesModule,
         MarkdownModule.forRoot()
     ],
     declarations: [

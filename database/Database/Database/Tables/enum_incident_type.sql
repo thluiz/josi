@@ -22,8 +22,11 @@
     [require_contact_method]       BIT           DEFAULT ((0)) NOT NULL,
     [need_fund_value]              BIT           DEFAULT ((0)) NOT NULL,
     [require_ownership]            BIT           DEFAULT ((0)) NOT NULL,
+    [can_have_actions]             BIT           DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC)
 );
+
+
 
 
 

@@ -3,7 +3,7 @@
     [person_id]         INT            NOT NULL,
     [voucher_id]        INT            NOT NULL,
     [branch_map_id]     INT            NOT NULL,
-    [date_created]      DATETIME       DEFAULT (getdate()) NOT NULL,
+    [date_created]      DATETIME       DEFAULT (getUTCdate()) NOT NULL,
     [additional_answer] NVARCHAR (MAX) NULL,
     [person2_id]        INT            NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),

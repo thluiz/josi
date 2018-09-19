@@ -20,6 +20,15 @@ class CardsService {
             return yield this.DBM.ExecuteSPNoResults("CorrectCardOutOfParentStep");
         });
     }
+    moveCard(card, responsible) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.DBM.ExecuteJsonSP("MoveCard", { card_id: card.card_id }, { parent_id: card.parent_id }, { step_id: card.step_id }, { responsible_id: yield responsible.getPersonId() });
+            if (!result.success) {
+                return result;
+            }
+            this.refreshCaches();
+        });
+    }
     save_card(card, responsibleId) {
         return __awaiter(this, void 0, void 0, function* () {
             let date = card.due_date ? `${card.due_date.year}-${card.due_date.month}-${card.due_date.day}` : null;

@@ -5,7 +5,7 @@ begin
     select p.id person_id, (select top 1 i2.id
                                 from incident i2  (nolock)
                                     join person_incident pic2  (nolock) on pic2.incident_id = i2.id
-                                where i2.date > getdate()
+                                where i2.date > getUTCdate()
                                     and i2.cancelled = 0      
                                     and pic2.person_id = p.id
                                 order by i2.date) incident_id
@@ -17,7 +17,7 @@ begin
     select p.id person_id, (select top 1 i2.id
                                 from incident i2 (nolock)
                                     join person_incident pic2  (nolock) on pic2.incident_id = i2.id
-                                where i2.date < getdate()
+                                where i2.date < getUTCdate()
                                     and i2.cancelled = 0      
                                     and pic2.person_id = p.id
                                 order by i2.date desc) incident_id

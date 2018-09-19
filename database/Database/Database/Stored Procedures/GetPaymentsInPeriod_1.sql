@@ -5,13 +5,13 @@
 )    
 as    
 begin    
- declare @current_date date = cast(getdate() as date)    
+ declare @current_date date = cast(getUTCdate() as date)    
     
  if(@start_date is null)    
-  set @start_date = DATEADD(day, -7, getdate())    
+  set @start_date = DATEADD(day, -7, getUTCdate())    
     
  if(@end_date is null)    
-  set @end_date = DATEADD(day, 7, getdate())    
+  set @end_date = DATEADD(day, 7, getUTCdate())    
     
     
  select i.*    

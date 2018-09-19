@@ -5,7 +5,7 @@
 as  
 begin   
   
- update incident set cancelled = 1, cancelled_on = getdate(), cancelled_by = @cancelled_by  
+ update incident set cancelled = 1, cancelled_on = getUTCdate(), cancelled_by = @cancelled_by  
  where person_schedule_id = @person_schedule_id  
 	and closed = 0
 	and treated = 0
@@ -13,7 +13,7 @@ begin
 	and [date] >= dbo.getCurrentDate()
   
  update person_schedule set active = 0,   
-   cancelled = 1, cancelled_on = getdate(),   
+   cancelled = 1, cancelled_on = getUTCdate(),   
    cancelled_by = @cancelled_by  
  where id = @person_schedule_id  
   

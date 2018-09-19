@@ -4,11 +4,29 @@ import { Result } from "../helpers/result";
 import { DatabaseManager } from "./managers/database-manager";
 import { DependencyManager } from "./managers/dependency-manager";
 
+import { User } from "../entity/User";
+
 export class CardsService {
     private DBM = DependencyManager.container.resolve(DatabaseManager);
 
     async correct_card_out_of_parent_step(): Promise<Result> {
         return await this.DBM.ExecuteSPNoResults("CorrectCardOutOfParentStep");
+    }
+
+    async moveCard(card, responsible: User) {
+        const result = await this.DBM.ExecuteJsonSP(
+            "MoveCard",
+            { card_id: card.card_id },
+            { parent_id: card.parent_id },
+            { step_id: card.step_id },
+            { responsible_id: await responsible.getPersonId() }
+          );
+
+        if (!result.success) {
+            return result;
+        }
+
+        this.refreshCaches();
     }
 
     async save_card(card, responsibleId) {

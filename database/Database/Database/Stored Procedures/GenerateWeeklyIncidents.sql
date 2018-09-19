@@ -33,7 +33,7 @@ begin
  [date],           
     branch_id, [value], person_schedule_id, scheduled           
    ) values (          
-    getdate(), @responsible_id, @incident_type,       
+    getUTCdate(), @responsible_id, @incident_type,       
  dateadd(hour, @start_hour, dateadd(minute, @start_minute, @current_date)),           
     @branch_id, @value, @schedule_id, 1          
    )          

@@ -6,7 +6,7 @@
     [full_value]        DECIMAL (12, 2) NOT NULL,
     [remanescent_value] DECIMAL (12, 2) DEFAULT ((0)) NOT NULL,
     [product_id]        INT             NOT NULL,
-    [created_on]        DATETIME        DEFAULT (getdate()) NOT NULL,
+    [created_on]        DATETIME        DEFAULT (getUTCdate()) NOT NULL,
     [archived]          BIT             DEFAULT ((0)) NOT NULL,
     [branch_product_id] INT             NULL,
     [end_date]          DATETIME        NOT NULL,

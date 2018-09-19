@@ -616,11 +616,11 @@ END'
   /* Recognize if we have indexes of the chosen type left to defrag or stats left to update;  
    otherwise force rescan of database(s), if rescan is not being forced */  
   IF @forceRescan = 0  
-   AND (NOT EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Working WHERE defragDate IS NULL AND [type] = 1 AND [exclusionMask] & POWER(2, DATEPART(weekday, GETDATE())-1) = 0) AND @ixtypeOption = 1)  
-   AND (NOT EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Working WHERE defragDate IS NULL AND [type] <> 1 AND [exclusionMask] & POWER(2, DATEPART(weekday, GETDATE())-1) = 0) AND @ixtypeOption = 0)  
-   AND (NOT EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Working WHERE defragDate IS NULL AND [exclusionMask] & POWER(2, DATEPART(weekday, GETDATE())-1) = 0 ) AND @ixtypeOption IS NULL)  
+   AND (NOT EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Working WHERE defragDate IS NULL AND [type] = 1 AND [exclusionMask] & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0) AND @ixtypeOption = 1)  
+   AND (NOT EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Working WHERE defragDate IS NULL AND [type] <> 1 AND [exclusionMask] & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0) AND @ixtypeOption = 0)  
+   AND (NOT EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Working WHERE defragDate IS NULL AND [exclusionMask] & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0 ) AND @ixtypeOption IS NULL)  
    AND NOT EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Stats_Working AS idss WHERE idss.updateDate IS NULL 
-   AND NOT EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0))  
+   AND NOT EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0))  
   BEGIN  
    SET @forceRescan = 1  
    RAISERROR('No indexes of the chosen type left to defrag nor statistics left to update. Forcing rescan...', 0, 42) WITH NOWAIT;  
@@ -630,7 +630,7 @@ END'
    if so force rescan of database(s) */  
   IF @forceRescan = 0  
    AND (EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Working   
-   WHERE (fill_factor IS NULL OR is_padded IS NULL OR compression_type IS NULL) AND [exclusionMask] & POWER(2, DATEPART(weekday, GETDATE())-1) = 0))  BEGIN  
+   WHERE (fill_factor IS NULL OR is_padded IS NULL OR compression_type IS NULL) AND [exclusionMask] & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0))  BEGIN  
    SET @forceRescan = 1  
    RAISERROR('Missing column information due to post-upgrade condition. Forcing rescan...', 0, 42) WITH NOWAIT;  
   END;  
@@ -808,7 +808,7 @@ BEGIN SET @hasIXsOUT = 1 END ELSE BEGIN SET @hasIXsOUT = 0 END'
     , @currCompression NVARCHAR(60)  
   
   /* Initialize variables */   
-  SELECT @AID_dbID = DB_ID(), @startDateTime = GETDATE(), @endDateTime = DATEADD(minute, @timeLimit, GETDATE()), @operationFlag = NULL, @ver = '1.6.6.4';  
+  SELECT @AID_dbID = DB_ID(), @startDateTime = getUTCdate(), @endDateTime = DATEADD(minute, @timeLimit, getUTCdate()), @operationFlag = NULL, @ver = '1.6.6.4';  
    
   /* Create temporary tables */   
   IF EXISTS (SELECT [object_id] FROM tempdb.sys.objects (NOLOCK) WHERE [object_id] = OBJECT_ID('tempdb.dbo.#tblIndexDefragDatabaseList'))  
@@ -917,9 +917,9 @@ Execute in' + CASE WHEN @debugMode = 1 THEN ' DEBUG' ELSE ' SILENT' END + ' mode
   END;  
     
   /* If we are scanning the database(s), do some pre-work */  
-  IF @forceRescan = 1 OR (NOT EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Working WHERE defragDate IS NULL AND [exclusionMask] & POWER(2, DATEPART(weekday, GETDATE())-1) = 0)  
+  IF @forceRescan = 1 OR (NOT EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Working WHERE defragDate IS NULL AND [exclusionMask] & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0)  
          AND NOT EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Stats_Working AS idss WHERE idss.updateDate IS NULL AND NOT EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID
- = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0)))  
+ = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0)))  
   BEGIN  
    IF @debugMode = 1  
    RAISERROR('Listing databases...', 0, 42) WITH NOWAIT;  
@@ -964,7 +964,7 @@ WHERE rs.role = 2 -- Is Secondary
    BEGIN  
     SELECT TOP 1 @dbID = dbID FROM #tblIndexDefragDatabaseList WHERE scanStatus = 0;  
   
-    SELECT @ixCntSource = COUNT([indexName]) FROM dbo.tbl_AdaptiveIndexDefrag_Exceptions WHERE [dbID] = @dbID AND exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0  
+    SELECT @ixCntSource = COUNT([indexName]) FROM dbo.tbl_AdaptiveIndexDefrag_Exceptions WHERE [dbID] = @dbID AND exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0  
   
     SET @ixCntsqlcmd = 'SELECT @ixCntTargetOUT = COUNT(si.index_id) FROM [' + DB_NAME(@dbID) + '].sys.indexes si  
 INNER JOIN [' + DB_NAME(@dbID) + '].sys.objects so ON si.object_id = so.object_id  
@@ -1025,9 +1025,9 @@ WHERE so.is_ms_shipped = 0 AND si.index_id > 0 AND si.is_hypothetical = 0
   
   /* Check to see if we have indexes of the chosen type in need of defrag, or stats to update; otherwise, allow re-scanning the database(s) */  
   IF @forceRescan = 1 OR (@forceRescan = 0   
-   AND NOT EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Working WHERE defragDate IS NULL AND [exclusionMask] & POWER(2, DATEPART(weekday, GETDATE())-1) = 0)  
+   AND NOT EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Working WHERE defragDate IS NULL AND [exclusionMask] & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0)  
    AND NOT EXISTS (SELECT TOP 1 * FROM dbo.tbl_AdaptiveIndexDefrag_Stats_Working AS idss WHERE idss.updateDate IS NULL 
-   AND NOT EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0)))  
+   AND NOT EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0)))  
   BEGIN   
    IF @debugMode = 1  
    RAISERROR('Preparing for new database scan...', 0, 42) WITH NOWAIT;  
@@ -1086,7 +1086,7 @@ CASE WHEN @dbScope IS NULL AND @tblName IS NULL THEN CHAR(10) + 'LEFT JOIN ['
 + CONVERT(NVARCHAR(10),@dbID) + ' AND ide.objectID = si.[object_id] AND ide.indexID = si.index_id' ELSE '' END +  
 CHAR(10) + 'WHERE mst.is_ms_shipped = 0 ' 
 + CASE WHEN @dbScope IS NULL AND @tblName IS NULL THEN 
-'AND (ide.exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0 OR ide.exclusionMask IS NULL)' ELSE '' END + '  
+'AND (ide.exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0 OR ide.exclusionMask IS NULL)' ELSE '' END + '  
  AND si.[object_id] NOT IN (SELECT sit.[object_id] FROM [' + DB_NAME(@dbID) + '].sys.internal_tables AS sit)' +  
   CASE WHEN @dbScope IS NOT NULL AND @tblName IS NOT NULL THEN '  
  AND t.name + ''.'' + mst.name = ''' + @tblName + ''';' ELSE ';' END  
@@ -1157,7 +1157,7 @@ CHAR(10) + 'WHERE mst.is_ms_shipped = 0 '
      FROM #tblIndexDefragScanWorking WHERE is_done = 0 AND type IN (1,2)  
        
      /* Get the time for logging purposes */    
-     SET @dateTimeStart = GETDATE();  
+     SET @dateTimeStart = getUTCdate();  
   
      IF @debugMode = 1  
      BEGIN  
@@ -1176,7 +1176,7 @@ CHAR(10) + 'WHERE mst.is_ms_shipped = 0 '
       BEGIN  
        INSERT INTO dbo.tbl_AdaptiveIndexDefrag_Working (dbID, dbName, objectID, indexID, partitionNumber, fragmentation, page_count, range_scan_count, record_count, scanDate)    
        SELECT @dbID AS [dbID], QUOTENAME(DB_NAME(ps.database_id)) AS [dbName], @objectID AS [objectID], @indexID AS [indexID], ps.partition_number AS [partitionNumber], SUM(ps.avg_fragmentation_in_percent) AS [fragmentation], SUM(ps.page_count) AS [page_
-count], os.range_scan_count, ps.record_count, GETDATE() AS [scanDate]  
+count], os.range_scan_count, ps.record_count, getUTCdate() AS [scanDate]  
        FROM sys.dm_db_index_physical_stats(@dbID, @objectID, @indexID, @partitionNumber, @scanMode) AS ps  
        LEFT JOIN sys.dm_db_index_operational_stats(@dbID, @objectID, @indexID, @partitionNumber) AS os ON ps.database_id = os.database_id AND ps.object_id = os.object_id AND ps.index_id = os.index_id AND ps.partition_number = os.partition_number  
        WHERE avg_fragmentation_in_percent >= @minFragmentation  
@@ -1190,7 +1190,7 @@ count], os.range_scan_count, ps.record_count, GETDATE() AS [scanDate]
       BEGIN  
        INSERT INTO dbo.tbl_AdaptiveIndexDefrag_Working (dbID, dbName, objectID, indexID, partitionNumber, fragmentation, page_count, range_scan_count, record_count, scanDate)    
        SELECT @dbID AS [dbID], QUOTENAME(DB_NAME(ps.database_id)) AS [dbName], @objectID AS [objectID], @indexID AS [indexID], ps.partition_number AS [partitionNumber], SUM(ps.avg_fragmentation_in_percent) AS [fragmentation], SUM(ps.page_count) AS [page_c
-ount], os.range_scan_count, ps.record_count, GETDATE() AS [scanDate]  
+ount], os.range_scan_count, ps.record_count, getUTCdate() AS [scanDate]  
        FROM sys.dm_db_index_physical_stats(@dbID, @objectID, @indexID, @partitionNumber, @scanMode) AS ps  
        LEFT JOIN sys.dm_db_index_operational_stats(@dbID, @objectID, @indexID, @partitionNumber) AS os ON ps.database_id = os.database_id AND ps.object_id = os.object_id AND ps.index_id = os.index_id AND ps.partition_number = os.partition_number  
        WHERE avg_fragmentation_in_percent >= @minFragmentation  
@@ -1205,7 +1205,7 @@ ount], os.range_scan_count, ps.record_count, GETDATE() AS [scanDate]
       BEGIN  
        SET @debugMessage = '     Error ' + CONVERT(NVARCHAR(20),ERROR_NUMBER()) + ' has occurred while determining which rowstore indexes to defrag. Message: ' + ERROR_MESSAGE() + ' (Line Number: ' + CAST(ERROR_LINE() AS NVARCHAR(10)) + ')'  
   
-       SET @dateTimeEnd = GETDATE();  
+       SET @dateTimeEnd = getUTCdate();  
   
        /* Update log with completion time */   
        UPDATE dbo.tbl_AdaptiveIndexDefrag_Analysis_log   
@@ -1217,7 +1217,7 @@ ount], os.range_scan_count, ps.record_count, GETDATE() AS [scanDate]
       END  
      END CATCH  
        
-     SET @dateTimeEnd = GETDATE();  
+     SET @dateTimeEnd = getUTCdate();  
               
      /* Update log with completion time */   
      UPDATE dbo.tbl_AdaptiveIndexDefrag_Analysis_log   
@@ -1240,7 +1240,7 @@ ount], os.range_scan_count, ps.record_count, GETDATE() AS [scanDate]
       FROM #tblIndexDefragScanWorking WHERE is_done = 0 AND type IN (5,6)  
   
       /* Get the time for logging purposes */    
-      SET @dateTimeStart = GETDATE();  
+      SET @dateTimeStart = getUTCdate();  
   
       /* Start log actions */  
       INSERT INTO dbo.tbl_AdaptiveIndexDefrag_Analysis_log ([Operation], [dbID], dbName, objectID, objectName, index_or_stat_ID, partitionNumber, dateTimeStart)    
@@ -1251,7 +1251,7 @@ ount], os.range_scan_count, ps.record_count, GETDATE() AS [scanDate]
       BEGIN TRY  
        SELECT @ColumnStoreGetIXSQL = 'USE [' + DB_NAME(@dbID) 
        + ']; SELECT @dbID_In, QUOTENAME(DB_NAME(@dbID_In)), rg.object_id, rg.index_id, rg.partition_number, 
-       SUM((ISNULL(rg.deleted_rows,1)*100)/rg.total_rows) AS [fragmentation], SUM(ISNULL(rg.size_in_bytes,1)/1024/8) AS [simulated_page_count], SUM(rg.total_rows) AS total_rows, GETDATE() AS [scanDate]   
+       SUM((ISNULL(rg.deleted_rows,1)*100)/rg.total_rows) AS [fragmentation], SUM(ISNULL(rg.size_in_bytes,1)/1024/8) AS [simulated_page_count], SUM(rg.total_rows) AS total_rows, getUTCdate() AS [scanDate]   
 FROM ' + CASE WHEN @sqlmajorver = 12 THEN 
 'sys.column_store_row_groups' 
 ELSE 'sys.dm_db_column_store_row_group_physical_stats' END + ' rg WITH (NOLOCK)  
@@ -1272,7 +1272,7 @@ OPTION (MAXDOP 2)'
        BEGIN  
         SET @debugMessage = '     Error ' + CONVERT(NVARCHAR(20),ERROR_NUMBER()) + ' has occurred while determining which columnstore indexes to defrag. Message: ' + ERROR_MESSAGE() + ' (Line Number: ' + CAST(ERROR_LINE() AS NVARCHAR(10)) + ')'  
   
-        SET @dateTimeEnd = GETDATE();  
+        SET @dateTimeEnd = getUTCdate();  
                  
         /* Update log with completion time */   
         UPDATE dbo.tbl_AdaptiveIndexDefrag_Analysis_log   
@@ -1284,7 +1284,7 @@ OPTION (MAXDOP 2)'
        END  
       END CATCH;  
   
-      SET @dateTimeEnd = GETDATE();  
+      SET @dateTimeEnd = getUTCdate();  
                
       /* Update log with completion time */   
       UPDATE dbo.tbl_AdaptiveIndexDefrag_Analysis_log   
@@ -1340,7 +1340,7 @@ WHERE ids.[dbID] = ' + CAST(@dbID AS NVARCHAR(10));
 SELECT DISTINCT ' + CAST(@dbID AS NVARCHAR(10)) + ', ''' + QUOTENAME(DB_NAME(@dbID)) + ''', ss.[object_id], ss.stats_id, ' + CASE WHEN ((@sqlmajorver = 12 AND @sqlbuild >= 5000) OR @sqlmajorver > 12) THEN 'ISNULL(sp.partition_number,1),' ELSE '1,' END 
 + '
   
- QUOTENAME(s.name), QUOTENAME(so.name), QUOTENAME(ss.name), ss.[no_recompute], ' + CASE WHEN @sqlmajorver < 12 THEN '0 AS ' ELSE 'ss.' END + '[is_incremental], GETDATE() AS scanDate  
+ QUOTENAME(s.name), QUOTENAME(so.name), QUOTENAME(ss.name), ss.[no_recompute], ' + CASE WHEN @sqlmajorver < 12 THEN '0 AS ' ELSE 'ss.' END + '[is_incremental], getUTCdate() AS scanDate  
 FROM sys.stats AS ss WITH (NOLOCK)  
 INNER JOIN sys.objects AS so WITH (NOLOCK) ON ss.[object_id] = so.[object_id]  
 INNER JOIN sys.schemas AS s WITH (NOLOCK) ON so.[schema_id] = s.[schema_id]' +  
@@ -1392,7 +1392,7 @@ CASE WHEN @dbScope IS NOT NULL AND @tblName IS NOT NULL THEN CHAR(10) + 'AND s.n
   IF @debugMode = 1  
   SELECT @debugMessage = 'Looping through batch list... There are ' + CAST(COUNT(DISTINCT indexName) AS NVARCHAR(10)) + ' indexes to defragment in ' + CAST(COUNT(DISTINCT dbName) AS NVARCHAR(10)) + ' database(s)!'   
   FROM dbo.tbl_AdaptiveIndexDefrag_Working   
-  WHERE defragDate IS NULL AND page_count BETWEEN @minPageCount AND ISNULL(@maxPageCount, page_count) AND exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0;  
+  WHERE defragDate IS NULL AND page_count BETWEEN @minPageCount AND ISNULL(@maxPageCount, page_count) AND exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0;  
   
   IF @debugMode = 1  
   RAISERROR(@debugMessage, 0, 42) WITH NOWAIT;  
@@ -1404,7 +1404,7 @@ CASE WHEN @dbScope IS NOT NULL AND @tblName IS NOT NULL THEN CHAR(10) + 'AND s.n
     SELECT @debugMessage = 'Looping through batch list... There are ' + CAST(COUNT(DISTINCT statsName) AS NVARCHAR(10)) + ' index related statistics to update in ' + CAST(COUNT(DISTINCT idss.dbName) AS NVARCHAR(10)) + ' database(s)!'   
     FROM dbo.tbl_AdaptiveIndexDefrag_Stats_Working idss  
      INNER JOIN dbo.tbl_AdaptiveIndexDefrag_Working ids ON ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID  
-    WHERE idss.schemaName = ids.schemaName AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0;  
+    WHERE idss.schemaName = ids.schemaName AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0;  
    END  
    ELSE  
    BEGIN  
@@ -1412,13 +1412,13 @@ CASE WHEN @dbScope IS NOT NULL AND @tblName IS NOT NULL THEN CHAR(10) + 'AND s.n
     + ' index related statistics to update in ' + CAST(COUNT(DISTINCT idss.dbName) AS NVARCHAR(10)) + ' database(s),'   
     FROM dbo.tbl_AdaptiveIndexDefrag_Stats_Working idss  
      INNER JOIN dbo.tbl_AdaptiveIndexDefrag_Working ids ON ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID  
-    WHERE idss.schemaName = ids.schemaName AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0;  
+    WHERE idss.schemaName = ids.schemaName AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0;  
   
     SELECT @debugMessage = @debugMessage + ' plus ' + CAST(COUNT(DISTINCT statsName) AS NVARCHAR(10)) 
     + ' other statistics to update in ' + CAST(COUNT(DISTINCT dbName) AS NVARCHAR(10)) + ' database(s)!'   
     FROM dbo.tbl_AdaptiveIndexDefrag_Stats_Working idss  
     WHERE idss.updateDate IS NULL  
-     AND NOT EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0);  
+     AND NOT EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0);  
    END  
   END  
     
@@ -1431,11 +1431,11 @@ CASE WHEN @dbScope IS NOT NULL AND @tblName IS NOT NULL THEN CHAR(10) + 'AND s.n
   END;  
     
   /* Begin defragmentation loop */   
-  WHILE (SELECT COUNT(*) FROM dbo.tbl_AdaptiveIndexDefrag_Working WHERE ((@Exec_Print = 1 AND defragDate IS NULL) OR (@Exec_Print = 0 AND defragDate IS NULL AND printStatus = 0)) AND exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0 
+  WHILE (SELECT COUNT(*) FROM dbo.tbl_AdaptiveIndexDefrag_Working WHERE ((@Exec_Print = 1 AND defragDate IS NULL) OR (@Exec_Print = 0 AND defragDate IS NULL AND printStatus = 0)) AND exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0 
   AND page_count BETWEEN @minPageCount AND ISNULL(@maxPageCount, page_count)) > 0  
   BEGIN        
    /* Check to see if we need to exit loop because of our time limit */  
-   IF ISNULL(@endDateTime, GETDATE()) < GETDATE()  
+   IF ISNULL(@endDateTime, getUTCdate()) < getUTCdate()  
    RAISERROR('Time limit has been exceeded for this maintenance window!', 16, 42) WITH NOWAIT;  
   
    IF @debugMode = 1  
@@ -1445,7 +1445,7 @@ CASE WHEN @dbScope IS NOT NULL AND @tblName IS NOT NULL THEN CHAR(10) + 'AND s.n
    SET @getIndexSQL = N'SELECT TOP 1 @objectID_Out = objectID, @indexID_Out = indexID, @dbID_Out = dbID           
 FROM dbo.tbl_AdaptiveIndexDefrag_Working WHERE defragDate IS NULL '  
 + CASE WHEN @Exec_Print = 0 THEN 'AND printStatus = 0 ' ELSE '' END + '    
-AND exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0  
+AND exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0  
 AND page_count BETWEEN @p_minPageCount AND ISNULL(@p_maxPageCount, page_count)    
 ORDER BY + ' + @defragOrderColumn + ' ' + @defragSortOrder;  
   
@@ -1762,7 +1762,7 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
    IF @Exec_Print = 1  
    BEGIN  
     /* Get the time for logging purposes */    
-    SET @dateTimeStart = GETDATE();  
+    SET @dateTimeStart = getUTCdate();  
   
     /* Start log actions */  
     IF @partitionCount > 1 AND @dealMaxPartition IS NOT NULL AND @editionCheck = 1  
@@ -1809,7 +1809,7 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
      BEGIN TRY       
       EXECUTE sp_executesql @sqlprecommand;  
       SET @sqlprecommand = NULL  
-      SET @dateTimeEnd = GETDATE();  
+      SET @dateTimeEnd = getUTCdate();  
        
       /* Update log with completion time */   
       UPDATE dbo.tbl_AdaptiveIndexDefrag_log   
@@ -1841,7 +1841,7 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
      BEGIN CATCH        
       /* Update log with error message */   
       UPDATE dbo.tbl_AdaptiveIndexDefrag_log   
-      SET dateTimeEnd = GETDATE(), durationSeconds = -1, errorMessage = 'Error ' 
+      SET dateTimeEnd = getUTCdate(), durationSeconds = -1, errorMessage = 'Error ' 
       + CONVERT(NVARCHAR(20),ERROR_NUMBER()) + ' has occurred executing the pre-command for index ' + @indexName +'. Message: ' 
       + ERROR_MESSAGE() + ' (Line Number: ' + CAST(ERROR_LINE() AS NVARCHAR(10)) + ')'  
       WHERE indexDefrag_id = @indexDefrag_id AND dateTimeEnd IS NULL;  
@@ -1862,7 +1862,7 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
       EXECUTE sp_executesql @sqldisablecommand;  
       /* Insert into working table for disabled state control */  
       INSERT INTO dbo.tbl_AdaptiveIndexDefrag_IxDisableStatus (dbID, objectID, indexID, [is_disabled], dateTimeChange)  
-      SELECT @dbID, @objectID, @indexID, 1, GETDATE()  
+      SELECT @dbID, @objectID, @indexID, 1, getUTCdate()  
      END TRY  
      BEGIN CATCH        
       /* Delete from working table for disabled state control */  
@@ -1881,7 +1881,7 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
     /* Execute defrag! */    
     BEGIN TRY  
      EXECUTE sp_executesql @sqlcommand;  
-     SET @dateTimeEnd = GETDATE();  
+     SET @dateTimeEnd = getUTCdate();  
        
      UPDATE dbo.tbl_AdaptiveIndexDefrag_log   
      /* Update log with completion time */   
@@ -1898,7 +1898,7 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
     BEGIN CATCH        
      /* Update log with error message */   
      UPDATE dbo.tbl_AdaptiveIndexDefrag_log   
-     SET dateTimeEnd = GETDATE(), durationSeconds = -1, errorMessage = 'Error ' + CONVERT(NVARCHAR(20),ERROR_NUMBER()) + ' has occurred executing this command. Message: ' + ERROR_MESSAGE() + ' (Line Number: ' + CAST(ERROR_LINE() AS NVARCHAR(10)) + ')'   
+     SET dateTimeEnd = getUTCdate(), durationSeconds = -1, errorMessage = 'Error ' + CONVERT(NVARCHAR(20),ERROR_NUMBER()) + ' has occurred executing this command. Message: ' + ERROR_MESSAGE() + ' (Line Number: ' + CAST(ERROR_LINE() AS NVARCHAR(10)) + ')'   
      WHERE indexDefrag_id = @indexDefrag_id AND dateTimeEnd IS NULL;  
   
      IF @debugMode = 1  
@@ -1913,20 +1913,20 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
     IF @partitionCount > 1 AND @dealMaxPartition IS NOT NULL AND @editionCheck = 1  
     BEGIN  
      UPDATE dbo.tbl_AdaptiveIndexDefrag_Working   
-     SET defragDate = ISNULL(@dateTimeEnd, GETDATE()), printStatus = 1   
+     SET defragDate = ISNULL(@dateTimeEnd, getUTCdate()), printStatus = 1   
      WHERE dbID = @dbID AND objectID = @objectID AND indexID = @indexID AND partitionNumber = @partitionNumber;  
     END  
     ELSE  
     BEGIN  
      UPDATE dbo.tbl_AdaptiveIndexDefrag_Working  
-     SET defragDate = ISNULL(@dateTimeEnd, GETDATE()), printStatus = 1  
+     SET defragDate = ISNULL(@dateTimeEnd, getUTCdate()), printStatus = 1  
      WHERE dbID = @dbID AND objectID = @objectID AND indexID = @indexID;  
     END  
   
     IF @operationFlag = 1  
     BEGIN  
      UPDATE dbo.tbl_AdaptiveIndexDefrag_Stats_Working  
-     SET updateDate = ISNULL(@dateTimeEnd, GETDATE()), printStatus = 1  
+     SET updateDate = ISNULL(@dateTimeEnd, getUTCdate()), printStatus = 1  
      WHERE objectID = @objectID AND dbID = @dbID AND statsName = @indexName;  
     END  
       
@@ -2000,7 +2000,7 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
      + CONVERT(NVARCHAR, @dbID) + ' AND idss.statsName = ''' + @indexName + '''' + ' AND idss.objectID = ' 
      + CONVERT(NVARCHAR, @objectID) + ' AND EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID
  = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL 
- AND ids.defragDate IS NOT NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0)';  
+ AND ids.defragDate IS NOT NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0)';  
      SET @getStatSQL_Param = N'@statsID_Out int OUTPUT'  
      EXECUTE sp_executesql @getStatSQL, @getStatSQL_Param, @statsID_Out = @statsID OUTPUT;  
        
@@ -2172,7 +2172,7 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
      RAISERROR(@debugMessage, 0, 42) WITH NOWAIT;  
   
      /* Get the time for logging purposes */    
-     SET @dateTimeStart = GETDATE();  
+     SET @dateTimeStart = getUTCdate();  
   
      /* Log actions */    
      INSERT INTO dbo.tbl_AdaptiveIndexDefrag_Stats_log (dbID, dbName, objectID, objectName, statsID, statsName, [partitionNumber], [rows], rows_sampled, modification_counter, [no_recompute], dateTimeStart, sqlStatement)    
@@ -2186,7 +2186,7 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
       BEGIN TRY      
        /* Execute update! */  
        EXECUTE sp_executesql @sqlcommand2;  
-       SET @dateTimeEnd = GETDATE();  
+       SET @dateTimeEnd = getUTCdate();  
        SET @sqlcommand2 = NULL  
   
        /* Update log with completion time */  
@@ -2196,19 +2196,19 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
          
        /* Update working table */  
        UPDATE dbo.tbl_AdaptiveIndexDefrag_Stats_Working    
-       SET updateDate = GETDATE(), printStatus = 1    
+       SET updateDate = getUTCdate(), printStatus = 1    
        WHERE dbID = @dbID AND objectID = @objectID AND statsID = @statsID AND partitionNumber = @partitionNumber;  
       END TRY   
       BEGIN CATCH   
        /* Update log with error message */  
        UPDATE dbo.tbl_AdaptiveIndexDefrag_Stats_log  
-       SET dateTimeEnd = GETDATE(), durationSeconds = -1, errorMessage = 'Error ' + CONVERT(NVARCHAR(20),ERROR_NUMBER()) + ' has occurred executing this command. Message: ' + ERROR_MESSAGE() + ' (Line Number: ' + CAST(ERROR_LINE() AS NVARCHAR(10)) + ')'  
+       SET dateTimeEnd = getUTCdate(), durationSeconds = -1, errorMessage = 'Error ' + CONVERT(NVARCHAR(20),ERROR_NUMBER()) + ' has occurred executing this command. Message: ' + ERROR_MESSAGE() + ' (Line Number: ' + CAST(ERROR_LINE() AS NVARCHAR(10)) + ')'  
           
        WHERE statsUpdate_id = @statsUpdate_id AND partitionNumber = @partitionNumber AND dateTimeEnd IS NULL;  
   
        /* Update working table */  
        UPDATE dbo.tbl_AdaptiveIndexDefrag_Stats_Working    
-       SET updateDate = GETDATE(), printStatus = 1    
+       SET updateDate = getUTCdate(), printStatus = 1    
        WHERE dbID = @dbID AND objectID = @objectID AND statsID = @statsID AND partitionNumber = @partitionNumber;  
   
        IF @debugMode = 1  
@@ -2238,7 +2238,7 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
   
      /* Update working table */  
      UPDATE dbo.tbl_AdaptiveIndexDefrag_Stats_Working    
-     SET updateDate = GETDATE(), printStatus = 1   
+     SET updateDate = getUTCdate(), printStatus = 1   
      WHERE dbID = @dbID AND objectID = @objectID AND statsID = @statsID AND partitionNumber = @partitionNumber;  
        
      /* Log actions */    
@@ -2287,16 +2287,16 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
    AND @updateStatsWhere = 0 -- @updateStatsWhere = 0 then table-wide statistics;  
    AND (SELECT COUNT(*) FROM dbo.tbl_AdaptiveIndexDefrag_Stats_Working idss 
    WHERE ((@Exec_Print = 1 AND idss.updateDate IS NULL) OR (@Exec_Print = 0 AND idss.updateDate IS NULL AND idss.printStatus = 0))) > 0 
-   --AND NOT EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0)) > 0 -- If any unhandled statistics remain  
+   --AND NOT EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0)) > 0 -- If any unhandled statistics remain  
   BEGIN  
    IF @debugMode = 1  
    RAISERROR(' Updating all other unhandled statistics using finer thresholds (if any)...', 0, 42) WITH NOWAIT;  
      
    WHILE (SELECT COUNT(*) FROM dbo.tbl_AdaptiveIndexDefrag_Stats_Working idss WHERE ((@Exec_Print = 1 AND idss.updateDate IS NULL) OR (@Exec_Print = 0 AND idss.updateDate IS NULL AND idss.printStatus = 0))) > 0 
-   --AND NOT EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0)) > 0  
+   --AND NOT EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0)) > 0  
    BEGIN  
     /* Check to see if we need to exit loop because of our time limit */  
-    IF ISNULL(@endDateTime, GETDATE()) < GETDATE()  
+    IF ISNULL(@endDateTime, getUTCdate()) < getUTCdate()  
     RAISERROR('Time limit has been exceeded for this maintenance window!', 16, 42) WITH NOWAIT;  
   
     IF @debugMode = 1  
@@ -2307,14 +2307,14 @@ WHERE system_type_id IN (34, 35, 99) ' + CASE WHEN @sqlmajorver < 11 THEN 'OR ma
     BEGIN  
      SELECT TOP 1 @statsID = idss.statsID, @dbID = idss.dbID, @statsobjectID = idss.objectID, @dbName = idss.dbName, @statsobjectName = idss.objectName, @statsschemaName = idss.schemaName, @partitionNumber = idss.partitionNumber  
      FROM dbo.tbl_AdaptiveIndexDefrag_Stats_Working idss  
-     WHERE idss.updateDate IS NULL /*AND NOT EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0)   */
+     WHERE idss.updateDate IS NULL /*AND NOT EXISTS (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0)   */
     END  
     ELSE IF @Exec_Print = 0  
     BEGIN  
      SELECT TOP 1 @statsID = idss.statsID, @dbID = idss.dbID, @statsobjectID = idss.objectID, @dbName = idss.dbName, @statsobjectName = idss.objectName, @statsschemaName = idss.schemaName, @partitionNumber = idss.partitionNumber  
      FROM dbo.tbl_AdaptiveIndexDefrag_Stats_Working idss  
      WHERE idss.updateDate IS NULL AND idss.printStatus = 0 /* AND NOT EXISTS 
-     (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, GETDATE())-1) = 0)   */
+     (SELECT TOP 1 objectID FROM dbo.tbl_AdaptiveIndexDefrag_Working ids WHERE ids.[dbID] = idss.[dbID] AND ids.objectID = idss.objectID AND idss.statsName = ids.indexName AND idss.updateDate IS NULL AND ids.exclusionMask & POWER(2, DATEPART(weekday, getUTCdate())-1) = 0)   */
     END  
   
     /* Get stat associated table record count */  
@@ -2489,7 +2489,7 @@ umber = p.partition_number WHERE idss.updateDate IS NULL ' + CASE WHEN @Exec_Pri
      RAISERROR(@debugMessage, 0, 42) WITH NOWAIT;  
   
      /* Get the time for logging purposes */  
-     SET @dateTimeStart = GETDATE();  
+     SET @dateTimeStart = getUTCdate();  
   
      /* Log actions */  
      INSERT INTO dbo.tbl_AdaptiveIndexDefrag_Stats_log (dbID, dbName, objectID, objectName, statsID, statsName, [partitionNumber], [rows], rows_sampled, modification_counter, [no_recompute], dateTimeStart, sqlStatement)    
@@ -2501,7 +2501,7 @@ umber = p.partition_number WHERE idss.updateDate IS NULL ' + CASE WHEN @Exec_Pri
      BEGIN TRY  
       /* Execute update! */  
       EXECUTE sp_executesql @sqlcommand2;  
-      SET @dateTimeEnd = GETDATE();  
+      SET @dateTimeEnd = getUTCdate();  
       SET @sqlcommand2 = NULL  
   
       /* Update log with completion time */  
@@ -2510,18 +2510,18 @@ umber = p.partition_number WHERE idss.updateDate IS NULL ' + CASE WHEN @Exec_Pri
       WHERE statsUpdate_id = @statsUpdate_id AND partitionNumber = @partitionNumber AND dateTimeEnd IS NULL;  
         
       UPDATE dbo.tbl_AdaptiveIndexDefrag_Stats_Working    
-      SET updateDate = GETDATE(), printStatus = 1    
+      SET updateDate = getUTCdate(), printStatus = 1    
       WHERE dbID = @dbID AND objectID = @statsobjectID AND statsID = @statsID AND partitionNumber = @partitionNumber;  
      END TRY  
      BEGIN CATCH  
       /* Update log with error message */  
       UPDATE dbo.tbl_AdaptiveIndexDefrag_Stats_log  
-      SET dateTimeEnd = GETDATE(), durationSeconds = -1, errorMessage = 'Error ' + CONVERT(NVARCHAR(20),ERROR_NUMBER()) + ' has occurred executing this command. Message: ' + ERROR_MESSAGE() + ' (Line Number: ' + CAST(ERROR_LINE() AS NVARCHAR(10)) + ')'   
+      SET dateTimeEnd = getUTCdate(), durationSeconds = -1, errorMessage = 'Error ' + CONVERT(NVARCHAR(20),ERROR_NUMBER()) + ' has occurred executing this command. Message: ' + ERROR_MESSAGE() + ' (Line Number: ' + CAST(ERROR_LINE() AS NVARCHAR(10)) + ')'   
          
       WHERE statsUpdate_id = @statsUpdate_id AND partitionNumber = @partitionNumber AND dateTimeEnd IS NULL;  
         
       UPDATE dbo.tbl_AdaptiveIndexDefrag_Stats_Working    
-      SET updateDate = GETDATE(), printStatus = 1    
+      SET updateDate = getUTCdate(), printStatus = 1    
       WHERE dbID = @dbID AND objectID = @statsobjectID AND statsID = @statsID AND partitionNumber = @partitionNumber;  
   
       IF @debugMode = 1  
@@ -2549,12 +2549,12 @@ umber = p.partition_number WHERE idss.updateDate IS NULL ' + CASE WHEN @Exec_Pri
      END  
   
      UPDATE dbo.tbl_AdaptiveIndexDefrag_Stats_Working  
-     SET updateDate = GETDATE(), printStatus = 1  
+     SET updateDate = getUTCdate(), printStatus = 1  
      WHERE dbID = @dbID AND objectID = @statsobjectID AND statsID = @statsID AND partitionNumber = @partitionNumber;  
        
      /* Get the time for logging purposes */  
      IF @dateTimeStart IS NULL  
-     SET @dateTimeStart = GETDATE();  
+     SET @dateTimeStart = getUTCdate();  
        
      /* Log actions */    
      INSERT INTO dbo.tbl_AdaptiveIndexDefrag_Stats_log (dbID, dbName, objectID, objectName, statsID, statsName, [partitionNumber], [rows], rows_sampled, modification_counter, [no_recompute], dateTimeStart, dateTimeEnd, durationSeconds, sqlStatement)    

@@ -11,7 +11,7 @@ begin
 													and i.cancelled = 0  
 													and i.treated = 0
 													and pic.person_id = @person_id                       
-													and i.date > getdate()                          
+													and i.date > getUTCdate()                          
 												) then 1 else 0 end)             
       
 select        

@@ -3,7 +3,7 @@
 )    
 as    
 begin    
- declare @current_date date = cast(getdate() as date)    
+ declare @current_date date = cast(getUTCdate() as date)    
     
  select i.*     
   into #missing    
@@ -14,7 +14,7 @@ begin
   and financial_type > 0
   and closed = 0     
   and a.principal = 1    
-  and [date] < GETDATE()      
+  and [date] < getUTCdate()      
   and a.id = @account_id     
      
  if(not exists(select 1 from #missing))    

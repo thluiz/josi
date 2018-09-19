@@ -17,8 +17,7 @@ begin
   join currency c on c.id= bp.currency_id  
   left join product p on p.id = bp.product_id    
  where branch_id = @branch_id 
-	and bp.archived = 0   
- order by category_id  
+	and bp.archived = 0    
  for json path    
     
 end

@@ -3,6 +3,6 @@ returns date
 as  
 begin  
   
- return cast(dateadd(hour, -2, getdate()) as date)  
+ return getUTCDate()
   
 end

@@ -5,7 +5,7 @@
     [treatment_type]  INT           NOT NULL,
     [description]     VARCHAR (MAX) NULL,
     [new_incident_id] INT           NULL,
-    [created_on]      DATETIME      DEFAULT (getdate()) NOT NULL,
+    [created_on]      DATETIME      DEFAULT (getUTCdate()) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [FK_incident_treatment_incident] FOREIGN KEY ([incident_id]) REFERENCES [dbo].[incident] ([id]),
     CONSTRAINT [FK_incident_treatment_person] FOREIGN KEY ([person_id]) REFERENCES [dbo].[person] ([id])

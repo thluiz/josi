@@ -49,7 +49,7 @@ begin
       where (p2.is_leaving = 1 or p2.is_inactive_member = 1)      
       and isnull(p2.branch_id, -1) = isnull(@branch, isnull(p2.branch_id, -1))    
       and (@name is null or len(@name) <= 0 or (p2.name like '%' + @name + '%' COLLATE Latin1_General_CI_AI ))    
-      ORDER BY isnull(ni2.date, dateadd(year, -1, getdate())), name         
+      ORDER BY isnull(ni2.date, dateadd(year, -1, getUTCdate())), name         
       OFFSET ((@page - 1) * @people_per_page) ROWS          
       FETCH NEXT @people_per_page ROWS ONLY  
   )          

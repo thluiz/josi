@@ -2,7 +2,7 @@
     [id]           INT            IDENTITY (1, 1) NOT NULL,
     [name]         NVARCHAR (250) NULL,
     [person_id]    INT            NOT NULL,
-    [date_created] DATETIME       DEFAULT (getdate()) NOT NULL,
+    [date_created] DATETIME       DEFAULT (getUTCdate()) NOT NULL,
     [description]  NVARCHAR (MAX) NULL,
     [commentary]   NVARCHAR (MAX) NULL,
     [card_id]      INT            NULL,

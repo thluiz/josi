@@ -36,7 +36,7 @@ begin
   where p.is_interested = 1  
 	and isnull(p.branch_id, -1) = isnull(@branch, isnull(p.branch_id, -1))
 	and (@name is null or len(@name) <= 0 or (p.name like '%' + @name + '%' COLLATE Latin1_General_CI_AI ))
-  ORDER BY isnull(i.date, dateadd(year, -1, getdate())), name     
+  ORDER BY isnull(i.date, dateadd(year, -1, getUTCdate())), name     
   OFFSET ((@page - 1) * @people_per_page) ROWS      
   FETCH NEXT @people_per_page ROWS ONLY      
   for json path   

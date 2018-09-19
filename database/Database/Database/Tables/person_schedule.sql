@@ -11,7 +11,7 @@
     [end_hour]            INT             NULL,
     [end_minute]          INT             NULL,
     [recurrence_type]     INT             DEFAULT ((0)) NOT NULL,
-    [start_date]          DATE            DEFAULT (getdate()) NOT NULL,
+    [start_date]          DATE            DEFAULT (getUTCdate()) NOT NULL,
     [end_date]            DATE            NULL,
     [description]         NVARCHAR (MAX)  NULL,
     [number_of_incidents] INT             DEFAULT ((0)) NOT NULL,

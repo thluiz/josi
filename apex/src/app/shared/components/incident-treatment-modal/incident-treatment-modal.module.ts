@@ -9,6 +9,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { NgbDatepickerModule, NgbTimepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MarkdownModule } from 'ngx-markdown';
+import { ApplicationPipesModule } from '../../../app-pipes.module';
 
 @NgModule({
     imports: [
@@ -20,9 +21,10 @@ import { MarkdownModule } from 'ngx-markdown';
         NgbModule,
         MarkdownModule.forRoot(),
         PersonCardModule,
-        PersonIncidentHistoryListModule
+        PersonIncidentHistoryListModule,
+        ApplicationPipesModule
     ],
-    declarations: [       
+    declarations: [
         IncidentTreatmentModalComponent
     ], exports: [
         IncidentTreatmentModalComponent

@@ -24,7 +24,7 @@
     [data_status]                 INT           DEFAULT ((0)) NOT NULL,
     [issues_level]                INT           DEFAULT ((0)) NOT NULL,
     [has_birthday_this_month]     BIT           DEFAULT ((0)) NOT NULL,
-    [updated_at]                  DATETIME      DEFAULT (getdate()) NOT NULL,
+    [updated_at]                  DATETIME      DEFAULT (getUTCdate()) NOT NULL,
     [is_manager]                  BIT           DEFAULT ((0)) NOT NULL,
     [is_operator]                 BIT           DEFAULT ((0)) NOT NULL,
     [enrollment_date]             DATE          NULL,
@@ -54,12 +54,20 @@
     [offering_status]             INT           DEFAULT ((0)) NOT NULL,
     [last_incident_id]            INT           NULL,
     [person_responsible_id]       INT           NULL,
+    [shirt_size]                  VARCHAR (3)   NULL,
+    [gender]                      VARCHAR (1)   NULL,
+    [pants_size]                  VARCHAR (3)   NULL,
+    [avatar_md]                   BIT           DEFAULT ((0)) NOT NULL,
+    [avatar_sm]                   BIT           DEFAULT ((0)) NOT NULL,
+    [avatar_esm]                  BIT           DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC) WITH (FILLFACTOR = 100),
     CONSTRAINT [FK_Person_Branch] FOREIGN KEY ([branch_id]) REFERENCES [dbo].[branch] ([id]),
     CONSTRAINT [FK_Person_Domain] FOREIGN KEY ([domain_id]) REFERENCES [dbo].[domain] ([id]),
     CONSTRAINT [fk_person_family] FOREIGN KEY ([family_id]) REFERENCES [dbo].[person] ([id]),
     CONSTRAINT [FK_person_program] FOREIGN KEY ([program_id]) REFERENCES [dbo].[program] ([id])
 );
+
+
 
 
 

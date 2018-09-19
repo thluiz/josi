@@ -11,7 +11,19 @@
 );
 
 
+
+
 GO
 CREATE UNIQUE NONCLUSTERED INDEX [uk_user_email]
     ON [dbo].[user]([email] ASC, [login_provider_id] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [ix_user_token]
+    ON [dbo].[user]([token] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [ix_user_email]
+    ON [dbo].[user]([email] ASC);
 
