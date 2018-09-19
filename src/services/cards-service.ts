@@ -25,8 +25,6 @@ export class CardsService {
         if (!result.success) {
             return result;
         }
-
-        this.refreshCaches();
     }
 
     async save_card(card, responsibleId) {
@@ -75,8 +73,6 @@ export class CardsService {
             {branch_id: card.branch ? card.branch.id : null},
             {responsible_id: responsibleId }
         );
-
-        this.refreshCaches();
         return result;
     }
 
@@ -89,8 +85,6 @@ export class CardsService {
             { order: personCard.order || -1 },
         );
 
-        this.refreshCaches();
-
         return result;
     }
 
@@ -100,8 +94,6 @@ export class CardsService {
             { person_id: personCard.person_id },
         );
 
-        this.refreshCaches();
-
         return result;
     }
 
@@ -110,8 +102,6 @@ export class CardsService {
             { card_id: card.id },
             { responsible_id: responsibleId },
         );
-
-        this.refreshCaches();
         return result;
     }
 
@@ -121,8 +111,6 @@ export class CardsService {
             { step_id: stepId },
             { responsible_id: responsibleId },
         );
-
-        this.refreshCaches();
         return result;
     }
 
@@ -140,10 +128,5 @@ export class CardsService {
             { commentary_type : commentaryType },
             {responsible_id: responsibleId}
         );
-    }
-
-    private refreshCaches() {
-        refreshMethodCache("getOrganizations");
-        refreshMethodCache("getProject");
     }
 }

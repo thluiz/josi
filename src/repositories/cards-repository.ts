@@ -8,7 +8,6 @@ import { DependencyManager } from "../services/managers/dependency-manager";
 export class CardsRepository {
     private DBM = DependencyManager.container.resolve(DatabaseManager);
 
-    @cache(true, 3600000)
     @tryLogAsync()
     async getOrganizations(id?: number, includeChildrens = false): Promise<Result<any>> {
         return await this.DBM.ExecuteJsonSP("GetOrganizations",
@@ -17,7 +16,6 @@ export class CardsRepository {
         );
     }
 
-    @cache(true, 3600000)
     @tryLogAsync()
     async getProject(id: number): Promise<Result<any>> {
         return await this.DBM.ExecuteJsonSP("GetProject",
