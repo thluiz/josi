@@ -618,6 +618,10 @@ MIT
 MIT
 MIT
 
+ngx-pipes@2.3.5
+MIT
+MIT
+
 util@0.10.3
 MIT
 Copyright Joyent, Inc. and other Node contributors. All rights reserved.

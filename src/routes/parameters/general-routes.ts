@@ -10,7 +10,7 @@ export function routes(app) {
   app.get("/api/server_timezone", async (request, res) => {
     const date = new Date();
 
-    res.send({ timezone: - date.getTimezoneOffset() / 60 });
+    res.send({ timezone: 0 /* - date.getTimezoneOffset() / 60 */ });
   });
 
   app.get("/api/countries", auth.ensureLoggedIn(), async (request, res) => {

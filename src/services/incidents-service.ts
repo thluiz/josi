@@ -389,7 +389,8 @@ export class IncidentsService extends BaseService {
                 { add_to_ownernership: incident.add_to_ownernership},
                 { new_owner_id: incident.new_owner_id },
                 { new_support_id: incident.new_support_id },
-                { ownership_id: incident.ownership ? incident.ownership.id : null }]
+                { ownership_id: incident.ownership ? incident.ownership.id : null },
+                { location_id: incident.location ? incident.location.id : null }]
         );
 
         return execution;

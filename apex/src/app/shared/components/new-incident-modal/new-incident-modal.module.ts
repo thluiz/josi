@@ -1,3 +1,4 @@
+import { ApplicationPipesModule } from 'app/app-pipes.module';
 import { RouterModule } from '@angular/router';
 import { NewInicidentModalComponent } from './new-incident-modal.component';
 
@@ -6,6 +7,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { NgbDatepickerModule, NgbTimepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-image/person-avatar-image.module';
+import { NgPipesModule } from 'ngx-pipes';
+import { OwnershipTitleModule } from 'app/pages/diary/shared/ownership-title/ownership-title.module';
 
 @NgModule({
     imports: [
@@ -15,7 +18,10 @@ import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-ima
         NgbDatepickerModule.forRoot(),
         NgbTimepickerModule.forRoot(),
         NgbModule,
-        PersonAvatarImageModule
+        PersonAvatarImageModule,
+        NgPipesModule,
+        ApplicationPipesModule,
+        OwnershipTitleModule
     ],
     declarations: [
         NewInicidentModalComponent

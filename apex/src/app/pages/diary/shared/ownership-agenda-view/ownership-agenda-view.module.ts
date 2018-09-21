@@ -8,6 +8,7 @@ import { IncidentCommentListModule } from 'app/shared/components/incident-commen
 import { NgPipesModule } from 'ngx-pipes';
 import { IncidentActionsListModule } from 'app/shared/components/incident-actions-list/incident-actions-list.module';
 import { ApplicationPipesModule } from 'app/app-pipes.module';
+import { OwnershipTitleModule } from '../ownership-title/ownership-title.module';
 
 @NgModule({
     imports: [
@@ -18,7 +19,8 @@ import { ApplicationPipesModule } from 'app/app-pipes.module';
         IncidentCommentListModule,
         IncidentActionsListModule,
         NgPipesModule,
-        ApplicationPipesModule
+        ApplicationPipesModule,
+        OwnershipTitleModule
     ],
     declarations: [
         OwnershipAgendaViewComponent

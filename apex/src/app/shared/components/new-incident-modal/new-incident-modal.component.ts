@@ -11,8 +11,10 @@ import { PersonService } from 'app/services/person-service';
 import { IncidentService } from 'app/services/incident-service';
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LightIncident } from '../../models/incident-model';
+import { Location } from '../../models/location.model';
 import { Result } from 'app/shared/models/result';
 import { UtilsService } from '../../../services/utils-service';
+
 
 
 @Component({
@@ -32,8 +34,11 @@ export class NewInicidentModalComponent implements OnInit {
   new_incident: any;
   modalRef;
   branches: any;
+  locations: Location[];
+  im_locations: Location[];
   incident_types: any;
   saving = false;
+  lock_ownership = false;
 
   @ViewChild('add_incident_modal') add_incident_modal: ElementRef;
 
@@ -61,17 +66,31 @@ export class NewInicidentModalComponent implements OnInit {
 
   open(initial_state = {}) {
     this.saving = false;
-    this.reset_new_incident(initial_state);
+    this.lock_ownership = false;
 
     observableZip(
       this.parameterService.getActiveBranches(),
+      this.parameterService.getActiveLocations(),
       this.parameterService.getIncidentTypes(),
-      (result_branches: Result<any[]>, result_incident_types: Result<any[]>) => {
+      (result_branches: Result<any[]>,
+        result_locations: Result<Location[]>,
+        result_incident_types: Result<any[]>) => {
         this.branches = result_branches.data.filter(b => b.category_id != 3);
+        this.locations = result_locations.data.filter(l => l.branch);
+        this.im_locations = result_locations.data.filter(l => !l.branch);
         this.incident_types = result_incident_types.data.filter(i => !i.automatically_generated);
+
+        this.reset_new_incident(initial_state);
         this.open_modal(this.add_incident_modal, true);
       }
     ).subscribe();
+  }
+
+  compareFn = (a, b) => {
+    console.log(a, b, this.new_incident.location);
+    if(a == null && b == null) return true;
+    if(a == null || b == null || a.id == null || b.id == null) return false;
+    return a.id == b.id;
   }
 
   private open_modal(content, on_close_action = false) {
@@ -127,10 +146,13 @@ export class NewInicidentModalComponent implements OnInit {
     let new_incident = this.new_incident;
     let errors = [];
 
+    console.log(new_incident);
+
     if (new_incident.people != null
       && new_incident.people.length > 0
       && new_incident.type != null
-      && new_incident.branch_id > 0
+      && new_incident.location
+      && new_incident.location.id > 0
       && (!new_incident.type.require_title
         || (new_incident.title || "").length > 3
         || (new_incident.title || "").length > 50)
@@ -218,7 +240,8 @@ export class NewInicidentModalComponent implements OnInit {
       || !this.new_incident.type
       || !this.new_incident.type.require_ownership
       || !this.new_incident.date
-      || !this.new_incident.time)
+      || !this.new_incident.time
+      || this.lock_ownership)
       return;
 
     const date = this.utilsService.translate_date_time_to_server(
@@ -281,10 +304,13 @@ export class NewInicidentModalComponent implements OnInit {
     };
 
     if(initial_state.ownership) {
+      this.lock_ownership = true;
       this.new_incident.add_to_ownernership = 2;
       this.available_ownerships = [ initial_state.ownership ];
       this.new_incident.ownership = initial_state.ownership;
+      this.new_incident.location = { id : initial_state.ownership.location_id };
 
+      console.log(this.new_incident.location);
       console.log(initial_state.ownership);
     }
   }

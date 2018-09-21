@@ -4,25 +4,10 @@
   <div class="card-title">
     <div class="row">
       <div class="col-12 col-md-8">
-        <h4 (click)="show_incident_details(ownership)" class="ownership_title">
-          <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
-          <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
-          <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
-          <span *ngIf="ownership.started_on; else elseStartDate">
-            {{ ownership.started_on | formatFromServerTz }}
-          </span>
-          <ng-template #elseStartDate>
-              {{ ownership.date | formatFromResponsibleTz : ownership.gmt }}
-          </ng-template>
-          -
-          <span *ngIf="ownership.closed_on; else elseEndDate">
-            {{ ownership.closed_on | formatFromServerTz }}
-          </span>
-          <ng-template #elseEndDate>
-              {{ ownership.end_date | formatFromResponsibleTz : ownership.gmt }}
-          </ng-template>
-          : {{ ownership.person_name }}
-        </h4>
+        <ownership-title
+        (ownershipClick)="show_incident_details($event)"
+        [ownership]="ownership">
+        </ownership-title>
       </div>
       <div class="col-12 col-md-4 text-right">
         <button type="button" class="btn btn-silver btn-sm btn-action" title="Visualizar Titularidade" *ngIf="ownership.closed && from_today"

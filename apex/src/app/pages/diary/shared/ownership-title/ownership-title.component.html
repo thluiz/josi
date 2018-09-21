@@ -1,0 +1,32 @@
+<h6 class="ownership_location" *ngIf="!ownership.branch_id">
+  Gestão Integrada -
+  {{ ownership.location_name }}
+</h6>
+<h6 class="ownership_location" *ngIf="ownership.branch_id">
+  {{ ownership.location_name }}
+</h6>
+<h5 (click)="click(ownership)" class="ownership_title">
+  <ng-template ngIf="showStarted">
+    <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
+    <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
+    <i class="fas fa-angle-right" style="color:blue" *ngIf="ownership.started_on && !ownership.closed"></i>
+  </ng-template>
+
+  <span *ngIf="ownership.started_on; else elseStartDate">
+    {{ ownership.started_on | formatFromServerTz }}
+  </span>
+  <ng-template #elseStartDate>
+      {{ ownership.date | formatFromResponsibleTz : ownership.gmt }}
+  </ng-template>
+    -
+  <span *ngIf="ownership.closed_on; else elseEndDate">
+    {{ ownership.closed_on | formatFromServerTz }}
+  </span>
+  <ng-template #elseEndDate>
+      {{ ownership.end_date | formatFromResponsibleTz : ownership.gmt }}
+  </ng-template>
+  : {{ ownership.person_name }}
+</h5>
+<span *ngIf="ownership.description &&  ownership.description.length > 0">
+  {{ ownership.description }}
+</span>

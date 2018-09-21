@@ -51,7 +51,7 @@
 <div class="row">
   <div class="col-12 col-xl-8">
     <div class="card card-block" *ngFor="let ownership of not_migrated_ownerships">
-      <h6 class="card-title" style="cursor:pointer" (click)="open_migrate_ownership(ownership, migrate_ownership_modal)">
+      <h6 class="card-title" style="cursor:pointer;text-transform:unset" (click)="open_migrate_ownership(ownership, migrate_ownership_modal)">
         <i class="fas fa-forward" style="color:red"></i>
         {{ ownership.date | date: 'HH:mm' }} - {{ ownership.person_name }}
       </h6>
