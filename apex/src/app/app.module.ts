@@ -1,4 +1,3 @@
-
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ApplicationEventService } from 'app/services/application-event-service';
 import { FirebaseService } from './services/firebase-service';
@@ -50,6 +49,8 @@ import { PersonDataTreatmentModalModule } from 'app/shared/components/person-dat
 import { PersonFinancialTreatmentModalModule } from 'app/shared/components/person-financial-treatment-modal/person-financial-treatment-modal.module';
 import { PersonScheduleTreatmentModalModule } from 'app/shared/components/person-schedule-treatment-modal/person-schedule-treatment-modal.module';
 import { PersonOfferingModalModule } from './shared/components/person-offering-modal/person-offering-modal.module';
+import { IncidentActionTreatmentModalModule } from './shared/components/incident-action-treatment-modal/incident-action-treatment-modal.module';
+
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -93,6 +94,7 @@ import { ApplicationPipesModule } from 'app/app-pipes.module';
         AngularFireStorageModule,
         ToastrModule.forRoot(),
         PersonOfferingModalModule,
+        IncidentActionTreatmentModalModule,
         ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
         ApplicationPipesModule
         //BrowserModule,

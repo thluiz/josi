@@ -26,6 +26,11 @@ export const INCIDENT_RESCHEDULED = "INCIDENT_RESCHEDULED";
 export const INCIDENT_COMMENT_ADDED = "INCIDENT_COMMENT_ADDED";
 export const INCIDENT_COMMENT_ARCHIVED = "INCIDENT_COMMENT_ARCHIVED";
 
+export const INCIDENT_ACTION_ADDED = "INCIDENT_ACTION_ADDED";
+export const INCIDENT_ACTION_COMMENT_ADDED = "INCIDENT_ACTION_COMMENT_ADDED";
+export const INCIDENT_ACTION_CHANGED = "INCIDENT_ACTION_CHANGED";
+export const INCIDENT_ACTION_TREATED = "INCIDENT_ACTION_TREATED";
+
 export const OWNERSHIP_MIGRATED = "OWNERSHIP_MIGRATED";
 
 export interface IRegisterIncident {
@@ -59,6 +64,14 @@ export interface IRegisterOwnership {
     register_treated: boolean;
     new_owner: Person;
     new_support: Person;
+}
+
+export interface IActionTreatmentCommand {
+    action_id: number;
+    treatment_type: number;
+    treatment_description: string;
+    treatment_date: string;
+    responsible_id: number;
 }
 
 export enum IncidentErrors {
@@ -112,6 +125,51 @@ export class IncidentsService extends BaseService {
 
     @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
+    async addAction(action, responsibleId): Promise<Result> {
+        const execution = await this.databaseManager
+            .ExecuteTypedJsonSP(INCIDENT_ACTION_ADDED,
+                "AddIncidentAction",
+                [{ incident_id: action.incident_id },
+                 {title: action.title},
+                 {description: action.description},
+                { responsible_id: responsibleId }]
+            );
+
+        return execution;
+    }
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async completeAction(action, responsibleId): Promise<Result> {
+        const execution = await this.databaseManager
+            .ExecuteTypedJsonSP(INCIDENT_ACTION_CHANGED,
+                "CompleteIncidentAction",
+                [{ action_id: action.id },
+                 {responsible_id: responsibleId }]
+            );
+
+        return execution;
+    }
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async treatAction(actionTreatmentData: IActionTreatmentCommand ): Promise<Result> {
+        const execution = await this.databaseManager
+            .ExecuteTypedJsonSP(INCIDENT_ACTION_TREATED,
+                "TreatIncidentAction", [
+                    { action_id: actionTreatmentData.action_id },
+                    { treatment_type: actionTreatmentData.treatment_type },
+                    { treatment_description: actionTreatmentData.treatment_description },
+                    { treatment_date: actionTreatmentData.treatment_date },
+                    { responsible_id: actionTreatmentData.responsible_id }
+                ]
+            );
+
+        return execution;
+    }
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
     async start_incident(incident, responsibleId): Promise<Result> {
         const execution = await this.databaseManager
             .ExecuteTypedJsonSP(INCIDENT_STARTED,
@@ -134,7 +192,6 @@ export class IncidentsService extends BaseService {
             [{ incident: incident.id },
             { responsible_id: responsibleId }]
         );
-
 
         this.clearCurrentActivitiesCache();
         return execution;
@@ -444,6 +501,18 @@ export class IncidentsService extends BaseService {
             INCIDENT_COMMENT_ADDED,
             "SaveIncidentComment",
             [{incident_id: incidentId}, { comment }, {responsible_id: responsibleId}]);
+    }
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async save_action_comment(incidentActionId, comment, responsibleId) {
+        return await this.databaseManager
+        .ExecuteTypedJsonSP(
+            INCIDENT_ACTION_COMMENT_ADDED,
+            "SaveIncidentActionComment",
+            [{incident_action_id: incidentActionId},
+             { comment },
+             {responsible_id: responsibleId}]);
     }
 
     @tryLogAsync()

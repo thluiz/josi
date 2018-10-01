@@ -58,6 +58,27 @@ function routes(app) {
         const result = yield controller.close_incident(req.body, yield SS.getUserFromRequest(req));
         response.send(result);
     }));
+    app.post("/api/incident_actions", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(req);
+        const result = yield IS.addAction(req.body.action, yield user.getPersonId());
+        response.send(result);
+    }));
+    app.post("/api/incident_action/complete", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(req);
+        const result = yield IS.completeAction(req.body, yield user.getPersonId());
+        response.send(result);
+    }));
+    app.post("/api/incident_action/treatment", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(req);
+        const result = yield IS.treatAction({
+            action_id: req.body.action_id,
+            treatment_date: req.body.treatment_date,
+            treatment_type: req.body.treatment_type,
+            treatment_description: req.body.treatment_description,
+            responsible_id: yield user.getPersonId()
+        });
+        response.send(result);
+    }));
     app.post("/api/incident/start", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
         const user = yield SS.getUserFromRequest(req);
         const result = yield IS.start_incident({ id: req.body.id }, yield user.getPersonId());
@@ -98,6 +119,11 @@ function routes(app) {
      */
     app.get("/api/incident_comments/incident/:id/:show_archived?", auth.ensureLoggedIn(), (request, res) => __awaiter(this, void 0, void 0, function* () {
         const result = yield IS.get_comments(request.params.id, request.params.show_archived || false);
+        res.send(result);
+    }));
+    app.post("/api/incident_action_comments", auth.ensureLoggedIn(), (request, res) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(request);
+        const result = yield IS.save_action_comment(request.body.incident_action_id, request.body.comment, yield user.getPersonId());
         res.send(result);
     }));
     app.post("/api/incident_comments", auth.ensureLoggedIn(), (request, res) => __awaiter(this, void 0, void 0, function* () {

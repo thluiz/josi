@@ -2,7 +2,7 @@ import { ApplicationEventService } from 'app/services/application-event-service'
 import { Component, ViewChildren, QueryList } from '@angular/core';
 
 import { PersonService, DailyMonitorDisplayType } from 'app/services/person-service';
-import { IncidentService, INCIDENT_ACTION_PREFIX, INCIDENT_ADDED } from 'app/services/incident-service';
+import { IncidentService, INCIDENT_EVENT_PREFIX, INCIDENT_ADDED } from 'app/services/incident-service';
 import { FormControl, FormsModule, ReactiveFormsModule,
         FormGroup, Validators, NgForm } from '@angular/forms';
 

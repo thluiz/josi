@@ -1,0 +1,57 @@
+<div class="row action_row text-left">
+  <div class="col-12 pl-0 pr-0">
+    <div class="row">
+      <div class="pl-0" [ngClass]="!canBeTreated() ? 'col-11' : 'col-10'">
+        <label class="action_title" *ngIf="saving">
+          <i class="fas fa-circle-notch fa-spin" *ngIf="saving"></i>
+          {{ action.title }}
+        </label>
+        <label class="option_container action_title" *ngIf="!saving && canBeCompleted()">
+          {{ action.title }}
+          <input type="checkbox" [checked]="action.completed" (change)="complete()" />
+          <span class="checkmark"></span>
+        </label>
+        <label class="action_title" *ngIf="!saving && !canBeCompleted()">
+          <i class="fas fa-check-square"></i>
+          {{ action.title }}
+        </label>
+      </div>
+      <div class="col-1 p-0">
+        <button type="button" class="btn btn-silver btn-sm" style="margin:0;padding:2px;line-height:10px" (click)="add_comment();">
+          <i class="ft-plus"></i>
+          <i class="far fa-sticky-note"></i>
+        </button>
+      </div>
+      <div class="col-1 p-0" *ngIf="canBeTreated()">
+        <button type="button" class="btn btn-silver btn-sm" style="margin:0;padding:2px;line-height:10px" (click)="postpone();">
+          <i class="fas fa-step-forward"></i>
+        </button>
+      </div>
+    </div>
+    <div class="row" *ngIf="action.description && action.description.length > 0">
+      <div class="col-12 pl-1">
+        <markdown [data]="action.description" class="action_description" style="margin-bottom:0 !important"></markdown>
+      </div>
+    </div>
+    <div class="row" *ngIf="action.completed">
+      <div class="col-12 comment text-right">
+        <b>Finalização:</b>
+        {{ action.completed_by_name }} - {{ action.completed_at | formatFromServerTz }}
+      </div>
+    </div>
+    <div class="row" *ngFor="let c of action.comments">
+      <div class="col-12 pl-3 text-left">
+        <div class="row">
+          <div class="col-12 pl-0 text-left">
+            <markdown [data]="c.comment" style="margin-bottom:0 !important"></markdown>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 text-right pr-0 comment">
+            {{ c.created_by_name }} - {{ c.created_at | formatFromServerTz }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

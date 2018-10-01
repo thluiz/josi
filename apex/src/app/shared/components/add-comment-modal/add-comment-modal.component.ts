@@ -9,30 +9,32 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export enum CommentType {
   Person,
   Incident,
-  Card
+  Card,
+  IncidentAction
 }
 
 @Component({
   selector: 'add-comment-modal',
   templateUrl: './add-comment-modal.component.html',
-  styleUrls: ['../../../../assets/customizations.scss'],  
+  styleUrls: ['../../../../assets/customizations.scss'],
 })
-export class AddCommentModalComponent implements OnInit {  
-  person;   
+export class AddCommentModalComponent implements OnInit {
+  person;
   incident;
-  card;     
+  incidentAction;
+  card;
   comment;
-  type;  
+  type;
   types = CommentType;
   commentary_type = 1;
   saving = false;
 
   @ViewChild('add_comment_modal') add_comment_modal: ElementRef;
-  
-  constructor(private personService: PersonService, 
+
+  constructor(private personService: PersonService,
     private ngbModalService: NgbModal,
     private incidentService: IncidentService,
-    private cardService : CardService ) {   
+    private cardService : CardService) {
   }
 
   private person_id() {
@@ -40,19 +42,19 @@ export class AddCommentModalComponent implements OnInit {
       console.log("person nd");
       return 0;
     }
-      
+
     return this.person.id || this.person.person_id
   }
 
-  ngOnInit() {    
+  ngOnInit() {
 
-  }  
-
-  ngOnDestroy () {
-    
   }
 
-  open(parameter, type: CommentType) {        
+  ngOnDestroy () {
+
+  }
+
+  open(parameter, type: CommentType) {
     switch(type) {
       case CommentType.Person:
         this.person = parameter;
@@ -60,23 +62,26 @@ export class AddCommentModalComponent implements OnInit {
       case CommentType.Incident:
         this.incident = parameter;
         break;
+      case CommentType.IncidentAction:
+        this.incidentAction = parameter;
+        break;
       case CommentType.Card:
         this.card = parameter;
         break;
     }
 
     this.type = type;
-    this.open_modal(this.add_comment_modal, true);        
+    this.open_modal(this.add_comment_modal, true);
   }
 
   private open_modal(content, on_close_action = false) {
     this.saving = false;
-    this.ngbModalService.open(content).result.then((result) => {                                  
-      
-    }, (reason) => {        
+    this.ngbModalService.open(content).result.then((result) => {
+
+    }, (reason) => {
         console.log(reason);
     });
-  }   
+  }
 
   save_person_comment(close_action) {
     this.saving = true;
@@ -113,8 +118,22 @@ export class AddCommentModalComponent implements OnInit {
       this.comment = "";
       this.incident = null;
       this.saving = false;
-      
+
       console.log(close_action);
+
+      if(close_action) {
+        close_action();
+      }
+    });
+  }
+
+  save_incident_action_comment(close_action) {
+    this.saving = true;
+    this.incidentService.saveIncidentActionComment(this.incidentAction, this.comment).subscribe(
+    (data) => {
+      this.comment = "";
+      this.incidentAction = null;
+      this.saving = false;
 
       if(close_action) {
         close_action();

@@ -39,6 +39,10 @@ exports.INCIDENT_CANCELLED = "INCIDENT_CANCELLED";
 exports.INCIDENT_RESCHEDULED = "INCIDENT_RESCHEDULED";
 exports.INCIDENT_COMMENT_ADDED = "INCIDENT_COMMENT_ADDED";
 exports.INCIDENT_COMMENT_ARCHIVED = "INCIDENT_COMMENT_ARCHIVED";
+exports.INCIDENT_ACTION_ADDED = "INCIDENT_ACTION_ADDED";
+exports.INCIDENT_ACTION_COMMENT_ADDED = "INCIDENT_ACTION_COMMENT_ADDED";
+exports.INCIDENT_ACTION_CHANGED = "INCIDENT_ACTION_CHANGED";
+exports.INCIDENT_ACTION_TREATED = "INCIDENT_ACTION_TREATED";
 exports.OWNERSHIP_MIGRATED = "OWNERSHIP_MIGRATED";
 var IncidentErrors;
 (function (IncidentErrors) {
@@ -66,6 +70,37 @@ class IncidentsService extends base_service_1.BaseService {
                 { end_date: ownership.end_date },
                 { description: ownership.description },
                 { incidents_list: incidents.map(i => i.id).join(",") }]);
+            return execution;
+        });
+    }
+    addAction(action, responsibleId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const execution = yield this.databaseManager
+                .ExecuteTypedJsonSP(exports.INCIDENT_ACTION_ADDED, "AddIncidentAction", [{ incident_id: action.incident_id },
+                { title: action.title },
+                { description: action.description },
+                { responsible_id: responsibleId }]);
+            return execution;
+        });
+    }
+    completeAction(action, responsibleId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const execution = yield this.databaseManager
+                .ExecuteTypedJsonSP(exports.INCIDENT_ACTION_CHANGED, "CompleteIncidentAction", [{ action_id: action.id },
+                { responsible_id: responsibleId }]);
+            return execution;
+        });
+    }
+    treatAction(actionTreatmentData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const execution = yield this.databaseManager
+                .ExecuteTypedJsonSP(exports.INCIDENT_ACTION_TREATED, "TreatIncidentAction", [
+                { action_id: actionTreatmentData.action_id },
+                { treatment_type: actionTreatmentData.treatment_type },
+                { treatment_description: actionTreatmentData.treatment_description },
+                { treatment_date: actionTreatmentData.treatment_date },
+                { responsible_id: actionTreatmentData.responsible_id }
+            ]);
             return execution;
         });
     }
@@ -303,6 +338,14 @@ class IncidentsService extends base_service_1.BaseService {
                 .ExecuteTypedJsonSP(exports.INCIDENT_COMMENT_ADDED, "SaveIncidentComment", [{ incident_id: incidentId }, { comment }, { responsible_id: responsibleId }]);
         });
     }
+    save_action_comment(incidentActionId, comment, responsibleId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.databaseManager
+                .ExecuteTypedJsonSP(exports.INCIDENT_ACTION_COMMENT_ADDED, "SaveIncidentActionComment", [{ incident_action_id: incidentActionId },
+                { comment },
+                { responsible_id: responsibleId }]);
+        });
+    }
     archive_comment(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.databaseManager
@@ -320,6 +363,27 @@ __decorate([
     __metadata("design:paramtypes", [Object, Array]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "migrateOwnership", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "addAction", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "completeAction", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "treatAction", null);
 __decorate([
     trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
@@ -403,6 +467,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "save_comment", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "save_action_comment", null);
 __decorate([
     trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),

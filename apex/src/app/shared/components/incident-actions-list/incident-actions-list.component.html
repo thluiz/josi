@@ -1,15 +1,58 @@
 <div class="row" style="border-bottom: 1px solid black;">
-  <div class="col-10">
+  <div class="col-10  pl-0 pr-0">
     <h6 style="font-weight:bold;margin-bottom:0"> Ações </h6>
   </div>
   <div class="col-2 text-right">
-    <button type="button" class="btn btn-silver btn-sm" style="margin:0;padding:2px;line-height:10px">
+    <button type="button" class="btn btn-silver btn-sm" style="margin:0;padding:2px;line-height:10px" (click)="openAddModal(new_action_modal)">
       <i class="ft-plus"></i>
     </button>
   </div>
 </div>
-<div class="row">
+<div class="row" *ngIf="!actions || actions.length == 0">
   <div class="col-12 text-center">
     Nenhuma ação adicionada
   </div>
 </div>
+<div class="row">
+  <div class="col-12 text-center pl-0 pr-0">
+    <incident-action-listitem [action]="a" *ngFor="let a of actions">
+    </incident-action-listitem>
+  </div>
+</div>
+
+<ng-template #new_action_modal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title" style="font-weight: bold">Adicionar Ação <i class="fas fa-circle-notch fa-spin" *ngIf="saving"></i></h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-12 pb-2">
+        <label for="new_action_title" style="font-weight: bold">Título</label>
+        <input class="form-control" [(ngModel)]="new_action.title" id="new_action_title" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <label for="new_action_description">Descrição</label>
+        <textarea class="form-control" id="new_action_description" [(ngModel)]="new_action.description" rows="3"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer" *ngIf="saving">
+    <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
+  </div>
+  <div class="modal-footer" *ngIf="!saving">
+    <button type="button" class="btn btn-success" (click)="saveNewAction(d);">
+      <i class="icon-check"></i>
+      Salvar
+    </button>
+    <button type="button" class="btn btn-silver" (click)="d('cancel ownersihip migration!');">
+      <i class="icon-action-undo"></i>
+      Cancelar
+    </button>
+  </div>
+</ng-template>

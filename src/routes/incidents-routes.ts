@@ -116,6 +116,39 @@ export function routes(app) {
         response.send(result);
     });
 
+    app.post("/api/incident_actions",
+    auth.ensureLoggedIn(),
+    async (req, response) => {
+        const user = await SS.getUserFromRequest(req);
+        const result = await IS.addAction(req.body.action, await user.getPersonId());
+
+        response.send(result);
+    });
+
+    app.post("/api/incident_action/complete",
+    auth.ensureLoggedIn(),
+    async (req, response) => {
+        const user = await SS.getUserFromRequest(req);
+        const result = await IS.completeAction(req.body, await user.getPersonId());
+
+        response.send(result);
+    });
+
+    app.post("/api/incident_action/treatment",
+    auth.ensureLoggedIn(),
+    async (req, response) => {
+        const user = await SS.getUserFromRequest(req);
+        const result = await IS.treatAction({
+            action_id: req.body.action_id,
+            treatment_date: req.body.treatment_date,
+            treatment_type: req.body.treatment_type,
+            treatment_description: req.body.treatment_description,
+            responsible_id: await user.getPersonId()
+        });
+
+        response.send(result);
+    });
+
     app.post("/api/incident/start",
     auth.ensureLoggedIn(),
     async (req, response) => {
@@ -204,6 +237,20 @@ export function routes(app) {
         const result = await IS.get_comments(
             request.params.id,
             request.params.show_archived || false);
+
+        res.send(result);
+    });
+
+    app.post("/api/incident_action_comments",
+    auth.ensureLoggedIn(),
+    async (request, res) => {
+        const user = await SS.getUserFromRequest(request);
+
+        const result = await IS.save_action_comment(
+            request.body.incident_action_id,
+            request.body.comment,
+            await user.getPersonId()
+        );
 
         res.send(result);
     });

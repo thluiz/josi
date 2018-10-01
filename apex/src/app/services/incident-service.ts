@@ -9,16 +9,22 @@ import { LightIncident } from 'app/shared/models/incident-model';
 import { HttpService } from './http-service';
 import { Ownership } from '../shared/models/ownership';
 
-export const INCIDENT_ACTION_PREFIX = "INCIDENT_";
-export const INCIDENT_ADDED = INCIDENT_ACTION_PREFIX + "ADDED";
-export const INCIDENT_STARTED = INCIDENT_ACTION_PREFIX + "STARTED";
-export const INCIDENT_CHANGED = INCIDENT_ACTION_PREFIX + "CHANGED";
-export const INCIDENT_TREATED = INCIDENT_ACTION_PREFIX + "TREATED";
-export const INCIDENT_ENDED = INCIDENT_ACTION_PREFIX + "ENDED";
-export const INCIDENT_CANCELLED = INCIDENT_ACTION_PREFIX + "CANCELLED";
-export const INCIDENT_RESCHEDULED = INCIDENT_ACTION_PREFIX + "RESCHEDULED";
-export const INCIDENT_COMMENT_ADDED = INCIDENT_ACTION_PREFIX + "COMMENT_ADDED";
-export const INCIDENT_COMMENT_ARCHIVED = INCIDENT_ACTION_PREFIX + "COMMENT_ARCHIVED";
+export const INCIDENT_EVENT_PREFIX = "INCIDENT_";
+export const INCIDENT_ADDED = INCIDENT_EVENT_PREFIX + "ADDED";
+export const INCIDENT_STARTED = INCIDENT_EVENT_PREFIX + "STARTED";
+export const INCIDENT_CHANGED = INCIDENT_EVENT_PREFIX + "CHANGED";
+export const INCIDENT_TREATED = INCIDENT_EVENT_PREFIX + "TREATED";
+export const INCIDENT_ENDED = INCIDENT_EVENT_PREFIX + "ENDED";
+export const INCIDENT_CANCELLED = INCIDENT_EVENT_PREFIX + "CANCELLED";
+export const INCIDENT_RESCHEDULED = INCIDENT_EVENT_PREFIX + "RESCHEDULED";
+export const INCIDENT_COMMENT_ADDED = INCIDENT_EVENT_PREFIX + "COMMENT_ADDED";
+export const INCIDENT_COMMENT_ARCHIVED = INCIDENT_EVENT_PREFIX + "COMMENT_ARCHIVED";
+
+export const INCIDENT_ACTION_PREFIX = INCIDENT_EVENT_PREFIX + "ACTION_";
+
+export const INCIDENT_ACTION_ADDED = INCIDENT_ACTION_PREFIX + "ADDED";
+export const INCIDENT_ACTION_CHANGED = INCIDENT_ACTION_PREFIX + "CHANGED";
+export const INCIDENT_ACTION_COMMENT_ADDED = INCIDENT_ACTION_PREFIX + "COMMENT_ADDED";
 
 export const OWNERSHIP_MIGRATED = "OWNERSHIP_MIGRATED";
 
@@ -130,6 +136,32 @@ export class IncidentService {
     .get(`/incident_comments/incident/${incident_id}`);
   }
 
+  addIncidentAction(incident, action) {
+    return this.http
+    .post_and_emit(`/incident_actions`, {
+      action : {
+        ...action,
+        incident_id: incident.id
+      }
+    });
+  }
+
+  completeAction(action) {
+    return this.http
+    .post_and_emit(`/incident_action/complete`, action);
+  }
+
+  treatAction(treatActionCommand : {
+    action_id: number;
+    incident_id: number;
+    treatment_type: number;
+    treatment_description: string;
+    treatment_date: string;
+  }) {
+    return this.http
+    .post_and_emit(`/incident_action/treatment`, treatActionCommand);
+  }
+
   archiveComment(comment, incident) {
     return this.http
     .post_and_emit(`/incident_comments/archive`, {
@@ -141,6 +173,14 @@ export class IncidentService {
     return this.http
     .post_and_emit('/incident_comments', {
       incident_id: incident.id,
+      comment
+    });
+  }
+
+  saveIncidentActionComment(incidentAction, comment) {
+    return this.http
+    .post_and_emit('/incident_action_comments', {
+      incident_action_id: incidentAction.id,
       comment
     });
   }

@@ -17,6 +17,7 @@ export class Ownership {
 
     cancelled: boolean;
     closed:boolean;
+    treated:boolean;
     past:boolean;
 
     branch_initials: string;

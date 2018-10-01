@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { Result } from 'app/shared/models/result';
 import { LightIncident } from 'app/shared/models/incident-model';
 import { filter } from 'rxjs/operators';
-import { INCIDENT_ACTION_PREFIX } from 'app/services/incident-service';
+import { INCIDENT_EVENT_PREFIX } from 'app/services/incident-service';
 
 @Component({
   selector: 'compact-incident-listitem',
@@ -38,7 +38,7 @@ export class CompactIncidentListitemComponent implements OnInit, OnDestroy {
         result.data && result.data.length > 0
         && this.incident
         && result.data[0].id == this.incident.id
-        && result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1)
+        && result.type.indexOf(INCIDENT_EVENT_PREFIX) > -1)
       ).subscribe((result) => {
         this.incident = result.data[0];
       });

@@ -1,4 +1,4 @@
-import { NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDateStruct, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { OnInit, OnDestroy } from "@angular/core/src/metadata/lifecycle_hooks";
 import { Component, Input } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -7,7 +7,7 @@ import { ModalService, ModalType } from "app/services/modal-service";
 import {
   IncidentService,
   INCIDENT_RESCHEDULED,
-  INCIDENT_ACTION_PREFIX,
+  INCIDENT_EVENT_PREFIX,
   INCIDENT_ADDED
 } from "app/services/incident-service";
 
@@ -17,6 +17,7 @@ import { Result } from "app/shared/models/result";
 import { LightIncident } from "app/shared/models/incident-model";
 import { filter } from "rxjs/operators";
 import { ParameterService } from "app/services/parameter-service";
+import { IncidentAction } from "../../../../shared/models/incident-action-model";
 
 @Component({
   selector: "ownership-agenda-view",
@@ -33,6 +34,9 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
   @Input()
   incidents: LightIncident[] = [];
 
+  @Input()
+  actions: IncidentAction[] = [];
+
   saving = false;
   from_today: boolean;
 
@@ -45,7 +49,8 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
     private modalService: ModalService,
     private incidentService: IncidentService,
     private eventManager: ApplicationEventService,
-    private parameterService: ParameterService
+    private parameterService: ParameterService,
+    private ngbModalService: NgbModal
   ) {
 
 
@@ -68,7 +73,7 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
           (result: Result<LightIncident[]>) =>
             result.data &&
             result.data.length > 0 &&
-            result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1 &&
+            result.type.indexOf(INCIDENT_EVENT_PREFIX) > -1 &&
             result.data.map(d => d.id).includes(this.ownership.id)
         )
       )
@@ -83,7 +88,7 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
           (result: Result<LightIncident[]>) =>
             result.data &&
             result.data.length > 0 &&
-            result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1 &&
+            result.type.indexOf(INCIDENT_EVENT_PREFIX) > -1 &&
             result.data.map(d => d.ownership_id).includes(this.ownership.id)
         )
       )

@@ -9,7 +9,7 @@ import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from '
 import { NgbDateParserFormatter, NgbDatepickerI18n, NgbDatepickerConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { CardService } from 'app/services/card-service';
-import { IncidentService, INCIDENT_ACTION_PREFIX } from 'app/services/incident-service';
+import { IncidentService, INCIDENT_EVENT_PREFIX } from 'app/services/incident-service';
 import { ParameterService } from 'app/services/parameter-service';
 import { PersonService } from 'app/services/person-service';
 import { filter } from 'rxjs/operators';
@@ -64,7 +64,7 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
           result.data && result.data.length > 0
           && this.current_incident
           && result.data[0].id == this.current_incident.id
-          && result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1)
+          && result.type.indexOf(INCIDENT_EVENT_PREFIX) > -1)
       ).subscribe((result) => {
         let r = result.data[0] as any;
         if (this.current_incident && result.data[0] && r.comment_count != null) {

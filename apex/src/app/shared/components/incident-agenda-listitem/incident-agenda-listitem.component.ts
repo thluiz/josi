@@ -2,7 +2,7 @@ import { LightIncident } from './../../models/incident-model';
 import { ApplicationEventService } from 'app/services/application-event-service';
 
 import { OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { IncidentService, INCIDENT_ACTION_PREFIX } from 'app/services/incident-service';
+import { IncidentService, INCIDENT_EVENT_PREFIX } from 'app/services/incident-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 
 import { Component, Input, Output, EventEmitter } from '@angular/core';
@@ -49,7 +49,7 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
         filter((result : Result<LightIncident[]>) =>
         result.data && result.data.length > 0
         && result.data[0].id == this.incident.id
-        && result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1)
+        && result.type.indexOf(INCIDENT_EVENT_PREFIX) > -1)
       ).subscribe((result) => {
         this.incident = result.data[0];
         this.saving = false;

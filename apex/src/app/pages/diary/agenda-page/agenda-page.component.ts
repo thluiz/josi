@@ -61,6 +61,7 @@ import { ModalType, ModalService } from "app/services/modal-service";
 import { Ownership } from "app/shared/models/ownership";
 import { Location } from "app/shared/models/location.model";
 import { GroupByPipe } from "ngx-pipes";
+import { IncidentAction } from "../../../shared/models/incident-action-model";
 
 @Component({
   selector: "app-full-layout-page",
@@ -77,6 +78,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
   ownerships: Ownership[] = [];
   not_migrated_ownerships: Ownership[] = [];
   incidents : LightIncident[] = [];
+  actions : IncidentAction[] = [];
   show_change_branch;
   current_week = 0;
   current_incident;
@@ -411,6 +413,7 @@ export class AgendaPageComponent implements OnInit, OnDestroy, AfterViewInit {
         );
 
         this.incidents = data.incidents;
+        this.actions = data.actions;
       });
   }
 }

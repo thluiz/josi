@@ -1,3 +1,4 @@
+import { IncidentActionListitemModule } from './../incident-action-listitem/incident-action-listitem.module';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
@@ -10,7 +11,8 @@ import { IncidentActionsListComponent } from './incident-actions-list.component'
     imports: [
         CommonModule,
         FormsModule,
-        MarkdownModule.forRoot()
+        MarkdownModule.forRoot(),
+        IncidentActionListitemModule
     ],
     declarations: [
       IncidentActionsListComponent

@@ -60,7 +60,9 @@
       </div>
     </div>
 
-    <ownership-agenda-view *ngFor="let ownership of ownerships" [ownership]="ownership" [incidents]="incidents | filterBy: ['ownership_id'] : ownership.id">
+    <ownership-agenda-view *ngFor="let ownership of ownerships"
+    [ownership]="ownership" [incidents]="incidents | filterBy: ['ownership_id'] : ownership.id"
+    [actions]="actions | filterBy: ['incident_id'] : ownership.id">
     </ownership-agenda-view>
 
     <div class="card">
