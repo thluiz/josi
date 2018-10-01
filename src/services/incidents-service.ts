@@ -68,6 +68,7 @@ export interface IRegisterOwnership {
 
 export interface IActionTreatmentCommand {
     action_id: number;
+    incident_id: number;
     treatment_type: number;
     treatment_description: string;
     treatment_date: string;
@@ -158,6 +159,7 @@ export class IncidentsService extends BaseService {
             .ExecuteTypedJsonSP(INCIDENT_ACTION_TREATED,
                 "TreatIncidentAction", [
                     { action_id: actionTreatmentData.action_id },
+                    { incident_id: actionTreatmentData.incident_id },
                     { treatment_type: actionTreatmentData.treatment_type },
                     { treatment_description: actionTreatmentData.treatment_description },
                     { treatment_date: actionTreatmentData.treatment_date },

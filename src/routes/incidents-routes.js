@@ -72,6 +72,7 @@ function routes(app) {
         const user = yield SS.getUserFromRequest(req);
         const result = yield IS.treatAction({
             action_id: req.body.action_id,
+            incident_id: req.body.incident_id,
             treatment_date: req.body.treatment_date,
             treatment_type: req.body.treatment_type,
             treatment_description: req.body.treatment_description,

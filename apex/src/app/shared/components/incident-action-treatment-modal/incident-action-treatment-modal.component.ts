@@ -66,15 +66,17 @@ export class IncidentActionTreatmentModalComponent {
       return;
     }
 
+    this.saving = true;
     this.incidentService.treatAction({
       action_id: this.incidentAction.id,
-      incident_id: this.incident.id,
+      incident_id: this.incident ? this.incident.id : null,
       treatment_date: this.utilsService.translate_date_time_to_server(
         this.treatment_until_date, this.treatment_until_time
       ),
       treatment_type: this.treatment_type,
       treatment_description: this.treatment_description
     }).subscribe(() => {
+      this.saving = false;
       if(close_action) {
         close_action();
       }

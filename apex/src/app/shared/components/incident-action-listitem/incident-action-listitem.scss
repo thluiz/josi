@@ -27,6 +27,10 @@ markdown p {
   margin-top: 0.25em;
 }
 
+.action_title.treated {
+  color: rgba(255, 160, 0, 0.68);
+}
+
 .action_row {
   margin-bottom: 0.3em;
   border-bottom: 1px solid #eeeeee;
@@ -36,4 +40,17 @@ markdown p {
   font-style: italic;
   line-height: 0.8em;
   font-size: 0.7em;
+}
+
+
+.action_detail {
+  font-size: smaller;
+  font-style: italic;
+  line-height: 0.95em;
+  font-size: 0.7em;
+}
+
+.action_detail label {
+  font-style: normal;
+  font-weight: normal;
 }

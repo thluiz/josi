@@ -10,7 +10,8 @@ import {
   IncidentService,
   INCIDENT_ACTION_PREFIX,
   INCIDENT_ACTION_CHANGED,
-  INCIDENT_ACTION_COMMENT_ADDED
+  INCIDENT_ACTION_COMMENT_ADDED,
+  INCIDENT_ACTION_TREATED
 } from "app/services/incident-service";
 import { ModalService, ModalType } from "app/services/modal-service";
 
@@ -62,6 +63,7 @@ export class IncidentActionListitemComponent implements OnInit, OnDestroy {
       )
       .subscribe(result => {
         if(result.type == INCIDENT_ACTION_CHANGED
+           || result.type == INCIDENT_ACTION_TREATED
            || result.type == INCIDENT_ACTION_COMMENT_ADDED) {
           this.action = result.data.find(ia => ia.id == this.action.id);
           this.incidentData = this.action
@@ -81,7 +83,7 @@ export class IncidentActionListitemComponent implements OnInit, OnDestroy {
   postpone() {
     this.modalService.open(ModalType.IncidentActionTreatment, {
       action: this.action,
-      ownership: this.incident
+      incident: this.incident
     });
   }
 
@@ -113,5 +115,13 @@ export class IncidentActionListitemComponent implements OnInit, OnDestroy {
     }
 
     return !this.incidentData || (this.incidentData && !this.incidentData.treated);
+  }
+
+  treatedOnCurrentIncident() {
+    if(this.action.completed) {
+      return false;
+    }
+
+    return this.incidentData && this.incidentData.treated;
   }
 }

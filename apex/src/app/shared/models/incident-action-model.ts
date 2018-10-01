@@ -23,9 +23,7 @@ export class IncidentAction {
   completed_by_name: string;
 
   treated: boolean;
-  treated_by: number;
-  treated_at: string;
-  treated_by_name: string;
+  treated_until: boolean;
 
   cancelled: boolean;
 

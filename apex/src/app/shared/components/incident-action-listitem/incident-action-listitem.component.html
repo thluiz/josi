@@ -1,4 +1,4 @@
-<div class="row action_row text-left">
+<div class="row action_row text-left pb-3">
   <div class="col-12 pl-0 pr-0">
     <div class="row">
       <div class="pl-0" [ngClass]="!canBeTreated() ? 'col-11' : 'col-10'">
@@ -6,14 +6,22 @@
           <i class="fas fa-circle-notch fa-spin" *ngIf="saving"></i>
           {{ action.title }}
         </label>
-        <label class="option_container action_title" *ngIf="!saving && canBeCompleted()">
+
+        <label class="action_title treated"
+          *ngIf="!saving && canBeCompleted() && treatedOnCurrentIncident()">
+          <i class="fas fa-step-forward"></i>
           {{ action.title }}
-          <input type="checkbox" [checked]="action.completed" (change)="complete()" />
-          <span class="checkmark"></span>
         </label>
+
         <label class="action_title" *ngIf="!saving && !canBeCompleted()">
           <i class="fas fa-check-square"></i>
           {{ action.title }}
+        </label>
+
+        <label class="option_container action_title" *ngIf="!saving && canBeCompleted() && canBeTreated()">
+          {{ action.title }}
+          <input type="checkbox" [checked]="action.completed" (change)="complete()" />
+          <span class="checkmark"></span>
         </label>
       </div>
       <div class="col-1 p-0">
@@ -33,10 +41,19 @@
         <markdown [data]="action.description" class="action_description" style="margin-bottom:0 !important"></markdown>
       </div>
     </div>
-    <div class="row" *ngIf="action.completed">
-      <div class="col-12 comment text-right">
-        <b>Finalização:</b>
-        {{ action.completed_by_name }} - {{ action.completed_at | formatFromServerTz }}
+    <div class="row">
+      <div class="action_detail text-right pt-1"
+        [ngClass]="action.completed || treatedOnCurrentIncident() ? 'col-6' : 'col-12'" *ngIf="action.created_by_name">
+        <label>Criação</label>
+        {{ action.created_by_name }} - {{ action.created_at | formatFromServerTz : 'DD/MM HH:mm' }}
+      </div>
+      <div class="col-6 action_detail text-right pt-1" *ngIf="treatedOnCurrentIncident()">
+        <label>Tratamento</label>
+        {{ incidentData.treated_by_name }} - {{ incidentData.treated_at | formatFromServerTz : 'DD/MM HH:mm' }}
+      </div>
+      <div class="col-6 action_detail text-right pt-1" *ngIf="action.completed">
+        <label>Finalização</label>
+        {{ action.completed_by_name }} - {{ action.completed_at | formatFromServerTz : 'DD/MM HH:mm' }}
       </div>
     </div>
     <div class="row" *ngFor="let c of action.comments">
@@ -48,7 +65,7 @@
         </div>
         <div class="row">
           <div class="col-12 text-right pr-0 comment">
-            {{ c.created_by_name }} - {{ c.created_at | formatFromServerTz }}
+            {{ c.created_by_name }} - {{ c.created_at | formatFromServerTz : 'DD/MM HH:mm' }}
           </div>
         </div>
       </div>

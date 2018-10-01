@@ -96,6 +96,7 @@ class IncidentsService extends base_service_1.BaseService {
             const execution = yield this.databaseManager
                 .ExecuteTypedJsonSP(exports.INCIDENT_ACTION_TREATED, "TreatIncidentAction", [
                 { action_id: actionTreatmentData.action_id },
+                { incident_id: actionTreatmentData.incident_id },
                 { treatment_type: actionTreatmentData.treatment_type },
                 { treatment_description: actionTreatmentData.treatment_description },
                 { treatment_date: actionTreatmentData.treatment_date },
