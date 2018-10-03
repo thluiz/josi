@@ -134,6 +134,13 @@ class IncidentsService extends base_service_1.BaseService {
     }
     close_incident(incident, responsible) {
         return __awaiter(this, void 0, void 0, function* () {
+            const validationResult = yield this.databaseManager.ExecuteJsonSP("ValidateCloseIncident", { incident: incident.id });
+            if (!validationResult.success) {
+                return validationResult;
+            }
+            if (!validationResult.data[0].success) {
+                return validationResult.data[0];
+            }
             const execution = yield this.databaseManager.ExecuteTypedJsonSP(exports.INCIDENT_ENDED, "CloseIncident", [{ incident: incident.id },
                 { close_description: incident.close_text || "" },
                 { title: incident.title || "" },

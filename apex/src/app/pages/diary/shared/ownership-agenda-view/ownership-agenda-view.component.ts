@@ -1,3 +1,4 @@
+import { ToastrService } from 'ngx-toastr';
 import { NgbDateStruct, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { OnInit, OnDestroy } from "@angular/core/src/metadata/lifecycle_hooks";
 import { Component, Input } from "@angular/core";
@@ -49,6 +50,7 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
     private modalService: ModalService,
     private incidentService: IncidentService,
     private eventManager: ApplicationEventService,
+    private toastrService: ToastrService,
     private parameterService: ParameterService,
     private ngbModalService: NgbModal
   ) {
@@ -129,6 +131,18 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
     this.saving = true;
     this.incidentService.start_incident(incident).subscribe(result => {
       this.saving = false;
+    });
+  }
+
+  stop_incident(incident) {
+    this.saving = true;
+    this.incidentService.close_incident(incident).subscribe(result => {
+      this.saving = false;
+
+      if(!result.success) {
+        this.toastrService.error(result.error ? result.error.message : result.message);
+        return;
+      }
     });
   }
 

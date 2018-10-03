@@ -9,7 +9,7 @@
         [ownership]="ownership">
         </ownership-title>
       </div>
-      <div class="col-12 col-md-4 text-right">
+      <div class="col-12 col-md-4 text-right pt-2">
         <button type="button" class="btn btn-silver btn-sm btn-action" title="Visualizar Titularidade" *ngIf="(ownership.closed || ownership.treated ) && from_today"
           (click)="lower_if_closed_today = !lower_if_closed_today">
           <i class="far fa-eye"></i>
@@ -17,6 +17,10 @@
         <button type="button" class="btn btn-silver btn-sm btn-action" title="Iniciar Titularidade" *ngIf="!ownership.closed && !ownership.treated && !ownership.started_on"
           (click)="start_incident(ownership);">
           <i class="fas fa-play"></i>
+        </button>
+        <button type="button" class="btn btn-silver btn-sm btn-action" title="Iniciar Titularidade" *ngIf="!ownership.closed && !ownership.treated && ownership.started_on"
+          (click)="stop_incident(ownership);">
+          <i class="fas fa-stop"></i>
         </button>
       </div>
     </div>

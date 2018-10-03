@@ -217,6 +217,19 @@ export class IncidentsService extends BaseService {
     @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async close_incident(incident: Incident, responsible: Person): Promise<Result<Incident>> {
+        const validationResult = await this.databaseManager.ExecuteJsonSP<any>(
+            "ValidateCloseIncident",
+            { incident: incident.id }
+        );
+
+        if (!validationResult.success) {
+            return validationResult;
+        }
+
+        if (!validationResult.data[0].success) {
+            return validationResult.data[0];
+        }
+
         const execution = await this.databaseManager.ExecuteTypedJsonSP<Incident>(
             INCIDENT_ENDED,
             "CloseIncident",
