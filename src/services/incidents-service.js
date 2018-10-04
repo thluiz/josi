@@ -107,6 +107,14 @@ class IncidentsService extends base_service_1.BaseService {
     }
     start_incident(incident, responsibleId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const validationResult = yield this.databaseManager
+                .ExecuteJsonSP("ValidateStartIncident", { incident: incident.id });
+            if (!validationResult.success) {
+                return validationResult;
+            }
+            if (!validationResult.data[0].success) {
+                return validationResult.data[0];
+            }
             const execution = yield this.databaseManager
                 .ExecuteTypedJsonSP(exports.INCIDENT_STARTED, "StartIncident", [{ incident: incident.id },
                 { responsible_id: responsibleId }]);

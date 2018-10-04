@@ -16,6 +16,7 @@ import { filter } from 'rxjs/operators';
 import { Result } from 'app/shared/models/result';
 import { LightIncident } from 'app/shared/models/incident-model';
 import { PersonIncidentHistoryListComponent } from '../person-incident-history-list/person-incident-history-list.component';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -51,6 +52,7 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
     private personService: PersonService,
     private eventManager: ApplicationEventService,
     private parameterService: ParameterService,
+    private toastrService: ToastrService,
     private cardService: CardService) {
 
     datePickerConfig.firstDayOfWeek = 7
@@ -221,6 +223,12 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
       incident.valid_for_closing = false;
       return;
     }
+    console.log(incident)
+    if(incident.type == 36) {
+      this.toastrService.error("Utilize o fechamento específico do módulo de titularidade.");
+      incident.valid_for_closing = false;
+      return;
+    }
 
     incident.valid_for_closing = true;
   }
@@ -233,8 +241,14 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
     }
     this.saving = true;
     this.incidentService.close_incident(incident)
-      .subscribe(data => {
+      .subscribe((result_data) => {
         this.saving = false;
+
+        if(!result_data.success) {
+          this.toastrService.error(result_data.message);
+          return;
+        }
+
         this.reload_incident(this.current_incident);
       });
   }
@@ -283,8 +297,14 @@ export class IncidentTreatmentModalComponent implements OnInit, OnDestroy {
   start_incident(incident) {
     this.saving = true;
     this.incidentService.start_incident(incident)
-      .subscribe((value) => {
+      .subscribe((result_data) => {
         this.saving = false;
+
+        if(!result_data.success) {
+          this.toastrService.error(result_data.message);
+          return;
+        }
+
         this.reload_incident(this.current_incident);
       });
   }

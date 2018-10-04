@@ -9,6 +9,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { Result } from 'app/shared/models/result';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'incident-agenda-listitem',
@@ -38,6 +39,7 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
     constructor(private incidentService: IncidentService,
               private eventManager: ApplicationEventService,
               private modalService: ModalService,
+              private toastrService: ToastrService,
               private cd: ChangeDetectorRef) {
 
     }
@@ -72,6 +74,9 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
       this.incidentService.start_incident(incident)
       .subscribe((result) => {
         this.saving = false;
+        if(!result.success) {
+          this.toastrService.error(result.message);
+        }
       });
     }
 

@@ -173,6 +173,19 @@ export class IncidentsService extends BaseService {
     @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async start_incident(incident, responsibleId): Promise<Result> {
+        const validationResult = await this.databaseManager
+            .ExecuteJsonSP<any>("ValidateStartIncident",
+                { incident: incident.id }
+            );
+
+        if (!validationResult.success) {
+            return validationResult;
+        }
+
+        if (!validationResult.data[0].success) {
+            return validationResult.data[0];
+        }
+
         const execution = await this.databaseManager
             .ExecuteTypedJsonSP(INCIDENT_STARTED,
                 "StartIncident",
