@@ -26,13 +26,21 @@ class OwnershipClosingReport extends base_report_1.BaseReport {
             if (!generatedContent.success) {
                 return generatedContent;
             }
+            let subject = `Fechamento de titularidade - `;
+            if (data.branch_name) {
+                subject += ` ${data.branch_name} - `;
+            }
+            else {
+                subject += ` Gestão Integrada - `;
+            }
+            subject += data.date;
             const msg = {
                 to: (yield this.buildRecipients(data.branch_id)),
                 from: "contato@myvtmi.im",
-                subject: `Fechamento de titularidade - ${data.branch_name} `,
+                subject,
                 html: generatedContent.data,
             };
-            yield this.send_email(msg);
+            // await this.send_email(msg);
             return result_1.SuccessResult.GeneralOk({ content: generatedContent.data, data });
         });
     }
@@ -49,6 +57,12 @@ class OwnershipClosingReport extends base_report_1.BaseReport {
             }
             return result;
         });
+    }
+    formatDateBr(date) {
+        const yyyy = date.getFullYear();
+        const mm = date.getMonth() < 9 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
+        const dd = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        return "".concat(yyyy).concat("-").concat(mm).concat("-").concat(dd);
     }
 }
 exports.OwnershipClosingReport = OwnershipClosingReport;

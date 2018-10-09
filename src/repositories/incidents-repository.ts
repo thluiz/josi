@@ -141,6 +141,8 @@ export class IncidentsRepository extends BaseRepository<Incident> {
 
         const data = ownershipData.data[0];
 
+        console.log(data);
+
         if (!data.incidents) {
             data.incidents = [];
         }

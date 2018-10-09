@@ -102,6 +102,7 @@ class IncidentsRepository extends base_repository_1.BaseRepository {
                 ownership_id: id
             });
             const data = ownershipData.data[0];
+            console.log(data);
             if (!data.incidents) {
                 data.incidents = [];
             }
