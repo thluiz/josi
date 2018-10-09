@@ -40,7 +40,7 @@ export class OwnershipClosingReport extends BaseReport {
             html: generatedContent.data,
         };
 
-        // await this.send_email(msg);
+        await this.send_email(msg);
 
         return SuccessResult.GeneralOk({ content: generatedContent.data, data });
     }

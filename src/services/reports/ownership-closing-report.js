@@ -40,7 +40,7 @@ class OwnershipClosingReport extends base_report_1.BaseReport {
                 subject,
                 html: generatedContent.data,
             };
-            // await this.send_email(msg);
+            yield this.send_email(msg);
             return result_1.SuccessResult.GeneralOk({ content: generatedContent.data, data });
         });
     }
