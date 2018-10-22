@@ -56,6 +56,26 @@ export class IncidentsRepository extends BaseRepository<Incident> {
         return result;
     }
 
+    @tryLogAsync()
+    async getDataForChangeOwnership(ownershipId): Promise<Result<any>> {
+        const result = await this.DBM.ExecuteJsonSP("GetDataForChangeOwnership",
+            { ownership_id: ownershipId }
+        );
+
+        return result;
+    }
+
+    @tryLogAsync()
+    async getDataForChangeOwnershipLength(ownershipId, newStart, newEnd): Promise<Result<any>> {
+        const result = await this.DBM.ExecuteJsonSP("GetDataForChangeOwnershipLength",
+            { ownership_id: ownershipId },
+            { start_date: newStart },
+            { end_date: newEnd }
+        );
+
+        return result;
+    }
+
     @cache(true, 100000, (branchId) => `getCurrentActivities_${branchId || "all"}`)
     @tryLogAsync()
     async getCurrentActivities(branchId): Promise<Result<any>> {

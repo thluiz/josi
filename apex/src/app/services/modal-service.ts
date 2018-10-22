@@ -22,7 +22,9 @@ export enum ModalType{
     PersonScheduleTreatment,
     FileUpload,
     PersonOffering,
-    IncidentActionTreatment
+    IncidentActionTreatment,
+    ChangeOwnership,
+    ChangeOwnershipLength
 }
 
 export interface IModalOpening {

@@ -27,10 +27,12 @@
               "src/styles.css",
               "node_modules/prismjs/themes/prism-okaidia.css",
               "node_modules/dragula/dist/dragula.css",
-              "node_modules/ngx-toastr/toastr.css"
+              "node_modules/ngx-toastr/toastr.css",
+              "node_modules/fullcalendar/dist/fullcalendar.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/moment/min/moment.min.js",
               "src/assets/js/perfect-scrollbar.jquery.min.js"
             ]
           },

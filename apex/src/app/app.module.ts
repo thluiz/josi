@@ -1,3 +1,4 @@
+import { ChangeOwnershipLengthModalModule } from './pages/diary/shared/change-ownership-length-modal/change-ownership-length-modal.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ApplicationEventService } from 'app/services/application-event-service';
 import { FirebaseService } from './services/firebase-service';
@@ -8,7 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from "./shared/shared.module";
 
-import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
 import { ContentLayoutComponent } from "./layouts/content/content-layout.component";
@@ -17,13 +18,11 @@ import { FullLayoutComponent } from "./layouts/full/full-layout.component";
 import { AuthService } from './shared/auth/auth.service';
 import { AuthGuard } from './shared/auth/auth-guard.service';
 
-import { HttpModule } from '@angular/http';
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SecurityHttpInterceptor } from './httpinterceptor'
 import { environment } from '../environments/environment';
 
 import * as $ from 'jquery';
-
 
 import { CardService } from 'app/services/card-service';
 import { FinancialService } from 'app/services/financial-service';
@@ -58,6 +57,7 @@ import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { HttpService } from './services/http-service';
 import { ApplicationPipesModule } from 'app/app-pipes.module';
+import { ChangeOwnershipModalModule } from './pages/diary/shared/change-ownership-modal/change-ownership-modal.module';
 
 @NgModule({
     declarations: [
@@ -85,6 +85,9 @@ import { ApplicationPipesModule } from 'app/app-pipes.module';
         FileUploadModalModule,
         PersonFinancialTreatmentModalModule,
         PersonScheduleTreatmentModalModule,
+        ChangeOwnershipModalModule,
+        ChangeOwnershipLengthModalModule,
+
         ApplicationInsightsModule.forRoot({
             instrumentationKey: 'afcbdd7f-c599-45cd-8555-812c83b75ae6'
         }),
@@ -120,8 +123,7 @@ import { ApplicationPipesModule } from 'app/app-pipes.module';
         AppInsightsService,
         FirebaseService,
         ApplicationEventService,
-        HttpService,
-
+        HttpService
     ],
     bootstrap: [AppComponent]
 })

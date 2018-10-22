@@ -74,8 +74,8 @@ export const ROUTES: RouteInfo[] = [
         ]
     },
     {
-        path: '/under-construction', title: 'Calendário',
-        icon: 'icon-ban',
+        path: '/calendar/coverage', title: 'Calendário',
+        icon: 'icon-calendar',
         class: '', badge: '',
         badgeClass: '', isExternalLink: false,
         submenu: []

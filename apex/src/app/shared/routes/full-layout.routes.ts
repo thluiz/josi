@@ -148,5 +148,9 @@ export const Full_ROUTES: Routes = [
   {
     path: 'parameters/vouchers',
     loadChildren: './pages/parameters/parameters.module#ParametersModule'
+  },
+  {
+    path: 'calendar/coverage',
+    loadChildren: './pages/calendar/calendar.module#CalendarModule'
   }
 ];

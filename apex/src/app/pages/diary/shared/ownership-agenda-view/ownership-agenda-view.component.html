@@ -10,6 +10,24 @@
         </ownership-title>
       </div>
       <div class="col-12 col-md-4 text-right pt-2">
+        <button type="button"
+        class="btn btn-silver btn-sm btn-action"
+        style="margin-right: 5px"
+        *ngIf="!ownership.closed && !ownership.treated"
+        title="Alterar Titularidade"
+          (click)="change_ownership(ownership);">
+          <i class="fas fa-exchange-alt"></i>
+        </button>
+
+        <button type="button"
+        class="btn btn-silver btn-sm btn-action"
+        style="margin-right: 5px"
+        *ngIf="false"
+        title="Reagendar Titularidade"
+          (click)="reschedule_ownership(ownership);">
+          <i class="far fa-clock"></i>
+        </button>
+
         <button type="button" class="btn btn-silver btn-sm btn-action" title="Visualizar Titularidade" *ngIf="(ownership.closed || ownership.treated ) && from_today"
           (click)="lower_if_closed_today = !lower_if_closed_today">
           <i class="far fa-eye"></i>

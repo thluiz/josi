@@ -22,6 +22,24 @@ function routes(app) {
         const result = yield IR.getAvailableOwnerships(req.params.branch, req.params.date, req.params.type);
         res.send(result);
     }));
+    app.get("/api/change_ownership/:id", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield IR.getDataForChangeOwnership(req.params.id);
+        res.send(result);
+    }));
+    app.get("/api/change_ownership_length/:id/:start_date/:end_date", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield IR.getDataForChangeOwnershipLength(req.params.id, req.params.start_date, req.params.end_date);
+        res.send(result);
+    }));
+    app.post("/api/change_ownership", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(req);
+        const result = yield IS.ChangeOwnership(req.body.id, req.body.owner, req.body.first_surrogate, req.body.second_surrogate, req.body.description, yield user.getPersonId());
+        res.send(result);
+    }));
+    app.post("/api/change_ownership_length", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(req);
+        const result = yield IS.ChangeOwnershipLength(req.body.id, req.body.start_date, req.body.end_date, yield user.getPersonId());
+        res.send(result);
+    }));
     app.get("/api/current_activities/:branch?", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         const result = yield IR.getCurrentActivities(req.params.branch > 0 ? req.params.branch : null);
         res.send(result);

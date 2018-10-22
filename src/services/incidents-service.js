@@ -44,6 +44,9 @@ exports.INCIDENT_ACTION_COMMENT_ADDED = "INCIDENT_ACTION_COMMENT_ADDED";
 exports.INCIDENT_ACTION_CHANGED = "INCIDENT_ACTION_CHANGED";
 exports.INCIDENT_ACTION_TREATED = "INCIDENT_ACTION_TREATED";
 exports.OWNERSHIP_MIGRATED = "OWNERSHIP_MIGRATED";
+exports.OWNERSHIP_LENGTH_CHANGED = "OWNERSHIP_LENGTH_CHANGED";
+exports.OWNERSHIP_CHANGED = "OWNERSHIP_CHANGED";
+exports.OWNERSHIP_TEAM_CHANGED = "OWNERSHIP_TEAM_CHANGED";
 var IncidentErrors;
 (function (IncidentErrors) {
     IncidentErrors[IncidentErrors["MissingResponsible"] = 0] = "MissingResponsible";
@@ -87,6 +90,28 @@ class IncidentsService extends base_service_1.BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const execution = yield this.databaseManager
                 .ExecuteTypedJsonSP(exports.INCIDENT_ACTION_CHANGED, "CompleteIncidentAction", [{ action_id: action.id },
+                { responsible_id: responsibleId }]);
+            return execution;
+        });
+    }
+    ChangeOwnership(ownershipId, ownerId, firstSurrogateId, secondSurrogateId, description, responsibleId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const execution = yield this.databaseManager
+                .ExecuteTypedJsonSP(exports.OWNERSHIP_TEAM_CHANGED, "changeOwnership", [{ ownership_id: ownershipId },
+                { owner_id: ownerId },
+                { first_surrogate_id: firstSurrogateId },
+                { second_surrogate_id: secondSurrogateId },
+                { description },
+                { responsible_id: responsibleId }]);
+            return execution;
+        });
+    }
+    ChangeOwnershipLength(ownershipId, startDate, endDate, responsibleId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const execution = yield this.databaseManager
+                .ExecuteTypedJsonSP(exports.OWNERSHIP_LENGTH_CHANGED, "changeOwnershipLength", [{ ownership_id: ownershipId },
+                { start_date: startDate },
+                { end_date: endDate },
                 { responsible_id: responsibleId }]);
             return execution;
         });
@@ -393,6 +418,20 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "completeAction", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number, Number, Number, String, Number]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "ChangeOwnership", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, String, String, Number]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "ChangeOwnershipLength", null);
 __decorate([
     trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),

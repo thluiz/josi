@@ -21,6 +21,52 @@ export function routes(app) {
         res.send(result);
     });
 
+    app.get("/api/change_ownership/:id",
+    auth.ensureLoggedIn(),
+    async (req, res) => {
+        const result = await IR.getDataForChangeOwnership(req.params.id);
+
+        res.send(result);
+    });
+
+    app.get("/api/change_ownership_length/:id/:start_date/:end_date",
+    auth.ensureLoggedIn(),
+    async (req, res) => {
+        const result = await IR.getDataForChangeOwnershipLength(
+            req.params.id, req.params.start_date, req.params.end_date
+        );
+
+        res.send(result);
+    });
+
+    app.post("/api/change_ownership",
+    auth.ensureLoggedIn(),
+    async (req, res) => {
+        const user = await SS.getUserFromRequest(req);
+        const result = await IS.ChangeOwnership(
+            req.body.id,
+            req.body.owner,
+            req.body.first_surrogate,
+            req.body.second_surrogate,
+            req.body.description,
+            await user.getPersonId()
+        );
+
+        res.send(result);
+    });
+
+    app.post("/api/change_ownership_length",
+    auth.ensureLoggedIn(),
+    async (req, res) => {
+        const user = await SS.getUserFromRequest(req);
+        const result = await IS.ChangeOwnershipLength(
+            req.body.id, req.body.start_date, req.body.end_date,
+            await user.getPersonId()
+        );
+
+        res.send(result);
+    });
+
     app.get("/api/current_activities/:branch?",
     auth.ensureLoggedIn(),
     async (req, res) => {

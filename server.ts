@@ -1,5 +1,6 @@
-import { UsersRepository } from './src/repositories/users-repository';
 import appInsights = require("applicationinsights");
+
+import { UsersRepository } from "./src/repositories/users-repository";
 
 import { DependencyManager } from "./src/services/managers/dependency-manager";
 

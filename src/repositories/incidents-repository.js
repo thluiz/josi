@@ -48,6 +48,18 @@ class IncidentsRepository extends base_repository_1.BaseRepository {
             return result;
         });
     }
+    getDataForChangeOwnership(ownershipId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.DBM.ExecuteJsonSP("GetDataForChangeOwnership", { ownership_id: ownershipId });
+            return result;
+        });
+    }
+    getDataForChangeOwnershipLength(ownershipId, newStart, newEnd) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.DBM.ExecuteJsonSP("GetDataForChangeOwnershipLength", { ownership_id: ownershipId }, { start_date: newStart }, { end_date: newEnd });
+            return result;
+        });
+    }
     getCurrentActivities(branchId) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.DBM.ExecuteJsonSP("GetCurrentActivities", { branch_id: branchId });
@@ -138,6 +150,18 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getAvailableOwnerships", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getDataForChangeOwnership", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getDataForChangeOwnershipLength", null);
 __decorate([
     cache_decorator_1.cache(true, 100000, (branchId) => `getCurrentActivities_${branchId || "all"}`),
     trylog_decorator_1.tryLogAsync(),

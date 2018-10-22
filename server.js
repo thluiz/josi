@@ -8,8 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const users_repository_1 = require("./src/repositories/users-repository");
 const appInsights = require("applicationinsights");
+const users_repository_1 = require("./src/repositories/users-repository");
 const dependency_manager_1 = require("./src/services/managers/dependency-manager");
 const data_runner_1 = require("./src/services/managers/data-runner");
 const database_manager_1 = require("./src/services/managers/database-manager");

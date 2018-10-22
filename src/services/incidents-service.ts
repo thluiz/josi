@@ -32,6 +32,9 @@ export const INCIDENT_ACTION_CHANGED = "INCIDENT_ACTION_CHANGED";
 export const INCIDENT_ACTION_TREATED = "INCIDENT_ACTION_TREATED";
 
 export const OWNERSHIP_MIGRATED = "OWNERSHIP_MIGRATED";
+export const OWNERSHIP_LENGTH_CHANGED = "OWNERSHIP_LENGTH_CHANGED";
+export const OWNERSHIP_CHANGED = "OWNERSHIP_CHANGED";
+export const OWNERSHIP_TEAM_CHANGED = "OWNERSHIP_TEAM_CHANGED";
 
 export interface IRegisterIncident {
     incident: Incident;
@@ -146,6 +149,45 @@ export class IncidentsService extends BaseService {
             .ExecuteTypedJsonSP(INCIDENT_ACTION_CHANGED,
                 "CompleteIncidentAction",
                 [{ action_id: action.id },
+                 {responsible_id: responsibleId }]
+            );
+
+        return execution;
+    }
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async ChangeOwnership(ownershipId: number,
+                          ownerId: number, firstSurrogateId: number,
+                          secondSurrogateId: number, description: string,
+                          responsibleId: number ): Promise<Result> {
+
+        const execution = await this.databaseManager
+            .ExecuteTypedJsonSP(OWNERSHIP_TEAM_CHANGED,
+                "changeOwnership",
+                [{ ownership_id: ownershipId },
+                 { owner_id: ownerId },
+                 { first_surrogate_id: firstSurrogateId },
+                 { second_surrogate_id: secondSurrogateId },
+                 { description },
+                 { responsible_id: responsibleId }]
+            );
+
+        return execution;
+    }
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async ChangeOwnershipLength(ownershipId: number,
+                                startDate: string, endDate: string,
+                                responsibleId: number): Promise<Result> {
+
+        const execution = await this.databaseManager
+            .ExecuteTypedJsonSP(OWNERSHIP_LENGTH_CHANGED,
+                "changeOwnershipLength",
+                [{ ownership_id: ownershipId },
+                 {start_date: startDate },
+                 {end_date: endDate },
                  {responsible_id: responsibleId }]
             );
 

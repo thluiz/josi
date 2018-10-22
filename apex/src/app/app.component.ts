@@ -1,3 +1,4 @@
+import { ChangeOwnershipModalComponent } from './pages/diary/shared/change-ownership-modal/change-ownership-modal.component';
 import { IncidentActionTreatmentModalComponent } from "app/shared/components/incident-action-treatment-modal/incident-action-treatment-modal.component";
 import { FirebaseService } from "./services/firebase-service";
 import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
@@ -28,6 +29,7 @@ import { PersonOfferingModalComponent } from "./shared/components/person-offerin
 
 import { AngularFirestore } from "angularfire2/firestore";
 import { AngularFireAuth } from "angularfire2/auth";
+import { ChangeOwnershipLengthModalComponent } from './pages/diary/shared/change-ownership-length-modal/change-ownership-length-modal.component';
 
 @Component({
   selector: "app-root",
@@ -83,6 +85,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   @ViewChild(IncidentActionTreatmentModalComponent)
   incidentActionTreatmentModal: IncidentActionTreatmentModalComponent;
+
+  @ViewChild(ChangeOwnershipModalComponent)
+  changeOwnershipModalComponent: ChangeOwnershipModalComponent;
+
+  @ViewChild(ChangeOwnershipLengthModalComponent)
+  changeOwnershipLengthModalComponent: ChangeOwnershipModalComponent;
 
   constructor(
     private modalService: ModalService,
@@ -168,6 +176,12 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case ModalType.PersonScheduleTreatment:
           this.personScheduleTreatmentModal.open(data.parameters);
+          break;
+        case ModalType.ChangeOwnership:
+          this.changeOwnershipModalComponent.open(data.parameters);
+          break;
+        case ModalType.ChangeOwnershipLength:
+          this.changeOwnershipLengthModalComponent.open(data.parameters);
           break;
         case ModalType.FileUpload:
           this.fileUploadModal.open(data.parameters);

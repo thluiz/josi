@@ -9,7 +9,8 @@ import {
   IncidentService,
   INCIDENT_RESCHEDULED,
   INCIDENT_EVENT_PREFIX,
-  INCIDENT_ADDED
+  INCIDENT_ADDED,
+  OWNERSHIP_TEAM_CHANGED
 } from "app/services/incident-service";
 
 import { Subscription, Observable } from "rxjs";
@@ -45,6 +46,7 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
 
   private ownership_events_subscriber: Subscription;
   private incidents_events_subscriber: Subscription;
+  private ownership_team_change_subscriber: Subscription;
 
   constructor(
     private modalService: ModalService,
@@ -66,6 +68,10 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
     if (this.incidents_events_subscriber) {
       this.incidents_events_subscriber.unsubscribe();
     }
+
+    if(this.ownership_team_change_subscriber) {
+      this.ownership_team_change_subscriber.unsubscribe();
+    }
   }
 
   ngOnInit(): void {
@@ -81,6 +87,27 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
       )
       .subscribe(result => {
         this.ownership = result.data[0] as any;
+        this.saving = false;
+      });
+
+    this.ownership_team_change_subscriber = this.eventManager.event$
+      .pipe(
+        filter(
+          (result: Result<any[]>) =>
+            result.data &&
+            result.data.length > 0 &&
+            result.type == OWNERSHIP_TEAM_CHANGED &&
+            result.data
+              .filter(d => d.ownership
+                && d.ownership.length > 0
+                && d.ownership[0].id > 0)
+              .map(d => d.ownership[0].id)
+              .includes(this.ownership.id)
+        )
+      )
+      .subscribe(result => {
+        this.ownership = result.data[0].ownership[0] as any;
+        this.incidents = result.data[0].incidents;
         this.saving = false;
       });
 
@@ -151,5 +178,13 @@ export class OwnershipAgendaViewComponent implements OnInit, OnDestroy {
       branch_id: this.current_branch || this.ownership.branch_id,
       ownership: this.ownership
     });
+  }
+
+  change_ownership(ownership) {
+    this.modalService.open(ModalType.ChangeOwnership, { ownership })
+  }
+
+  reschedule_ownership(ownership) {
+    this.modalService.open(ModalType.ChangeOwnershipLength, { ownership })
   }
 }

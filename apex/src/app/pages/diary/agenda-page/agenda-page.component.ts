@@ -18,29 +18,15 @@ import { UtilsService } from "app/services/utils-service";
 import {
   IncidentService,
   INCIDENT_ADDED,
-  INCIDENT_CANCELLED,
   INCIDENT_RESCHEDULED,
   OWNERSHIP_MIGRATED
 } from "app/services/incident-service";
 
 import {
-  FormControl,
-  FormsModule,
-  ReactiveFormsModule,
-  FormGroup,
-  Validators,
-  NgForm
-} from "@angular/forms";
-
-import {
   NgbModal,
   NgbDateStruct,
   NgbDatepickerI18n,
-  NgbDatepickerModule,
-  NgbCalendar,
   NgbTimeStruct,
-  ModalDismissReasons,
-  NgbActiveModal,
   NgbDatepickerConfig,
   NgbDateParserFormatter
 } from "@ng-bootstrap/ng-bootstrap";
