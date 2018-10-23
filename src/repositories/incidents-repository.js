@@ -48,6 +48,12 @@ class IncidentsRepository extends base_repository_1.BaseRepository {
             return result;
         });
     }
+    getCalendarData() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.DBM.ExecuteJsonSP("GetCalendarData");
+            return result;
+        });
+    }
     getDataForChangeOwnership(ownershipId) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.DBM.ExecuteJsonSP("GetDataForChangeOwnership", { ownership_id: ownershipId });
@@ -150,6 +156,12 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getAvailableOwnerships", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getCalendarData", null);
 __decorate([
     trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),

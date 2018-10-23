@@ -1,3 +1,4 @@
+import { IncidentService } from 'app/services/incident-service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 @Component({
@@ -9,7 +10,7 @@ export class CoveragePageComponent implements OnInit, OnDestroy {
   calendarOptions;
   events = [];
 
-  constructor() {
+  constructor(private incidentService: IncidentService) {
 
   }
 
@@ -36,25 +37,39 @@ export class CoveragePageComponent implements OnInit, OnDestroy {
       }
     };
 
-    this.events.push({
-      title: 'Titularidade <br /> <i class="fas fa-bomb"></i> - André - \r\n TESTE \r\n TESTE \r\n TESTE!',
-      start: '2018-10-25 18:00',
-      end: '2018-10-25 22:00',
-      description: "abc teste"
-    }, {
-      title: 'New event',
-      start: '2018-10-22 11:00',
-      end: '2018-10-22 15:00',
-      description: "abc teste",
-      class: "teste-normal",
-      style: "background-color: orange"
-    }, {
-      title: 'New event 2 - <i class="fas fa-taxi"></i>',
-      start: '2018-10-22 11:00',
-      end: '2018-10-22 15:00',
-      description: "abc teste",
-      class: "teste-taxi",
-      style: "background-color: red; color: white"
+    this.incidentService.getCalendarData().subscribe((result_data : any) => {
+      let data = result_data.data[0];
+      let events = [];
+
+      data.ownerships.forEach(ow => {
+        let title = ow.person_name;
+        let description = "";
+
+        if(ow.people > 0) {
+          description += `- ${ow.people} pessoa${ow.people > 1 ? 's' : ''}`;
+        }
+
+        if(ow.incidents_count) {
+          //let incidents = "<ul>";
+
+          description += ow.incidents_count.map(i => `<br />- ${i.abrev}: ${i.items}`).join(" ");
+
+          //incidents += "</ul>";
+          //description += incidents;
+        }
+
+
+        events.push(
+          {
+            title,
+            start: ow.date,
+            end: ow.end_date,
+            description
+          }
+        )
+      });
+
+      this.events = events
     });
   }
 

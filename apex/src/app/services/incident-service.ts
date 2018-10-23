@@ -36,6 +36,10 @@ export const OWNERSHIP_TEAM_CHANGED = "OWNERSHIP_TEAM_CHANGED";
 export class IncidentService {
   constructor(private http: HttpService) {}
 
+  getCalendarData() {
+    return this.http.get(`/calendar`);
+  }
+
   getOwnershipDataForChange(ownership: Ownership) {
     return this.http.get(`/change_ownership/${ownership.id}`);
   }

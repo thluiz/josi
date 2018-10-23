@@ -57,6 +57,13 @@ export class IncidentsRepository extends BaseRepository<Incident> {
     }
 
     @tryLogAsync()
+    async getCalendarData(): Promise<Result<any>> {
+        const result = await this.DBM.ExecuteJsonSP("GetCalendarData");
+
+        return result;
+    }
+
+    @tryLogAsync()
     async getDataForChangeOwnership(ownershipId): Promise<Result<any>> {
         const result = await this.DBM.ExecuteJsonSP("GetDataForChangeOwnership",
             { ownership_id: ownershipId }

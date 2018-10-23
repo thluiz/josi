@@ -22,7 +22,7 @@
         <button type="button"
         class="btn btn-silver btn-sm btn-action"
         style="margin-right: 5px"
-        *ngIf="false"
+        *ngIf="!ownership.closed && !ownership.treated"
         title="Reagendar Titularidade"
           (click)="reschedule_ownership(ownership);">
           <i class="far fa-clock"></i>

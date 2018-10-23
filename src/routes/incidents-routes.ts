@@ -21,6 +21,14 @@ export function routes(app) {
         res.send(result);
     });
 
+    app.get("/api/calendar",
+    auth.ensureLoggedIn(),
+    async (req, res) => {
+        const result = await IR.getCalendarData();
+
+        res.send(result);
+    });
+
     app.get("/api/change_ownership/:id",
     auth.ensureLoggedIn(),
     async (req, res) => {
