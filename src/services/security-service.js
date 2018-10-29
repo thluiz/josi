@@ -40,7 +40,7 @@ class SecurityService extends base_service_1.BaseService {
         this.UR = new users_repository_1.UsersRepository();
     }
     static sha512(password, salt) {
-        const hash = crypto.createHmac("sha512", salt);
+        const hash = crypto.createHmac("sha512", salt.toString());
         hash.update(password);
         const value = hash.digest("hex");
         return {
