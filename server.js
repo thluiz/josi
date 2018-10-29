@@ -31,6 +31,9 @@ process.on("unhandledRejection", (reason, p) => {
     const error = new Error("Unhandled Rejection");
     logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.UnhandledRejection, error, { reason, p });
 });
+process.on("uncaughtException", (error) => {
+    logger_service_1.LoggerService.error(errors_codes_1.ErrorCode.UncaughtException, error);
+});
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const express = require("express");
@@ -43,12 +46,28 @@ class ServerDataRunningConfiguration extends data_runner_1.DataRunningConfigurat
         this.useTransaction = true;
     }
 }
-container.bind(database_manager_1.DatabaseManager).toSelf().inSingletonScope();
-container.bind(ServerDataRunningConfiguration).to(data_runner_1.DataRunningConfiguration);
+container
+    .bind(database_manager_1.DatabaseManager)
+    .toSelf()
+    .inSingletonScope();
+container
+    .bind(ServerDataRunningConfiguration)
+    .to(data_runner_1.DataRunningConfiguration);
 const app = express();
 const port = process.env.port || process.env.PORT || 3979;
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (!origin || process.env.CORS_ALLOWED_ORIGINS.split(",").includes(origin)) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true
+};
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 passport.initialize(app);

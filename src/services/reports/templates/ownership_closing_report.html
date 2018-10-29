@@ -88,7 +88,8 @@
                             Ações
                         </td>
                     </tr>
-                    <% data.actions.forEach(function(i) { %>
+                    <% if(data.actions) {
+                        data.actions.forEach(function(i) { %>
                     <tr>
                         <td>
                             <h4 style="margin:0;padding:0">
@@ -134,7 +135,15 @@
                             </div>
                         </td>
                     </tr>
-                    <% }); %>
+                    <% });
+                } else {
+                        %>
+                        <tr>
+                            <td>
+                            Nenhuma ação informada
+                            </td>
+                        </tr>
+                <% } %>
                 </table>
             </td>
         </tr>
@@ -154,7 +163,8 @@
                         <td width="200">Pessoa</td>
                         <td width="*">Detalhes</td>
                     </tr>
-                    <% data.incidents.forEach(function(i, index) { %>
+                    <% if(data.incidents) {
+                        data.incidents.forEach(function(i, index) { %>
                     <tr style="background-color: <%= index % 2 ? 'white' : '#efefef' %> ">
                         <td valign="top" align="center">
                             <%= i.small_date %>
@@ -229,7 +239,8 @@
                             </table>
                         </td>
                     </tr>
-                    <% }); %>
+                    <% });
+                 } %>
                 </table>
             </td>
         </tr>

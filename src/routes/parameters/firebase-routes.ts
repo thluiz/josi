@@ -10,7 +10,8 @@ export function routes(app) {
         res.send(result);
     });
 
-    app.get("/api/firebase/current_time", async (_, res) => {
+    app.get("/api/firebase/current_time",
+    async (_, res) => {
         const dt = new Date();
 
         res.send({

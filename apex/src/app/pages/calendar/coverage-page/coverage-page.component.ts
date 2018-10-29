@@ -62,7 +62,7 @@ export class CoveragePageComponent implements OnInit, OnDestroy {
         events.push(
           {
             title,
-            start: ow.date,
+            start: ow.start_date || ow.date,
             end: ow.end_date,
             description
           }

@@ -37,7 +37,7 @@ export class ErrorResult {
                         public innerError?: ErrorResult) {
         this.id = uuid();
         this.data = error;
-        this.message = error.message;
+        this.message = error ? error.message : null;
         this.details = JSON.stringify(error, replaceErrors);
     }
 }

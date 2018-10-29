@@ -45,6 +45,7 @@
     "ng-fullcalendar": "^1.6.2",
     "ng2-dragula": "^1.5.0",
     "ngx-cacheable": "^1.0.6",
+    "ngx-cookie": "^4.0.2",
     "ngx-date-fns": "^2.0.2",
     "ngx-markdown": "^1.6.0",
     "ngx-moment": "^3.1.0",

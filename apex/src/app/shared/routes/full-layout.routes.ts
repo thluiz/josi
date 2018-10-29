@@ -86,10 +86,6 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/under-construction/under-construction.module#UnderConstructionModule'
   },
   {
-    path: 'login',
-    loadChildren: './pages/under-construction/under-construction.module#UnderConstructionModule'
-  },
-  {
     path: 'organizations',
     loadChildren: './pages/cards/cards.module#CardsModule'
   },

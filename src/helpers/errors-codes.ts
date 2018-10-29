@@ -14,5 +14,6 @@ export enum ErrorCode {
     ExternalResource,
     CardsActions,
     PeopleActions,
-    AzureTableStorage
+    AzureTableStorage,
+    UncaughtException
 }

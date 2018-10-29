@@ -4,23 +4,6 @@ const logger_service_1 = require("../services/logger-service");
 const security_service_1 = require("../services/security-service");
 function ensureLoggedIn() {
     return (req, res, next) => {
-        if (process.env.PRODUCTION === "false") {
-            if (!req.isAuthenticated || !req.isAuthenticated()) {
-                new security_service_1.SecurityService().getUserFromRequest(req)
-                    .then((user) => {
-                    req.login(user, (err) => {
-                        if (err) {
-                            return next(err);
-                        }
-                        next();
-                    });
-                });
-            }
-            else {
-                next();
-            }
-            return;
-        }
         if (!req.isAuthenticated || !req.isAuthenticated()) {
             res.status(401).json({
                 success: false,

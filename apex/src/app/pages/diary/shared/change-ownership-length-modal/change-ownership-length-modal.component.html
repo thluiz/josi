@@ -2,7 +2,7 @@
   <div class="modal-header">
     <div class="row" style="width:100%">
       <div class="col-8">
-        <h5>Alterar Duração de Titularidade</h5>
+        <h5>Horários da Titularidade</h5>
       </div>
       <div class="col-4 pr-0 text-right">
         <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
@@ -21,7 +21,7 @@
       <div class="col-6">
         <div class="input-group">
           <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="ownership['tmp_date']" id="ownership_end_date"
-            name="ownership_date" autocomplete="off" ngbDatepicker #niDueDateDate="ngbDatepicker" (ngModelChange)="loadChangeOwnershipData()" />
+            name="ownership_date" autocomplete="off" ngbDatepicker #niDueDateDate="ngbDatepicker" (ngModelChange)="loadDataForChangeOwnershipLength()" />
           <div class="input-group-addon" (click)="niDueDateDate.toggle()">
             <i class="ft-calendar" style="cursor: pointer;"></i>
           </div>
@@ -29,7 +29,7 @@
       </div>
       <div class="col-6">
         <div class="input-group">
-          <ngb-timepicker [spinners]="false" (ngModelChange)="loadChangeOwnershipData($event)" [(ngModel)]="ownership['tmp_time']
+          <ngb-timepicker [spinners]="false" (ngModelChange)="loadDataForChangeOwnershipLength($event)" [(ngModel)]="ownership['tmp_time']
             "></ngb-timepicker>
         </div>
       </div>
@@ -43,7 +43,7 @@
       <div class="col-6">
         <div class="input-group">
           <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="ownership['tmp_end_date']" id="ownership_end_date"
-            name="ownership_end_date" autocomplete="off" ngbDatepicker #niDueDateDate="ngbDatepicker" (ngModelChange)="loadChangeOwnershipData()" />
+            name="ownership_end_date" autocomplete="off" ngbDatepicker #niDueDateDate="ngbDatepicker" (ngModelChange)="loadDataForChangeOwnershipLength()" />
           <div class="input-group-addon" (click)="niDueDateDate.toggle()">
             <i class="ft-calendar" style="cursor: pointer;"></i>
           </div>
@@ -51,7 +51,7 @@
       </div>
       <div class="col-6">
         <div class="input-group">
-          <ngb-timepicker [spinners]="false" (ngModelChange)="loadChangeOwnershipData($event)" [(ngModel)]="ownership['tmp_end_time']
+          <ngb-timepicker [spinners]="false" (ngModelChange)="loadDataForChangeOwnershipLength($event)" [(ngModel)]="ownership['tmp_end_time']
             "></ngb-timepicker>
         </div>
       </div>

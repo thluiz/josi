@@ -17,18 +17,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const crypto = require("crypto");
+const PasswordRequest_1 = require("../entity/PasswordRequest");
+const Person_1 = require("../entity/Person");
 const User_1 = require("../entity/User");
 const users_repository_1 = require("../repositories/users-repository");
 const trylog_decorator_1 = require("../decorators/trylog-decorator");
+const base_service_1 = require("./base-service");
+const errors_codes_1 = require("../helpers/errors-codes");
+const result_1 = require("../helpers/result");
+const utils_service_1 = require("./utils-service");
+const password_request_report_1 = require("./reports/password-request-report");
 var Permissions;
 (function (Permissions) {
     Permissions[Permissions["Operator"] = 0] = "Operator";
     Permissions[Permissions["Manager"] = 1] = "Manager";
     Permissions[Permissions["Director"] = 2] = "Director";
 })(Permissions = exports.Permissions || (exports.Permissions = {}));
-class SecurityService {
+class SecurityService extends base_service_1.BaseService {
     constructor() {
+        super(...arguments);
         this.UR = new users_repository_1.UsersRepository();
+    }
+    static sha512(password, salt) {
+        const hash = crypto.createHmac("sha512", salt);
+        hash.update(password);
+        const value = hash.digest("hex");
+        return {
+            salt,
+            passwordHash: value
+        };
     }
     serializeUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -55,6 +73,60 @@ class SecurityService {
             return response;
         });
     }
+    resetPassword(token, password, confirm) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (password !== confirm) {
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, new Error("Por favor, confirme a senha"));
+            }
+            const PRR = yield this.databaseManager.getRepository(PasswordRequest_1.PasswordRequest);
+            const PR = yield this.databaseManager.getRepository(Person_1.Person);
+            const pr = yield PRR.manager
+                .createQueryBuilder(PasswordRequest_1.PasswordRequest, "pr")
+                .innerJoinAndSelect("pr.person", "p")
+                .where("pr.token = :token", { token })
+                .getOne();
+            if (!pr) {
+                return result_1.SuccessResult.GeneralOk();
+            }
+            const validatePassword = this.validatePassword(password);
+            if (!validatePassword.success) {
+                return validatePassword;
+            }
+            const person = pr.person;
+            person.salt = utils_service_1.UtilsService.genRandomString(120);
+            person.password = SecurityService.sha512(password, person.salt).passwordHash;
+            yield PR.save(person);
+            yield PRR.delete(pr);
+            return result_1.SuccessResult.GeneralOk();
+        });
+    }
+    createPasswordRequest(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const PRR = yield this.databaseManager.getRepository(PasswordRequest_1.PasswordRequest);
+            const resultUser = yield this.UR.getUserByEmail(email);
+            if (!resultUser || !resultUser.success || !resultUser.data) {
+                return result_1.SuccessResult.GeneralOk();
+            }
+            const person = yield resultUser.data.getPerson();
+            const passwordRequest = new PasswordRequest_1.PasswordRequest();
+            passwordRequest.person = person;
+            passwordRequest.token = utils_service_1.UtilsService.genRandomString(10);
+            try {
+                yield PRR.save(passwordRequest);
+            }
+            catch (error) {
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, error);
+            }
+            try {
+                const emailRequest = new password_request_report_1.PasswordRequestReport();
+                emailRequest.send(resultUser.data, passwordRequest);
+            }
+            catch (error) {
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.SendingEmail, error);
+            }
+            return result_1.SuccessResult.GeneralOk();
+        });
+    }
     getUserFromRequest(req) {
         return __awaiter(this, void 0, void 0, function* () {
             if (process.env.PRODUCTION === "false") {
@@ -71,14 +143,17 @@ class SecurityService {
             }
             let hasPermission = false;
             switch (permission) {
-                case (Permissions.Operator):
-                    hasPermission = ((yield user.is_operator()) || (yield user.is_director()) || (yield user.is_manager()));
+                case Permissions.Operator:
+                    hasPermission =
+                        (yield user.is_operator()) ||
+                            (yield user.is_director()) ||
+                            (yield user.is_manager());
                     break;
-                case (Permissions.Manager):
-                    hasPermission = ((yield user.is_director()) || (yield user.is_manager()));
+                case Permissions.Manager:
+                    hasPermission = (yield user.is_director()) || (yield user.is_manager());
                     break;
-                case (Permissions.Director):
-                    hasPermission = (yield user.is_director());
+                case Permissions.Director:
+                    hasPermission = yield user.is_director();
                     break;
             }
             return hasPermission;
@@ -111,6 +186,22 @@ class SecurityService {
             return user;
         });
     }
+    validatePassword(password) {
+        if (password.lengh < 8) {
+            return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, new Error("Informe ao menos 8 caracteres para senha"));
+        }
+        if (password.lengh > 16) {
+            return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, new Error("Informe menos de 16 caracteres para senha"));
+        }
+        const hasUpperCase = /[A-Z]/.test(password) ? 1 : 0;
+        const hasLowerCase = /[a-z]/.test(password) ? 1 : 0;
+        const hasNumbers = /\d/.test(password) ? 1 : 0;
+        const hasNonalphas = /\W/.test(password) ? 1 : 0;
+        if (hasUpperCase + hasLowerCase + hasNumbers + hasNonalphas < 3) {
+            return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, new Error("A senha deve possuir algum número, caracter especial, letras maiúsculas ou minúsculas"));
+        }
+        return result_1.SuccessResult.GeneralOk();
+    }
 }
 __decorate([
     trylog_decorator_1.tryLogAsync(),
@@ -118,6 +209,18 @@ __decorate([
     __metadata("design:paramtypes", [User_1.User]),
     __metadata("design:returntype", Promise)
 ], SecurityService.prototype, "serializeUser", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], SecurityService.prototype, "resetPassword", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SecurityService.prototype, "createPasswordRequest", null);
 __decorate([
     trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),

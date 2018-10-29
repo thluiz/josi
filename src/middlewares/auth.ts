@@ -1,28 +1,9 @@
+import passport = require("passport");
 import { LoggerService } from "../services/logger-service";
 import { Permissions, SecurityService } from "../services/security-service";
 
 export function ensureLoggedIn() {
     return (req, res, next) => {
-        if (process.env.PRODUCTION === "false") {
-
-            if (!req.isAuthenticated || !req.isAuthenticated()) {
-                new SecurityService().getUserFromRequest(req)
-                .then((user) => {
-                    req.login(user, (err) => {
-                        if (err) {
-                            return next(err);
-                        }
-
-                        next();
-                    });
-                });
-            } else {
-                next();
-            }
-
-            return;
-        }
-
         if (!req.isAuthenticated || !req.isAuthenticated()) {
             res.status(401).json({
                 success: false,

@@ -1,3 +1,4 @@
+import { AuthService } from 'app/shared/auth/auth.service';
 import { ChangeOwnershipModalComponent } from './pages/diary/shared/change-ownership-modal/change-ownership-modal.component';
 import { IncidentActionTreatmentModalComponent } from "app/shared/components/incident-action-treatment-modal/incident-action-treatment-modal.component";
 import { FirebaseService } from "./services/firebase-service";
@@ -29,6 +30,7 @@ import { PersonOfferingModalComponent } from "./shared/components/person-offerin
 
 import { AngularFirestore } from "angularfire2/firestore";
 import { AngularFireAuth } from "angularfire2/auth";
+
 import { ChangeOwnershipLengthModalComponent } from './pages/diary/shared/change-ownership-length-modal/change-ownership-length-modal.component';
 
 @Component({
@@ -94,7 +96,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private modalService: ModalService,
-    private firebaseService: FirebaseService
+    private authService: AuthService
   ) {}
 
   ngAfterViewInit() {}

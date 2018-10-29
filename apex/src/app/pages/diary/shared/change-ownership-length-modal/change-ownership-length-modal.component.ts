@@ -41,39 +41,6 @@ export class ChangeOwnershipLengthModalComponent {
   open(parameters : {ownership: Ownership }) {
     this.ownership = parameters.ownership;
 
-    this.ngbModalService.open(this.modal)
-    .result.then((result) => {
-
-    }, (reason) => {
-      console.log(reason);
-    });
-  }
-
-  save(close_action: () => void) {
-    if(!this.ownership["tmp_date"] || !this.ownership["tmp_time"]
-    || !this.ownership["tmp_end_date"] || !this.ownership["tmp_end_time"]) {
-      this.toastrServoce.error("Informe a data de início e fim");
-      return;
-    }
-    this.saving = true;
-    this.incidentService.changeOwnershipLength(
-      this.ownership, this.utilsService.translate_date_time_to_server(
-        this.ownership["tmp_date"], this.ownership["tmp_time"]
-      ),
-      this.utilsService.translate_date_time_to_server(
-        this.ownership["tmp_end_date"], this.ownership["tmp_end_time"]
-      )
-    ).subscribe(result => {
-      this.saving = false;
-      if(!result.success) {
-        this.toastrServoce.error(result.message);
-        return;
-      }
-      close_action();
-    });
-  }
-
-  loadChangeOwnershipData(_event?) {
     const dt = new Date(this.ownership.date);
     const dtEnd = new Date(this.ownership.end_date);
 
@@ -106,6 +73,40 @@ export class ChangeOwnershipLengthModalComponent {
     this.ownership["tmp_end_date"] = end_date;
     this.ownership["tmp_end_time"] = end_time;
 
+    this.loadDataForChangeOwnershipLength();
+    this.ngbModalService.open(this.modal)
+    .result.then((result) => {
+
+    }, (reason) => {
+      console.log(reason);
+    });
+  }
+
+  save(close_action: () => void) {
+    if(!this.ownership["tmp_date"] || !this.ownership["tmp_time"]
+    || !this.ownership["tmp_end_date"] || !this.ownership["tmp_end_time"]) {
+      this.toastrServoce.error("Informe a data de início e fim");
+      return;
+    }
+    this.saving = true;
+    this.incidentService.changeOwnershipLength(
+      this.ownership, this.utilsService.translate_date_time_to_server(
+        this.ownership["tmp_date"], this.ownership["tmp_time"]
+      ),
+      this.utilsService.translate_date_time_to_server(
+        this.ownership["tmp_end_date"], this.ownership["tmp_end_time"]
+      )
+    ).subscribe(result => {
+      this.saving = false;
+      if(!result.success) {
+        this.toastrServoce.error(result.message);
+        return;
+      }
+      close_action();
+    });
+  }
+
+  loadDataForChangeOwnershipLength(_event?) {
     Observable.zip(
       this.incidentService.getDataForChangeOwnershipLength(this.ownership,
       this.utilsService.translate_date_time_to_server(this.ownership["tmp_date"],
@@ -114,17 +115,20 @@ export class ChangeOwnershipLengthModalComponent {
         this.ownership["tmp_end_time"]),
       ),
       (result_ownership : Result<any[]>) => {
-          let data = result_ownership.data[0];
+        if(!result_ownership.data) {
+          return
+        }
 
-          this.incidents_to_be_reschudeled = data.incidents_to_be_reschudeled || [];
-          this.incidents_to_be_incorporated = data.incidents_to_be_incorporated || [];
+        let data = result_ownership.data[0];
 
-          this.actions_to_be_rescheduled = data.actions_to_be_rescheduled || [];
-          this.actions_to_be_incorporated = data.actions_to_be_incorporated || [];
+        this.incidents_to_be_reschudeled = data.incidents_to_be_reschudeled || [];
+        this.incidents_to_be_incorporated = data.incidents_to_be_incorporated || [];
 
-          this.ownerships_to_be_cancelled = data.ownerships_to_be_cancelled || [];
-          this.ownerships_to_be_delayed = data.ownerships_to_be_delayed || [];
+        this.actions_to_be_rescheduled = data.actions_to_be_rescheduled || [];
+        this.actions_to_be_incorporated = data.actions_to_be_incorporated || [];
 
+        this.ownerships_to_be_cancelled = data.ownerships_to_be_cancelled || [];
+        this.ownerships_to_be_delayed = data.ownerships_to_be_delayed || [];
       }
     ).subscribe();
   }

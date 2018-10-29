@@ -58,6 +58,7 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { HttpService } from './services/http-service';
 import { ApplicationPipesModule } from 'app/app-pipes.module';
 import { ChangeOwnershipModalModule } from './pages/diary/shared/change-ownership-modal/change-ownership-modal.module';
+import { CookieModule } from 'ngx-cookie';
 
 @NgModule({
     declarations: [
@@ -70,6 +71,7 @@ import { ChangeOwnershipModalModule } from './pages/diary/shared/change-ownershi
         AppRoutingModule,
         SharedModule,
         NgbModule.forRoot(),
+        CookieModule.forRoot(),
         HttpClientModule,
         PersonDataTreatmentModalModule,
         PersonComunicationTreatmentModalModule,
