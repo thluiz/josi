@@ -1,3 +1,4 @@
+import { LoggerService, LogOrigins } from "./../services/logger-service";
 import passport = require("passport");
 
 import session = require("express-session");
@@ -74,7 +75,10 @@ export function initialize(app) {
       secret: process.env.EXPRESS_SESSION_KEY,
       resave: true,
       saveUninitialized: true,
-      cookie: { secure: process.env.PRODUCTION === "true", httpOnly: true },
+      cookie: {
+        secure: false,
+        httpOnly: true
+      },
       store: new AzureSessionStore({
         secret: process.env.EXPRESS_SESSION_KEY,
         resave: true,
@@ -136,7 +140,6 @@ export function initialize(app) {
 
   app.post("/api/auth/login", async (req, res, next) => {
     const loginResult = await doLogin(req.body.email, req.body.password);
-    console.log(loginResult);
 
     if (!loginResult.success) {
       res.send(loginResult);
@@ -164,6 +167,9 @@ export function initialize(app) {
 
     const user = resultUser.data as User;
     const person = await user.getPerson();
+
+    LoggerService.info(LogOrigins.Debug, user);
+    LoggerService.info(LogOrigins.Debug, person);
 
     if (
       SecurityService.sha512(password, person.salt).passwordHash !==

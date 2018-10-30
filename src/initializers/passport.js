@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const logger_service_1 = require("./../services/logger-service");
 const passport = require("passport");
 const session = require("express-session");
 const jwt = require("jsonwebtoken");
@@ -58,7 +59,10 @@ function initialize(app) {
         secret: process.env.EXPRESS_SESSION_KEY,
         resave: true,
         saveUninitialized: true,
-        cookie: { secure: process.env.PRODUCTION === "true", httpOnly: true },
+        cookie: {
+            secure: false,
+            httpOnly: true
+        },
         store: new azure_session_storage_1.AzureSessionStore({
             secret: process.env.EXPRESS_SESSION_KEY,
             resave: true,
@@ -97,7 +101,6 @@ function initialize(app) {
     });
     app.post("/api/auth/login", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const loginResult = yield doLogin(req.body.email, req.body.password);
-        console.log(loginResult);
         if (!loginResult.success) {
             res.send(loginResult);
             return;
@@ -117,6 +120,8 @@ function initialize(app) {
             }
             const user = resultUser.data;
             const person = yield user.getPerson();
+            logger_service_1.LoggerService.info(logger_service_1.LogOrigins.Debug, user);
+            logger_service_1.LoggerService.info(logger_service_1.LogOrigins.Debug, person);
             if (security_service_1.SecurityService.sha512(password, person.salt).passwordHash !==
                 person.password) {
                 return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, new Error("User Not Found"));

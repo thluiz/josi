@@ -23,7 +23,8 @@ export enum Permissions {
 
 export class SecurityService extends BaseService {
   public static sha512(password, salt) {
-    const hash = crypto.createHmac("sha512", salt.toString());
+    const s = salt || UtilsService.genRandomString(120);
+    const hash = crypto.createHmac("sha512", s.toString());
     hash.update(password);
     const value = hash.digest("hex");
 
