@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[incident] (
     [id]                                 INT             IDENTITY (1, 1) NOT NULL,
     [responsible_id]                     INT             NULL,
-    [created_on]                         DATETIME        DEFAULT (getUTCdate()) NOT NULL,
+    [created_on]                         DATETIME        DEFAULT (getutcdate()) NOT NULL,
     [incident_type]                      INT             NOT NULL,
     [date]                               DATETIME        NOT NULL,
     [closed]                             BIT             DEFAULT ((0)) NOT NULL,
@@ -20,7 +20,7 @@
     [cancelled_by]                       INT             NULL,
     [started_on]                         DATETIME        NULL,
     [started_by]                         INT             NULL,
-    [updated_at]                         DATETIME        DEFAULT (getUTCdate()) NOT NULL,
+    [updated_at]                         DATETIME        DEFAULT (getutcdate()) NOT NULL,
     [comment_count]                      INT             DEFAULT ((0)) NOT NULL,
     [card_id]                            INT             NULL,
     [financial_agreement_installment_id] INT             NULL,
@@ -32,6 +32,7 @@
     [define_fund_value]                  BIT             DEFAULT ((0)) NOT NULL,
     [end_date]                           DATETIME        NULL,
     [location_id]                        INT             NULL,
+    [actions_count]                      INT             DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [fk_incident_branch] FOREIGN KEY ([branch_id]) REFERENCES [dbo].[branch] ([id]),
     CONSTRAINT [fk_incident_card] FOREIGN KEY ([card_id]) REFERENCES [dbo].[card] ([id]),
@@ -39,6 +40,8 @@
     CONSTRAINT [fk_incident_ownership] FOREIGN KEY ([ownership_id]) REFERENCES [dbo].[incident] ([id]),
     CONSTRAINT [FK_incident_responsible] FOREIGN KEY ([responsible_id]) REFERENCES [dbo].[person] ([id])
 );
+
+
 
 
 
