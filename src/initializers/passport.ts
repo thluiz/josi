@@ -168,9 +168,6 @@ export function initialize(app) {
     const user = resultUser.data as User;
     const person = await user.getPerson();
 
-    LoggerService.info(LogOrigins.Debug, user);
-    LoggerService.info(LogOrigins.Debug, person);
-
     if (
       SecurityService.sha512(password, person.salt).passwordHash !==
       person.password

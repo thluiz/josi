@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const logger_service_1 = require("./../services/logger-service");
 const passport = require("passport");
 const session = require("express-session");
 const jwt = require("jsonwebtoken");
@@ -120,8 +119,6 @@ function initialize(app) {
             }
             const user = resultUser.data;
             const person = yield user.getPerson();
-            logger_service_1.LoggerService.info(logger_service_1.LogOrigins.Debug, user);
-            logger_service_1.LoggerService.info(logger_service_1.LogOrigins.Debug, person);
             if (security_service_1.SecurityService.sha512(password, person.salt).passwordHash !==
                 person.password) {
                 return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, new Error("User Not Found"));
