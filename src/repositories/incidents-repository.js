@@ -48,9 +48,9 @@ class IncidentsRepository extends base_repository_1.BaseRepository {
             return result;
         });
     }
-    getCalendarData() {
+    getCalendarData(startDate, endDate) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.DBM.ExecuteJsonSP("GetCalendarData");
+            const result = yield this.DBM.ExecuteJsonSP("GetCalendarData", { start_date: startDate }, { end_date: endDate });
             return result;
         });
     }
@@ -159,7 +159,7 @@ __decorate([
 __decorate([
     trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getCalendarData", null);
 __decorate([

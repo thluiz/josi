@@ -1,3 +1,4 @@
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable, ReplaySubject } from "rxjs/Rx";
@@ -8,6 +9,7 @@ import { LightIncident } from "app/shared/models/incident-model";
 
 import { HttpService } from "./http-service";
 import { Ownership } from "../shared/models/ownership";
+import { UtilsService } from './utils-service';
 
 export const INCIDENT_EVENT_PREFIX = "INCIDENT_";
 export const INCIDENT_ADDED = INCIDENT_EVENT_PREFIX + "ADDED";
@@ -34,10 +36,12 @@ export const OWNERSHIP_TEAM_CHANGED = "OWNERSHIP_TEAM_CHANGED";
 
 @Injectable()
 export class IncidentService {
-  constructor(private http: HttpService) {}
+  constructor(private http: HttpService, private utilsService: UtilsService) {}
 
-  getCalendarData() {
-    return this.http.get(`/calendar`);
+  getCalendarData(start_date : NgbDateStruct, end_date: NgbDateStruct) {
+    const sDate = this.utilsService.translate_date_to_server(start_date);
+    const eDate = this.utilsService.translate_date_to_server(end_date);
+    return this.http.get(`/calendar/${sDate}/${eDate}`);
   }
 
   getOwnershipDataForChange(ownership: Ownership) {

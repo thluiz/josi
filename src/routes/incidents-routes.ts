@@ -21,10 +21,10 @@ export function routes(app) {
         res.send(result);
     });
 
-    app.get("/api/calendar",
+    app.get("/api/calendar/:start_date/:end_date",
     auth.ensureLoggedIn(),
     async (req, res) => {
-        const result = await IR.getCalendarData();
+        const result = await IR.getCalendarData(req.params.start_date, req.params.end_date);
 
         res.send(result);
     });

@@ -1,3 +1,4 @@
+import { NgbDateStruct, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import {Injectable} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import { ReplaySubject } from 'rxjs';
@@ -14,14 +15,14 @@ export class UtilsService {
       return new Date().getTime()/1000;
     }
 
-    translate_date_to_server(date) {
+    translate_date_to_server(date : NgbDateStruct) {
         if(!date || !date.year)
             return null;
 
         return `${date.year}-${date.month}-${date.day}`;
     }
 
-    translate_date_time_to_server(date, time) {
+    translate_date_time_to_server(date: NgbDateStruct, time : NgbTimeStruct) {
         if(!date || !date.year || !time)
             return null;
 

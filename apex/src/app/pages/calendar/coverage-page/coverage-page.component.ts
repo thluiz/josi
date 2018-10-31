@@ -1,5 +1,6 @@
 import { IncidentService } from 'app/services/incident-service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Moment } from 'moment';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -30,16 +31,34 @@ export class CoveragePageComponent implements OnInit, OnDestroy {
       },
       defaultView: "agendaWeek",
       locale: "pt-br",
-      events: this.events,
-      eventRender: function(event, element) {
-        console.log(event);
-        console.log(element);
+      events: (start, end, timezone, callback) => {
+        this.loadEvents(start, end, callback);
       }
     };
+  }
 
-    this.incidentService.getCalendarData().subscribe((result_data : any) => {
+  ngOnDestroy() {
+
+  }
+
+  loadEvents(start_date : Moment, end_date: Moment, callback) {
+    this.incidentService.getCalendarData({
+      year: start_date.year(),
+      month: start_date.month() + 1,
+      day: start_date.date(),
+    }, {
+      year: end_date.year(),
+      month: end_date.month() + 1,
+      day: end_date.date(),
+    })
+    .subscribe((result_data : any) => {
       let data = result_data.data[0];
       let events = [];
+
+      if(!data || !data.ownerships) {
+        callback([]);
+        return;
+      }
 
       data.ownerships.forEach(ow => {
         let title = ow.person_name;
@@ -67,13 +86,11 @@ export class CoveragePageComponent implements OnInit, OnDestroy {
             description
           }
         )
+        this.events = events;
       });
 
-      this.events = events
+      callback(this.events);
     });
-  }
-
-  ngOnDestroy() {
   }
 
   updateEvent(e) {

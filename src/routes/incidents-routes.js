@@ -22,8 +22,8 @@ function routes(app) {
         const result = yield IR.getAvailableOwnerships(req.params.branch, req.params.date, req.params.type);
         res.send(result);
     }));
-    app.get("/api/calendar", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield IR.getCalendarData();
+    app.get("/api/calendar/:start_date/:end_date", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield IR.getCalendarData(req.params.start_date, req.params.end_date);
         res.send(result);
     }));
     app.get("/api/change_ownership/:id", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {

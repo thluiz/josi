@@ -57,8 +57,11 @@ export class IncidentsRepository extends BaseRepository<Incident> {
     }
 
     @tryLogAsync()
-    async getCalendarData(): Promise<Result<any>> {
-        const result = await this.DBM.ExecuteJsonSP("GetCalendarData");
+    async getCalendarData(startDate, endDate): Promise<Result<any>> {
+        const result = await this.DBM.ExecuteJsonSP("GetCalendarData",
+            {start_date: startDate},
+            {end_date: endDate},
+        );
 
         return result;
     }
