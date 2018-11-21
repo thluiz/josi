@@ -121,7 +121,8 @@ function initialize(app) {
             const person = yield user.getPerson();
             if (security_service_1.SecurityService.sha512(password, person.salt).passwordHash !==
                 person.password) {
-                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, new Error("User Not Found #2"));
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, new Error(`User Not Found #2
+                  ${security_service_1.SecurityService.sha512(password, person.salt).passwordHash} ${person.password}`));
             }
             return result_1.SuccessResult.GeneralOk(user);
         });

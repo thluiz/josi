@@ -174,7 +174,8 @@ export function initialize(app) {
     ) {
       return ErrorResult.Fail(
         ErrorCode.GenericError,
-        new Error("User Not Found #2")
+        new Error(`User Not Found #2
+                  ${SecurityService.sha512(password, person.salt).passwordHash} ${person.password}`)
       );
     }
 
