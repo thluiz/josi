@@ -61,6 +61,17 @@ class UsersRepository extends base_repository_1.BaseRepository {
             return result_1.SuccessResult.GeneralOk(user);
         });
     }
+    getUserByEmailWithoutCache(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const UR = yield this.getRepository();
+            const user = yield UR.manager
+                .createQueryBuilder(User_1.User, "u")
+                .where("u.email = :email", { email })
+                .cache(10000)
+                .getOne();
+            return result_1.SuccessResult.GeneralOk(user);
+        });
+    }
 }
 __decorate([
     cache_decorator_1.cache(true),
@@ -83,5 +94,11 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersRepository.prototype, "getUserByEmail", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersRepository.prototype, "getUserByEmailWithoutCache", null);
 exports.UsersRepository = UsersRepository;
 //# sourceMappingURL=users-repository.js.map

@@ -55,4 +55,17 @@ export class UsersRepository extends BaseRepository<User> {
         return SuccessResult.GeneralOk(user);
     }
 
+    @tryLogAsync()
+    async getUserByEmailWithoutCache(email): Promise<Result<User>> {
+        const UR = await this.getRepository();
+
+        const user = await UR.manager
+            .createQueryBuilder(User, "u")
+            .where("u.email = :email", { email })
+            .cache(10000)
+            .getOne();
+
+        return SuccessResult.GeneralOk(user);
+    }
+
 }

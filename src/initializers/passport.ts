@@ -156,7 +156,7 @@ export function initialize(app) {
   });
 
   async function doLogin(email, password): Promise<Result<User>> {
-    const resultUser = await UR.getUserByEmail(email);
+    const resultUser = await UR.getUserByEmailWithoutCache(email);
 
     if (!resultUser || !resultUser.success || !resultUser.data) {
       return ErrorResult.Fail(
@@ -169,13 +169,12 @@ export function initialize(app) {
     const person = await user.getPerson();
 
     if (
-      SecurityService.sha512(password, person.salt).passwordHash !==
-      person.password
+      SecurityService.sha512(password, person.salt)
+        .passwordHash !== person.password
     ) {
       return ErrorResult.Fail(
         ErrorCode.GenericError,
-        new Error(`User Not Found #2
-                  ${SecurityService.sha512(password, person.salt).passwordHash} ${person.password}`)
+        new Error(`User Not Found #2`)
       );
     }
 

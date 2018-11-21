@@ -113,16 +113,15 @@ function initialize(app) {
     }));
     function doLogin(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            const resultUser = yield UR.getUserByEmail(email);
+            const resultUser = yield UR.getUserByEmailWithoutCache(email);
             if (!resultUser || !resultUser.success || !resultUser.data) {
                 return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, new Error("User Not Found #1"));
             }
             const user = resultUser.data;
             const person = yield user.getPerson();
-            if (security_service_1.SecurityService.sha512(password, person.salt).passwordHash !==
-                person.password) {
-                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, new Error(`User Not Found #2
-                  ${security_service_1.SecurityService.sha512(password, person.salt).passwordHash} ${person.password}`));
+            if (security_service_1.SecurityService.sha512(password, person.salt)
+                .passwordHash !== person.password) {
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, new Error(`User Not Found #2`));
             }
             return result_1.SuccessResult.GeneralOk(user);
         });
