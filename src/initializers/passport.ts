@@ -166,7 +166,7 @@ export function initialize(app) {
     }
 
     const user = resultUser.data as User;
-    const person = await user.getPerson();
+    const person = await user.getPerson(false);
 
     if (
       SecurityService.sha512(password, person.salt)

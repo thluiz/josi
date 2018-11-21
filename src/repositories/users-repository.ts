@@ -27,6 +27,20 @@ export class UsersRepository extends BaseRepository<User> {
         return SuccessResult.GeneralOk(user);
     }
 
+    @tryLogAsync()
+    async loadAllUserDataWithoutCache(userId): Promise<Result<User>> {
+        const UR = await this.getRepository();
+
+        const user = await UR.manager
+            .createQueryBuilder(User, "u")
+            .innerJoinAndSelect("u.person", "p")
+            .leftJoinAndSelect("p.default_page", "dp")
+            .where("u.id = :id", { id: userId })
+            .getOne();
+
+        return SuccessResult.GeneralOk(user);
+    }
+
     @cache(true)
     @tryLogAsync()
     async getUserByToken(token): Promise<Result<User>> {
@@ -62,7 +76,6 @@ export class UsersRepository extends BaseRepository<User> {
         const user = await UR.manager
             .createQueryBuilder(User, "u")
             .where("u.email = :email", { email })
-            .cache(10000)
             .getOne();
 
         return SuccessResult.GeneralOk(user);

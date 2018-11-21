@@ -39,6 +39,18 @@ class UsersRepository extends base_repository_1.BaseRepository {
             return result_1.SuccessResult.GeneralOk(user);
         });
     }
+    loadAllUserDataWithoutCache(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const UR = yield this.getRepository();
+            const user = yield UR.manager
+                .createQueryBuilder(User_1.User, "u")
+                .innerJoinAndSelect("u.person", "p")
+                .leftJoinAndSelect("p.default_page", "dp")
+                .where("u.id = :id", { id: userId })
+                .getOne();
+            return result_1.SuccessResult.GeneralOk(user);
+        });
+    }
     getUserByToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
             const UR = yield this.getRepository();
@@ -67,7 +79,6 @@ class UsersRepository extends base_repository_1.BaseRepository {
             const user = yield UR.manager
                 .createQueryBuilder(User_1.User, "u")
                 .where("u.email = :email", { email })
-                .cache(10000)
                 .getOne();
             return result_1.SuccessResult.GeneralOk(user);
         });
@@ -80,6 +91,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersRepository.prototype, "loadAllUserData", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersRepository.prototype, "loadAllUserDataWithoutCache", null);
 __decorate([
     cache_decorator_1.cache(true),
     trylog_decorator_1.tryLogAsync(),
