@@ -87,7 +87,7 @@ class SecurityService extends base_service_1.BaseService {
                 .where("pr.token = :token", { token })
                 .getOne();
             if (!pr) {
-                return result_1.SuccessResult.GeneralOk();
+                return result_1.ErrorResult.Fail(errors_codes_1.ErrorCode.GenericError, new Error("Token não encontrado ou já utilizado. Solicite um novo."));
             }
             const validatePassword = this.validatePassword(password);
             if (!validatePassword.success) {

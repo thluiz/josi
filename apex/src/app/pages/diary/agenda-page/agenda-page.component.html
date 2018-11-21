@@ -160,9 +160,9 @@
       <div class="col-6">
         <div class="input-group">
           <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="migrating_ownership['tmp_date']"
-            id="ownership_end_date" name="ownership_date" autocomplete="off" ngbDatepicker #niDueDateDate="ngbDatepicker"
+            id="ownership_end_date" name="ownership_date" autocomplete="off" ngbDatepicker #niStartDateDate="ngbDatepicker"
             (ngModelChange)="loadIncidentsWithoutOwnership()" />
-          <div class="input-group-addon" (click)="niDueDateDate.toggle()">
+          <div class="input-group-addon" (click)="niStartDateDate.toggle()">
             <i class="ft-calendar" style="cursor: pointer;"></i>
           </div>
         </div>

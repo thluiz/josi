@@ -161,7 +161,7 @@ export function initialize(app) {
     if (!resultUser || !resultUser.success || !resultUser.data) {
       return ErrorResult.Fail(
         ErrorCode.GenericError,
-        new Error("User Not Found")
+        new Error("User Not Found #1")
       );
     }
 
@@ -174,7 +174,7 @@ export function initialize(app) {
     ) {
       return ErrorResult.Fail(
         ErrorCode.GenericError,
-        new Error("User Not Found")
+        new Error("User Not Found #2")
       );
     }
 

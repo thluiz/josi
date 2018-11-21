@@ -14,12 +14,12 @@ import { MarkdownModule } from 'ngx-markdown';
 
 import { CalendarRoutingModule } from './calendar-routing.module';
 import { CoveragePageComponent } from './coverage-page/coverage-page.component';
+import { EventsPageComponent } from './events-page/events-page.component';
 
 
 @NgModule({
     imports: [
         CalendarRoutingModule,
-
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
@@ -30,7 +30,8 @@ import { CoveragePageComponent } from './coverage-page/coverage-page.component';
         FullCalendarModule
     ],
     declarations: [
-      CoveragePageComponent
+      CoveragePageComponent,
+      EventsPageComponent
     ]
 })
 export class CalendarModule { }

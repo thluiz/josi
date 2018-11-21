@@ -146,7 +146,15 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/parameters/parameters.module#ParametersModule'
   },
   {
+    path: 'calendar',
+    loadChildren: './pages/calendar/calendar.module#CalendarModule'
+  },
+  {
     path: 'calendar/coverage',
+    loadChildren: './pages/calendar/calendar.module#CalendarModule'
+  },
+  {
+    path: 'calendar/events',
     loadChildren: './pages/calendar/calendar.module#CalendarModule'
   }
 ];

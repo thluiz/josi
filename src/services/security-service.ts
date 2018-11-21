@@ -87,7 +87,10 @@ export class SecurityService extends BaseService {
       .getOne();
 
     if (!pr) {
-      return SuccessResult.GeneralOk();
+      return ErrorResult.Fail(
+        ErrorCode.GenericError,
+        new Error("Token não encontrado ou já utilizado. Solicite um novo.")
+      );
     }
 
     const validatePassword = this.validatePassword(password);
