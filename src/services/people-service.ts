@@ -204,6 +204,7 @@ export class PeopleService extends BaseService {
             `SavePersonScheduleAndGenerateIncidents`,
             { person_id: schedule.person_id },
             { branch_id: schedule.branch_id },
+            { location_id: schedule.location_id },
             { incident_type: schedule.incident_type },
             { recurrence_type: schedule.recurrence_type },
             { start_date: schedule.start_date },

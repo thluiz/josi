@@ -136,7 +136,7 @@ class PeopleService extends base_service_1.BaseService {
     }
     save_schedule(schedule, responsibleId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.databaseManager.ExecuteSPNoResults(`SavePersonScheduleAndGenerateIncidents`, { person_id: schedule.person_id }, { branch_id: schedule.branch_id }, { incident_type: schedule.incident_type }, { recurrence_type: schedule.recurrence_type }, { start_date: schedule.start_date }, { start_hour: schedule.start_hour }, { start_minute: schedule.start_minute }, { end_date: schedule.end_date }, { end_hour: schedule.end_hour }, { end_minute: schedule.end_minute }, { number_of_incidents: schedule.number_of_incidents }, { description: schedule.description }, { value: schedule.value }, { responsible_id: responsibleId });
+            return yield this.databaseManager.ExecuteSPNoResults(`SavePersonScheduleAndGenerateIncidents`, { person_id: schedule.person_id }, { branch_id: schedule.branch_id }, { location_id: schedule.location_id }, { incident_type: schedule.incident_type }, { recurrence_type: schedule.recurrence_type }, { start_date: schedule.start_date }, { start_hour: schedule.start_hour }, { start_minute: schedule.start_minute }, { end_date: schedule.end_date }, { end_hour: schedule.end_hour }, { end_minute: schedule.end_minute }, { number_of_incidents: schedule.number_of_incidents }, { description: schedule.description }, { value: schedule.value }, { responsible_id: responsibleId });
         });
     }
     remove_contact(id) {

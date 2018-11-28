@@ -46,6 +46,7 @@ import { PersonPartnershipListModule } from 'app/pages/people/shared/components/
 import { PersonExternalUnitListModule } from 'app/pages/people/shared/components/person-external-unit-list/person-external-unit-list.module';
 import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-image/person-avatar-image.module';
 import { PersonIncidentHistoryListModule } from 'app/shared/components/person-incident-history-list/person-incident-history-list.module';
+import { NgPipesModule } from 'ngx-pipes';
 
 
 
@@ -59,6 +60,7 @@ import { PersonIncidentHistoryListModule } from 'app/shared/components/person-in
         NgbDatepickerModule.forRoot(),
         NgbTimepickerModule.forRoot(),
         MarkdownModule.forRoot(),
+        NgPipesModule,
         PersonCardModule,
         PersonContactListModule,
         PersonStatusLineModule,

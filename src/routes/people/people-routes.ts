@@ -621,9 +621,9 @@ export function routes(app) {
       const user = await SS.getUserFromRequest(request);
       const responsibleId = await user.getPersonId();
 
-      await PS.save_schedule(request.body.schedule, responsibleId);
+      const result = await PS.save_schedule(request.body.schedule, responsibleId);
 
-      response.send({ sucess: true });
+      response.send(result);
     }
   );
 

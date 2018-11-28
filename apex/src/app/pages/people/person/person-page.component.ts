@@ -1,3 +1,4 @@
+import { ToastrService } from 'ngx-toastr';
 
 import { zip as observableZip,  Observable ,  Subscription } from 'rxjs';
 
@@ -76,6 +77,8 @@ export class PersonPageComponent implements OnInit, OnDestroy {
   manual_incident_types;
   recurrence_types;
   branches = [];
+  all_locations = [];
+  locations = [];
   countries = [];
   addresses = [];
   new_address: any;
@@ -92,6 +95,7 @@ export class PersonPageComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private router: Router,
               private modalService: NgbModal,
+              private toastrService: ToastrService,
               private datePickerConfig: NgbDatepickerConfig) {
   }
 
@@ -182,14 +186,35 @@ export class PersonPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  filter_locations() {
+    if(this.new_schedule.branch_id == 0) {
+      this.locations = [];
+    } else if(this.new_schedule.branch_id == -1) {
+      this.locations = this.all_locations.filter(l => !l.branch)
+    } else if(this.new_schedule.branch_id > 0) {
+      this.locations = this.all_locations.filter(l => l.branch && l.branch.id == this.new_schedule.branch_id);
+    }
+
+    if(this.locations.length == 1) {
+      this.new_schedule.location_id = this.locations[0].id;
+    }
+
+    if(this.locations.length > 0 && this.new_schedule.branch_id > 0) {
+      const branch = this.branches.find(b => b.id == this.new_schedule.branch_id);
+      this.new_schedule.location_id = branch.location_id;
+    }
+  }
+
   open_schedule_modal(content) {
     observableZip(this.parameterService.getActiveBranches(),
                     this.parameterService.getIncidentTypes(),
                     this.parameterService.getRecurrenceTypes(),
-      (result_branches, result_incident_types, result_recurrence_types) => {
+                    this.parameterService.getActiveLocations(),
+      (result_branches, result_incident_types, result_recurrence_types, result_locations) => {
         this.branches = result_branches.data;
         this.manual_incident_types = result_incident_types.data.filter(f => !f.automatically_generated);
         this.recurrence_types = result_recurrence_types.data;
+        this.all_locations = result_locations.data;
       }).subscribe(() => {
         this.open(content);
       });
@@ -276,7 +301,7 @@ export class PersonPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  save_schedule() {
+  save_schedule(close_action) {
     let start_date = this.new_schedule.start_date_tmp;
     if(start_date) {
       this.new_schedule.start_date = `${start_date.year}-${start_date.month}-${start_date.day}`;
@@ -291,18 +316,33 @@ export class PersonPageComponent implements OnInit, OnDestroy {
       this.new_schedule.incident_type = this.new_schedule.type.id;
     }
 
+    if(this.new_schedule.branch_id == 0) {
+      this.toastrService.error("Defina o núcleo ou organização");
+      return;
+    }
+
+    if(this.new_schedule.type.financial_type == 0 && this.new_schedule.location_id <= 0) {
+      this.toastrService.error("Defina o local da atividade");
+      return;
+    }
+
     this.personService
     .save_schedule(this.new_schedule)
-    .toPromise()
-    .then(() => {
+    .subscribe((result_data : Result<any>) => {
+      if(!result_data.success) {
+        this.toastrService.error(result_data.message);
+        return;
+      }
       this.load_person_scheduling();
       this.reset_new_schedule();
+      close_action();
     });
   }
 
   reset_new_schedule() {
     this.new_schedule = {
-      person_id: this.id
+      person_id: this.id,
+      branch_id: 0
     };
   }
 
@@ -346,11 +386,12 @@ export class PersonPageComponent implements OnInit, OnDestroy {
     let schedule = this.new_schedule;
 
     if(parseInt(schedule.number_of_incidents, 10) > 108) {
+      this.toastrService.error("A quantidade máxima de eventos é 108")
       return;
     }
 
     if(parseInt(schedule.person_id, 10) > 0
-      && parseInt(schedule.branch_id, 10) > 0
+      && parseInt(schedule.branch_id, 10) != 0
       && schedule.type != null
       && parseInt(schedule.recurrence_type, 10) > 0
       && parseInt(schedule.number_of_incidents, 10) > 0

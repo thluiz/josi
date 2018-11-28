@@ -349,8 +349,8 @@ function routes(app) {
     app.post("/api/person_schedule", auth.ensureLoggedIn(), (request, response) => __awaiter(this, void 0, void 0, function* () {
         const user = yield SS.getUserFromRequest(request);
         const responsibleId = yield user.getPersonId();
-        yield PS.save_schedule(request.body.schedule, responsibleId);
-        response.send({ sucess: true });
+        const result = yield PS.save_schedule(request.body.schedule, responsibleId);
+        response.send(result);
     }));
     /**
      * COMMENTS

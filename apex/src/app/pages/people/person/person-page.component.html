@@ -365,6 +365,9 @@
                                             {{ ps.type_description }}
                                         </div>
                                         <div class="col-6 d-none d-lg-block">
+                                            <span *ngIf="ps.location_name">
+                                              {{ ps.location_name }} -
+                                            </span>
                                             {{ ps.recurrence_description }}
                                             <span *ngIf="ps.recurrence_type == 4">
                                                 - Dia {{ ps.month_day }}
@@ -525,10 +528,11 @@
                         <div class="form-group">
                             <select id="new_schedule_branch"
                                 [(ngModel)]="new_schedule.branch_id"
-                                (ngModelChange)="validate_new_schedule()"
+                                (ngModelChange)="filter_locations();validate_new_schedule()"
                                 class="form-control"
                                 >
-                                <option></option>
+                                <option value="0"></option>
+                                <option value="-1">Gestão Integrada</option>
                                 <option *ngFor="let b of branches" [value]="b.id">{{b.name}}</option>
                             </select>
                         </div>
@@ -561,8 +565,31 @@
                             *ngIf="new_schedule.tmp_type != null && new_schedule.children_type == null && new_schedule.tmp_type.childrens != null"
                             style="width:100%"
                             >
-                            <option *ngFor="let t of new_schedule.tmp_type.childrens" [value]="t.id">{{t.name}}</option>
+                            <option *ngFor="let t of new_schedule.tmp_type.childrens" [value]="t.id">
+                              {{t.name}}
+                            </option>
                         </select>
+                        <label for="new_schedule_location"
+                            style="font-weight: bold;padding-top:5px"
+                            *ngIf="new_schedule.branch_id != 0
+                                  && new_schedule.type != null
+                                  && new_schedule.type.financial_type == 0">
+                            Local
+                        </label>
+
+                        <div class="form-group"
+                        *ngIf="new_schedule.branch_id != 0
+                              && new_schedule.type != null
+                              && new_schedule.type.financial_type == 0">
+                            <select id="new_schedule_location"
+                                [(ngModel)]="new_schedule.location_id"
+                                (ngModelChange)="validate_new_schedule()"
+                                class="form-control"
+                                >
+                                <option></option>
+                                <option *ngFor="let l of locations" [value]="l.id">{{l.name}}</option>
+                            </select>
+                        </div>
                     </fieldset>
                 </div>
             </div>
@@ -648,7 +675,7 @@
     <div class="modal-footer">
         <button type="button"
             class="btn btn-success"
-            (click)="save_schedule();d('new schedule!');"
+            (click)="save_schedule(d);"
             *ngIf="new_schedule.correct">
             <i class="icon-check"></i>
             Agendar
