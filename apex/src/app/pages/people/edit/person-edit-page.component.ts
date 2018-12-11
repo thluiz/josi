@@ -92,11 +92,11 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
     }
 
     let p = this.person;
-    p.birth_date = this.translate_date_to_server(this.person.birth_date);
-    p.admission_date = this.translate_date_to_server(this.person.admission_date);
-    p.baaisi_date = this.translate_date_to_server(this.person.baaisi_date);
-    p.enrollment_date = this.translate_date_to_server(this.person.enrollment_date);
-    p.passport_expiration_date = this.translate_date_to_server(this.person.passport_expiration_date);
+    p.birth_date = this.translate_date_to_server(this.person.birth_date_tmp);
+    p.admission_date = this.translate_date_to_server(this.person.admission_date_tmp);
+    p.baaisi_date = this.translate_date_to_server(this.person.baaisi_date_tmp);
+    p.enrollment_date = this.translate_date_to_server(this.person.enrollment_date_tmp);
+    p.passport_expiration_date = this.translate_date_to_server(this.person.passport_expiration_date_tmp);
 
     this.personService.savePersonData(p).toPromise().then(
       () => {
@@ -149,11 +149,11 @@ export class PersonEditPageComponent implements OnInit, OnDestroy  {
     this.personService.getData(this.id).subscribe(
       (result : Result<any[]>) => {
         this.person = result.data[0];
-        this.person.birth_date = this.translate_date_to_view(this.person.birth_date);
-        this.person.admission_date = this.translate_date_to_view(this.person.admission_date);
-        this.person.baaisi_date = this.translate_date_to_view(this.person.baaisi_date);
-        this.person.enrollment_date = this.translate_date_to_view(this.person.enrollment_date);
-        this.person.passport_expiration_date = this.translate_date_to_view(this.person.passport_expiration_date);
+        this.person.birth_date_tmp = this.translate_date_to_view(this.person.birth_date);
+        this.person.admission_date_tmp = this.translate_date_to_view(this.person.admission_date);
+        this.person.baaisi_date_tmp = this.translate_date_to_view(this.person.baaisi_date);
+        this.person.enrollment_date_tmp = this.translate_date_to_view(this.person.enrollment_date);
+        this.person.passport_expiration_date_tmp = this.translate_date_to_view(this.person.passport_expiration_date);
 
         if(!(this.person.is_active_member
           || this.person.is_disciple
