@@ -113,6 +113,14 @@ export class PersonService implements OnDestroy {
     return this.http.get(this.dataUrl + `/people/members`);
   }
 
+  getPersonalInventory(person_id:number) {
+    return this.http.get(this.dataUrl + `/people/personal_inventories?person_id=${person_id}`);
+  }
+
+  getInventoryItems() {
+    return this.http.get(this.dataUrl + `/people/inventory_items`);
+  }
+
   getInterestedList(branch, name) {
     return this.http.get(this.dataUrl + `/interested?branch=${branch || 0}&name=${name || ""}`);
   }

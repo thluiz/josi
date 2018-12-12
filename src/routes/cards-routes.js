@@ -78,7 +78,7 @@ function routes(app) {
     }));
     app.post("/api/move_card", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         const user = yield SS.getUserFromRequest(req);
-        const result = yield DBM.ExecuteJsonSP("MoveCard", { card_id: req.body.card_id }, { parent_id: req.body.parent_id }, { step_id: req.body.step_id }, { responsible_id: yield user.getPersonId() });
+        const result = CS.moveCard(req.body, user);
         res.send(result);
     }));
     app.post("/api/cards_comments", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {

@@ -2,7 +2,7 @@
     [id]             INT            IDENTITY (1, 1) NOT NULL,
     [person_id]      INT            NOT NULL,
     [responsible_id] INT            NULL,
-    [created_at]     DATETIME       DEFAULT (getdate()) NOT NULL,
+    [created_at]     DATETIME       DEFAULT (getUTCdate()) NOT NULL,
     [comment]        NVARCHAR (MAX) NULL,
     [pinned]         BIT            DEFAULT ((0)) NOT NULL,
     [archived]       BIT            DEFAULT ((0)) NOT NULL,

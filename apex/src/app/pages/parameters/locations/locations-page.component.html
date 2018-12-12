@@ -33,7 +33,7 @@
     <h5 class="modal-title" style="font-weight: bold" *ngIf="current_item.id > 0">
       Editar
     </h5>
-    <h5 class="modal-title" style="font-weight: bold" *ngIf="current_item.id <= 0">
+    <h5 class="modal-title" style="font-weight: bold" *ngIf="!current_item.id || current_item.id <= 0">
       Novo Local
     </h5>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">

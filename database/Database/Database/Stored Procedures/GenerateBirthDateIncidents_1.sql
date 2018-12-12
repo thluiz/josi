@@ -2,10 +2,10 @@
 as
 begin
 	if(@month is null)
-		set @month = datepart(month, getdate())
+		set @month = datepart(month, getUTCdate())
 
 	if(@year is null)
-		set @year = datepart(year, getdate())
+		set @year = datepart(year, getUTCdate())
 
 	declare @fist_day_of_month date = datefromparts(@year, @month, 1)
 	declare @last_day_of_month date = dateadd(day, -1, dateadd(month, 1, @fist_day_of_month))
@@ -13,15 +13,15 @@ begin
 	select * 
 	into #dates
 	from(
-		select id, branch_id, datefromparts(datepart(year, getdate()), datepart(month, [birth_date]), datepart(day, [birth_date])) birth_date, 1 btype 
+		select id, branch_id, datefromparts(datepart(year, getUTCdate()), datepart(month, [birth_date]), datepart(day, [birth_date])) birth_date, 1 btype 
 		from person 
-		where datefromparts(datepart(year, getdate()), datepart(month, [birth_date]), datepart(day, [birth_date])) 
+		where datefromparts(datepart(year, getUTCdate()), datepart(month, [birth_date]), datepart(day, [birth_date])) 
 			between @fist_day_of_month and @last_day_of_month
 			and id = isnull(@person_id, id)
 	union all
-		select id, branch_id, datefromparts(datepart(year, getdate()), datepart(month, [admission_date]), datepart(day, [admission_date])) birth_date, 2
+		select id, branch_id, datefromparts(datepart(year, getUTCdate()), datepart(month, [admission_date]), datepart(day, [admission_date])) birth_date, 2
 		from person 
-		where datefromparts(datepart(year, getdate()), datepart(month, [admission_date]), datepart(day, [admission_date])) 
+		where datefromparts(datepart(year, getUTCdate()), datepart(month, [admission_date]), datepart(day, [admission_date])) 
 			between @fist_day_of_month and @last_day_of_month
 			and id = isnull(@person_id, id)
 	) births

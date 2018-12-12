@@ -1,3 +1,4 @@
+import { PersonalInventoryListModule } from './shared/components/personal-inventory-list/personal-inventory-list.module';
 import { IncidentAgendaListitemModule } from 'app/shared/components/incident-agenda-listitem/incident-agenda-listitem.module';
 import { IncidentFinancialListitemModule } from './../../shared/components/incident-financial-listitem/incident-financial-listitem.module';
 import { PersonRelationshipListModule } from './../../shared/components/person-relationship-list/person-relationship-list.module';
@@ -45,6 +46,7 @@ import { PersonPartnershipListModule } from 'app/pages/people/shared/components/
 import { PersonExternalUnitListModule } from 'app/pages/people/shared/components/person-external-unit-list/person-external-unit-list.module';
 import { PersonAvatarImageModule } from 'app/shared/components/person-avatar-image/person-avatar-image.module';
 import { PersonIncidentHistoryListModule } from 'app/shared/components/person-incident-history-list/person-incident-history-list.module';
+import { NgPipesModule } from 'ngx-pipes';
 
 
 
@@ -58,6 +60,7 @@ import { PersonIncidentHistoryListModule } from 'app/shared/components/person-in
         NgbDatepickerModule.forRoot(),
         NgbTimepickerModule.forRoot(),
         MarkdownModule.forRoot(),
+        NgPipesModule,
         PersonCardModule,
         PersonContactListModule,
         PersonStatusLineModule,
@@ -74,7 +77,8 @@ import { PersonIncidentHistoryListModule } from 'app/shared/components/person-in
         IncidentFinancialListitemModule,
         IncidentAgendaListitemModule,
         PersonAvatarImageModule,
-        PersonIncidentHistoryListModule
+        PersonIncidentHistoryListModule,
+        PersonalInventoryListModule
     ],
     declarations: [
         MembersPanelPageComponent,

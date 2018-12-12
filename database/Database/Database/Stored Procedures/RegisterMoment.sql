@@ -7,7 +7,7 @@ begin
 		incident_type, closed, branch_id, 
 		[description]
 	) values (
-		11, getdate(), cast(getdate() as date), 2, 1, 4, @title
+		11, getUTCdate(), cast(getUTCdate() as date), 2, 1, 4, @title
 	)	 
 
 	insert into person_incident(person_id, incident_id, participation_type) 
@@ -17,7 +17,7 @@ begin
 	if(@fund_value > 0)
 	begin 
 		insert into incident(responsible_id, created_on, [date], incident_type, closed, branch_id, fund_value)
-		values (11, getdate(), cast(getdate() as date), 3, 0, 4, @fund_value)
+		values (11, getUTCdate(), cast(getUTCdate() as date), 3, 0, 4, @fund_value)
 	end
 
 end

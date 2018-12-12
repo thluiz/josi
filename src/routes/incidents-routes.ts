@@ -21,6 +21,60 @@ export function routes(app) {
         res.send(result);
     });
 
+    app.get("/api/calendar/:start_date/:end_date",
+    auth.ensureLoggedIn(),
+    async (req, res) => {
+        const result = await IR.getCalendarData(req.params.start_date, req.params.end_date);
+
+        res.send(result);
+    });
+
+    app.get("/api/change_ownership/:id",
+    auth.ensureLoggedIn(),
+    async (req, res) => {
+        const result = await IR.getDataForChangeOwnership(req.params.id);
+
+        res.send(result);
+    });
+
+    app.get("/api/change_ownership_length/:id/:start_date/:end_date",
+    auth.ensureLoggedIn(),
+    async (req, res) => {
+        const result = await IR.getDataForChangeOwnershipLength(
+            req.params.id, req.params.start_date, req.params.end_date
+        );
+
+        res.send(result);
+    });
+
+    app.post("/api/change_ownership",
+    auth.ensureLoggedIn(),
+    async (req, res) => {
+        const user = await SS.getUserFromRequest(req);
+        const result = await IS.ChangeOwnership(
+            req.body.id,
+            req.body.owner,
+            req.body.first_surrogate,
+            req.body.second_surrogate,
+            req.body.description,
+            await user.getPersonId()
+        );
+
+        res.send(result);
+    });
+
+    app.post("/api/change_ownership_length",
+    auth.ensureLoggedIn(),
+    async (req, res) => {
+        const user = await SS.getUserFromRequest(req);
+        const result = await IS.ChangeOwnershipLength(
+            req.body.id, req.body.start_date, req.body.end_date,
+            await user.getPersonId()
+        );
+
+        res.send(result);
+    });
+
     app.get("/api/current_activities/:branch?",
     auth.ensureLoggedIn(),
     async (req, res) => {
@@ -52,6 +106,17 @@ export function routes(app) {
         const result = await IR.getAgenda(
             req.params.branch > 0 ? req.params.branch : null,
             req.params.date
+        );
+
+        res.send(result);
+    });
+
+    app.get("/api/incidents-without-ownership/:branch_id/:location_id/:start_date/:end_date",
+    auth.ensureLoggedIn(),
+    async (req, res) => {
+        const result = await IR.getIncidentsWithOutOwnership(
+            req.params.branch_id, req.params.location_id,
+            req.params.start_date, req.params.end_date
         );
 
         res.send(result);
@@ -101,6 +166,40 @@ export function routes(app) {
             req.body,
             await SS.getUserFromRequest(req)
         );
+
+        response.send(result);
+    });
+
+    app.post("/api/incident_actions",
+    auth.ensureLoggedIn(),
+    async (req, response) => {
+        const user = await SS.getUserFromRequest(req);
+        const result = await IS.addAction(req.body.action, await user.getPersonId());
+
+        response.send(result);
+    });
+
+    app.post("/api/incident_action/complete",
+    auth.ensureLoggedIn(),
+    async (req, response) => {
+        const user = await SS.getUserFromRequest(req);
+        const result = await IS.completeAction(req.body, await user.getPersonId());
+
+        response.send(result);
+    });
+
+    app.post("/api/incident_action/treatment",
+    auth.ensureLoggedIn(),
+    async (req, response) => {
+        const user = await SS.getUserFromRequest(req);
+        const result = await IS.treatAction({
+            action_id: req.body.action_id,
+            incident_id: req.body.incident_id,
+            treatment_date: req.body.treatment_date,
+            treatment_type: req.body.treatment_type,
+            treatment_description: req.body.treatment_description,
+            responsible_id: await user.getPersonId()
+        });
 
         response.send(result);
     });
@@ -193,6 +292,20 @@ export function routes(app) {
         const result = await IS.get_comments(
             request.params.id,
             request.params.show_archived || false);
+
+        res.send(result);
+    });
+
+    app.post("/api/incident_action_comments",
+    auth.ensureLoggedIn(),
+    async (request, res) => {
+        const user = await SS.getUserFromRequest(request);
+
+        const result = await IS.save_action_comment(
+            request.body.incident_action_id,
+            request.body.comment,
+            await user.getPersonId()
+        );
 
         res.send(result);
     });

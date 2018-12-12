@@ -10,6 +10,7 @@ import { PersonService } from 'app/services/person-service';
 import { DatePickerI18n, NgbDatePTParserFormatter, PortugueseDatepicker } from 'app/shared/datepicker-i18n';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SecurityService } from 'app/services/security-service';
+import { Card } from 'app/shared/models/card.model';
 
 @Component({
   selector: 'app-full-layout-page',
@@ -104,8 +105,8 @@ export class VoucherPeoplePageComponent implements OnInit, OnDestroy {
   }
 
   open_card_details(card_id) {
-    this.cardService.getCardData(card_id).subscribe((card) => {
-      this.modalService.open(ModalType.DetailTask, card[0]);
+    this.cardService.getCardData(card_id).subscribe((result_cardlt_card : Result<Card[]>) => {
+      this.modalService.open(ModalType.DetailTask, result_cardlt_card.data[0]);
     });
   }
 

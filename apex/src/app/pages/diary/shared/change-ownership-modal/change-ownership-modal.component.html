@@ -1,0 +1,166 @@
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <div class="row" style="width:100%">
+      <div class="col-8">
+        <h4>Alterar Titularidade</h4>
+      </div>
+      <div class="col-4 pr-0 text-right">
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-body">
+    <form class="form" #f="ngForm">
+      <div class="row">
+        <div class="col-12">
+          <label for="search_owner_input">Titular</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group" [class.has-danger]="search_failed">
+            <input type="text" class="form-control" id="search_owner_input" [ngbTypeahead]="search_people"
+              placeholder="Pesquisar" [resultTemplate]="person_typeahead_template" [inputFormatter]="people_typeahead_formatter"
+              [(ngModel)]="owner" name="search_owner_input"/>
+            <span *ngIf="searching_people">buscando...</span>
+            <div class="form-control-feedback" *ngIf="search_failed">
+              ops... ocorreu algum erro na busca</div>
+          </div>
+          <ng-template #person_typeahead_template let-p="result" style="width:100%">
+            <div style="float:left;width:40px">
+              <person-avatar-image [person]="p"></person-avatar-image>
+            </div>
+            {{ p.name }}
+            <span *ngIf="!p.found" style="font-style: italic;">
+              (novo)
+            </span>
+          </ng-template>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <label for="search_first_surrogate_input">Primeiro Suplente</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8">
+          <div class="form-group" [class.has-danger]="search_failed">
+            <input type="text" class="form-control" id="new_incident_search_people" [ngbTypeahead]="search_people"
+              placeholder="Pesquisar" [resultTemplate]="person_typeahead_template" [inputFormatter]="people_typeahead_formatter"
+              [(ngModel)]="first_surrogate"
+              id="search_first_surrogate_input"
+              name="search_first_surrogate_input" />
+            <span *ngIf="searching_people">buscando...</span>
+            <div class="form-control-feedback" *ngIf="search_failed">
+              ops... ocorreu algum erro na busca</div>
+          </div>
+          <ng-template #person_typeahead_template let-p="result" style="width:100%">
+            <div style="float:left;width:40px">
+              <person-avatar-image [person]="p"></person-avatar-image>
+            </div>
+            {{ p.name }}
+            <span *ngIf="!p.found" style="font-style: italic;">
+              (novo)
+            </span>
+          </ng-template>
+        </div>
+        <div class="col-4">
+            <button type="button"
+            class="btn btn-sm btn-action"
+            style="margin-right: 5px"
+            title="Tornar Titular"
+            *ngIf="first_surrogate"
+            (click)="take_ownership_first_surrogate();">
+              <i class="fas fa-angle-double-up"></i>
+            </button>
+            <button type="button"
+            class="btn btn-sm btn-action"
+            title="Trocar com Titular"
+            *ngIf="first_surrogate"
+            (click)="switch_ownership_first_surrogate();">
+              <i class="fas fa-arrows-alt-v"></i>
+            </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+            <label for="search_second_surrogate_input">Segundo Suplente</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8">
+          <div class="form-group" [class.has-danger]="search_failed">
+            <input type="text" class="form-control" id="new_incident_search_people" [ngbTypeahead]="search_people"
+              placeholder="Pesquisar" [resultTemplate]="person_typeahead_template" [inputFormatter]="people_typeahead_formatter"
+              [(ngModel)]="second_surrogate"
+              id="search_second_surrogate_input"
+              name="search_second_surrogate_input" />
+            <span *ngIf="searching_people">buscando...</span>
+            <div class="form-control-feedback" *ngIf="search_failed">
+              ops... ocorreu algum erro na busca</div>
+          </div>
+          <ng-template #person_typeahead_template let-p="result" style="width:100%">
+            <div style="float:left;width:40px">
+              <person-avatar-image [person]="p"></person-avatar-image>
+            </div>
+            {{ p.name }}
+            <span *ngIf="!p.found" style="font-style: italic;">
+              (novo)
+            </span>
+          </ng-template>
+        </div>
+        <div class="col-4">
+            <button type="button"
+            class="btn btn-sm btn-action"
+            style="margin-right: 5px"
+            title="Tornar Titular"
+            *ngIf="second_surrogate"
+            (click)="take_ownership_second_surrogate();">
+              <i class="fas fa-angle-double-up"></i>
+            </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <label for="description">Motivo</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <fieldset class="form-group">
+            <textarea class="form-control" required minlength="3" name="description"
+              [(ngModel)]="description" rows="3" placeholder="Informe o motivo da troca"></textarea>
+          </fieldset>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer" *ngIf="!saving">
+    <div class="row">
+      <div class="col-12 text-right">
+        <div class="row">
+          <button type="button" class="btn btn-success" (click)="save(d);">
+            Salvar
+          </button>
+          <button type="button" class="btn btn-silver" (click)="d('cancel ownership change!');">
+            <i class="icon-action-undo"></i>
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer" *ngIf="saving">
+    <div class="row">
+      <div class="col-12 text-right">
+        <div class="row">
+          <i class="fas fa-circle-notch fa-spin"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

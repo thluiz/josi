@@ -10,10 +10,10 @@ export class LoginErrorComponent {
   private dataUrl = environment.site_url;
 
   constructor() {
-    
+
   }
 
   try_relogin() {
-    window.location.href=environment.relogin_url;
+    window.location.href=environment.login_url;
   }
 }

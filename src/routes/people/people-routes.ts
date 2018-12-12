@@ -88,11 +88,15 @@ export function routes(app) {
     "/api/people/:id",
     auth.ensureLoggedIn(),
     async (request, response) => {
-      const result = await DBM.ExecuteJsonSP("GetPersonData", {
-        id: request.params.id
-      });
+      if (request.params.id > 0) {
+        const result = await DBM.ExecuteJsonSP("GetPersonData", {
+          id: request.params.id
+        });
 
-      response.send(result);
+        response.send(result);
+      } else {
+        response.status(404).json();
+      }
     }
   );
 
@@ -617,9 +621,9 @@ export function routes(app) {
       const user = await SS.getUserFromRequest(request);
       const responsibleId = await user.getPersonId();
 
-      await PS.save_schedule(request.body.schedule, responsibleId);
+      const result = await PS.save_schedule(request.body.schedule, responsibleId);
 
-      response.send({ sucess: true });
+      response.send(result);
     }
   );
 

@@ -6,7 +6,7 @@ export function firebaseEmitter(collection) {
         const originalMethod = descriptor.value;
         descriptor.value = async function(...args) {
             const result: Result = await originalMethod.apply(this, args);
-            if (result.success && process.env.FIREBASE_EMIT_EVENTS !== "false" || true) {
+            if (result.success && process.env.FIREBASE_EMIT_EVENTS !== "false") {
               await FirebaseManager.emit_event(collection, {
                     id: result.id,
                     data: result

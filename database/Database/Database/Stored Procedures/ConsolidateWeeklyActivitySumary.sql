@@ -5,7 +5,7 @@
 as begin  
   
  if(@date is null)   
-  set @date = getdate()  
+  set @date = getUTCdate()  
     
  declare @week int = (select top 1 id from [week] where [start] <= @date and [end] >= @date)  
   

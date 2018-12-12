@@ -4,6 +4,6 @@ with schemabinding
 as    
 begin    
     
- return dateadd(hour, -3, getdate())    
+ return getUtcDate()   
     
 end

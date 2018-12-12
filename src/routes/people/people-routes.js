@@ -54,10 +54,15 @@ function routes(app) {
         response.send(result);
     }));
     app.get("/api/people/:id", auth.ensureLoggedIn(), (request, response) => __awaiter(this, void 0, void 0, function* () {
-        const result = yield DBM.ExecuteJsonSP("GetPersonData", {
-            id: request.params.id
-        });
-        response.send(result);
+        if (request.params.id > 0) {
+            const result = yield DBM.ExecuteJsonSP("GetPersonData", {
+                id: request.params.id
+            });
+            response.send(result);
+        }
+        else {
+            response.status(404).json();
+        }
     }));
     app.get("/api/people/search/:name?", auth.ensureLoggedIn(), (request, response) => __awaiter(this, void 0, void 0, function* () {
         const result = yield DBM.ExecuteJsonSP("GetPeopleByNameForTypeahead", {
@@ -344,8 +349,8 @@ function routes(app) {
     app.post("/api/person_schedule", auth.ensureLoggedIn(), (request, response) => __awaiter(this, void 0, void 0, function* () {
         const user = yield SS.getUserFromRequest(request);
         const responsibleId = yield user.getPersonId();
-        yield PS.save_schedule(request.body.schedule, responsibleId);
-        response.send({ sucess: true });
+        const result = yield PS.save_schedule(request.body.schedule, responsibleId);
+        response.send(result);
     }));
     /**
      * COMMENTS

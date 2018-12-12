@@ -50,7 +50,7 @@ begin
  kf_name varchar(100), kf_name_ideograms nvarchar(100), family_abrev varchar(10),                                
  is_disciple bit, is_leaving bit, is_inactive_member bit, admission_date date,                       
  data_status bit not null default 0, data_status_description varchar(max), has_birthday_this_month bit not null default 0,            
- birth_date datetime default getdate(), is_interested bit not null default 0, is_service_provider  bit not null default 0,           
+ birth_date datetime default getUTCdate(), is_interested bit not null default 0, is_service_provider  bit not null default 0,           
  is_associated_with_member  bit not null default 0, is_external_member  bit not null default 0,    
  p1_sessions_current_month int default 0, contracted_p1_sessions  int default 0, pinned_comment_count int default 0,
  offering_status bit default 0, offering_status_description varchar(max) 
@@ -183,7 +183,7 @@ begin
   is_associated_with_member, is_external_member,     
   p1_sessions_current_month, contracted_p1_sessions, pinned_comment_count                       
    from @people         
-   order by isnull(admission_date, DATEADD(year, 1, getdate())), birth_date desc                                                                                 
+   order by isnull(admission_date, DATEADD(year, 1, getUTCdate())), birth_date desc                                                                                 
    for json path                                                                            
  ) [people],                                                                                           
  (                                                                                          

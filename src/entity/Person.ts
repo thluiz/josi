@@ -18,6 +18,12 @@ export class Person {
     name: string;
 
     @Column()
+    salt: string;
+
+    @Column()
+    password: string;
+
+    @Column()
     is_interested: boolean;
 
     @Column()

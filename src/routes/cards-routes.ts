@@ -110,13 +110,8 @@ export function routes(app) {
 
   app.post("/api/move_card", auth.ensureLoggedIn(), async (req, res) => {
     const user = await SS.getUserFromRequest(req);
-    const result = await DBM.ExecuteJsonSP(
-      "MoveCard",
-      { card_id: req.body.card_id },
-      { parent_id: req.body.parent_id },
-      { step_id: req.body.step_id },
-      { responsible_id: await user.getPersonId() }
-    );
+
+    const result = CS.moveCard(req.body, user);
 
     res.send(result);
   });

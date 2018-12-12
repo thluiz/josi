@@ -9,7 +9,6 @@ import { PersonCardComponent } from './person-card.component';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
-import { FilterPrincipalPipeModule } from 'app/shared/pipes/filter-principal/filter-principal.module';
 import { FilterPrincipalPipe } from 'app/shared/pipes/filter-principal/filter-principal.pipe';
 import { MarkdownModule } from 'ngx-markdown';
 
@@ -21,12 +20,12 @@ import { MarkdownModule } from 'ngx-markdown';
         PersonStatusLineModule,
         ContactListitemModule,
         ContactButtonitemModule,
-        FilterPrincipalPipeModule,
         PersonAvatarImageModule,
         MarkdownModule.forRoot()
     ],
     declarations: [
-        PersonCardComponent, FilterPrincipalPipe
+        PersonCardComponent,
+        FilterPrincipalPipe
     ], exports: [
         PersonCardComponent
     ]

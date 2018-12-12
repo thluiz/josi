@@ -14,7 +14,7 @@ begin
 		   where i.incident_type = 24                           
 	  and i.cancelled = 0                             
 	  and i.treated = 0  
-			and i.date > getdate()                              
+			and i.date > getUTCdate()                              
 		)                               
                                                     
 	 -- people with old payments not closed and not treated                              
@@ -31,7 +31,7 @@ begin
 		and pic.person_id = isnull(@person, p.id)                        
 		and i.treated = 0                           
 		and i.cancelled = 0                           
-		and i.date < getdate()                              
+		and i.date < getUTCdate()                              
 	   )                              
                                  
 	 update ps set [status] = 4                              

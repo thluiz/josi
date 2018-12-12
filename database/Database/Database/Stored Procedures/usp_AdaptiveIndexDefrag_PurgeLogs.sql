@@ -15,6 +15,6 @@ SET NOCOUNT ON;
 SET DATEFORMAT ymd;
 
 DELETE FROM dbo.tbl_AdaptiveIndexDefrag_log
-WHERE dateTimeStart <= DATEADD(dd, DATEDIFF(dd, 0, GETDATE()), -@daystokeep);
+WHERE dateTimeStart <= DATEADD(dd, DATEDIFF(dd, 0, getUTCdate()), -@daystokeep);
 DELETE FROM dbo.tbl_AdaptiveIndexDefrag_Stats_log
-WHERE dateTimeStart <= DATEADD(dd, DATEDIFF(dd, 0, GETDATE()), -@daystokeep);
+WHERE dateTimeStart <= DATEADD(dd, DATEDIFF(dd, 0, getUTCdate()), -@daystokeep);

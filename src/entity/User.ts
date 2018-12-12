@@ -52,17 +52,19 @@ export class User {
         return this.person.id;
     }
 
-    async getPerson(): Promise<Person> {
-        await this.loadPersonIfNeeded();
+    async getPerson(cache = true): Promise<Person> {
+        await this.loadPersonIfNeeded(cache);
 
         return this.person;
     }
 
     @tryLogAsync()
-    async loadPersonIfNeeded() {
+    async loadPersonIfNeeded(cache = true) {
         if (this.person != null) { return; }
         const UR = await new UsersRepository();
-        const result_user = await UR.loadAllUserData(this.id);
+        const result_user = cache ?
+                                await UR.loadAllUserData(this.id)
+                                : await UR.loadAllUserDataWithoutCache(this.id);
 
         this.person = (result_user.data as User).person;
     }

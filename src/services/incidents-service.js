@@ -39,6 +39,14 @@ exports.INCIDENT_CANCELLED = "INCIDENT_CANCELLED";
 exports.INCIDENT_RESCHEDULED = "INCIDENT_RESCHEDULED";
 exports.INCIDENT_COMMENT_ADDED = "INCIDENT_COMMENT_ADDED";
 exports.INCIDENT_COMMENT_ARCHIVED = "INCIDENT_COMMENT_ARCHIVED";
+exports.INCIDENT_ACTION_ADDED = "INCIDENT_ACTION_ADDED";
+exports.INCIDENT_ACTION_COMMENT_ADDED = "INCIDENT_ACTION_COMMENT_ADDED";
+exports.INCIDENT_ACTION_CHANGED = "INCIDENT_ACTION_CHANGED";
+exports.INCIDENT_ACTION_TREATED = "INCIDENT_ACTION_TREATED";
+exports.OWNERSHIP_MIGRATED = "OWNERSHIP_MIGRATED";
+exports.OWNERSHIP_LENGTH_CHANGED = "OWNERSHIP_LENGTH_CHANGED";
+exports.OWNERSHIP_CHANGED = "OWNERSHIP_CHANGED";
+exports.OWNERSHIP_TEAM_CHANGED = "OWNERSHIP_TEAM_CHANGED";
 var IncidentErrors;
 (function (IncidentErrors) {
     IncidentErrors[IncidentErrors["MissingResponsible"] = 0] = "MissingResponsible";
@@ -55,8 +63,83 @@ var AddToOwnership;
     AddToOwnership[AddToOwnership["AddToExistingOwnership"] = 2] = "AddToExistingOwnership";
 })(AddToOwnership = exports.AddToOwnership || (exports.AddToOwnership = {}));
 class IncidentsService extends base_service_1.BaseService {
+    migrateOwnership(ownership, incidents) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const execution = yield this.databaseManager
+                .ExecuteTypedJsonSP(exports.OWNERSHIP_MIGRATED, "MigrateOwnership", [{ ownership_id: ownership.id },
+                { location_id: ownership.location_id
+                        || ownership.location.id },
+                { date: ownership.date },
+                { end_date: ownership.end_date },
+                { description: ownership.description },
+                { incidents_list: incidents.map(i => i.id).join(",") }]);
+            return execution;
+        });
+    }
+    addAction(action, responsibleId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const execution = yield this.databaseManager
+                .ExecuteTypedJsonSP(exports.INCIDENT_ACTION_ADDED, "AddIncidentAction", [{ incident_id: action.incident_id },
+                { title: action.title },
+                { description: action.description },
+                { responsible_id: responsibleId }]);
+            return execution;
+        });
+    }
+    completeAction(action, responsibleId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const execution = yield this.databaseManager
+                .ExecuteTypedJsonSP(exports.INCIDENT_ACTION_CHANGED, "CompleteIncidentAction", [{ action_id: action.id },
+                { responsible_id: responsibleId }]);
+            return execution;
+        });
+    }
+    ChangeOwnership(ownershipId, ownerId, firstSurrogateId, secondSurrogateId, description, responsibleId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const execution = yield this.databaseManager
+                .ExecuteTypedJsonSP(exports.OWNERSHIP_TEAM_CHANGED, "changeOwnership", [{ ownership_id: ownershipId },
+                { owner_id: ownerId },
+                { first_surrogate_id: firstSurrogateId },
+                { second_surrogate_id: secondSurrogateId },
+                { description },
+                { responsible_id: responsibleId }]);
+            return execution;
+        });
+    }
+    ChangeOwnershipLength(ownershipId, startDate, endDate, responsibleId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const execution = yield this.databaseManager
+                .ExecuteTypedJsonSP(exports.OWNERSHIP_LENGTH_CHANGED, "changeOwnershipLength", [{ ownership_id: ownershipId },
+                { start_date: startDate },
+                { end_date: endDate },
+                { responsible_id: responsibleId }]);
+            return execution;
+        });
+    }
+    treatAction(actionTreatmentData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const execution = yield this.databaseManager
+                .ExecuteTypedJsonSP(exports.INCIDENT_ACTION_TREATED, "TreatIncidentAction", [
+                { action_id: actionTreatmentData.action_id },
+                { incident_id: actionTreatmentData.incident_id },
+                { treatment_type: actionTreatmentData.treatment_type },
+                { treatment_description: actionTreatmentData.treatment_description },
+                { treatment_date: actionTreatmentData.treatment_date },
+                { responsible_id: actionTreatmentData.responsible_id }
+            ]);
+            return execution;
+        });
+    }
     start_incident(incident, responsibleId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const validationResult = yield this.databaseManager
+                .ExecuteJsonSP("ValidateStartIncident", { incident: incident.id });
+            if (!validationResult.success) {
+                return validationResult;
+            }
+            if (!validationResult.data[0].success) {
+                return validationResult.data[0];
+            }
             const execution = yield this.databaseManager
                 .ExecuteTypedJsonSP(exports.INCIDENT_STARTED, "StartIncident", [{ incident: incident.id },
                 { responsible_id: responsibleId }]);
@@ -84,6 +167,13 @@ class IncidentsService extends base_service_1.BaseService {
     }
     close_incident(incident, responsible) {
         return __awaiter(this, void 0, void 0, function* () {
+            const validationResult = yield this.databaseManager.ExecuteJsonSP("ValidateCloseIncident", { incident: incident.id });
+            if (!validationResult.success) {
+                return validationResult;
+            }
+            if (!validationResult.data[0].success) {
+                return validationResult.data[0];
+            }
             const execution = yield this.databaseManager.ExecuteTypedJsonSP(exports.INCIDENT_ENDED, "CloseIncident", [{ incident: incident.id },
                 { close_description: incident.close_text || "" },
                 { title: incident.title || "" },
@@ -254,7 +344,8 @@ class IncidentsService extends base_service_1.BaseService {
                 { add_to_ownernership: incident.add_to_ownernership },
                 { new_owner_id: incident.new_owner_id },
                 { new_support_id: incident.new_support_id },
-                { ownership_id: incident.ownership ? incident.ownership.id : null }]);
+                { ownership_id: incident.ownership ? incident.ownership.id : null },
+                { location_id: incident.location ? incident.location.id : null }]);
             return execution;
         });
     }
@@ -288,6 +379,14 @@ class IncidentsService extends base_service_1.BaseService {
                 .ExecuteTypedJsonSP(exports.INCIDENT_COMMENT_ADDED, "SaveIncidentComment", [{ incident_id: incidentId }, { comment }, { responsible_id: responsibleId }]);
         });
     }
+    save_action_comment(incidentActionId, comment, responsibleId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.databaseManager
+                .ExecuteTypedJsonSP(exports.INCIDENT_ACTION_COMMENT_ADDED, "SaveIncidentActionComment", [{ incident_action_id: incidentActionId },
+                { comment },
+                { responsible_id: responsibleId }]);
+        });
+    }
     archive_comment(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.databaseManager
@@ -298,6 +397,48 @@ class IncidentsService extends base_service_1.BaseService {
         cache_decorator_1.refreshMethodCache("getCurrentActivities");
     }
 }
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Array]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "migrateOwnership", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "addAction", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "completeAction", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number, Number, Number, String, Number]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "ChangeOwnership", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, String, String, Number]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "ChangeOwnershipLength", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "treatAction", null);
 __decorate([
     trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
@@ -381,6 +522,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsService.prototype, "save_comment", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsService.prototype, "save_action_comment", null);
 __decorate([
     trylog_decorator_1.tryLogAsync(),
     firebase_emitter_decorator_1.firebaseEmitter(exports.EVENTS_COLLECTION),

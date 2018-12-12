@@ -4,11 +4,27 @@ import { Result } from "../helpers/result";
 import { DatabaseManager } from "./managers/database-manager";
 import { DependencyManager } from "./managers/dependency-manager";
 
+import { User } from "../entity/User";
+
 export class CardsService {
     private DBM = DependencyManager.container.resolve(DatabaseManager);
 
     async correct_card_out_of_parent_step(): Promise<Result> {
         return await this.DBM.ExecuteSPNoResults("CorrectCardOutOfParentStep");
+    }
+
+    async moveCard(card, responsible: User) {
+        const result = await this.DBM.ExecuteJsonSP(
+            "MoveCard",
+            { card_id: card.card_id },
+            { parent_id: card.parent_id },
+            { step_id: card.step_id },
+            { responsible_id: await responsible.getPersonId() }
+          );
+
+        if (!result.success) {
+            return result;
+        }
     }
 
     async save_card(card, responsibleId) {
@@ -57,8 +73,6 @@ export class CardsService {
             {branch_id: card.branch ? card.branch.id : null},
             {responsible_id: responsibleId }
         );
-
-        this.refreshCaches();
         return result;
     }
 
@@ -71,8 +85,6 @@ export class CardsService {
             { order: personCard.order || -1 },
         );
 
-        this.refreshCaches();
-
         return result;
     }
 
@@ -82,8 +94,6 @@ export class CardsService {
             { person_id: personCard.person_id },
         );
 
-        this.refreshCaches();
-
         return result;
     }
 
@@ -92,8 +102,6 @@ export class CardsService {
             { card_id: card.id },
             { responsible_id: responsibleId },
         );
-
-        this.refreshCaches();
         return result;
     }
 
@@ -103,8 +111,6 @@ export class CardsService {
             { step_id: stepId },
             { responsible_id: responsibleId },
         );
-
-        this.refreshCaches();
         return result;
     }
 
@@ -122,10 +128,5 @@ export class CardsService {
             { commentary_type : commentaryType },
             {responsible_id: responsibleId}
         );
-    }
-
-    private refreshCaches() {
-        refreshMethodCache("getOrganizations");
-        refreshMethodCache("getProject");
     }
 }

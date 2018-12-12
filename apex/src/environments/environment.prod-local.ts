@@ -3,6 +3,7 @@ export const environment = {
   api_url: 'http://localhost:3979/api',
   site_url: 'http://localhost:4200',
   login_url: 'http://localhost:3979/auth',
+  google_login_url: 'http://localhost:3979/auth/google',
   logout_url:  'http://localhost:3979/logout',
   relogin_url:  'http://localhost:3979/relogin',
   firebase: {

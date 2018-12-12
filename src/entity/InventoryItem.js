@@ -45,6 +45,14 @@ __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Boolean)
 ], InventoryItem.prototype, "require_title", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Boolean)
+], InventoryItem.prototype, "require_size", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Boolean)
+], InventoryItem.prototype, "require_gender", void 0);
 InventoryItem = __decorate([
     typeorm_1.Entity({ name: "inventory_item" })
 ], InventoryItem);

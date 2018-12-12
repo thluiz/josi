@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[card_history] (
     [id]                     INT            IDENTITY (1, 1) NOT NULL,
     [card_id]                INT            NOT NULL,
-    [created_on]             DATETIME       DEFAULT (getdate()) NOT NULL,
+    [created_on]             DATETIME       DEFAULT (getUTCdate()) NOT NULL,
     [responsible_id]         INT            NOT NULL,
     [history_type]           INT            NOT NULL,
     [description]            NVARCHAR (MAX) NULL,

@@ -26,6 +26,16 @@ export const INCIDENT_RESCHEDULED = "INCIDENT_RESCHEDULED";
 export const INCIDENT_COMMENT_ADDED = "INCIDENT_COMMENT_ADDED";
 export const INCIDENT_COMMENT_ARCHIVED = "INCIDENT_COMMENT_ARCHIVED";
 
+export const INCIDENT_ACTION_ADDED = "INCIDENT_ACTION_ADDED";
+export const INCIDENT_ACTION_COMMENT_ADDED = "INCIDENT_ACTION_COMMENT_ADDED";
+export const INCIDENT_ACTION_CHANGED = "INCIDENT_ACTION_CHANGED";
+export const INCIDENT_ACTION_TREATED = "INCIDENT_ACTION_TREATED";
+
+export const OWNERSHIP_MIGRATED = "OWNERSHIP_MIGRATED";
+export const OWNERSHIP_LENGTH_CHANGED = "OWNERSHIP_LENGTH_CHANGED";
+export const OWNERSHIP_CHANGED = "OWNERSHIP_CHANGED";
+export const OWNERSHIP_TEAM_CHANGED = "OWNERSHIP_TEAM_CHANGED";
+
 export interface IRegisterIncident {
     incident: Incident;
     responsible: Person;
@@ -59,6 +69,15 @@ export interface IRegisterOwnership {
     new_support: Person;
 }
 
+export interface IActionTreatmentCommand {
+    action_id: number;
+    incident_id: number;
+    treatment_type: number;
+    treatment_description: string;
+    treatment_date: string;
+    responsible_id: number;
+}
+
 export enum IncidentErrors {
     MissingResponsible,
     MissingOwnership,
@@ -79,10 +98,136 @@ export enum AddToOwnership {
     AddToExistingOwnership
 }
 
+export interface IMigrateOwnershipData {
+    id: number; date: string;
+    end_date: string;
+    location_id: number;
+    description: string;
+}
+
 export class IncidentsService extends BaseService {
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async migrateOwnership(ownership: Incident | IMigrateOwnershipData,
+                           incidents: Array<{ id: number }>) {
+
+        const execution = await this.databaseManager
+            .ExecuteTypedJsonSP(OWNERSHIP_MIGRATED,
+                "MigrateOwnership",
+                [{ ownership_id: ownership.id },
+                { location_id:  (ownership as IMigrateOwnershipData).location_id
+                                || (ownership as Incident).location.id },
+                { date: ownership.date },
+                { end_date: ownership.end_date },
+                { description: ownership.description },
+                { incidents_list: incidents.map(i => i.id).join(",")} ]
+            );
+
+        return execution;
+    }
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async addAction(action, responsibleId): Promise<Result> {
+        const execution = await this.databaseManager
+            .ExecuteTypedJsonSP(INCIDENT_ACTION_ADDED,
+                "AddIncidentAction",
+                [{ incident_id: action.incident_id },
+                 {title: action.title},
+                 {description: action.description},
+                { responsible_id: responsibleId }]
+            );
+
+        return execution;
+    }
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async completeAction(action, responsibleId): Promise<Result> {
+        const execution = await this.databaseManager
+            .ExecuteTypedJsonSP(INCIDENT_ACTION_CHANGED,
+                "CompleteIncidentAction",
+                [{ action_id: action.id },
+                 {responsible_id: responsibleId }]
+            );
+
+        return execution;
+    }
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async ChangeOwnership(ownershipId: number,
+                          ownerId: number, firstSurrogateId: number,
+                          secondSurrogateId: number, description: string,
+                          responsibleId: number ): Promise<Result> {
+
+        const execution = await this.databaseManager
+            .ExecuteTypedJsonSP(OWNERSHIP_TEAM_CHANGED,
+                "changeOwnership",
+                [{ ownership_id: ownershipId },
+                 { owner_id: ownerId },
+                 { first_surrogate_id: firstSurrogateId },
+                 { second_surrogate_id: secondSurrogateId },
+                 { description },
+                 { responsible_id: responsibleId }]
+            );
+
+        return execution;
+    }
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async ChangeOwnershipLength(ownershipId: number,
+                                startDate: string, endDate: string,
+                                responsibleId: number): Promise<Result> {
+
+        const execution = await this.databaseManager
+            .ExecuteTypedJsonSP(OWNERSHIP_LENGTH_CHANGED,
+                "changeOwnershipLength",
+                [{ ownership_id: ownershipId },
+                 {start_date: startDate },
+                 {end_date: endDate },
+                 {responsible_id: responsibleId }]
+            );
+
+        return execution;
+    }
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async treatAction(actionTreatmentData: IActionTreatmentCommand ): Promise<Result> {
+        const execution = await this.databaseManager
+            .ExecuteTypedJsonSP(INCIDENT_ACTION_TREATED,
+                "TreatIncidentAction", [
+                    { action_id: actionTreatmentData.action_id },
+                    { incident_id: actionTreatmentData.incident_id },
+                    { treatment_type: actionTreatmentData.treatment_type },
+                    { treatment_description: actionTreatmentData.treatment_description },
+                    { treatment_date: actionTreatmentData.treatment_date },
+                    { responsible_id: actionTreatmentData.responsible_id }
+                ]
+            );
+
+        return execution;
+    }
+
     @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async start_incident(incident, responsibleId): Promise<Result> {
+        const validationResult = await this.databaseManager
+            .ExecuteJsonSP<any>("ValidateStartIncident",
+                { incident: incident.id }
+            );
+
+        if (!validationResult.success) {
+            return validationResult;
+        }
+
+        if (!validationResult.data[0].success) {
+            return validationResult.data[0];
+        }
+
         const execution = await this.databaseManager
             .ExecuteTypedJsonSP(INCIDENT_STARTED,
                 "StartIncident",
@@ -104,7 +249,6 @@ export class IncidentsService extends BaseService {
             [{ incident: incident.id },
             { responsible_id: responsibleId }]
         );
-
 
         this.clearCurrentActivitiesCache();
         return execution;
@@ -128,6 +272,19 @@ export class IncidentsService extends BaseService {
     @tryLogAsync()
     @firebaseEmitter(EVENTS_COLLECTION)
     async close_incident(incident: Incident, responsible: Person): Promise<Result<Incident>> {
+        const validationResult = await this.databaseManager.ExecuteJsonSP<any>(
+            "ValidateCloseIncident",
+            { incident: incident.id }
+        );
+
+        if (!validationResult.success) {
+            return validationResult;
+        }
+
+        if (!validationResult.data[0].success) {
+            return validationResult.data[0];
+        }
+
         const execution = await this.databaseManager.ExecuteTypedJsonSP<Incident>(
             INCIDENT_ENDED,
             "CloseIncident",
@@ -359,7 +516,8 @@ export class IncidentsService extends BaseService {
                 { add_to_ownernership: incident.add_to_ownernership},
                 { new_owner_id: incident.new_owner_id },
                 { new_support_id: incident.new_support_id },
-                { ownership_id: incident.ownership ? incident.ownership.id : null }]
+                { ownership_id: incident.ownership ? incident.ownership.id : null },
+                { location_id: incident.location ? incident.location.id : null }]
         );
 
         return execution;
@@ -413,6 +571,18 @@ export class IncidentsService extends BaseService {
             INCIDENT_COMMENT_ADDED,
             "SaveIncidentComment",
             [{incident_id: incidentId}, { comment }, {responsible_id: responsibleId}]);
+    }
+
+    @tryLogAsync()
+    @firebaseEmitter(EVENTS_COLLECTION)
+    async save_action_comment(incidentActionId, comment, responsibleId) {
+        return await this.databaseManager
+        .ExecuteTypedJsonSP(
+            INCIDENT_ACTION_COMMENT_ADDED,
+            "SaveIncidentActionComment",
+            [{incident_action_id: incidentActionId},
+             { comment },
+             {responsible_id: responsibleId}]);
     }
 
     @tryLogAsync()

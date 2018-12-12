@@ -22,6 +22,28 @@ function routes(app) {
         const result = yield IR.getAvailableOwnerships(req.params.branch, req.params.date, req.params.type);
         res.send(result);
     }));
+    app.get("/api/calendar/:start_date/:end_date", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield IR.getCalendarData(req.params.start_date, req.params.end_date);
+        res.send(result);
+    }));
+    app.get("/api/change_ownership/:id", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield IR.getDataForChangeOwnership(req.params.id);
+        res.send(result);
+    }));
+    app.get("/api/change_ownership_length/:id/:start_date/:end_date", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield IR.getDataForChangeOwnershipLength(req.params.id, req.params.start_date, req.params.end_date);
+        res.send(result);
+    }));
+    app.post("/api/change_ownership", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(req);
+        const result = yield IS.ChangeOwnership(req.body.id, req.body.owner, req.body.first_surrogate, req.body.second_surrogate, req.body.description, yield user.getPersonId());
+        res.send(result);
+    }));
+    app.post("/api/change_ownership_length", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(req);
+        const result = yield IS.ChangeOwnershipLength(req.body.id, req.body.start_date, req.body.end_date, yield user.getPersonId());
+        res.send(result);
+    }));
     app.get("/api/current_activities/:branch?", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         const result = yield IR.getCurrentActivities(req.params.branch > 0 ? req.params.branch : null);
         res.send(result);
@@ -38,6 +60,10 @@ function routes(app) {
         const result = yield IR.getAgenda(req.params.branch > 0 ? req.params.branch : null, req.params.date);
         res.send(result);
     }));
+    app.get("/api/incidents-without-ownership/:branch_id/:location_id/:start_date/:end_date", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield IR.getIncidentsWithOutOwnership(req.params.branch_id, req.params.location_id, req.params.start_date, req.params.end_date);
+        res.send(result);
+    }));
     app.get("/api/daily/:branch?/:display?/:display_modifier?", auth.ensureLoggedIn(), (request, response) => __awaiter(this, void 0, void 0, function* () {
         const result = yield IR.getDailyMonitor(request.params.branch > 0 ? request.params.branch : null, request.params.display || 0, request.params.display_modifier || 0);
         response.send(result);
@@ -52,6 +78,28 @@ function routes(app) {
     }));
     app.post("/api/incident/close", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
         const result = yield controller.close_incident(req.body, yield SS.getUserFromRequest(req));
+        response.send(result);
+    }));
+    app.post("/api/incident_actions", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(req);
+        const result = yield IS.addAction(req.body.action, yield user.getPersonId());
+        response.send(result);
+    }));
+    app.post("/api/incident_action/complete", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(req);
+        const result = yield IS.completeAction(req.body, yield user.getPersonId());
+        response.send(result);
+    }));
+    app.post("/api/incident_action/treatment", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(req);
+        const result = yield IS.treatAction({
+            action_id: req.body.action_id,
+            incident_id: req.body.incident_id,
+            treatment_date: req.body.treatment_date,
+            treatment_type: req.body.treatment_type,
+            treatment_description: req.body.treatment_description,
+            responsible_id: yield user.getPersonId()
+        });
         response.send(result);
     }));
     app.post("/api/incident/start", auth.ensureLoggedIn(), (req, response) => __awaiter(this, void 0, void 0, function* () {
@@ -94,6 +142,11 @@ function routes(app) {
      */
     app.get("/api/incident_comments/incident/:id/:show_archived?", auth.ensureLoggedIn(), (request, res) => __awaiter(this, void 0, void 0, function* () {
         const result = yield IS.get_comments(request.params.id, request.params.show_archived || false);
+        res.send(result);
+    }));
+    app.post("/api/incident_action_comments", auth.ensureLoggedIn(), (request, res) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield SS.getUserFromRequest(request);
+        const result = yield IS.save_action_comment(request.body.incident_action_id, request.body.comment, yield user.getPersonId());
         res.send(result);
     }));
     app.post("/api/incident_comments", auth.ensureLoggedIn(), (request, res) => __awaiter(this, void 0, void 0, function* () {

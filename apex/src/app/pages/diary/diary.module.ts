@@ -23,32 +23,33 @@ import { CommonModule } from "@angular/common";
 import { FormControl, FormsModule, ReactiveFormsModule,
         FormGroup, Validators, NgForm } from '@angular/forms';
 
-import { NgbModal, 
-    NgbDateStruct, 
-    NgbDatepickerI18n, 
+import { NgbModal,
+    NgbDateStruct,
+    NgbDatepickerI18n,
     NgbDatepickerModule,
-    NgbCalendar, 
-    NgbTimeStruct,      
-    ModalDismissReasons, 
+    NgbCalendar,
+    NgbTimeStruct,
+    ModalDismissReasons,
     NgbTimepickerModule,
     NgbActiveModal,
-    NgbModule     
+    NgbModule
   } from '@ng-bootstrap/ng-bootstrap';
 import { MarkdownModule } from 'ngx-markdown';
-
+import { OwnershipAgendaViewModule } from './shared/ownership-agenda-view/ownership-agenda-view.module';
+import { NgPipesModule } from 'ngx-pipes';
 
 @NgModule({
     imports: [
         CommonModule,
-        DiaryRoutingModule,                
-        FormsModule, 
-        ReactiveFormsModule,                        
+        DiaryRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
         NgbDatepickerModule.forRoot(),
         NgbTimepickerModule.forRoot(),
-        NgbModule,        
+        NgbModule,
         DailyChangeViewModule,
         PersonCardModule,
-        NewIncidentModalModule,        
+        NewIncidentModalModule,
         CompactIncidentListitemModule,
         CurrentActivitiesModule,
         PersonStatusLineModule,
@@ -56,10 +57,12 @@ import { MarkdownModule } from 'ngx-markdown';
         LateralSummaryModule,
         DiaryHeaderModule,
         DiaryChangeBranchModule,
-        MarkdownModule.forRoot(),   
-        FloatActionCenterModule
+        MarkdownModule.forRoot(),
+        FloatActionCenterModule,
+        OwnershipAgendaViewModule,
+        NgPipesModule
     ],
-    declarations: [       
+    declarations: [
         DailyPageComponent,
         WeeklyPageComponent,
         AgendaPageComponent,

@@ -25,6 +25,14 @@ async function getGlobalConnection(): Promise<Connection> {
             entities: ["src/entity/*.js"],
             subscribers: ["src/subscriber/*.js"],
             migrations: ["src/migration/*.js"],
+            connectionTimeout: 30000,
+            requestTimeout: 30000,
+            pool: {
+                max: 100,
+                min: 1,
+                idleTimeoutMillis: 15000,
+                acquireTimeoutMillis: 0
+            },
             cli: {
                 entitiesDir: "entity",
                 migrationsDir: "migration",

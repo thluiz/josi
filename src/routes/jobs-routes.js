@@ -18,7 +18,18 @@ function routes(app) {
     }));
     app.get("/api/ownership_report", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
         const IR = yield new incidents_repository_1.IncidentsRepository().getRepository();
-        const incident = yield IR.findOne(69836);
+        const incident = yield IR.findOne(176372);
+        const result = yield new ownership_closing_report_1.OwnershipClosingReport().send(incident);
+        res.send(result.success ? result.data.content : result);
+    }));
+    app.get("/api/json_ownership_report", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const IR = yield new incidents_repository_1.IncidentsRepository();
+        const result = yield IR.getOwnershipData(176372);
+        res.send(result.success ? result.data : result);
+    }));
+    app.get("/api/payments", (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        const IR = yield new incidents_repository_1.IncidentsRepository().getRepository();
+        const incident = yield IR.findOne(183611);
         const result = yield new ownership_closing_report_1.OwnershipClosingReport().send(incident);
         res.send(result.success ? result.data.content : result);
     }));

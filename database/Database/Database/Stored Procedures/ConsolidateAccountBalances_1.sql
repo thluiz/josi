@@ -13,7 +13,7 @@ begin
 	and closed = 1
 	and closed_on is null
 
-	while(@current_date < dateadd(year, 1, getdate()))
+	while(@current_date < dateadd(year, 1, getUTCdate()))
 	begin 
 		set @previous_date = @current_date
 		set @current_date = dateadd(day, 1, @current_date)
@@ -71,7 +71,7 @@ begin
 			from vwIncident i				
 				join account a on a.branch_id = i.branch_id
 			where cast(i.[date] as date) = @current_date
-				--and cast(i.[date] as date) < GETDATE()
+				--and cast(i.[date] as date) < getUTCdate()
 				and i.financial_type > 0
 				and treated = 0
 				and closed = 0				

@@ -8,7 +8,7 @@ CREATE procedure [dbo].[GetPeopleSummary](
 as                                          
 begin                                          
  if(@date is null)  
-  set @date = getdate()         
+  set @date = getUTCdate()         
                                                              
  declare @week int = (select id   
       from [week]   

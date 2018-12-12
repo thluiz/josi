@@ -5,10 +5,20 @@
         [style.font-weight]="incident.incident_type == 36 || showBold ? 'bold' : 'normal'"
         (click)="showLink ? show_incident_details(incident) : null;">
         <span *ngIf="current_branch <= 0" style="width:40px;display:inline-table;">{{ incident.branch_initials }}</span>
-        <span style="width:50px;display:inline-table;" *ngIf="showDate">{{ incident.date | date:'dd/MM' }}</span>
+        <span style="width:50px;display:inline-table;" *ngIf="showDate">
+          {{ incident.date | formatFromResponsibleTz : incident.gmt : 'DD/MM' }}
+        </span>
         <span style="width:45px;display:inline-table;"
-        *ngIf="incident.need_start_hour_minute">{{ (incident.started_on || incident.date) | date:'HH:mm' }}</span>
-        <span style="width:40px;display:inline-table;">{{ incident.abrev }}</span>
+        *ngIf="incident.need_start_hour_minute && incident.started_on">
+          {{ incident.started_on | formatFromServerTz : 'HH:mm' }}
+        </span>
+        <span style="width:45px;display:inline-table;"
+        *ngIf="incident.need_start_hour_minute && !incident.started_on">
+          {{ incident.date | formatFromResponsibleTz : incident.gmt : 'HH:mm' }}
+        </span>
+        <span style="width:40px;display:inline-table;" *ngIf="showIncidentType">
+          {{ incident.abrev }}
+        </span>
         <span *ngIf="!hideName">{{ incident.person }}</span>
         <span *ngIf="showTitle">{{ incident.title }}</span>
         <span *ngIf="incident.payment_method"> - {{ incident.payment_method }}</span>
@@ -26,8 +36,15 @@
                 <span *ngIf="current_branch <= 0" style="width:40px;display:inline-table;">
                     {{ incident.branch_initials }}
                 </span>
-                <span style="width:45px;display:inline-table;">{{ (incident.started_on || incident.date) | date:'HH:mm' }}</span>
-                <span style="width:40px;display:inline-table;">{{ incident.abrev }}</span>
+                <span style="width:45px;display:inline-table;" *ngIf="incident.started_on">
+                  {{ incident.started_on | formatFromServerTz : 'HH:mm' }}
+                </span>
+                <span style="width:45px;display:inline-table;" *ngIf="!incident.started_on">
+                  {{ incident.date | formatFromResponsibleTz : incident.gmt : 'HH:mm' }}
+                </span>
+                <span style="width:40px;display:inline-table;" *ngIf="showIncidentType">
+                  {{ incident.abrev }}
+                </span>
             </div>
             <div class="col-12 p-0 pl-2" *ngIf="!hideName">
                 {{ incident.person }}

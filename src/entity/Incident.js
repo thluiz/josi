@@ -13,6 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Branch_1 = require("./Branch");
 const Card_1 = require("./Card");
 const IncidentType_1 = require("./IncidentType");
+const Location_1 = require("./Location");
 const Person_1 = require("./Person");
 const PersonIncident_1 = require("./PersonIncident");
 const typeorm_1 = require("typeorm");
@@ -63,11 +64,13 @@ __decorate([
     __metadata("design:type", IncidentType_1.IncidentType)
 ], Incident.prototype, "type", void 0);
 __decorate([
-    typeorm_1.Column({ type: "datetime", default: () => "getdate()" })
-    // tslint:disable-next-line:variable-name
-    ,
+    typeorm_1.Column({ type: "datetime", default: () => "getdate()" }),
     __metadata("design:type", Date)
 ], Incident.prototype, "created_on", void 0);
+__decorate([
+    typeorm_1.Column({ type: "datetime" }),
+    __metadata("design:type", Date)
+], Incident.prototype, "end_date", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Boolean)
@@ -103,6 +106,11 @@ __decorate([
     typeorm_1.JoinColumn({ name: "branch_id" }),
     __metadata("design:type", Branch_1.Branch)
 ], Incident.prototype, "branch", void 0);
+__decorate([
+    typeorm_1.ManyToOne(() => Location_1.Location),
+    typeorm_1.JoinColumn({ name: "location_id" }),
+    __metadata("design:type", Location_1.Location)
+], Incident.prototype, "location", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)

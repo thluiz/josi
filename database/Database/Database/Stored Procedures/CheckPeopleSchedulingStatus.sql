@@ -19,7 +19,7 @@ begin
     or (p.program_id = 3 and i.incident_type = 12)      
    )                                
    and i.cancelled = 0                         
-   and i.date > getdate()                                    
+   and i.date > getUTCdate()                                    
        )        
 	   
  -- interested people without scheduled event                                  
@@ -32,7 +32,7 @@ begin
        join incident i on pic.incident_id = i.id                                    
        where i.incident_type in (1, 10, 11, 29, 25 )                              
 			and i.cancelled = 0                         
-			and i.date > getdate()                                    
+			and i.date > getUTCdate()                                    
        )	                                                     
                               
  -- people with absence in old obrigatory events that are not contacts            

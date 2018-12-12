@@ -40,15 +40,33 @@ export class ParameterService {
 
   private personCardPositions$ = new ReplaySubject(1);
   private cardTemplates$ = new ReplaySubject(1);
+  private branchesTimezones$ = new ReplaySubject(1);
+  private serverTimezone$ = new ReplaySubject(1);
 
-  constructor(private http: HttpClient, private utilsService: UtilsService) {}
+  public config = {
+    server_timezone: 0
+  }
+
+  constructor(private http: HttpClient, private utilsService: UtilsService) {
+    this.http.get(this.dataUrl + `/server_timezone`).subscribe((data : any) => {
+      this.config.server_timezone = data.timezone;
+    });
+  }
+
+  get server_timezone() {
+    return this.config.server_timezone;
+  }
+
+  getBranchesTimezones(forceRefresh?: boolean) {
+    return this.utilsService.cache_results(
+      this.branchesTimezones$,
+      `/branches_timezones`,
+      forceRefresh
+    );
+  }
 
   getTimeReloadComponents() {
     return 200;
-  }
-
-  getServerTime() {
-    return this.http.get(this.dataUrl + `/current_time`);
   }
 
   getConfigurations(forceRefresh?: boolean) {

@@ -68,8 +68,9 @@
                 <label for="card_people">Quem</label>
                 <ul *ngIf="card.people != null && card.people.length > 0" class="list-group">
                   <li *ngFor="let p of card.people" class="list-group-item">
-                    <person-avatar-image [person]="p">
-                    </person-avatar-image>
+                    <div style="float:left;width:40px">
+                      <person-avatar-image [person]="p"></person-avatar-image>
+                    </div>
                     {{ p.name }}
                     <div style="float:right;cursor: pointer;" title="Remover pessoa da atividade" (click)="remove_person_from_new_card(p)">
                       <span class="badge badge-pill">

@@ -6,6 +6,7 @@ export enum ModalType{
     IncidentTreatment,
     AddPersonComment,
     AddIncidentComment,
+    AddIncidentActionComment,
     AddCardComment,
     IncidentCommentList,
     AddPerson,
@@ -20,7 +21,10 @@ export enum ModalType{
     PersonFinancialTreatment,
     PersonScheduleTreatment,
     FileUpload,
-    PersonOffering
+    PersonOffering,
+    IncidentActionTreatment,
+    ChangeOwnership,
+    ChangeOwnershipLength
 }
 
 export interface IModalOpening {

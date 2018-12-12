@@ -24,7 +24,7 @@
                       <div class="form-group">
                         <label for="person_birth_date">Nascimento</label>
                         <div class="input-group">
-                          <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.birth_date" id="person_birth_date" name="person_birth_date"
+                          <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.birth_date_tmp" id="person_birth_date" name="person_birth_date"
                             ngbDatepicker #niReschedule="ngbDatepicker" />
                           <div class="input-group-addon" (click)="niReschedule.toggle()">
                             <i class="ft-calendar" style="cursor: pointer;"></i>
@@ -72,7 +72,7 @@
                       <div class="form-group">
                         <label for="person_passport_expiration_date">Val. do Passaporte</label>
                         <div class="input-group">
-                          <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.passport_expiration_date" id="person_passport_expiration_date"
+                          <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.passport_expiration_date_tmp" id="person_passport_expiration_date"
                             name="person_passport_expiration_date" ngbDatepicker #niPassportExpirationDate="ngbDatepicker"
                           />
                           <div class="input-group-addon" (click)="niPassportExpirationDate.toggle()">
@@ -144,9 +144,9 @@
                         </div>
                         <div class="col-12 col-md-6 col-xl-4">
                           <div class="form-group">
-                            <label for="person_admission_date">Admissão</label>
+                            <label for="person_admission_date_tmp">Admissão</label>
                             <div class="input-group">
-                              <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.admission_date" id="person_admission_date"
+                              <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.admission_date_tmp" id="person_admission_date_tmp"
                                 name="person_admission_date" ngbDatepicker #niRescheduleAdmission="ngbDatepicker" />
                               <div class="input-group-addon" (click)="niRescheduleAdmission.toggle()">
                                 <i class="ft-calendar" style="cursor: pointer;"></i>
@@ -169,9 +169,9 @@
                         </div>
                         <div class="col-12 col-md-6 col-xl-4">
                           <div class="form-group">
-                            <label for="person_enrollment_date">Matrícula</label>
+                            <label for="person_enrollment_date_tmp">Matrícula</label>
                             <div class="input-group">
-                              <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.enrollment_date" id="person_enrollment_date"
+                              <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.enrollment_date_tmp" id="person_enrollment_date"
                                 name="person_enrollment_date" ngbDatepicker #niEnrollment="ngbDatepicker" />
                               <div class="input-group-addon" (click)="niEnrollment.toggle()">
                                 <i class="ft-calendar" style="cursor: pointer;"></i>
@@ -253,7 +253,7 @@
                           <div class="form-group">
                             <label for="person_baaisi_date">Baai Si</label>
                             <div class="input-group">
-                              <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.baaisi_date" id="person_baaisi_date"
+                              <input class="form-control text-center" placeholder="dd/mm/aaaa" [(ngModel)]="person.baaisi_date_tmp" id="person_baaisi_date"
                                 name="person_baaisi_date" ngbDatepicker #niRescheduleBaaiSiDate="ngbDatepicker" />
                               <div class="input-group-addon" (click)="niRescheduleBaaiSiDate.toggle()">
                                 <i class="ft-calendar" style="cursor: pointer;"></i>

@@ -2,13 +2,14 @@ import { LightIncident } from './../../models/incident-model';
 import { ApplicationEventService } from 'app/services/application-event-service';
 
 import { OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { IncidentService, INCIDENT_ACTION_PREFIX } from 'app/services/incident-service';
+import { IncidentService, INCIDENT_EVENT_PREFIX } from 'app/services/incident-service';
 import { ModalService, ModalType } from 'app/services/modal-service';
 
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { Result } from 'app/shared/models/result';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'incident-agenda-listitem',
@@ -29,6 +30,7 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
     @Input() showCloseText = false;
     @Input() showLink = true;
     @Input() showBold = false;
+    @Input() showIncidentType = true;
 
     saving = false;
 
@@ -37,6 +39,7 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
     constructor(private incidentService: IncidentService,
               private eventManager: ApplicationEventService,
               private modalService: ModalService,
+              private toastrService: ToastrService,
               private cd: ChangeDetectorRef) {
 
     }
@@ -48,7 +51,7 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
         filter((result : Result<LightIncident[]>) =>
         result.data && result.data.length > 0
         && result.data[0].id == this.incident.id
-        && result.type.indexOf(INCIDENT_ACTION_PREFIX) > -1)
+        && result.type.indexOf(INCIDENT_EVENT_PREFIX) > -1)
       ).subscribe((result) => {
         this.incident = result.data[0];
         this.saving = false;
@@ -71,6 +74,9 @@ export class IncidentAgendaListitemComponent implements OnInit, OnDestroy {
       this.incidentService.start_incident(incident)
       .subscribe((result) => {
         this.saving = false;
+        if(!result.success) {
+          this.toastrService.error(result.message);
+        }
       });
     }
 

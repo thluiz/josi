@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const cache_decorator_1 = require("../decorators/cache-decorator");
 const database_manager_1 = require("./managers/database-manager");
 const dependency_manager_1 = require("./managers/dependency-manager");
 class CardsService {
@@ -18,6 +17,14 @@ class CardsService {
     correct_card_out_of_parent_step() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.DBM.ExecuteSPNoResults("CorrectCardOutOfParentStep");
+        });
+    }
+    moveCard(card, responsible) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.DBM.ExecuteJsonSP("MoveCard", { card_id: card.card_id }, { parent_id: card.parent_id }, { step_id: card.step_id }, { responsible_id: yield responsible.getPersonId() });
+            if (!result.success) {
+                return result;
+            }
         });
     }
     save_card(card, responsibleId) {
@@ -42,35 +49,30 @@ class CardsService {
                         .join(",")
                     : null
             }, { abrev: card.abrev }, { group_id: card.group ? card.group.id : null }, { branch_id: card.branch ? card.branch.id : null }, { responsible_id: responsibleId });
-            this.refreshCaches();
             return result;
         });
     }
     save_person_card(personCard) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.DBM.ExecuteSPNoResults("SavePersonCard", { card_id: personCard.card_id }, { person_id: personCard.person_id }, { position_id: personCard.position_id || 4 }, { position_description: personCard.position_description }, { order: personCard.order || -1 });
-            this.refreshCaches();
             return result;
         });
     }
     remove_person_card(personCard) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.DBM.ExecuteSPNoResults("RemovePersonCard", { card_id: personCard.card_id }, { person_id: personCard.person_id });
-            this.refreshCaches();
             return result;
         });
     }
     toggle_card_archived(card, responsibleId) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.DBM.ExecuteJsonSP("ToggleCardArchived", { card_id: card.id }, { responsible_id: responsibleId });
-            this.refreshCaches();
             return result;
         });
     }
     save_card_step(cardId, stepId, responsibleId) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.DBM.ExecuteJsonSP("SaveCardStep", { card_id: cardId }, { step_id: stepId }, { responsible_id: responsibleId });
-            this.refreshCaches();
             return result;
         });
     }
@@ -83,10 +85,6 @@ class CardsService {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.DBM.ExecuteJsonSP("SaveCardCommentary", { card_id: card.id }, { commentary }, { commentary_type: commentaryType }, { responsible_id: responsibleId });
         });
-    }
-    refreshCaches() {
-        cache_decorator_1.refreshMethodCache("getOrganizations");
-        cache_decorator_1.refreshMethodCache("getProject");
     }
 }
 exports.CardsService = CardsService;

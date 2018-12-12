@@ -1,0 +1,88 @@
+<div class="card card-block"
+  [style.border]="ownership.started_on && !ownership.closed ? '1px solid gray' : null"
+  [style.opacity]="(ownership.closed || ownership.treated) && from_today && lower_if_closed_today ? '0.4' : '1'">
+  <div class="card-title">
+    <div class="row">
+      <div class="col-12 col-md-8">
+        <ownership-title
+        (ownershipClick)="show_incident_details($event)"
+        [ownership]="ownership">
+        </ownership-title>
+      </div>
+      <div class="col-12 col-md-4 text-right pt-2">
+        <button type="button"
+        class="btn btn-silver btn-sm btn-action"
+        style="margin-right: 5px"
+        *ngIf="!ownership.closed && !ownership.treated"
+        title="Alterar Titularidade"
+          (click)="change_ownership(ownership);">
+          <i class="fas fa-exchange-alt"></i>
+        </button>
+
+        <button type="button"
+        class="btn btn-silver btn-sm btn-action"
+        style="margin-right: 5px"
+        *ngIf="!ownership.closed && !ownership.treated"
+        title="Reagendar Titularidade"
+          (click)="reschedule_ownership(ownership);">
+          <i class="far fa-clock"></i>
+        </button>
+
+        <button type="button" class="btn btn-silver btn-sm btn-action" title="Visualizar Titularidade" *ngIf="(ownership.closed || ownership.treated ) && from_today"
+          (click)="lower_if_closed_today = !lower_if_closed_today">
+          <i class="far fa-eye"></i>
+        </button>
+        <button type="button" class="btn btn-silver btn-sm btn-action" title="Iniciar Titularidade" *ngIf="!ownership.closed && !ownership.treated && !ownership.started_on"
+          (click)="start_incident(ownership);">
+          <i class="fas fa-play"></i>
+        </button>
+        <button type="button" class="btn btn-silver btn-sm btn-action" title="Iniciar Titularidade" *ngIf="!ownership.closed && !ownership.treated && ownership.started_on"
+          (click)="stop_incident(ownership);">
+          <i class="fas fa-stop"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="card-text" *ngIf="true">
+    <div class="row">
+      <div class="col-12 col-md-12 col-lg-6">
+        <div class="row">
+          <div class="col-12 col-md-6 col-lg-12">
+            <incident-actions-list
+            [actions]="actions"
+            [incident]="ownership"></incident-actions-list>
+          </div>
+          <div class="col-12 col-md-6 col-lg-12">
+            <incident-comment-list [incident]="ownership"></incident-comment-list>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-12 col-lg-6">
+        <div class="row" style="border-bottom: 1px solid black;">
+          <div class="col-10">
+            <h6 style="font-weight:bold;margin-bottom:0"> Atividades </h6>
+          </div>
+          <div class="col-2 text-right">
+            <button type="button" class="btn btn-silver btn-sm"
+              (click)="open_new_activity_modal();" style="margin:0;padding:2px;line-height:10px">
+              <i class="ft-plus"></i>
+            </button>
+          </div>
+        </div>
+        <div class="row" *ngFor="let type of incidents | groupBy: ['abrev', 'incident_type'] | keys">
+          <div class="col-12">
+            <h5 style="margin:0">
+              {{ type.split("|")[0] }}
+            </h5>
+            <div class="row" *ngFor="let incident of incidents | filterBy : ['incident_type'] : type.split('|')[1] : ['strict'], let k = index, let j = last">
+              <div class="col-12 pl-3" [style.border-bottom]="j ? null : '1px solid #efefef'" style="margin:5px">
+                <incident-agenda-listitem [showIncidentType]="false" [branch]="current_branch" [incident]="incident">
+                </incident-agenda-listitem>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

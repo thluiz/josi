@@ -27,4 +27,10 @@ export class InventoryItem {
 
     @Column()
     require_title: boolean;
+
+    @Column()
+    require_size: boolean;
+
+    @Column()
+    require_gender: boolean;
 }

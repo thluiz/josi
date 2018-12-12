@@ -49,7 +49,7 @@ begin
    join card_step cs on cs.id = c.current_step_id  
   where pr.person_id = p.id               
    and pr.person_id = isnull(@person_id, pr.person_id)                      
-   and c.due_date <= GETDATE()     
+   and c.due_date <= getUTCdate()     
    and cs.[order] = 1  
      )   
                           

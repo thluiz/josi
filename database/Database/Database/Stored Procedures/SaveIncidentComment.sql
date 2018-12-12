@@ -7,7 +7,7 @@ as
 begin    
     
  insert into incident_comment(incident_id, comment, responsible_id, created_at)     
- values (@incident_id, @comment, @responsible_id, getdate())    
+ values (@incident_id, @comment, @responsible_id, getUTCdate())    
     
  exec UpdateIncidentCommentCount @incident_id    
     

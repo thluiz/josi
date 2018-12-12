@@ -116,11 +116,11 @@ begin
    where first_voucher_sended_date is not null   
     and second_voucher_sended_date is null   
     and monitoring_card_id = @card_id) then   
-     DATEADD(DAY, (select cast(value as int) from configuration where id = 3), GETDATE())  
+     DATEADD(DAY, (select cast(value as int) from configuration where id = 3), getUTCdate())  
   when exists(select 1 from person_relationship   
    where second_voucher_sended_date is not null   
     and monitoring_card_id = @card_id) then   
-     DATEADD(DAY, (select cast(value as int) from configuration where id = 4), GETDATE())  
+     DATEADD(DAY, (select cast(value as int) from configuration where id = 4), getUTCdate())  
   else c.due_date        
   end  
  from [card] c   

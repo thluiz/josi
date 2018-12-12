@@ -25,6 +25,14 @@ __decorate([
 ], Person.prototype, "name", void 0);
 __decorate([
     typeorm_1.Column(),
+    __metadata("design:type", String)
+], Person.prototype, "salt", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], Person.prototype, "password", void 0);
+__decorate([
+    typeorm_1.Column(),
     __metadata("design:type", Boolean)
 ], Person.prototype, "is_interested", void 0);
 __decorate([

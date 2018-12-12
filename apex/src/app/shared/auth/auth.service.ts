@@ -1,30 +1,27 @@
-import { Router } from '@angular/router';
+import { SecurityService } from 'app/services/security-service';
 import { Injectable } from '@angular/core';
+import { Result } from '../models/result';
 
 @Injectable()
 export class AuthService {
-  token: string;
+  user: any;
 
-  constructor() {}
+  constructor(private securityService: SecurityService) {}
 
-  signupUser(email: string, password: string) {
-    //your code for signing up the new user
+  logout() {
+    this.user = null;
+    this.securityService.logout();
   }
 
-  signinUser(email: string, password: string) {
-    //your code for checking credentials and getting tokens for for signing in user
-  }
-
-  logout() {   
-    this.token = null;
-  }
-
-  getToken() {    
-    return this.token;
+  getLoginData() {
+    return this.securityService
+    .getCurrentUserData()
+    .do((result : Result) => {
+      this.user = result.data;
+    });
   }
 
   isAuthenticated() {
-    // here you can check if user is authenticated or not through his token 
-    return true;
+    return this.user != null;
   }
 }

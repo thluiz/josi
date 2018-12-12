@@ -4,7 +4,7 @@
 )  
 as begin  
  if(@date is null)   
-  set @date = getdate()  
+  set @date = getUTCdate()  
   
  declare @month int = (select top 1 id from [month] where [start] <= @date and [end] >= @date)  
   

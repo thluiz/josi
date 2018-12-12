@@ -5,60 +5,66 @@
         <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="modal-body">			        
-        <textarea class="form-control"        
-        [(ngModel)]="comment"							         		
+    <div class="modal-body">
+        <textarea class="form-control"
+        [(ngModel)]="comment"
         rows="3"></textarea>
 
-        <div class="row" 
-            *ngIf="type == types.Card && card && card.people != null && card.people.length == 1">            
-            <div class="col-12">                
-                <input type="radio" 
+        <div class="row"
+            *ngIf="type == types.Card && card && card.people != null && card.people.length == 1">
+            <div class="col-12">
+                <input type="radio"
                     name="commentary_type"
-                    [value]="1"                    
+                    [value]="1"
                     [(ngModel)]="commentary_type" /> Comentário sobre a tarefa
                 <br />
-                <input type="radio" 
+                <input type="radio"
                     name="commentary_type"
-                    [value]="2"                    
+                    [value]="2"
                     [(ngModel)]="commentary_type" /> Contato com {{card.people[0].name}} sobre esse assunto
                     <br />
-                <input type="radio" 
+                <input type="radio"
                     name="commentary_type"
-                    [value]="3"                    
+                    [value]="3"
                     [(ngModel)]="commentary_type" /> Tentativa de Contato com {{card.people[0].name}}
             </div>
         </div>
     </div>
-    <div class="modal-footer" *ngIf="saving">        
+    <div class="modal-footer" *ngIf="saving">
         <i class="fas fa-circle-notch fa-spin"></i> &nbsp; Executando...
     </div>
     <div class="modal-footer" *ngIf="!saving">
-        <button type="button" class="btn btn-success" 
+        <button type="button" class="btn btn-success"
+            (click)="save_incident_action_comment(d);"
+            *ngIf="type == types.IncidentAction">
+            <i class="icon-check"></i>
+            Salvar
+        </button>
+        <button type="button" class="btn btn-success"
             (click)="save_person_comment(d);"
             *ngIf="type == types.Person">
             <i class="icon-check"></i>
             Salvar
         </button>
 
-        <button type="button" class="btn btn-success" 
+        <button type="button" class="btn btn-success"
             (click)="save_incident_comment(d);"
             *ngIf="type == types.Incident">
             <i class="icon-check"></i>
             Salvar
         </button>
 
-        <button type="button" class="btn btn-success" 
+        <button type="button" class="btn btn-success"
             (click)="save_card_comment(d);"
             *ngIf="type == types.Card">
             <i class="icon-check"></i>
             Salvar
         </button>
 
-        <button type="button" class="btn btn-silver"                         
+        <button type="button" class="btn btn-silver"
             (click)="d('Cancel')">
-            <i class="icon-action-undo"></i>          
-            Cancelar                              
-        </button> 
+            <i class="icon-action-undo"></i>
+            Cancelar
+        </button>
     </div>
 </ng-template>

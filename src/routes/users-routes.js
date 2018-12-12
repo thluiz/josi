@@ -8,10 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const auth = require("../middlewares/auth");
 const result_1 = require("../helpers/result");
 const security_service_1 = require("../services/security-service");
 function routes(app) {
-    app.get("/api/users/current", (req, res) => __awaiter(this, void 0, void 0, function* () {
+    app.get("/api/users/current", auth.ensureLoggedIn(), (req, res) => __awaiter(this, void 0, void 0, function* () {
         try {
             const userReq = yield new security_service_1.SecurityService().getUserFromRequest(req);
             const user = yield (new security_service_1.SecurityService()).serializeUser(userReq);
@@ -20,6 +21,14 @@ function routes(app) {
         catch (error) {
             res.status(500).json({ error });
         }
+    }));
+    app.post("/api/password_request", (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const passReq = yield new security_service_1.SecurityService().createPasswordRequest(req.body.email);
+        res.send(passReq);
+    }));
+    app.post("/api/reset_password", (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const passReq = yield new security_service_1.SecurityService().resetPassword(req.body.code, req.body.password, req.body.confirm);
+        res.send(passReq);
     }));
 }
 exports.routes = routes;

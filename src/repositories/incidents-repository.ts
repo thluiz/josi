@@ -27,19 +27,60 @@ export class IncidentsRepository extends BaseRepository<Incident> {
     }
 
     @tryLogAsync()
+    async getIncidentsWithOutOwnership(branchId, locationId, startDate, endDate)
+    : Promise<Result<Incident[]>> {
+        return await this.DBM.ExecuteJsonSP<Incident[]>("GetIncidentsWithOutOwnership",
+            { branch_id: branchId > 0 ? branchId : null },
+            { location_id: locationId > 0 ? locationId : null },
+            { start_date: startDate },
+            { end_date: endDate }
+        );
+    }
+
+    @tryLogAsync()
     async getAgenda(branchId, date): Promise<Result<any>> {
-        return await this.DBM.ExecuteJsonSP("GetAgenda2",
+        return await this.DBM.ExecuteJsonSP("GetAgenda3",
             { branch_id: branchId },
             { date }
         );
     }
 
     @tryLogAsync()
-    async getAvailableOwnerships(branchId, date, type): Promise<Result<Incident>> {
-        const result = await this.DBM.ExecuteJsonSP<Incident>("GetAvailableOwnerships",
+    async getAvailableOwnerships(branchId, date, type): Promise<Result<Incident[]>> {
+        const result = await this.DBM.ExecuteJsonSP<Incident[]>("GetAvailableOwnerships",
             { branch_id: branchId },
             { date },
             { type }
+        );
+
+        return result;
+    }
+
+    @tryLogAsync()
+    async getCalendarData(startDate, endDate): Promise<Result<any>> {
+        const result = await this.DBM.ExecuteJsonSP("GetCalendarData",
+            {start_date: startDate},
+            {end_date: endDate},
+        );
+
+        return result;
+    }
+
+    @tryLogAsync()
+    async getDataForChangeOwnership(ownershipId): Promise<Result<any>> {
+        const result = await this.DBM.ExecuteJsonSP("GetDataForChangeOwnership",
+            { ownership_id: ownershipId }
+        );
+
+        return result;
+    }
+
+    @tryLogAsync()
+    async getDataForChangeOwnershipLength(ownershipId, newStart, newEnd): Promise<Result<any>> {
+        const result = await this.DBM.ExecuteJsonSP("GetDataForChangeOwnershipLength",
+            { ownership_id: ownershipId },
+            { start_date: newStart },
+            { end_date: newEnd }
         );
 
         return result;
@@ -129,6 +170,8 @@ export class IncidentsRepository extends BaseRepository<Incident> {
         });
 
         const data = ownershipData.data[0];
+
+        console.log(data);
 
         if (!data.incidents) {
             data.incidents = [];

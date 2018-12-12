@@ -2,7 +2,7 @@
     [id]             INT            IDENTITY (1, 1) NOT NULL,
     [incident_id]    INT            NOT NULL,
     [comment]        NVARCHAR (MAX) NULL,
-    [created_at]     DATETIME       DEFAULT (getdate()) NOT NULL,
+    [created_at]     DATETIME       DEFAULT (getUTCdate()) NOT NULL,
     [responsible_id] INT            NULL,
     [archived]       BIT            DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([id] ASC),

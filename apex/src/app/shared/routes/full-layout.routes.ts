@@ -86,10 +86,6 @@ export const Full_ROUTES: Routes = [
     loadChildren: './pages/under-construction/under-construction.module#UnderConstructionModule'
   },
   {
-    path: 'login',
-    loadChildren: './pages/under-construction/under-construction.module#UnderConstructionModule'
-  },
-  {
     path: 'organizations',
     loadChildren: './pages/cards/cards.module#CardsModule'
   },
@@ -148,5 +144,17 @@ export const Full_ROUTES: Routes = [
   {
     path: 'parameters/vouchers',
     loadChildren: './pages/parameters/parameters.module#ParametersModule'
+  },
+  {
+    path: 'calendar',
+    loadChildren: './pages/calendar/calendar.module#CalendarModule'
+  },
+  {
+    path: 'calendar/coverage',
+    loadChildren: './pages/calendar/calendar.module#CalendarModule'
+  },
+  {
+    path: 'calendar/events',
+    loadChildren: './pages/calendar/calendar.module#CalendarModule'
   }
 ];

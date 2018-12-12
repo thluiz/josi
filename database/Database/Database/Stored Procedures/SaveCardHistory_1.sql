@@ -13,7 +13,7 @@ begin
    join person_card pc on pc.card_id = c.id     
   where	c.card_template_id = 10			
 			and started_on is not null 
-			and started_on <= getdate() and closed_on is null   
+			and started_on <= getUTCdate() and closed_on is null   
 			and   
 				((c.leader_id = @responsible_id)  
 				or  
@@ -24,7 +24,7 @@ begin
   responsible_id, history_type, created_during_card_id,  
   new_step_id, new_parent_id)  
  values (  
-  @card_id, getdate(),   
+  @card_id, getUTCdate(),   
   @responsible_id, @history_type, @current_reunion_card_id,   
   @new_step_id, @new_parent_id 
  )  

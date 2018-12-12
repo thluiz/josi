@@ -27,7 +27,7 @@ class ErrorResult {
         this.success = false;
         this.id = uuid();
         this.data = error;
-        this.message = error.message;
+        this.message = error ? error.message : null;
         this.details = JSON.stringify(error, replace_errors_1.replaceErrors);
     }
     static Fail(code, error, innerError) {

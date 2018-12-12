@@ -32,14 +32,37 @@ class IncidentsRepository extends base_repository_1.BaseRepository {
         super(Incident_1.Incident);
         this.summaryCache = [];
     }
+    getIncidentsWithOutOwnership(branchId, locationId, startDate, endDate) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.DBM.ExecuteJsonSP("GetIncidentsWithOutOwnership", { branch_id: branchId > 0 ? branchId : null }, { location_id: locationId > 0 ? locationId : null }, { start_date: startDate }, { end_date: endDate });
+        });
+    }
     getAgenda(branchId, date) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.DBM.ExecuteJsonSP("GetAgenda2", { branch_id: branchId }, { date });
+            return yield this.DBM.ExecuteJsonSP("GetAgenda3", { branch_id: branchId }, { date });
         });
     }
     getAvailableOwnerships(branchId, date, type) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.DBM.ExecuteJsonSP("GetAvailableOwnerships", { branch_id: branchId }, { date }, { type });
+            return result;
+        });
+    }
+    getCalendarData(startDate, endDate) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.DBM.ExecuteJsonSP("GetCalendarData", { start_date: startDate }, { end_date: endDate });
+            return result;
+        });
+    }
+    getDataForChangeOwnership(ownershipId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.DBM.ExecuteJsonSP("GetDataForChangeOwnership", { ownership_id: ownershipId });
+            return result;
+        });
+    }
+    getDataForChangeOwnershipLength(ownershipId, newStart, newEnd) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.DBM.ExecuteJsonSP("GetDataForChangeOwnershipLength", { ownership_id: ownershipId }, { start_date: newStart }, { end_date: newEnd });
             return result;
         });
     }
@@ -97,6 +120,7 @@ class IncidentsRepository extends base_repository_1.BaseRepository {
                 ownership_id: id
             });
             const data = ownershipData.data[0];
+            console.log(data);
             if (!data.incidents) {
                 data.incidents = [];
             }
@@ -117,6 +141,12 @@ class IncidentsRepository extends base_repository_1.BaseRepository {
 __decorate([
     trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getIncidentsWithOutOwnership", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getAgenda", null);
@@ -126,6 +156,24 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], IncidentsRepository.prototype, "getAvailableOwnerships", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getCalendarData", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getDataForChangeOwnership", null);
+__decorate([
+    trylog_decorator_1.tryLogAsync(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], IncidentsRepository.prototype, "getDataForChangeOwnershipLength", null);
 __decorate([
     cache_decorator_1.cache(true, 100000, (branchId) => `getCurrentActivities_${branchId || "all"}`),
     trylog_decorator_1.tryLogAsync(),

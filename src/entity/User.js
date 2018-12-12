@@ -47,19 +47,21 @@ let User = class User {
             return this.person.id;
         });
     }
-    getPerson() {
+    getPerson(cache = true) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.loadPersonIfNeeded();
+            yield this.loadPersonIfNeeded(cache);
             return this.person;
         });
     }
-    loadPersonIfNeeded() {
+    loadPersonIfNeeded(cache = true) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.person != null) {
                 return;
             }
             const UR = yield new users_repository_1.UsersRepository();
-            const result_user = yield UR.loadAllUserData(this.id);
+            const result_user = cache ?
+                yield UR.loadAllUserData(this.id)
+                : yield UR.loadAllUserDataWithoutCache(this.id);
             this.person = result_user.data.person;
         });
     }
@@ -92,7 +94,7 @@ __decorate([
 __decorate([
     trylog_decorator_1.tryLogAsync(),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], User.prototype, "loadPersonIfNeeded", null);
 User = __decorate([

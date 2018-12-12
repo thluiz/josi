@@ -1,0 +1,21 @@
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.closed_today {
+  opacity: 0.4;
+}
+
+.closed_today:hover {
+  opacity: 1;
+}
+
+.closed_today .show {
+  opacity: 1;
+}
+
+.ownership_title {
+  cursor:pointer;
+  font-weight: bold;
+}

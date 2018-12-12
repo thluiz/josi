@@ -33,7 +33,7 @@ begin
               
  update i set i.closed = 1,                   
   i.[close_text] = isnull(@close_description, ''),              
-  i.closed_on = getdate(),      
+  i.closed_on = getUTCdate(),      
   i.closed_by = @responsible_id,    
   i.title = case when len(@title) > 0 then @title else i.title end,  
   i.payment_method_id = isnull(@payment_method_id, i.payment_method_id),  
